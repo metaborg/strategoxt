@@ -3,6 +3,9 @@
  */
 module stratego/asfix/implode/list
 
+imports stratego/asfix/signature
+imports stratego/asfix/implode/tuple
+
 /**
  * Flatten list constructs
  *

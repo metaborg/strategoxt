@@ -6,6 +6,8 @@
 module stratego/sglr/parse-table
 imports
   libstratego-lib
+  stratego/sglr/parse-report-errors
+  
 
 strategies
 

@@ -3,6 +3,10 @@
  * only in a specific implosion option.
  */
 module stratego/asfix/implode/sort
+
+imports stratego/asfix/signature
+imports stratego/sdf/verbalize
+
 rules
 
   ApplToSort :

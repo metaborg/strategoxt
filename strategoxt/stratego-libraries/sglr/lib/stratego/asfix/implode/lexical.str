@@ -2,6 +2,10 @@
  * Implosion of lexical syntax.
  */
 module stratego/asfix/implode/lexical
+
+imports stratego/asfix/signature
+imports stratego/concrete-syntax/markers
+
 strategies
 
   ImplodeLexical =

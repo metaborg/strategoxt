@@ -7,6 +7,10 @@
  * are only necessary for syntactic purposes.
  */
 module stratego/asfix/implode/injection
+
+imports stratego/asfix/signature
+imports Sdf2
+
 rules
 
   ImplodeInjection : 
