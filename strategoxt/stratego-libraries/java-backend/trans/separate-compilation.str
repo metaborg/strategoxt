@@ -81,9 +81,16 @@ strategies
 		; ![<id>]
 		; createBuildSchedule(|<get-schedule-mode>)
 		; flattenBuildSchedule
+		; if is-global-compilation
+			then
+				  debug
+				; foldr(![], (task-get-units,id);conc)
+				; ![<id>]
+		  end
 		; log(|Info(), ["Calculated build schedule ", <id>])
 	// Compile according to the build schedule, outer map maps over the build tasks in the build schedule
-		; map(	not(needsTaskToBeBuild) <+ (task-get-units
+		; map(	if  is-global-compilation <+ not(needsTaskToBeBuild) then 
+				  (is-global-compilation <+ task-get-units)
 				; log(|Info(), ["Compile Build Task " , <id>])
 	// Compiles a strongly connected component
 				; compile(back-end|working-package,working-output)
@@ -95,7 +102,7 @@ strategies
 					}))
 	// Finally write all units
 				; map (write-compilation-unit)
-			)
+				end
 		)
 	|}	
 
