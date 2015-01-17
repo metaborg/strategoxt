@@ -24,13 +24,10 @@ public class StrategyExecutorBuilder {
 			this.specialExecutors = null;
 			return chooseExecutorImpl(cleaned);
 		}
-		System.out.println("Has special implementators " + strategyName);
-		System.out.println("Cleaned:  " + cleaned);
-		System.out.println("Special:  " + specialStrategies);
+		
 		this.specialExecutors = new HashMap<Strategy, Strategy>();
 		List<Strategy> implementators = cleaned;
 		for (Strategy special : specialStrategies) {
-			System.out.println("Executor for " +special+ ": " + implementators);
 			Strategy executor = chooseExecutorImpl(implementators);
 			this.specialExecutors.put(special, executor);
 			

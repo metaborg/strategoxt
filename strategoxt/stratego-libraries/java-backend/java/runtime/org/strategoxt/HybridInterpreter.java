@@ -79,7 +79,9 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		new org.strategoxt.stratego_xtc_posix_xsi.LibraryInitializer(),
 		new org.strategoxt.javafront.LibraryInitializer(),
 		new org.strategoxt.stratego_lib_posix_xsi.LibraryInitializer(),
-		new org.strategoxt.strc.LibraryInitializer()
+		new org.strategoxt.strc.LibraryInitializer(),
+			// this is only temporary
+		new org.strategoxt.strj.strj.LibraryInitializer()
 	};
 
 	private final HybridCompiledContext compiledContext;
@@ -247,8 +249,6 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		String[] mainArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, mainArgs, 0, mainArgs.length);
 
-
-		System.out.println("Main args "+ java.util.Arrays.toString(mainArgs));
 		try {
 			Context context = new Context();
 			LibraryInitializer.initialize(context,STANDARD_LIBRARIES);

@@ -30,6 +30,11 @@ strategies
 			, <set-config> ("--remove-overlays-from-externals", ());log(|Info(), "Overlays will be removed from externals for modules, for which the compiler is called.");!()
 			, !"--remove-overlays-from-externals  Removes externals from modules externals, for backward compatability."
 		)
+		+ Option(
+			  "--global-compilation"
+			, <set-config> ("--global-compilation",());!()
+			, !"--global-compilation              All modules will be merged and compiled as a single module"
+		)
 		
 		
 	process-library-path = 
@@ -71,3 +76,6 @@ strategies
 	
 	is-remove-overlays-from-externals =
 		  where(<get-config> "--remove-overlays-from-externals")
+		  
+    is-global-compilation =
+		  where(<get-config> "--global-compilation")

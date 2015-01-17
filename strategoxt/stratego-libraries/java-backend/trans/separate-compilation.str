@@ -82,10 +82,17 @@ strategies
 		; ![<id>]
 		; createBuildSchedule(|<get-schedule-mode>)
 		; flattenBuildSchedule
+		; if is-global-compilation
+			then
+				  foldr(![], (task-get-units,id);conc)
+				; ![<id>]
+		  end
 		; log(|Info(), ["Calculated build schedule ", <id>])
 	// Compile according to the build schedule, outer map maps over the build tasks in the build schedule
-		; map(	not(needsTaskToBeBuild) <+ (task-get-units
-				; log(|Info(), ["Compile Build Task " , <id>])
+		; map(	//if  debug("Check "); ((is-global-compilation;debug(!"GLobal")) <+ (not(needsTaskToBeBuild);) then 
+		// TODO Reinclude the if when problem with istasktobebuild is completed
+				  log(|Info(), ["Compile Build Task " , <id>])
+				; (is-global-compilation <+ task-get-units)
 	// Compiles a strongly connected component
 				; compile(back-end|working-package,working-output)
 	// Update the interface versions of the dependencies 
@@ -96,7 +103,7 @@ strategies
 					}))
 	// Finally write all units
 				; map (write-compilation-unit)
-			)
+				//end
 		)
 	|}	
 
@@ -190,8 +197,6 @@ strategies
 				; !merged-ast
 				; collect-all(?ExtSDef(_,_,_)) => externals
 				; !IncludeAST(merged-ast,fileName)
-				
-				; log(|Notice(), ["Packing ", merged-ast])
 
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec
