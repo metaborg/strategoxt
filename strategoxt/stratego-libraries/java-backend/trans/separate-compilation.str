@@ -83,8 +83,7 @@ strategies
 		; flattenBuildSchedule
 		; if is-global-compilation
 			then
-				  debug
-				; foldr(![], (task-get-units,id);conc)
+				  foldr(![], (task-get-units,id);conc)
 				; ![<id>]
 		  end
 		; log(|Info(), ["Calculated build schedule ", <id>])
@@ -197,8 +196,6 @@ strategies
 				; !merged-ast
 				; collect-all(?ExtSDef(_,_,_)) => externals
 				; !IncludeAST(merged-ast,fileName)
-				
-				; log(|Notice(), ["Packing ", merged-ast])
 
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec

@@ -111,7 +111,6 @@ public abstract class LibraryInitializer {
 		}
 		final Set<InitializerSetEntry> dependentInitializer = new HashSet<>();
 		this.collectDependentInitializer(dependentInitializer);
-		System.out.println("Initialzie with : " + dependentInitializer);
 		for (InitializerSetEntry initializer : dependentInitializer) {
 			initializer.initializer.registerImplementators(collector);
 		}
