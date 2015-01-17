@@ -11,6 +11,7 @@ imports
   libstratego-lib
   libstratego-xtc
   libstratego-gpp
+  stratego/tool-doc/PrettyPrint
 
 strategies
 
