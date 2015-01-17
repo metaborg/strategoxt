@@ -96,7 +96,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${install-location}" />
 		<delete>
-			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree, **/*.dep" />
+			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree" />
 		</delete>
 	</target>
 </project>

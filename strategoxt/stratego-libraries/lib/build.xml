@@ -68,7 +68,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${install-location}" />
 		<delete>
-			<fileset dir="spec" includes="**/*.ctree*, **/*.rtree, **/*.dep" />
+			<fileset dir="spec" includes="**/*.ctree*, **/*.rtree" />
 		</delete>
 	</target>
 </project>
