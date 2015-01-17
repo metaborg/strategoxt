@@ -9,8 +9,12 @@ imports
   Sdf2
   libstratego-lib
   libstratego-xtc
+  libstratego-sdf
   lib/sdf/grammar/utils
   lib/native-transform
+  lib/sdf-options
+  lib/sdf-desugar
+  lib/gen-renamed-sdf-module
 
 strategies
 

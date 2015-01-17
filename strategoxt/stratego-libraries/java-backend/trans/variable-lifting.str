@@ -5,6 +5,9 @@
  */
 module variable-lifting
 
+imports libstrc
+imports s2j
+
 rules
  
   collect-lifted-tvars :

@@ -10,6 +10,7 @@ imports
   libstratego-lib
   libstratego-xtc
   libstratego-tool-doc
+  libstrc
 //  strategoxt-xtc-tools
   lib/sdf2ast-conflicts
 

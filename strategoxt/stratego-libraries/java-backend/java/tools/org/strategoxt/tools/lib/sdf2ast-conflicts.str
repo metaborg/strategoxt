@@ -14,6 +14,7 @@ imports
   lib/sdf-spread-cons
   lib/native-transform
   lib/sdf/symbol/implode
+  lib/sdf-options
 
 
 strategies

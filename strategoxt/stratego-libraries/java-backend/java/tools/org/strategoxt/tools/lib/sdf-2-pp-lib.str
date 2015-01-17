@@ -7,6 +7,10 @@ imports
   lib/Bracket-Symbol
   lib/sdf/production/utils
   lib/sdf/production/attributes
+  lib/gen-renamed-sdf-module
+  libstratego-sdf
+  libstratego-xtc
+  libstratego-gpp
 
 strategies
 

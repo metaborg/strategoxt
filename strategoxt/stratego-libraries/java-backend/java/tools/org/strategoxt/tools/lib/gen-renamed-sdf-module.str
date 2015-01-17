@@ -8,11 +8,13 @@ module lib/gen-renamed-sdf-module
 imports
   libstratego-lib
   libstratego-xtc
+  libstratego-sdf
   lib/sdf/grammar/utils
   lib/native-transform
   lib/sdf-desugar
   lib/sdf-ensugar
   lib/core-sdf-parenthesize
+  lib/sdf-options
   
 strategies
 

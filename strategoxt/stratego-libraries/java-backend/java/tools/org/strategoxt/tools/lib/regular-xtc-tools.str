@@ -2,6 +2,8 @@ module lib/regular-xtc-tools
 imports
   lib/pp-rtg
   libstratego-sglr
+  libstratego-rtg
+  libstratego-xtc
   libstrc
 
 strategies

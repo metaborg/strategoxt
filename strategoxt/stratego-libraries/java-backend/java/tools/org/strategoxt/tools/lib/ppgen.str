@@ -3,6 +3,7 @@ imports
   libstratego-lib
   libstratego-xtc
   libstratego-sdf
+  libstratego-sglr
   lib/sdf-2-pp-table
   lib/pp-pp-table
 

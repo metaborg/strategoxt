@@ -3,6 +3,10 @@
  */
 module lib/stratego-rtg
 
+imports lib/core-rtg2sig
+
+
+
 /**
  * Constructors and production rules
  */

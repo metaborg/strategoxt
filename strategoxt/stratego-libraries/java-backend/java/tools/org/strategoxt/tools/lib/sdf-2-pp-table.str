@@ -2,6 +2,8 @@ module lib/sdf-2-pp-table
 imports
   lib/sdf-2-pp-lib
   lib/Bracket-Symbol
+  libstratego-sdf
+  libstratego-gpp
 
 strategies
 

@@ -1,4 +1,7 @@
 module lib/sdf/grammar/utils
+
+imports libstratego-sdf
+
 strategies
 
   /**

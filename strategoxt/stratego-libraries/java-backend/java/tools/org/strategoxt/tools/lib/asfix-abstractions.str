@@ -1,6 +1,7 @@
 module lib/asfix-abstractions
 imports
   lib/asfix-extra
+  libstratego-sdf
 
 signature
 constructors
