@@ -9,8 +9,6 @@ strategies
 	extract-dependencies =
 		  pack-stratego-unit
 		; get-stratego-source-file
-		//; path-relativize(| <pack-include-path;fetch-elem(\IncludeDir(x) -> AbsolutePath(x)\)>)
-		//; ?RelativePath(_, <id>)
 		; path-get-full-path
 		; !(IncludePathName(<id>), <pack-include-path>)
 		; (separate-compilation-parse-file <+ (log(|Error(), ["File not found: ", <id>]);fail))

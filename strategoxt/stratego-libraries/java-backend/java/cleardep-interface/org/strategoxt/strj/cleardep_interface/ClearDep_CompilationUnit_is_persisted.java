@@ -1,15 +1,10 @@
 package org.strategoxt.strj.cleardep_interface;
 
-import java.util.Map;
-
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.terms.Term;
-import org.sugarj.common.cleardep.mode.Mode;
-import org.sugarj.common.path.RelativePath;
 
 public class ClearDep_CompilationUnit_is_persisted extends AbstractPrimitive {
 

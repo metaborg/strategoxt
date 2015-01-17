@@ -255,6 +255,7 @@
 		<!-- <pathelement path="${java.class.path}" /> -->
 		<pathelement location="java/runtime" />
 		<pathelement location="java/cleardep-interface" />
+		<!-- Currently need revision  4da27af6d53b80fb92df8ce7b03ae555ecc6d5d6 -->
 		<pathelement location="java/sugarj-common.jar" />
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />
