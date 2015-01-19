@@ -209,6 +209,10 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
 	public IStrategoTerm invokeStrategy(String strategy, IStrategoTerm input)
 			throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
+		Strategy collectedStrategy = getStrategyCollector().getStrategyExecutor(org.spoofax.interpreter.core.Interpreter.cify(strategy) + "_0_0");
+		if (collectedStrategy != null) {
+			return collectedStrategy.invoke(this, input);
+		}
 
 		SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
     	if (caller == null) caller = new SSL_EXT_java_call();

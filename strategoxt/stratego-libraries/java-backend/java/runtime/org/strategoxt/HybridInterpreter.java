@@ -42,6 +42,7 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.InteropSDefT;
 import org.strategoxt.lang.LibraryInitializer;
+import org.strategoxt.lang.MissingLibraryException;
 import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
@@ -79,9 +80,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		new org.strategoxt.stratego_xtc_posix_xsi.LibraryInitializer(),
 		new org.strategoxt.javafront.LibraryInitializer(),
 		new org.strategoxt.stratego_lib_posix_xsi.LibraryInitializer(),
-		new org.strategoxt.strc.LibraryInitializer(),
-			// this is only temporary
-		new org.strategoxt.strj.strj.LibraryInitializer()
+		new org.strategoxt.strc.LibraryInitializer()
 	};
 
 	private final HybridCompiledContext compiledContext;
@@ -243,15 +242,43 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		}
 		return i;
 	}
+	
+	private static LibraryInitializer loadLibraryInitializer(String libraryName) throws MissingLibraryException{
+		String className = libraryName + ".LibraryInitializer";
+		try {
+			Class<?> initializerClass = Class.forName(className);
+			Object instantiatedObject = initializerClass.newInstance();
+			if (!(instantiatedObject instanceof LibraryInitializer)) {
+				throw new MissingLibraryException("Library " + libraryName + " points to an invalid library.");
+			}
+			return (LibraryInitializer) instantiatedObject;
+		} catch (ClassNotFoundException e) {
+			throw new MissingLibraryException("Library " + libraryName +" no found.", e);
+		} catch (InstantiationException | IllegalAccessException e)  {
+			throw new MissingLibraryException("Unable to load library " + libraryName, e);
+		}
+	}
+	
+	
 
 	private static void mainLocalJar(String... args) {
-		String strategy = args[0];
+		String libraryStrategyName = args[0];
+		int lastIndex = libraryStrategyName.lastIndexOf('.');
+		String library = libraryStrategyName.substring(0, lastIndex);
+		String strategy = libraryStrategyName.substring(lastIndex+1, libraryStrategyName.length());
+		
 		String[] mainArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, mainArgs, 0, mainArgs.length);
-
+		
 		try {
 			Context context = new Context();
-			LibraryInitializer.initialize(context,STANDARD_LIBRARIES);
+			System.out.println("Transformed class name to call strategy \""+strategy+"\" and load library " + library );
+			
+			LibraryInitializer[] allInitializers = new LibraryInitializer[STANDARD_LIBRARIES.length + 1];
+			System.arraycopy(STANDARD_LIBRARIES,0,allInitializers, 0, STANDARD_LIBRARIES.length);
+			allInitializers[STANDARD_LIBRARIES.length] = loadLibraryInitializer(library);
+			
+			LibraryInitializer.initialize(context,allInitializers);
 			IStrategoTerm result;
 			try {
 				result = context.invokeStrategyCLI(strategy, strategy, mainArgs);
@@ -270,6 +297,9 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		} catch (MissingStrategyException e) {
 			System.err.println(e.getMessage());
 			System.exit(125);
+		} catch (MissingLibraryException e) {
+			System.err.println(e.getMessage());
+			System.exit(126);
 		} catch (StrategoExit e) {
 			System.exit(e.getValue());
 		}
