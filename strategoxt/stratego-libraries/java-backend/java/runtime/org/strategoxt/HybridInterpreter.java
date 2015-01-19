@@ -244,7 +244,16 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	}
 	
 	private static LibraryInitializer loadLibraryInitializer(String libraryName) throws MissingLibraryException{
-		String className = libraryName + ".LibraryInitializer";
+		StringBuilder classNameBuilder = new StringBuilder();
+		String[] parts = libraryName.split("\\.");
+
+		classNameBuilder.append(parts[0]);
+		for (int i = 1; i < parts.length; i++) {
+			classNameBuilder.append('.');
+			classNameBuilder.append(Interpreter.cify(parts[i]));
+		}
+		classNameBuilder.append(".LibraryInitializer");
+		String className = classNameBuilder.toString();
 		try {
 			Class<?> initializerClass = Class.forName(className);
 			Object instantiatedObject = initializerClass.newInstance();
@@ -253,7 +262,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			}
 			return (LibraryInitializer) instantiatedObject;
 		} catch (ClassNotFoundException e) {
-			throw new MissingLibraryException("Library " + libraryName +" no found.", e);
+			throw new MissingLibraryException("Library " + libraryName +" not found. ", e);
 		} catch (InstantiationException | IllegalAccessException e)  {
 			throw new MissingLibraryException("Unable to load library " + libraryName, e);
 		}
