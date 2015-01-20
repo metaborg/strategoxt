@@ -12,6 +12,10 @@ exports
 
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDefT")}
+       
+    %% Rule definition with pattern matched term parameters
+    Id "(" {Typedid ","}* 
+       "|" {Term ","}* ")" ":" Rule 		-> RuleDef {cons("RDefP"), avoid}
 
   sorts Rule RuleCond
   context-free syntax
