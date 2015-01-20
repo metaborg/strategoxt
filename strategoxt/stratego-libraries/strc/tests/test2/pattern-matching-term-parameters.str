@@ -30,6 +30,9 @@ rules
 	// Matching with application
 	appl-s(|<id>) = !"r10"
 	
+	// Matching with application
+	appl-many-s(|<id>, <id>) = !"r18"
+	
 	// Multi-match
 	multi-match-s(|"x", "y") = !"r11"
 	multi-match-s(|"y", "z") = !"r12"
@@ -37,6 +40,11 @@ rules
 	// Fallthrough match
 	fallthrough-s(|"x")    = !"r16"
 	fallthrough-s(|x)      = !"r17"
+	
+	// One, two, many
+	to-english(|1) = !"one"
+	to-english(|2) = !"two"
+	to-english(|_) = !"many"
 
 strategies
 	
@@ -101,8 +109,12 @@ strategies
       annotations-stest;
       at-stest;
       appl-stest;
+	  appl-many-stest;
       multi-match-stest;
       fallthrough-stest;
+	  to-english-one-test;
+	  to-english-two-test;
+	  to-english-many-test;
       single-term-rtest;
       var-and-term-rtest;
       wildcard-rtest;
@@ -162,10 +174,17 @@ strategies
 	appl-stest = 
 	  	apply-test(!"appl-stest"
 		      ,appl-s(|"y")
-		      ,!"y"
+		      ,!()
 		      ,!"r10"
 		      )
-			  
+		      
+	appl-many-stest =
+	  	apply-test(!"appl-many-1-stest"
+		      ,appl-many-s(|"x", "y")
+		      ,!()
+		      ,!"r18"
+		      )
+		      
 	multi-match-stest = 
 	  	apply-test(!"multi-match-stest"
 		      ,multi-match-s(|"y", "z")
@@ -178,6 +197,27 @@ strategies
 		      ,fallthrough-s(|"q")
 		      ,!()
 		      ,!"r17"
+		      )
+		      
+	to-english-one-test = 
+	  	apply-test(!"to-english-one-test"
+		      ,to-english(|1)
+		      ,!()
+		      ,!"one"
+		      )
+		      
+	to-english-two-test = 
+	  	apply-test(!"to-english-two-test"
+		      ,to-english(|2)
+		      ,!()
+		      ,!"two"
+		      )
+		      
+	to-english-many-test = 
+	  	apply-test(!"to-english-many-test"
+		      ,to-english(|3)
+		      ,!()
+		      ,!"many"
 		      )
 			  
 	single-term-rtest = 
