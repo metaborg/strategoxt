@@ -1,16 +1,6 @@
 module pattern-matching-term-parameters
 
 imports libstratego-lib
-signature
-  constructors
-    True   : Exp
-    False  : Exp
-    Var    : String -> Exp
-
-    Assign : String * Exp -> Stat
-    Skip   : Stat
-    If     : Exp * Stat -> Stat
-    If     : Exp * Stat * Stat -> Stat
 
 rules
 	
@@ -275,3 +265,4 @@ strategies
 		      ,!()
 		      ,!"r17"
 		      )
+		      
