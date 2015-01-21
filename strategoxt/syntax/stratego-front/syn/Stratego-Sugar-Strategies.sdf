@@ -10,6 +10,9 @@ exports
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
     Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
 
+    %% Strategy definition with pattern matched term parameters
+    Id "(" {Typedid ","}* "|" {Term ","}* ")" "=" Strategy -> StrategyDef {cons("SDefP"), avoid}
+
   context-free syntax
     ID 				  	  -> Typedid {cons("DefaultVarDec")}
 
