@@ -47,7 +47,7 @@
 		</strj-lib>
 
 		<copy file="${bin.stratego}/org/strategoxt/stratego_sglr/stratego_sglr.rtree" tofile="${bin}/libstratego-sglr.rtree" />
-		<copy file="${bin.stratego}/org/strategoxt/stratego_sglr/stratego_sglr.ctree" tofile="${bin}/libstratego-sglr.ctree" />
+	<!--	<copy file="${bin.stratego}/org/strategoxt/stratego_sglr/stratego_sglr.ctree" tofile="${bin}/libstratego-sglr.ctree" /> -->
  
 	</target>
 

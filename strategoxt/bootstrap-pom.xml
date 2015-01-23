@@ -13,6 +13,7 @@
 	</parent>
 
 	<modules>
+	    <module>buildpoms/bootstrap0</module>
 		<module>buildpoms/bootstrap1</module>
 		<module>buildpoms/bootstrap2</module>
 		<module>buildpoms/bootstrap3</module>

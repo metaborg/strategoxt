@@ -40,11 +40,11 @@
 		</strj-lib>
 
 		<copy file="${bin.stratego}/org/strategoxt/stratego_lib_posix_xsi/stratego_lib_posix_xsi.rtree" tofile="${bin}/libstratego-lib-posix-xsi.rtree" />
-		<copy file="${bin.stratego}/org/strategoxt/stratego_lib_posix_xsi/stratego_lib_posix_xsi.ctree" tofile="${bin}/libstratego-lib-posix-xsi.ctree" />
+	<!--	<copy file="${bin.stratego}/org/strategoxt/stratego_lib_posix_xsi/stratego_lib_posix_xsi.ctree" tofile="${bin}/libstratego-lib-posix-xsi.ctree" /> -->
 
 		<!-- Give the generated rtree and ctree file a different name -->
 		<copy file="${bin}/libstratego-lib-posix-xsi.rtree" tofile="${bin}/libstratego-lib.rtree" />
-		<copy file="${bin}/libstratego-lib-posix-xsi.ctree" tofile="${bin}/libstratego-lib.ctree" />
+	<!--	<copy file="${bin}/libstratego-lib-posix-xsi.ctree" tofile="${bin}/libstratego-lib.ctree" /> -->
 	</target>
 
 	<path id="build.classpath">

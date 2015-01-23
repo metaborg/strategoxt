@@ -20,7 +20,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
  * and a space complexity of O(n), where n is the total number of
  * elements in all sublists of the list term.
  */
-public class SRTS_EXT_concat_0_0 extends Strategy {
+public class SRTS_EXT_concat_0_0 extends RegisteringStrategy {
 	
 	public static SRTS_EXT_concat_0_0 instance = new SRTS_EXT_concat_0_0();
 	

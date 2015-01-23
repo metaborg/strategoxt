@@ -67,7 +67,7 @@
 		</strj-lib>
 
 		<copy file="${bin.stratego}/org/strategoxt/strc/strc.rtree" tofile="${bin}/libstrc.rtree" />
-		<copy file="${bin.stratego}/org/strategoxt/strc/strc.ctree" tofile="${bin}/libstrc.ctree" />
+<!--		<copy file="${bin.stratego}/org/strategoxt/strc/strc.ctree" tofile="${bin}/libstrc.ctree" /> -->
 
 	</target>
 

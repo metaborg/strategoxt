@@ -56,7 +56,7 @@
 		</strj-lib>
 
 		<copy file="${bin.stratego}/org/strategoxt/stratego_tool_doc/stratego_tool_doc.rtree" tofile="${bin}/libstratego-tool-doc.rtree" />
-		<copy file="${bin.stratego}/org/strategoxt/stratego_tool_doc/stratego_tool_doc.ctree" tofile="${bin}/libstratego-tool-doc.ctree" />
+	<!--	<copy file="${bin.stratego}/org/strategoxt/stratego_tool_doc/stratego_tool_doc.ctree" tofile="${bin}/libstratego-tool-doc.ctree" /> -->
 
 	</target>
 

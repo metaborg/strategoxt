@@ -127,7 +127,7 @@
 		</strj-lib>
 
 		<copy file="${bin.stratego}/org/strategoxt/tools/tools.rtree" tofile="${bin}/libtools.rtree" />
-		<copy file="${bin.stratego}/org/strategoxt/tools/tools.ctree" tofile="${bin}/libtools.ctree" />
+	<!--	<copy file="${bin.stratego}/org/strategoxt/tools/tools.ctree" tofile="${bin}/libtools.ctree" /> -->
 
 	</target>
 

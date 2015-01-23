@@ -49,7 +49,7 @@
 		</strj-lib>
 		
 		<copy file="${bin.stratego}/org/strategoxt/stratego_aterm/stratego_aterm.rtree" tofile="${bin}/libstratego-aterm.rtree" />
-		<copy file="${bin.stratego}/org/strategoxt/stratego_aterm/stratego_aterm.ctree" tofile="${bin}/libstratego-aterm.rtree" />
+	<!--	<copy file="${bin.stratego}/org/strategoxt/stratego_aterm/stratego_aterm.ctree" tofile="${bin}/libstratego-aterm.rtree" /> -->
 
 	</target>
 

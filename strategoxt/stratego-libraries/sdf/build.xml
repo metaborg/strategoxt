@@ -50,7 +50,7 @@
 		</strj-lib>
 
 		<copy file="${bin.stratego}/org/strategoxt/stratego_sdf/stratego_sdf.rtree" tofile="${bin}/libstratego-sdf.rtree" />
-		<copy file="${bin.stratego}/org/strategoxt/stratego_sdf/stratego_sdf.ctree" tofile="${bin}/libstratego-sdf.ctree" />
+	<!--	<copy file="${bin.stratego}/org/strategoxt/stratego_sdf/stratego_sdf.ctree" tofile="${bin}/libstratego-sdf.ctree" /> -->
 
 	</target>
 
