@@ -18,7 +18,7 @@
 
   <properties>
     <strategoxt-baseline-version>1.3.0</strategoxt-baseline-version>
-    <strategoxt-baseline-id>strategoxt-distrib</strategoxt-baseline-id>
+    <strategoxt-baseline-id>strategoxt-distrib-separate-compilation-prebuild</strategoxt-baseline-id>
     <strategoxt-build-location>${basedir}/../../</strategoxt-build-location>
     <strategoxt-assembly-location>${basedir}/../assembly.xml</strategoxt-assembly-location>
   </properties>
