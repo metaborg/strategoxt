@@ -34,6 +34,9 @@ strategies
     ; parenthesize-Sdf2
     ; xtc-pp-sdf2
 
+  io-pp-sdf =
+    xtc-io-wrap(xtc-pp-sdf2)
+
   xtc-pp-sdf2 =
     where(f := <xtc-new-file>)
     ; pp-sdf2-file(|f)

@@ -1,21 +1,57 @@
-#! /bin/sh
+#!/usr/bin/env bash
+
+set -eu
 
 
-cd baseline &&
+# Parse input
+while getopts ":da:t" opt; do
+  case $opt in
+    d)
+      INPUT_MAVEN_PHASE="deploy"
+      ;;
+    a)
+      INPUT_MAVEN_ARGS=$OPTARG
+      ;;
+    t)
+      INPUT_SKIP_TESTS="true"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 2
+      ;;
+  esac
+done
 
-export STRJ_BASELINE=`pwd` &&
-export STRJ_BASELINE_DEPS=`pwd`/share/strategoxt/build-lib &&
-export STRJ_BASELINE_BINS=`pwd`/share/strategoxt/macosx/ &&
-export STRJ_BASELINE_BASE=`pwd`/share/strategoxt/strategoxt &&
 
-cd ..
+# Set build vars
+MAVEN_ARGS=${INPUT_MAVEN_ARGS:-""}
+MAVEN_PHASE=${INPUT_MAVEN_PHASE:-"install"}
+
+SKIP_TESTS=${INPUT_SKIP_TESTS:-"false"}
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
+# Run Maven builds
+mvn \
+  -f "$DIR/build-pom.xml" \
+  -Dstrategoxt-skip-test="$SKIP_TESTS" \
+  clean \
+  $MAVEN_PHASE \
+  $MAVEN_ARGS
+
+mvn \
+  -f "$DIR/buildpoms/pom.xml" \
+  -Dstrategoxt-skip-build="true" \
+  clean \
+  $MAVEN_PHASE \
+  $MAVEN_ARGS
 
 
-: ${STRJ_BASELINE:?"Environment not initialized. Run source PLATFORM-init.sh"}
-: ${STRJ_BASELINE_DEPS:?"Environment not initialized. Run source PLATFORM-init.sh"}
-: ${STRJ_BASELINE_BINS:?"Environment not initialized. Run source PLATFORM-init.sh"}
-: ${STRJ_BASELINE_BASE:?"Environment not initialized. Run source PLATFORM-init.sh"}
-
-ANT_OPTS="-Xss8m -Xmx2048m" ant -Dbaseline=$STRJ_BASELINE -Dsdf2bundle=$STRJ_BASELINE -Dnativepath=$STRJ_BASELINE_BINS -lib $STRJ_BASELINE_BASE -lib $STRJ_BASELINE_DEPS $@ || exit 1
+echo "Build output located at..."
+echo "StrategoXT distribution: $DIR/buildpoms/build/target"
+echo "StrategoXT minified JAR: $DIR/buildpoms/minjar/target"

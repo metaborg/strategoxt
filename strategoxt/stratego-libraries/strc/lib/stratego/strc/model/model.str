@@ -127,9 +127,11 @@ strategies
   m-def-signature =
     try(Desugar)
     ; (  \ SDefT(f, xs, ys, s)      -> (f, <length>xs, <length>ys) \
+      <+ \ SDefP(f, xs, ys, s)      -> (f, <length>xs, <length>ys) \
       <+ \ ExtSDef(f, xs, ys)       -> (f, <length>xs, <length>ys) \
       <+ \ ExtSDefInl(f, xs, ys, s) -> (f, <length>xs, <length>ys) \
       <+ \ RDefT(f, xs, ys, s)      -> (f, <length>xs, <length>ys) \
+      <+ \ RDefP(f, xs, ys, s)      -> (f, <length>xs, <length>ys) \
       <+ \ AnnoDef(a*, def)         -> <m-def-signature> def\)
 
   is-external =
