@@ -1,0 +1,308 @@
+module pattern-matching-term-parameters
+
+imports libstratego-lib
+
+rules
+	
+	// Matching a single term
+	single-term-s(|"t1") = !"r1"
+	single-term-s(|"t2") = !"r2"
+	
+	// Matching a variable and a term
+	var-and-term-s(|x, "t1") = !x
+	var-and-term-s(|x, "t2") = !"r4"
+	
+	// Matching a wildcard
+	wildcard-s(|_) = !"r5"
+	
+	// Matching primitives
+	primitives-s(|1)   = !"r6"
+	primitives-s(|"1") = !"r7"
+	primitives-s(|1.0) = !"r8"
+	
+	// Matching with annotations
+	annotations-s(|"x"{"y"}) = !"r9"
+	annotations-s(|x{y}) = !y
+	
+	// Matching with @
+	at-s(|x@"x") = !x
+	
+	// Matching with application
+	appl-s(|<id>) = !"r10"
+	
+	// Matching with application
+	appl-many-s(|<id>, <id>) = !"r18"
+	
+	// Multi-match
+	multi-match-s(|"x", "y") = !"r11"
+	multi-match-s(|"y", "z") = !"r12"
+	
+	// Fallthrough match
+	fallthrough-s(|"x")    = !"r16"
+	fallthrough-s(|x)      = !"r17"
+	
+	// One, two, many
+	to-english(|1) = !"one"
+	to-english(|2) = !"two"
+	to-english(|_) = !"many"
+
+strategies
+	
+	// Matching a single term
+	single-term-r(|"t1"): _ -> "r1"
+	single-term-r(|"t2"): _ -> "r2"
+	
+	// Default match
+	rmatch1(|x): _ -> "r3"
+	
+	// Matching a variable and a term
+	var-and-term-r(|x, "t1"): _ -> x
+	var-and-term-r(|x, "t2"): _ -> "r4"
+	
+	// Matching a wildcard
+	wildcard-r(|_): _ -> "r5"
+	
+	// Matching primitives
+	primitives-r(|1):   _ -> "r6"
+	primitives-r(|"1"): _ -> "r7"
+	primitives-r(|1.0): _ -> "r8"
+	
+	// Matching with annotations
+	annotations-r(|"x"{"y"}): _ -> "r9"
+	annotations-r(|x{y}):     _ -> y
+	
+	// Matching with @
+	at-r(|x@"x"): _ -> x
+	
+	// Matching with application
+	appl-r(|<id>): _ -> "r10"
+	
+	// Multi-match
+	multi-match-r(|"x", "y"): _ -> "r11"
+	multi-match-r(|"y", "z"): _ -> "r12"
+	
+	// Match with where clause
+	where-clause-r(|"x"): _ -> r
+	where r := "r13"
+	
+	// Match with with clause
+	with-clause-r(|"x"): _ -> r
+	with r := "r14"
+	
+	// Match with where/with clauses
+	where-with-clauses-r(|"x"): _ -> r'
+	where r := "r15"
+	with  r' := r
+	
+	// Fallthrough match
+	fallthrough-r(|"x"): _ -> "r16"
+	fallthrough-r(|x):   _ -> "r17"
+
+strategies
+
+  main = 
+    test-suite(!"pattern-matching-term-parameters",
+      single-term-stest;
+      var-and-term-stest;
+      wildcard-stest;
+      primitives-stest;
+      annotations-stest;
+      at-stest;
+      appl-stest;
+	  appl-many-stest;
+      multi-match-stest;
+      fallthrough-stest;
+	  to-english-one-test;
+	  to-english-two-test;
+	  to-english-many-test;
+      single-term-rtest;
+      var-and-term-rtest;
+      wildcard-rtest;
+      primitives-rtest;
+      annotations-rtest;
+      at-rtest;
+      appl-rtest;
+      multi-match-rtest;
+      where-clause-rtest;
+      with-clause-rtest;
+      where-with-clauses-rtest;
+      fallthrough-rtest
+    )
+			      
+	single-term-stest = 
+	  	apply-test(!"single-term-stest"
+		      ,single-term-s(|"t2")
+		      ,!()
+		      ,!"r2"
+		      )
+			  
+	var-and-term-stest = 
+	  	apply-test(!"var-and-term-stest"
+		      ,var-and-term-s(|"x", "t1")
+		      ,!()
+		      ,!"x"
+		      )
+			  
+	wildcard-stest = 
+	  	apply-test(!"wildcard-stest"
+		      ,wildcard-s(|"t2")
+		      ,!()
+		      ,!"r5"
+		      )
+	
+	primitives-stest = 
+	  	apply-test(!"primitives-stest"
+		      ,primitives-s(|1.0)
+		      ,!()
+		      ,!"r8"
+		      )
+	
+	annotations-stest = 
+	  	apply-test(!"annotations-stest"
+		      ,annotations-s(|"y"{"z"})
+		      ,!()
+		      ,!"z"
+		      )
+	
+	at-stest = 
+	  	apply-test(!"at-stest"
+		      ,at-s(|"x")
+		      ,!()
+		      ,!"x"
+		      )
+	
+	appl-stest = 
+	  	apply-test(!"appl-stest"
+		      ,appl-s(|"y")
+		      ,!()
+		      ,!"r10"
+		      )
+		      
+	appl-many-stest =
+	  	apply-test(!"appl-many-1-stest"
+		      ,appl-many-s(|"x", "y")
+		      ,!()
+		      ,!"r18"
+		      )
+		      
+	multi-match-stest = 
+	  	apply-test(!"multi-match-stest"
+		      ,multi-match-s(|"y", "z")
+		      ,!()
+		      ,!"r12"
+		      )
+	
+	fallthrough-stest = 
+	  	apply-test(!"fallthrough-stest"
+		      ,fallthrough-s(|"q")
+		      ,!()
+		      ,!"r17"
+		      )
+		      
+	to-english-one-test = 
+	  	apply-test(!"to-english-one-test"
+		      ,to-english(|1)
+		      ,!()
+		      ,!"one"
+		      )
+		      
+	to-english-two-test = 
+	  	apply-test(!"to-english-two-test"
+		      ,to-english(|2)
+		      ,!()
+		      ,!"two"
+		      )
+		      
+	to-english-many-test = 
+	  	apply-test(!"to-english-many-test"
+		      ,to-english(|3)
+		      ,!()
+		      ,!"many"
+		      )
+			  
+	single-term-rtest = 
+	  	apply-test(!"single-term-rtest"
+		      ,single-term-r(|"t2")
+		      ,!()
+		      ,!"r2"
+		      )
+			  
+	var-and-term-rtest = 
+	  	apply-test(!"var-and-term-rtest"
+		      ,var-and-term-r(|"x", "t1")
+		      ,!()
+		      ,!"x"
+		      )
+			  
+	wildcard-rtest = 
+	  	apply-test(!"wildcard-rtest"
+		      ,wildcard-r(|"t2")
+		      ,!()
+		      ,!"r5"
+		      )
+	
+	primitives-rtest = 
+	  	apply-test(!"primitives-rtest"
+		      ,primitives-r(|1.0)
+		      ,!()
+		      ,!"r8"
+		      )
+	
+	annotations-rtest = 
+	  	apply-test(!"annotations-rtest"
+		      ,annotations-r(|"y"{"z"})
+		      ,!()
+		      ,!"z"
+		      )
+	
+	at-rtest = 
+	  	apply-test(!"at-rtest"
+		      ,at-r(|"x")
+		      ,!()
+		      ,!"x"
+		      )
+	
+	appl-rtest = 
+	  	apply-test(!"appl-rtest"
+		      ,appl-r(|"y")
+		      ,!"y"
+		      ,!"r10"
+		      )
+	
+	multi-match-rtest = 
+	  	apply-test(!"multi-match-rtest"
+		      ,multi-match-r(|"y", "z")
+		      ,!()
+		      ,!"r12"
+		      )
+	
+	where-clause-rtest = 
+	  	apply-test(!"where-clause-rtest"
+		      ,where-clause-r(|"x")
+		      ,!()
+		      ,!"r13"
+		      )
+			  
+	with-clause-rtest = 
+	  	apply-test(!"with-clause-rtest"
+		      ,with-clause-r(|"x")
+		      ,!()
+		      ,!"r14"
+		      )
+			  
+	
+	where-with-clauses-rtest = 
+	  	apply-test(!"where-with-clauses-rtest"
+		      ,where-with-clauses-r(|"x")
+		      ,!()
+		      ,!"r15"
+		      )
+			  
+	
+	fallthrough-rtest = 
+	  	apply-test(!"fallthrough-rtest"
+		      ,fallthrough-r(|"q")
+		      ,!()
+		      ,!"r17"
+		      )
+		      

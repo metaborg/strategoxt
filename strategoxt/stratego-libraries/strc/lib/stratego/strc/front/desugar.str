@@ -4,7 +4,7 @@
  * @author Eelco Visser 1998 - 2004
  */
 
-module desugar
+module stratego/strc/front/desugar
 
 imports 
   Stratego-Sugar
@@ -215,7 +215,7 @@ strategies // "with" strategy
   RecordName =
     ?RDefT(f, _, _, _)
   ; rules(WithContext := <conc-strings> ("rule '", f, "'"))
-
+    
   RecordName =
     ?SDefT(f, _, _, _)
   ; rules(WithContext := <conc-strings> ("strategy '", f, "'"))
@@ -286,6 +286,51 @@ rules
 
   Desugar :
     RDef(f, xs, r) -> RDefT(f, xs, [], r)
+    
+
+// Term parameters in rules and strategies
+
+  // Strategy definition with pattern matched term parameters.
+  Desugar :
+      SDefP(f, xs, xt, s) -> SDefT(f, xs, xt', s')
+      with  (xt', s') := <transform-P-to-T-s(|s)> xt
+    
+  // Rule definition with pattern matched term parameters.
+  Desugar :
+      RDefP(f, xs, xt, RuleNoCond(a, b)) -> RDefT(f, xs, xt', Rule(a, b, [w*]))
+      with  (xt', w*) := <transform-P-to-T-r> xt
+      
+  Desugar :
+      RDefP(f, xs, xt, Rule(a, b, r*)) -> RDefT(f, xs, xt', Rule(a, b, [w*, r*]))
+      where <is-list> r*
+      with  (xt', w*) := <transform-P-to-T-r> xt
+      
+  Desugar :
+      RDefP(f, xs, xt, Rule(a, b, r)) -> RDefT(f, xs, xt', Rule(a, b, [w*, WhereClause(r)]))
+      where <not(is-list)> r
+      with  (xt', w*) := <transform-P-to-T-r> xt
+            
+  // For a given term argument (except plain variables), returns a tuple (term, name).
+  transform-P-to-T-s(|s): xt -> (xt', s')
+  with  names := <map(add-name)> xt
+          ; xt' := <map(transform-term)> names
+          ; s' := <filter(match-term); seqs(|s)> names
+            
+  transform-P-to-T-r: xt -> (xt', w*)
+  with  names := <map(add-name)> xt
+          ; xt' := <map(transform-term)> names
+          ; w* := <filter(match-term-r)> names
+            
+  add-name: Var(n) -> (<id>, n)
+  add-name: _ -> (<id>, <new>)
+  transform-term: (_, n) -> DefaultVarDec(n)
+  match-term: (t, n) -> Where(Assign(t, Var(n))) where <not(?Var(_))>t
+  match-term-r: (t, n) -> WhereClause(Assign(t, Var(n))) where <not(?Var(_))>t
+  seqs(|s) = foldr(!s, MkSeq)
+
+  
+  
+  
 
 // dynamic rules
 
@@ -294,6 +339,8 @@ rules
 
   Desugar :
     RDec(f, ss) -> RDecT(f, ss, [])
+
+    	
 
 /**
  * Dynamic rules
@@ -350,6 +397,8 @@ rules
 
   Desugar :
     SDef(f, xs, s) -> SDefT(f, xs, [], s)
+  
+  // See also SDefP()
 
 // strategy calls
 
