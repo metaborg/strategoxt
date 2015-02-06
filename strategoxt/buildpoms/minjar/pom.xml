@@ -44,14 +44,18 @@
 										<exclude>start.class</exclude>
 										<exclude>COPYING</exclude>
 										<exclude>build.xml</exclude>
+										<exclude>Log4j*</exclude>
 
 										<exclude>META-INF/**/*</exclude>
 										<exclude>com/**/*</exclude>
 										<exclude>net/**/*</exclude>
 										<exclude>fj/**/*</exclude>
+										<exclude>javax/**/*</exclude>
 										<exclude>jdbm/**/*</exclude>
 										<exclude>jline/**/*</exclude>
 										<exclude>etc/**/*</exclude>
+										<exclude>org/aopalliance/**/*</exclude>
+										<exclude>org/apache/**/*</exclude>
 										<exclude>org/slf4j/**/*</exclude>
 										<exclude>org/metaborg/**/*</exclude>
 										<exclude>org/spoofax/**/*</exclude>
@@ -62,6 +66,7 @@
 										<exclude>org/strategoxt/lang/compat/stratego_rtg_compat/**/*</exclude>
 										<exclude>org/strategoxt/lang/compat/strc_compat/**/*</exclude>
 										<exclude>org/strategoxt/lang/parallel/**/*</exclude>
+										<exclude>rx/**/*</exclude>
 									</excludes>
 								</filter>
 							</filters>
