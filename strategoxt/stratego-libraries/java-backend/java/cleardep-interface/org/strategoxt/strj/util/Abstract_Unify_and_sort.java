@@ -18,35 +18,39 @@ public abstract class Abstract_Unify_and_sort extends AbstractPrimitive {
 		super(name, 0, 0);
 	}
 
-	protected abstract Comparator<IStrategoTerm> getComparator();
+	protected abstract Comparator<IStrategoTerm> getSortComparator();
+	protected Comparator<IStrategoTerm> getUnifyComparator() {
+		return getSortComparator();
+	}
 	
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
 		if (!Term.isTermList(arg0.current())) {
 			return false;
 		}
-		IStrategoList list = (IStrategoList) arg0.current();
+		final IStrategoList list = (IStrategoList) arg0.current();
 		
 		if (list.isEmpty()) {
 			return true;
 		}
 		
 		
-		ArrayList<IStrategoTerm> newList = new ArrayList<IStrategoTerm>(list.size());
+		final ArrayList<IStrategoTerm> newList = new ArrayList<IStrategoTerm>(list.size());
 		for (IStrategoTerm term : list) {
 			newList.add(term);
 		}
 		
-		Comparator<IStrategoTerm> comparator = this.getComparator();
 		
-		Collections.sort(newList, comparator);
+		Collections.sort(newList, this.getSortComparator());
 		
-		ArrayList<IStrategoTerm> singletonList = new ArrayList<IStrategoTerm>(newList.size());
+		final ArrayList<IStrategoTerm> singletonList = new ArrayList<IStrategoTerm>(newList.size());
 		singletonList.add(newList.get(0));
+		
+		final Comparator<IStrategoTerm> unifyComparator = this.getUnifyComparator();
 		
 		int index = 0;
 		for (int i = 1; i < newList.size(); i++) {
-			if (comparator.compare(newList.get(index), newList.get(i)) != 0) {
+			if (unifyComparator.compare(newList.get(index), newList.get(i)) != 0) {
 				singletonList.add(newList.get(i));
 				index = i;
 			}

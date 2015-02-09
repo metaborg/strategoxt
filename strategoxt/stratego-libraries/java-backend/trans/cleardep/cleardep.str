@@ -79,6 +79,10 @@ strategies
 	get-generated-rtree =
 		  get-generated-files
 		; fetch-elem(where(path-has-extension(|"rtree")))
+		
+	get-generated-ctree =
+		  get-generated-files
+		; fetch-elem(where(path-has-extension(|"ctree")))
 	
 	write-compilation-unit =
 		 ( where (

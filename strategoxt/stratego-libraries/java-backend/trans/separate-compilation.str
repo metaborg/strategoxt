@@ -6,6 +6,7 @@ imports separate-compilation/utils
 imports separate-compilation/process-deps
 imports separate-compilation/separate-compilation-options
 imports separate-compilation/fileutils
+imports separate-compilation/calculate-ctree
 
 signature
 	constructors
@@ -207,17 +208,20 @@ strategies
 				; strc-front-end2
 			
 				;  log(|Info(), ["Calculating transitive externals for ", work-unit])
+				
+				; where(
+					  calculate-ctree(|work-unit, circular-units) => ctree-file
+					; add-generated-file(|work-unit, AbsolutePath(ctree-file))
+				)
 				; where(
 					  calculate-transitive-externals(
 						  is-remove-overlays-from-externals
 						; !();MainModule
 						; get-stratego-source-file
-						; !(<id>, <map(get-stratego-source-file)> circular-units)
-						; elem
-						|work-unit, circular-units) => (rtree-file, signature-term) 
+						; <elem> (<id>, <map(get-stratego-source-file)> circular-units)
+						| work-unit, circular-units) => (rtree-file, signature-term) 
 					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
 					; set-interface-hash(|work-unit, signature-term) 
-				
 				)
 				
 				; log(|Notice(), ["Calling Backend for ", moduleName])

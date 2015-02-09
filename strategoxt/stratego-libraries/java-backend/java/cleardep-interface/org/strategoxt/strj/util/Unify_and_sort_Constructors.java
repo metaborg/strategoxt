@@ -13,7 +13,7 @@ public class Unify_and_sort_Constructors extends Abstract_Unify_and_sort {
 	}
 
 	@Override
-	protected Comparator<IStrategoTerm> getComparator() {
+	protected Comparator<IStrategoTerm> getSortComparator() {
 		return new Comparator<IStrategoTerm>() {
 
 			@Override
@@ -26,7 +26,7 @@ public class Unify_and_sort_Constructors extends Abstract_Unify_and_sort {
 				}
 				
 				int typeIndex = 1;
-				if (constructor1.equals("ExtOpDeclInj")) {
+				if (constructor1.equals("ExtOpDeclInj") || constructor1.equals("OpDeclInj")) {
 					typeIndex = 0;
 				}
 				
