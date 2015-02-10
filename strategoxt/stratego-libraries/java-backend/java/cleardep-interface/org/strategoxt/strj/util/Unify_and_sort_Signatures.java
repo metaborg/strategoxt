@@ -12,9 +12,22 @@ public class Unify_and_sort_Signatures extends Abstract_Unify_and_sort {
 		super("Unify_and_sort_Signatures");
 	}
 	
+	private IStrategoTerm unwrapAnnoDef(IStrategoTerm term) {
+		if (Term.tryGetConstructor(term).getName().equals("AnnoDef")) {
+			return term.getSubterm(1);
+		}
+		return term;
+	}
+	
 	private Comparator<IStrategoTerm> signatureComparator = new Comparator<IStrategoTerm>() {
 		@Override
 		public int compare(IStrategoTerm o1, IStrategoTerm o2) {
+			try {
+			// Ignore AnnoDefs for comparing: This is not a problem because for externals no problem
+		// because there are no AnnoDefs and SDefs will only be removed, if they are annotated by regular stratego annotations
+				// but AnnoDefs do not get such ones
+			o1 = unwrapAnnoDef(o1);
+			o2 = unwrapAnnoDef(o2);
 			String name1 = Term.asJavaString(Term.termAt(o1, 0));
 			String name2 = Term.asJavaString(Term.termAt(o2, 0));
 			
@@ -33,6 +46,11 @@ public class Unify_and_sort_Signatures extends Abstract_Unify_and_sort {
 			
 			int numTVarsComp = Integer.compare(numTVars1, numTVars2);
 			return numTVarsComp;
+			}catch (RuntimeException e) {
+				System.out.println("Failed for o1 " + o1);
+				System.out.println("Failed for o2 " + o2);
+				throw e;
+			}
 		}
 	};
 
