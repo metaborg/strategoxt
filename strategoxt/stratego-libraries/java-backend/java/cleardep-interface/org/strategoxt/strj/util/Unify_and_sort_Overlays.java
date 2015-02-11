@@ -13,7 +13,7 @@ public class Unify_and_sort_Overlays extends Abstract_Unify_and_sort {
 	}
 
 	@Override
-	protected Comparator<IStrategoTerm> getSortComparator() {
+	protected Comparator<IStrategoTerm> getComparator() {
 		return new Comparator<IStrategoTerm>() {
 
 			@Override
