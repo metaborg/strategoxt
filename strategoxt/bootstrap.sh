@@ -35,6 +35,8 @@ SKIP_TESTS=${INPUT_SKIP_TESTS:-"false"}
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+export MAVEN_OPTS="-Xmx2048m -Xss32m"
+export ANT_OPTS="-Xmx2048m -Xss32m"
 
 # Run Maven builds
 mvn \
