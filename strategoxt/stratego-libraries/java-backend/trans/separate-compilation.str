@@ -209,13 +209,12 @@ strategies
 			
 				; log(|Info(), ["Exporting externals for ", work-unit])
 				
-				/*; where(
+				; where(
 					  calculate-transitive-ctree(
 					      remove-overlays(|circular-units)
 					    | work-unit, circular-units) => ctree-file
 					; add-generated-file(|work-unit, AbsolutePath(ctree-file))
 				)
-				; log(|Info(), "ctree exported.")*/
 				; where(
 					  calculate-transitive-externals(
 						  remove-overlays(|circular-units)
@@ -223,7 +222,7 @@ strategies
 					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
 					; set-interface-hash(|work-unit, signature-term) 
 				)
-				; log(|Info(), "rtree exported.")
+				
 				; log(|Notice(), ["Calling Backend for ", moduleName])
 				// Remove Overlays for Backend, they are only important for externals
 				; \Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\
