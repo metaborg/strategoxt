@@ -6,31 +6,22 @@ imports separate-compilation/utils
 strategies
 
 	calculate-transitive-externals(remove-overlays|comp-unit, circular-units) =
-		  defs-to-external-defs
-		; merge-specifications-for-depending-units (get-generated-rtree,remove-overlays|comp-unit, circular-units )
-		; where(export-externals(|".rtree") => externals-file)
-		; externals-to-signature => signature-term
-		; !(externals-file, signature-term)
-		
-	
-	merge-specifications-for-depending-units(extract-spec-file-from-unit, remove-overlays|comp-unit, circular-units) =
-		  unpack-specification => local-spec
+		  defs-to-external-defs; unpack-specification => local-externals
 		; !circular-units
 		; mapconcat(get-all-module-dependencies)
 		; make-set
 		; !(<id>, circular-units)
 		; diff
-		; map(	(extract-spec-file-from-unit 
-					<+ (log(|Error(), ["Failed to get file for ", <id>]);fail)  )
-				; path-get-full-path
-				; ReadFromFile
-				; unpack-specification) => dep-externals
-		; foldr(!local-spec, merge-spec-content)
+		; map((get-generated-rtree <+ (log(|Error(), ["Failed to get rtree for ", <id>]);fail));path-get-full-path;ReadFromFile;unpack-specification) => dep-externals
+		; foldr(!local-externals, merge-rtrees)
 		; if remove-overlays
 			then \(cs,os,ss) -> (cs, [], ss)\
 			end
 		; unify-and-sort-externals
-		; pack-specification		
+		; pack-specification
+		; where(export-externals(|".rtree") => externals-file)
+		; externals-to-signature => signature-term
+		; !(externals-file, signature-term)
 	
 	
 	unpack-specification =
@@ -47,7 +38,7 @@ strategies
 		  ?(cs, os, ss)
 		; !Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
 
-	merge-spec-content =
+	merge-rtrees =
 		  ?((cs1, os1, ss1), (cs2, os2, ss2))
 		; !(<conc> (cs1,cs2), <conc>(os1, os2), <conc> (ss1, ss2))
 		

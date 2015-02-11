@@ -207,17 +207,18 @@ strategies
 				; log(|Notice(), ["Calling Frontend for ", moduleName])
 				; strc-front-end2
 			
-				; log(|Info(), ["Exporting externals for ", work-unit])
+				;  log(|Info(), ["Calculating transitive externals for ", work-unit])
 				
 				; where(
-					  calculate-transitive-ctree(
-					      remove-overlays(|circular-units)
-					    | work-unit, circular-units) => ctree-file
+					  calculate-ctree(|work-unit, circular-units) => ctree-file
 					; add-generated-file(|work-unit, AbsolutePath(ctree-file))
 				)
 				; where(
 					  calculate-transitive-externals(
-						  remove-overlays(|circular-units)
+						  is-remove-overlays-from-externals
+						; !();MainModule
+						; get-stratego-source-file
+						; <elem> (<id>, <map(get-stratego-source-file)> circular-units)
 						| work-unit, circular-units) => (rtree-file, signature-term) 
 					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
 					; set-interface-hash(|work-unit, signature-term) 
@@ -242,11 +243,6 @@ strategies
 			; !circular-units
 			}
 	 
-	remove-overlays(|circular-units) =
-  		  is-remove-overlays-from-externals
-		; !();MainModule
-		; get-stratego-source-file
-		; <elem> (<id>, <map(get-stratego-source-file)> circular-units)
 
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	
