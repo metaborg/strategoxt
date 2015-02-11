@@ -47,6 +47,7 @@ mvn \
 mvn \
   -f "$DIR/buildpoms/pom.xml" \
   -Dstrategoxt-skip-build="true" \
+  -Dstrategoxt-skip-assembly="true" \
   clean \
   $MAVEN_PHASE \
   $MAVEN_ARGS
