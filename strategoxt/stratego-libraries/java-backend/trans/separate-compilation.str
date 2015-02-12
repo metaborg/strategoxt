@@ -46,13 +46,15 @@ strategies
 		; map(
 			  !(<id>,<id>)
 			;(id,get-config)
-		)
+		) => value-list
 		; create-compiler-options => options
 		; rules(InitialCompilerConfig : _ -> options)
+		; rules(InitialCompilerConfigList : _ -> value-list)
+		
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-	{| MainModule, InitialCompilerConfig :
+	{| MainModule, InitialCompilerConfig, InitialCompilerConfigList :
 		  where(collect-config)
 		; where(fileName := <\FILE(s) -> s\>) 
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file

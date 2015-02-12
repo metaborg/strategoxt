@@ -49,7 +49,7 @@ strategies
 		if is-main-module-contained(|circular-units)
 		then
 			log(|Info(), "Main mod contained");
-			if InitialCompilerConfig;not(fetch-elem(?("--library",_)))
+			if InitialCompilerConfigList;debug;not(fetch-elem(?("--library",_)))
 				then where(<debug;set-config> ("-m", <get-config <+ !"main"> "-m"))
 			end
 		else
