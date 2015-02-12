@@ -58,14 +58,14 @@ strategies
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
 		; !AbsolutePath(fileName) => absolute-file
 		; pack-include-path
+		; log(|Info(), ["Relativize path from ", <id>])
 		; fetch-elem(\IncludeDir(d) -> <path-relativize(| AbsolutePath(d))>  absolute-file\)
-	//	; path-relativize (|
-	//		<pack-include-path; fetch-elem(\IncludeDir(d) -> AbsolutePath(d)\)> )
+		; debug
 		; if complete-rebuild 
 			then create-compilation-unit(|<id>)
 			else read-or-create-compilation-unit(|<id>)
 		  end => main-compilation-unit
-		; where(rules(MainModule : () -> main-compilation-unit))
+		; where(rules(MainModule :  _ -> main-compilation-unit))
 		; pack-process-options
 	// But the output directory in the search path to find generated rtrees
 		; where({i , is:
@@ -209,11 +209,7 @@ strategies
 				;  log(|Info(), ["Calculating transitive externals for ", work-unit])
 				; where(
 					  calculate-transitive-externals(
-						  is-remove-overlays-from-externals
-						; !();MainModule
-						; get-stratego-source-file
-						; !(<id>, <map(get-stratego-source-file)> circular-units)
-						; elem
+						  and(is-remove-overlays-from-externals, is-main-module-contained(|circular-units))
 						|work-unit, circular-units) => (rtree-file, signature-term) 
 					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
 					; set-interface-hash(|work-unit, signature-term) 
@@ -225,7 +221,7 @@ strategies
 				; \Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\
 				; back-end(|circular-units, externals)
 				; where(<set-config> ("-la", libs))
-			| working-package,working-output,fileName,moduleName)}
+			| working-package,working-output,fileName,moduleName, circular-units)}
 			;{compiled-module-name:
 			  !x
 			; ?(compiled-module-name, _, _ ,_,_)
