@@ -9,26 +9,8 @@ strategies
 
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 
-	fold-on-imports(import-predicate, import-transform, collect-transform) =
-		{| CollectedImports:
-		let
-			transform-ast = bottomup(
-				(?Imports(<id>);mapconcat(pack-expand-import);map(\s -> Import(s)\)) <
-				  filter(
-					if import-predicate
-						then try(where(rules(CollectedImports := [<collect-transform> | <CollectedImports>])));import-transform
-						else id;log(|Info(), ["Import predicate failed for ", <id>])
-					end)
-				; !Imports(<id>) + id) 
-			collect-imports = collect-all(where(import-predicate))
-		in	  id => Module(name, body)
-			; !Module(name, body) => ast
-			; rules(CollectedImports := [])
-			; !ast
-			; transform-ast
-			; !(<id>, <CollectedImports;reverse>)
-		end
-		|}
+	is-main-module-contained(|circular-units) =
+		where(<elem> (<MainModule;get-stratego-source-file>, <map(get-stratego-source-file)> circular-units))
 
 	transform-imports-and-move-to-front (import-predicate, import-transform, collect-transform) =
 		  ?Module(name, content)
@@ -62,16 +44,25 @@ strategies
 		  import-get-file
 		; has-extension(|"str")
 		
-	save-and-set-options(s|working-package,working-output,filename, modulename) = 
+	save-and-set-options(s|working-package,working-output,filename, modulename, circular-units) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
 		where(main := <get-config <+ !()> "-m");
-		where(	<rm-config> "-m");
 		where(	<set-config> ("-i",filename));
 		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;jify;string-char-replace(|'/','.');string-char-replace(|'-','_')> modulename]));
 		where(	<set-config>("-o", <to-java-compilation-abs-path(|working-output); (mkdirs <+ err(|"Creating dir failed"))> modulename));
 		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(|working-output)> modulename));
 		where(  <set-config> ("--library" ,""));
+		if is-main-module-contained(|circular-units)
+		then
+			if InitialCompilerConfig;not(fetch-elem(?("--library",_)))
+				then where(<set-config> ("-m", <get-config <+ !"main"> "-m"))
+			end
+		else
+			where(	<rm-config> "-m")
+		end;
+			
 		s;
+		
 		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout));
 		where(<if not(?()) then <set-config> ("-m", <id>) end> main )
 		
