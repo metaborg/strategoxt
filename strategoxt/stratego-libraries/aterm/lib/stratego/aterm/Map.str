@@ -1,12 +1,13 @@
 /**
  * @author  Martin Bravenboer
  */
-module Map
+module stratego/aterm/Map
 imports
   libstratego-lib	
   libstratego-xtc
 
 strategies
+
 
   io-map-aterm =
     ?[_, prg | args]
@@ -28,5 +29,4 @@ strategies
           ; <call(|Some(fd), None(), None())> (prg, args)
         })
       )
-
     ; <exit> 0
