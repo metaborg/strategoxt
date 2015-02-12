@@ -18,6 +18,16 @@ import org.sugarj.common.cleardep.BuildSchedule.ScheduleMode;
 import org.sugarj.common.cleardep.mode.DoCompileMode;
 
 public class ClearDep_BuildSchedule_createBuildSchedule extends AbstractPrimitive {
+	
+	private static class UnableToExtractDependenciesException extends RuntimeException {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -591911559487458856L;
+
+		public UnableToExtractDependenciesException() {
+		}
+	}
 
 	public ClearDep_BuildSchedule_createBuildSchedule() {
 		super("ClearDep_BuildSchedule_createBuildSchedule", 1, 1);
@@ -56,6 +66,9 @@ public class ClearDep_BuildSchedule_createBuildSchedule extends AbstractPrimitiv
 			 BuildScheduleContainer container = new
 			 BuildScheduleContainer(schedule);
 			 arg0.setCurrent(container);
+		} catch (UnableToExtractDependenciesException e) {
+			//Wrong module names
+			return false;
 		} catch (Exception e) {
 			System.out.println(java.util.Arrays.toString(e.getStackTrace()));
 			e.printStackTrace();
@@ -85,7 +98,7 @@ public class ClearDep_BuildSchedule_createBuildSchedule extends AbstractPrimitiv
 			try {
 				boolean success = extractStrategy.evaluate(context);
 				if (!success) {
-					throw new IllegalArgumentException();
+					throw new UnableToExtractDependenciesException();
 				}
 				if (!Term.isTermList(context.current())) {
 					throw new IllegalArgumentException();
