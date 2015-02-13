@@ -254,9 +254,10 @@ rules
   java-main-methods :
     _ ->
     class-body-dec* |[
-      public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
-        return null;
-      }
+    // Not possible for separate compilation with linking
+    //  public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
+    //    return null;
+    //  }
     ]|
     where
       <get-config> "--library"
@@ -307,10 +308,11 @@ rules
          context.getIOAgent().closeAllFiles();
        }
      }
-     
-     public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
-       return x_main.instance;
-     }
+   
+   // Not possible for separate compilation with linking
+   //  public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
+   //    return x_main.instance;
+   //  }
     ]|
     where
       <get-config> "-m" <+ not(<get-config> "--library")

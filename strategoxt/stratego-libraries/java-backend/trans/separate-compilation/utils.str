@@ -44,18 +44,19 @@ strategies
 		  import-get-file
 		; has-extension(|"str")
 		
-	save-and-set-options(s|working-package,working-output,filename, modulename, circular-units) = 
+	save-and-set-options(s, generate-main|working-package,working-output,filename, modulename, circular-units) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
 		where(main := <get-config <+ !()> "-m");
 		where(	<set-config> ("-i",filename));
 		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;jify;string-char-replace(|'/','.');string-char-replace(|'-','_')> modulename]));
-		where(	<set-config>("-o", <to-java-compilation-abs-path(|working-output); (mkdirs <+ err(|"Creating dir failed"))> modulename));
+		where(	<set-config> ("-o", <to-java-compilation-abs-path(|working-output); (mkdirs <+ err(|"Creating dir failed"))> modulename));
 		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(|working-output)> modulename));
 		where(  <set-config> ("--library" ,""));
 		if is-main-module-contained(|circular-units)
 		then
-			if InitialCompilerConfig;not(fetch-elem(?("--library",_)))
-				then where(<set-config> ("-m", <get-config <+ !"main"> "-m"))
+			log(|Info(), "Main mod contained");
+			if and(generate-main, InitialCompilerConfigList;debug;not(fetch-elem(?("--library",_))))
+				then where(<debug;set-config> ("-m", <get-config <+ !"main"> "-m"))
 			end
 		else
 			where(	<rm-config> "-m")

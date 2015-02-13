@@ -47,13 +47,15 @@ strategies
 		; map(
 			  !(<id>,<id>)
 			;(id,get-config)
-		)
+		) => value-list
 		; create-compiler-options => options
 		; rules(InitialCompilerConfig : _ -> options)
+		; rules(InitialCompilerConfigList : _ -> value-list)
+		
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-	{| MainModule, InitialCompilerConfig :
+	{| MainModule, InitialCompilerConfig, InitialCompilerConfigList, CompilationUnitCache :
 		  where(collect-config)
 		; where(fileName := <\FILE(s) -> s\>) 
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
@@ -61,10 +63,12 @@ strategies
 		; pack-include-path
 		; log(|Info(), ["Relativize path from ", <id>])
 		; fetch-elem(\IncludeDir(d) -> <path-relativize(| AbsolutePath(d))>  absolute-file\)
+		; path-remove-extension
+		; ?RelativePath(_,<id>)
 		; debug
 		; if complete-rebuild 
-			then create-compilation-unit(|<id>)
-			else read-or-create-compilation-unit(|<id>)
+			then create-compilation-unit-for-module(|<id>)
+			else read-or-create-compilation-unit-for-module(|<id>)
 		  end => main-compilation-unit
 		; where(rules(MainModule :  _ -> main-compilation-unit))
 		; pack-process-options
@@ -217,9 +221,10 @@ strategies
 				; log(|Notice(), ["Calling Backend for ", moduleName])
 				// Remove Overlays for Backend, they are only important for externals
 				; \Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\
+				
 				; back-end(|circular-units, externals)
 				; where(<set-config> ("-la", libs))
-			| working-package,working-output,fileName,moduleName, circular-units)}
+			, <tmap(get-stratego-source-file);eq> (<MainModule>, work-unit) | working-package,working-output,fileName,moduleName, circular-units)}
 			;{compiled-module-name:
 			  !x
 			; ?(compiled-module-name, _, _ ,_,_)
