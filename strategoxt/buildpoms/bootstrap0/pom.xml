@@ -17,37 +17,25 @@
     <relativePath>../</relativePath>
   </parent> -->
   
-  <scm>
-     <developerConnection>scm:git:https://github.com/lichtemo/strategoxt.git</developerConnection>
-  </scm>
-
    <build>
       <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-scm-plugin</artifactId>
-            <version>1.9.2</version>
-            
-			<executions>
-			      <execution>
-			         <phase>compile</phase>
-			         <goals>
-			            <goal>checkout</goal>
-			         </goals>
-		             <configuration>
-		                 <connectionType>developerConnection</connectionType>
-		                 <scmVersion>separate-compilation</scmVersion>
-		                 <scmVersionType>branch</scmVersionType>
-		 				 <checkoutDirectory>build</checkoutDirectory>
-		             </configuration>
-			      </execution>
-			  </executions>
-          </plugin>
 		  <!-- This plugin compiles the first version of the separate compiler with the global compiler to make it available to bootstrap this compiler-->
 		  <plugin>
 		    <artifactId>exec-maven-plugin</artifactId>
 		    <groupId>org.codehaus.mojo</groupId>
 		    <executions>
+				<execution>
+					<id>Checkout intermediate branch</id>
+					<phase>compile</phase>
+					<goals>
+						<goal>exec</goal>
+					</goals>
+					<configuration>
+						<workingDirectory>.</workingDirectory>
+						<executable>git</executable>
+						<commandlineArgs>clone --depth 1 --branch separate-compilation https://github.com/lichtemo/strategoxt.git build</commandlineArgs>
+					</configuration>
+				</execution>
 				<execution>
 					<id>Init submodules</id>
 					<phase>compile</phase>
