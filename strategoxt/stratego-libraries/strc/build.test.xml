@@ -70,6 +70,8 @@
 				<fileset dir="${test-dir}" includes="test??.str, test???.str" />
 			</path>
 			<sequential>
+				<local name ="testfile"/>
+				<local name ="testmodule"/>
 				<log message="Testing @{test-source}" />
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
@@ -79,18 +81,21 @@
 				<trycatch property="failure">
 					<try>
 						<!-- do the test -->
+						<echo>Test file @{test-source}</echo>
 						<echo>Input path ${test-dir} input module ${testmodule}</echo>
 						<echo>STRJ under test is ${strj-sut}</echo>
-						<strj-workingdir input-path="${test-dir}" input-module="${testfile}" strj="${strj-sut}" output="${test-gen}/org/test/" package="org.test" workdir="${test-dir}">
+						<strj-workingdir input-path="${test-dir}" input-module="${testfile}" strj="${strj-sut}" output="${test-gen}/org/test/" package="org.test" workdir="${test-dir}" generate-stdlib-import="false">
 							<strjargs>
-								<arg value="-la" />
-								<arg value="stratego-lib" />
 								<arg value="-I" />
 								<arg value="${dep.libstratego-lib}" />
 								<arg value="-I" />
-								<arg value="${dep.stratego-front}" />
-								<arg value="-I" />
 								<arg value="${dep.libsslcompat-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.java-front-15}" />
+								<arg value="-I" />
+								<arg value="${dep.stratego-front}" />
+								<arg value="--complete-rebuild" />
+								
 							</strjargs>
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
@@ -98,15 +103,16 @@
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" /> 
 					</try>
-
+					
 					<catch>
 						<fail message="Compiler test of @{test-source}: ${failure}" />
 					</catch>
 
 					<finally>
-					<!--	<delete dir="${test-gen}" />
-						<delete dir="${test-gen-bin}" /> -->
+						
 					</finally>
 				</trycatch>
 			</sequential>
@@ -153,6 +159,8 @@
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" />
 					</try>
 
 					<catch>
@@ -160,8 +168,7 @@
 					</catch>
 
 					<finally>
-						<delete dir="${test-gen}" />
-						<delete dir="${test-gen-bin}" />
+						
 					</finally>
 				</trycatch>
 			</sequential>

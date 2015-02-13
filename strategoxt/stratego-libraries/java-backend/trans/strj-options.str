@@ -25,7 +25,7 @@ strategies
   ; <set-config> ("-O", 0)
   ; <set-config> ("-I", [])
   ; <set-config> ("--no-concrete-syntax-externals", 1)
-  ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib"])
+  ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib_posix_xsi"])
  
   strj-parse-options =
     with(
