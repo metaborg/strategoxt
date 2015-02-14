@@ -78,7 +78,7 @@
 			<target name="all" />
 		</subant>
 	</target>
-	
+
 	<target name="clean" depends="clean-syntax, clean-libraries">
 		<delete dir=".cache" />
 	</target>
@@ -104,7 +104,7 @@
 		<delete dir="${subdists-install-prefix}" />
 		<delete dir="${bin}" />
 	</target>
-				
+
 	<target name="jar" depends="build">
 		<mkdir dir="${bin}" />
 		<jar destfile="${bin}/strategoxt.jar" manifest="stratego-libraries/java-backend/java/META-INF/MANIFEST.MF" update="false">
@@ -131,7 +131,7 @@
 			<fileset dir="${subdists-install-prefix}" includes="**/*" />
 		</copy>
 		<copy todir="${install-location}" verbose="true">
-			<fileset dir="${baseline}/share/strategoxt" includes="macosx/*, linux/*, build-lib/*" />
+			<fileset dir="${baseline}/share/strategoxt" includes="macosx/*, linux/*, cygwin/*, build-lib/*" />
 		</copy>
 		<copy todir="${install-prefix}/share" verbose="true">
 			<fileset dir="${baseline}/share" includes="sdf-library/**/*" />
