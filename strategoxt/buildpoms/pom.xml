@@ -56,6 +56,17 @@
         <strategoxt-nativepath>share/strategoxt/macosx</strategoxt-nativepath>
       </properties>
     </profile>
+    <profile>
+      <id>windows-os-profile</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <strategoxt-nativepath>share/strategoxt/cygwin</strategoxt-nativepath>
+      </properties>
+    </profile>
   </profiles>
 
   <build>
