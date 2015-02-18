@@ -9,6 +9,10 @@
   <artifactId>strategoxt-distrib-bootstrap0</artifactId>
   <version>1.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  
+  <modules>
+  	    <module>build_initial/strategoxt/build-pom.xml</module>
+  </modules>
 
 <!--  <parent>
     <groupId>org.metaborg</groupId>
@@ -17,73 +21,6 @@
     <relativePath>../</relativePath>
   </parent> -->
   
-   <build>
-      <plugins>
-		  <!-- This plugin compiles the first version of the separate compiler with the global compiler to make it available to bootstrap this compiler-->
-		  <plugin>
-		    <artifactId>exec-maven-plugin</artifactId>
-		    <groupId>org.codehaus.mojo</groupId>
-		    <executions>
-				<execution>
-					<id>Checkout intermediate branch</id>
-					<phase>compile</phase>
-					<goals>
-						<goal>exec</goal>
-					</goals>
-					<configuration>
-						<workingDirectory>.</workingDirectory>
-						<executable>git</executable>
-						<commandlineArgs>clone --depth 1 --branch separate-compilation https://github.com/lichtemo/strategoxt.git build</commandlineArgs>
-					</configuration>
-				</execution>
-				<execution>
-					<id>Init submodules</id>
-					<phase>compile</phase>
-					<goals>
-						<goal>exec</goal>
-					</goals>
-					<configuration>
-						<workingDirectory>build</workingDirectory>
-						<executable>git</executable>
-						<commandlineArgs>submodule update --init --recursive</commandlineArgs>
-					</configuration>
-				</execution>
-		        <execution>
-		        	<id>Build prebuild compiler</id>
-		        	<phase>compile</phase>
-		        	<goals>
-		         	   <goal>exec</goal>
-		        	</goals>
-		        	<configuration>
-				 	   <workingDirectory>build/strategoxt/</workingDirectory>
-		          	   <executable>${basedir}/build/strategoxt/build.sh</executable>
-				  	   <commandlineArgs>-t</commandlineArgs>
-		      		</configuration>
-		      	</execution>
-		    </executions>
-		  </plugin>
-		  <plugin>
-			  <artifactId>maven-clean-plugin</artifactId>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <executions>
-				  <execution>
-					  <id>Cleaning prebuild repository</id>
-					  <phase>clean</phase>
-					  <goals>
-						  <goal>clean</goal>
-					  </goals>
-					  <configuration>
-						  <filesets>
-							  <fileset>
-								  <directory>build</directory>
-							  </fileset>
-						  </filesets>
-					  </configuration>
-				  </execution>
-			  </executions>
-		  </plugin>
-      </plugins>
-    </build>
 
   <properties>
     <strategoxt-baseline-version>1.3.0</strategoxt-baseline-version>

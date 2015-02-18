@@ -2,3 +2,7 @@
 	path = strategoxt/syntax/java-front
 url=https://github.com/lichtemo/java-front.git
 	branch = java-bootstrap
+[submodule "strategoxt/buildpoms/bootstrap0/build_initial"]
+	path = strategoxt/buildpoms/bootstrap0/build_initial
+	url = https://github.com/lichtemo/strategoxt.git
+	branch = separate-compilation
