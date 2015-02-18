@@ -104,8 +104,8 @@
         <dependencies>
           <dependency>
             <groupId>org.metaborg</groupId>
-            <artifactId>strategoxt-jar</artifactId>
-            <version>0.1</version>
+            <artifactId>${strategoxt-baseline-id}</artifactId>
+            <version>${strategoxt-baseline-version}</version>
             <type>jar</type>
             <scope>system</scope>
             <systemPath>${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar</systemPath>
@@ -120,6 +120,9 @@
             <phase>clean</phase>
             <configuration>
               <target>
+				<property 
+					name ="basedir"
+					value="${basedir}"/>
                 <property
                   name="baseline"
                   value="${strategoxt-baseline-location}" />
