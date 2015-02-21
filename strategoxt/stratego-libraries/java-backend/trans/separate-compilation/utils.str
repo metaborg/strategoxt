@@ -55,8 +55,8 @@ strategies
 		if is-main-module-contained(|circular-units)
 		then
 			log(|Info(), "Main mod contained");
-			if and(generate-main, InitialCompilerConfigList;debug;not(fetch-elem(?("--library",_))))
-				then where(<debug;set-config> ("-m", <get-config <+ !"main"> "-m"))
+			if and(generate-main, InitialCompilerConfigList;not(fetch-elem(?("--library",_))))
+				then where(<set-config> ("-m", <get-config <+ !"main"> "-m"))
 			end
 		else
 			where(	<rm-config> "-m")

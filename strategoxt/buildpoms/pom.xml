@@ -24,6 +24,8 @@
     <strategoxt-baseline-version>${metaborg-version}</strategoxt-baseline-version>
     <strategoxt-baseline-id>strategoxt-distrib</strategoxt-baseline-id>
 
+    <strategoxt-jar-artifact-id>strategoxt-jar</strategoxt-jar-artifact-id>
+	<strategoxt-jar-artifact-id-version>${strategoxt-baseline-version}</strategoxt-jar-artifact-id-version>
     <strategoxt-baseline-location>${project.build.directory}/baseline</strategoxt-baseline-location>
     <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
     <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
@@ -64,6 +66,28 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
       </plugin>
+	  
+	  <plugin>
+	      <artifactId>maven-clean-plugin</artifactId>
+	      <configuration>
+	        <filesets>
+	          <fileset>
+	            <directory>${strategoxt-baseline-location}</directory>
+	            <followSymlinks>false</followSymlinks>
+	          </fileset>
+	        </filesets>
+	      </configuration>
+		  <executions>
+	          <execution>
+	            <id>clean-baseline-</id>
+	            <phase>clean</phase>
+	            <goals>
+	              <goal>clean</goal>
+	            </goals>
+	          </execution>
+		  </executions>
+	    </plugin>
+	  
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -97,15 +121,16 @@
           </execution>
         </executions>
       </plugin>
-
+	  
+	 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
           <dependency>
             <groupId>org.metaborg</groupId>
-            <artifactId>strategoxt-jar</artifactId>
-            <version>0.1</version>
+            <artifactId>${strategoxt-jar-artifact-id}</artifactId>
+            <version>${strategoxt-jar-artifact-id-version}</version>
             <type>jar</type>
             <scope>system</scope>
             <systemPath>${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar</systemPath>

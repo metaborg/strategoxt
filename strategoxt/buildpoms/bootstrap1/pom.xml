@@ -20,7 +20,8 @@
   <properties>
     <strategoxt-baseline-version>1.3.0-SNAPSHOT</strategoxt-baseline-version>
     <strategoxt-baseline-id>strategoxt-distrib-separate-compilation-prebuild</strategoxt-baseline-id>
-    <strategoxt-build-location>${basedir}/../../</strategoxt-build-location>
+    <strategoxt-jar-artifact-id>strategoxt-jar-prebuild</strategoxt-jar-artifact-id>
+	<strategoxt-build-location>${basedir}/../../</strategoxt-build-location>
     <strategoxt-assembly-location>${basedir}/../assembly.xml</strategoxt-assembly-location>
   </properties>
 
