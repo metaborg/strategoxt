@@ -45,7 +45,7 @@ strategies
   ; <exit> 1
   
   
-  strj-back-end(|comp-units, externals) =
+  strj-back-end(|comp-units) =
   	  try(mark-always-needed(|<get-config> "-m", 0, 0))
 	; strc-output-frontend
 	; s2j
