@@ -3,8 +3,8 @@ package org.strategoxt.lang.compat.stratego_rtg_compat;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.RegisteringStrategy;
+import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.StrategyCollector;
 
 /**
