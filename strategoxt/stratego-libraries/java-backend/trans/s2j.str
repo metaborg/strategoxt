@@ -59,13 +59,12 @@ strategies
  
 rules
     
-  s2j(|externals) = 
-  {|Externals, IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
+  s2j = 
+  {|IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
 	  with(
         s2j-init-options
       ; record-main-classname
       )
-	; where(rules(Externals := externals))
     ; log-timed(
         backend-simplify
       | "Backend preprocessing succeeded", 1
@@ -130,7 +129,6 @@ rules
      import java.util.ArrayList;
      import java.lang.ref.WeakReference;
 	 
-	 ~import-dec*:ext-imports
 //	 ~import-dec*:imports
          
      @SuppressWarnings("all")
@@ -203,7 +201,6 @@ rules
       <list-loop(try(JavaTranslate))> ops
     ; <list-loop(try(JavaTranslate))> defs
     ; imports       := <java-imports>
-    ; ext-imports   := <external-imports>
     ; x_name        := <MainClassName>
     ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config;dollars-for-capitals> "-p"; ]| <+ !None()>
@@ -231,11 +228,6 @@ rules
   ; def-inits     := <bagof-DefInit>
   ; cnst-decls    := <bagof-ConstDecl>
   ; cnst-inits    := <bagof-ConstInit; concat; reverse>
-  
-  external-imports =
-    <get-config <+ ![]> "--external-import"
-    ; make-set
-    ; map(java-import)
   
   java-imports =
     <get-config> "-la-init"
@@ -342,22 +334,11 @@ rules
       }
     ]|
     with
-	  instances* := <conc> (<java-get-external-strategy-instances>, <java-get-internal-strategy-instances> defs)
+	  instances* := <java-get-strategy-instances> defs
     ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
 	; x_name        := <MainClassName>
 
-  java-get-external-strategy-instances =
-	  Externals
-	; filter({n,s,t:
-		  ?ExtSDef(n,s,t)
-		; !(<jify;dollars-for-capitals> n, "_", <length;int-to-string > s, "_", <length;int-to-string > t)
-		; conc-strings
-		; where(not(!(<id>, []); can-bind-static))
-		; !SDefT(<id>, (), (), ())
-		})
-	; map(java-library-instance)
-
-  java-get-internal-strategy-instances =
+  java-get-strategy-instances =
      filter(java-library-instance-qualified)
 
   java-library-initializer-dependent-libraries =
