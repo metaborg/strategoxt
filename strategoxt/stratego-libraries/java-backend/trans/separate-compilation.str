@@ -196,10 +196,7 @@ strategies
 				; log(|Notice(), ["Import transformation for ", moduleName])
 				; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
 			
-				// Find declared externals, front end does not treat them specially
-				// But we need to do in the backend
 				; !merged-ast
-				; collect-all(?ExtSDef(_,_,_)) => externals
 				; !IncludeAST(merged-ast,fileName)
 
 				; pack-stratego(|<pack-include-path>) => (files, spec)
@@ -222,7 +219,7 @@ strategies
 				// Remove Overlays for Backend, they are only important for externals
 				; \Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\
 				
-				; back-end(|circular-units, externals)
+				; back-end(|circular-units)
 				; where(<set-config> ("-la", libs))
 			, <tmap(get-stratego-source-file);eq> (<MainModule>, work-unit) | working-package,working-output,fileName,moduleName, circular-units)}
 			;{compiled-module-name:

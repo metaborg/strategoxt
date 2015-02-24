@@ -34,15 +34,6 @@ rules
       end
     , !"-la <name>         Include library in package <name>"
     )
-  + ArgOption(
-      "--external-import"
-    , if is-substring(!"/") + is-substring(!"\\") then
-        warn(|"Ignoring library import: must be a Java package name")
-      else
-        <post-extend-config> ("--external-import", [<id>] ); !()
-      end
-    , !"--external-import  An additional package were external strategies are located"
-    )
   + Option(
       "--library" + "--lib"
     , <set-config> ("--library", ()); !()
