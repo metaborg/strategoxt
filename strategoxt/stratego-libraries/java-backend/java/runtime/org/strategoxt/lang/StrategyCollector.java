@@ -2,29 +2,27 @@ package org.strategoxt.lang;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.strategoxt.lang.linking.StrategyExecutor;
-import org.strategoxt.lang.linking.StrategyExecutor2;
-import org.strategoxt.lang.linking.StrategyExecutor3;
-import org.strategoxt.lang.linking.StrategyExecutor4;
+import org.strategoxt.lang.LibraryInitializer.InitializerSetEntry;
 import org.strategoxt.lang.linking.StrategyExecutorBuilder;
 
 public class StrategyCollector {
 
 	private Map<String, List<Strategy>> strategyImplementators;
-	//private Map<String, Map<String, Strategy>> specialImplementators;
-	
 	
 	private Map<String, Strategy> strategyExecutors;
 	
 	private Map<String, Map<Strategy, Strategy>> specialExecutors;
+	
+	private Set<InitializerSetEntry> allInitializers;
 
 	public StrategyCollector() {
 		this.strategyImplementators = new HashMap<String, List<Strategy>>();
@@ -32,6 +30,39 @@ public class StrategyCollector {
 		
 		this.strategyExecutors = new HashMap<String, Strategy>();
 		this.specialExecutors = new HashMap<String,Map<Strategy, Strategy>>();
+		this.allInitializers = new HashSet<LibraryInitializer.InitializerSetEntry>();
+	}
+	
+	public void addLibraryInitializers(Collection<InitializerSetEntry> initializers) {
+		allInitializers.addAll(initializers);
+		
+	}
+	
+	public void collectImplementators() {
+		System.out.println("Initialize with " + allInitializers);
+	for (InitializerSetEntry initializer : allInitializers) {
+		initializer.initializer.registerImplementators(this);
+	}
+	}
+	public void initializeLibraries(Context context) {
+	for (InitializerSetEntry initializer : allInitializers) {
+		initializer.initializer.initializeLibrary(context);
+	}
+	}
+	
+	public void bindExecutors() {
+		RuntimeException lastE = null;
+		for (InitializerSetEntry initializer : allInitializers) {
+			try {
+			initializer.initializer.bindExecutors(this);
+			}catch (RuntimeException e) {
+				System.err.println(e.getMessage());
+				lastE = e;
+			}
+		}
+		if(lastE != null) {
+			throw lastE;
+		}
 	}
 	
 	public Set<String> getAvailableStrategyNames() {
@@ -68,7 +99,8 @@ public class StrategyCollector {
 		}
 		final Strategy specialExecutor = executorMap.get(requester);
 		if (specialExecutor == null) {
-			System.out.println("Warning: A strategy with name " + name + " requests a special executor but no available.");
+			System.out.println("Warning: A strategy with name " + name + " requests a special executor but no available for request " + requester +".");
+			System.out.println("Executor map is:" +executorMap);
 			return getStrategyExecutor(name);
 		}
 		return specialExecutor;

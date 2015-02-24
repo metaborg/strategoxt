@@ -4,6 +4,7 @@ import static org.strategoxt.lang.Term.NO_STRATEGIES;
 import static org.strategoxt.lang.Term.NO_TERMS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.interpreter.util.IAsyncCancellable;
 import org.spoofax.terms.TermFactory;
+import org.strategoxt.lang.LibraryInitializer.InitializerSetEntry;
+import org.strategoxt.lang.compat.CompatLibraryInitializer;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
 
@@ -125,6 +128,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
     
     public void setStrategyCollector(StrategyCollector strategyCollector) {
 		this.strategyCollector = strategyCollector;
+		this.strategyCollector.addLibraryInitializers(Arrays.asList(new InitializerSetEntry(new CompatLibraryInitializer())));
 	}
 
     public StrategyCollector getStrategyCollector() {

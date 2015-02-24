@@ -47,8 +47,9 @@ public abstract class LibraryInitializer {
 	
 	public final void initialize(Context context) {
 		StrategyCollector c = new StrategyCollector();
-		this.initialize(c, context);
 		context.setStrategyCollector(c);
+		this.initialize(c, context);
+		
 	}
 	
 	public final void registerInterop(final IContext context, final Context compiledContext, final VarScope varScope) {
@@ -69,8 +70,8 @@ public abstract class LibraryInitializer {
 	 * @author moritzlichter
 	 *
 	 */
-	private static class InitializerSetEntry {
-		private LibraryInitializer initializer;
+	public static class InitializerSetEntry {
+		public LibraryInitializer initializer;
 
 		public InitializerSetEntry(LibraryInitializer initializer) {
 			super();
@@ -110,35 +111,23 @@ public abstract class LibraryInitializer {
 			return;
 		}
 		final Set<InitializerSetEntry> dependentInitializer = new HashSet<>();
+		
 		this.collectDependentInitializer(dependentInitializer);
-		for (InitializerSetEntry initializer : dependentInitializer) {
-			initializer.initializer.registerImplementators(collector);
-		}
-		for (InitializerSetEntry initializer : dependentInitializer) {
-			initializer.initializer.initializeLibrary(context);
-		}
+		collector.addLibraryInitializers(dependentInitializer);
+		collector.collectImplementators();
+		collector.initializeLibraries(context);
 		collector.createExecutors();
-		RuntimeException lastE = null;
-		for (InitializerSetEntry initializer : dependentInitializer) {
-			try {
-			initializer.initializer.bindExecutors(collector);
-			}catch (RuntimeException e) {
-				System.err.println(e.getMessage());
-				lastE = e;
-			}
-		}
-		if(lastE != null) {
-			throw lastE;
-		}
+		collector.bindExecutors();
+		
 	}
 
-	private final void registerImplementators(final StrategyCollector collector) {
+	protected final void registerImplementators(final StrategyCollector collector) {
 		for (RegisteringStrategy s : this.getLibraryStrategies()) {
 			s.registerImplementators(collector);
 		}
 	}
 
-	private final void bindExecutors(final StrategyCollector collector) {
+	protected final void bindExecutors(final StrategyCollector collector) {
 		for (RegisteringStrategy s : this.getLibraryStrategies()) {
 			s.bindExecutors(collector);
 		}
