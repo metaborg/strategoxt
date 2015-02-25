@@ -324,6 +324,7 @@ strategies
 				else 
 					  where(<debug> ["Lib import", <id> ])
 					; ?Import(<id>)
+					; where(is-default-lib-rtree)
 					; remove-lib-prefix
 					; where(<debug> ["Without prefix ", <id>])
 					; translate-default-library // do not want to collect rtrees, but libraries
