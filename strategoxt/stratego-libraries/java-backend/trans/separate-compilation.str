@@ -311,9 +311,12 @@ strategies
 				; <debug> ["Found import ", import]
 				; if not(Import(is-default-lib-rtree))
 				   then 
-					  import-get-file => file
+				      !import
+					;  import-get-file => file
 				    ; <debug> ["File is ", file]
 				    ; rules(File: import -> file)
+				   else
+				   <debug> "Is default lib"
 			     end
 			},
 			  !(<id>, <id;try(File)>)
