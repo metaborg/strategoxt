@@ -309,7 +309,7 @@ strategies
 			{import, file:
 				  id => import
 				; where(<debug> ["Found import ", import])
-				; if Import(is-default-lib-rtree)
+				; if not(Import(is-default-lib-rtree))
 				   then 
 					  import-get-file => file
 				    ; <debug> ["File is ", file]
