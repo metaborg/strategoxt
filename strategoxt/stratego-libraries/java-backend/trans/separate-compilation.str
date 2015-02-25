@@ -192,7 +192,7 @@ strategies
 			  ?(moduleName, work-unit, merged-ast, new-libs, fileName)
 			; save-and-set-options(
 				  where(libs := <get-config <+ ![]> "-la")
-				; where(<set-config>("-la", <conc;make-set> (libs, <map(Fst)> new-libs)))
+				; where(<set-config>("-la", <conc;make-set> (libs, new-libs)))
 				; log(|Notice(), ["Import transformation for ", moduleName])
 				; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
 			
@@ -248,13 +248,8 @@ strategies
 				; !Import(<id>)
 			
 			import-to-flag = \Import(name) -> 
-				(<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],
-		
-				 <concat-strings> [working-output, <to-library-name> name], 
-					 
-				 (name,Import(<to-java-compilation-rel-file> name)),
-				 
-				 <separate-compilation-get-file> name )\
+				<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name]
+				\
 			
 		
 					
@@ -326,7 +321,7 @@ strategies
 			; where(<debug> ["Result ", <id>])
 			, if try(File);has-extension(|"str")
 				then where(<debug> "FIle import"); import-to-flag
-				else where(<debug> "LIb import");  translate-default-library // do not want to collect rtrees, but libraries
+				else where(<debug> "LIb import"); ?Import(<id>); translate-default-library // do not want to collect rtrees, but libraries
 			end
 			)
 		|}
