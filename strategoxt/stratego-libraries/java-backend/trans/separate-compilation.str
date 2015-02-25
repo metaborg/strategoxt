@@ -322,7 +322,7 @@ strategies
 			where(<debug> ["Process ", <id>]);
 			  !(<id>, <id;try(File)>)
 			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
-			; where(<debug ["Result ", <id>])
+			; where(<debug> ["Result ", <id>])
 			, if try(File);has-extension(|"str")
 				then import-to-flag
 				else translate-default-library // do not want to collect rtrees, but libraries
