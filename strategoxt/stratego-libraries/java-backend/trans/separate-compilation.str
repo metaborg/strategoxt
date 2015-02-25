@@ -272,7 +272,7 @@ strategies
 			process-import-str(|circular-source-files) =
 			{ term: 
 				  ?(term, <has-extension(|"str")>)
-				; where(<debug> "Process file ", <id>)
+				; where(<debug> ["Process file ", <id>])
 				; get-unit-add-dependency(|<\Import(name) -> name\> term)
 				; if !(<id;get-stratego-source-file>, circular-source-files); elem 
 						then fail // Circular, do not transform
