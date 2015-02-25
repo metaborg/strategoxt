@@ -321,7 +321,13 @@ strategies
 			; where(<debug> ["Result ", <id>])
 			, if try(File);has-extension(|"str")
 				then where(<debug> "FIle import"); import-to-flag
-				else where(<debug> "LIb import"); ?Import(<id>); translate-default-library // do not want to collect rtrees, but libraries
+				else 
+					  where(<debug> ["Lib import", <id> ])
+					; ?Import(<id>)
+					; remove-lib-prefix
+					; where(<debug> ["Without prefix ", <id>])
+					; translate-default-library // do not want to collect rtrees, but libraries
+					; where(<debug> ["Result ", <id>])
 			end
 			)
 		|}
@@ -334,4 +340,11 @@ strategies
 			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
 			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
 			+ ?"libstratego-parallel" + ?"libstrc"
+			
+		remove-lib-prefix = try(
+			  explode-string
+			; ?['l', 'i', 'b' | rest]
+			; rest
+			; implode-string
+			)
 			
