@@ -343,8 +343,8 @@ strategies
 			
 		remove-lib-prefix = try(
 			  explode-string
-			; ?['l', 'i', 'b' | rest]
-			; rest
+			; ?['l', 'i', 'b' | libname]
+			; !libname
 			; implode-string
 			)
 			
