@@ -37,17 +37,17 @@ public class StrategyCollector {
 		allInitializers.addAll(initializers);
 		
 	}
-	
+
 	public void collectImplementators() {
-		System.out.println("Initialize with " + allInitializers);
-	for (InitializerSetEntry initializer : allInitializers) {
-		initializer.initializer.registerImplementators(this);
+		for (InitializerSetEntry initializer : allInitializers) {
+			initializer.initializer.registerImplementators(this);
+		}
 	}
-	}
+
 	public void initializeLibraries(Context context) {
-	for (InitializerSetEntry initializer : allInitializers) {
-		initializer.initializer.initializeLibrary(context);
-	}
+		for (InitializerSetEntry initializer : allInitializers) {
+			initializer.initializer.initializeLibrary(context);
+		}
 	}
 	
 	public void bindExecutors() {
