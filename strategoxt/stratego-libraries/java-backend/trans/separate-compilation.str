@@ -272,6 +272,7 @@ strategies
 			process-import-str(|circular-source-files) =
 			{ term: 
 				  ?(term, <has-extension(|"str")>)
+				; where(<debug> "Process file ", <id>)
 				; get-unit-add-dependency(|<\Import(name) -> name\> term)
 				; if !(<id;get-stratego-source-file>, circular-source-files); elem 
 						then fail // Circular, do not transform
@@ -318,9 +319,11 @@ strategies
 				   <debug> "Is default lib"
 			     end
 			},
+			where(<debug> ["Process ", <id>]);
 			  !(<id>, <id;try(File)>)
 			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
-			, if File;has-extension(|"str")
+			; where(<debug ["Result ", <id>])
+			, if try(File);has-extension(|"str")
 				then import-to-flag
 				else translate-default-library // do not want to collect rtrees, but libraries
 			end
