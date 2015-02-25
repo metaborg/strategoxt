@@ -291,6 +291,7 @@ strategies
 			process-import-default-lib(|circular-source-files) = 
 			{ lib, term:
 				  ?(term, lib)
+				; <debug> ["Processing lib ", lib]
   				; !lib
   				; is-default-lib-rtree
   				; !term
@@ -307,14 +308,19 @@ strategies
 		; transform-imports-and-move-to-front(
 			{import, file:
 				  id => import
-				; import-get-file => file
-				; rules(File: import -> file)
+				; <debug> ["Found import ", import]
+				; if not(Import(is-default-lib-rtree))
+				   then 
+					  import-get-file => file
+				    ; <debug> ["File is ", file]
+				    ; rules(File: import -> file)
+			     end
 			},
-			  !(<id>, <id;File>)
+			  !(<id>, <id;try(File)>)
 			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
 			, if File;has-extension(|"str")
 				then import-to-flag
-				else fail // do not want to collect rtrees
+				else translate-default-library // do not want to collect rtrees, but libraries
 			end
 			)
 		|}
@@ -326,3 +332,5 @@ strategies
 			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
 			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
 			+ ?"libstratego-parallel" + ?"libstrc"
+			
+	    d
