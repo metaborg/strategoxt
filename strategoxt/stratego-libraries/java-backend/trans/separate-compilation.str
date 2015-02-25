@@ -293,7 +293,8 @@ strategies
 			{ lib, term:
 				  ?(term, lib)
 				; <debug> ["Processing lib ", lib]
-  				; !lib
+  				; !term
+				; ?Import(<id>)
   				; is-default-lib-rtree
   				; !term
   				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
@@ -324,11 +325,12 @@ strategies
 			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
 			; where(<debug> ["Result ", <id>])
 			, if try(File);has-extension(|"str")
-				then import-to-flag
-				else translate-default-library // do not want to collect rtrees, but libraries
+				then where(<debug> "FIle import"); import-to-flag
+				else where(<debug> "LIb import");  translate-default-library // do not want to collect rtrees, but libraries
 			end
 			)
 		|}
+		; where ( <debug> ["Import transformation ", <id>])
 		end
 		
 	 	// Returns the rtree file for a default library import like libstrategolib
