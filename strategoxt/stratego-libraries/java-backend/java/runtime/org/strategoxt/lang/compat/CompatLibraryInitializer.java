@@ -17,13 +17,13 @@ public class CompatLibraryInitializer extends LibraryInitializer {
 	@Override
 	protected List<RegisteringStrategy> getLibraryStrategies() {
 		return Arrays.asList(
-				new $Read$From$File_cached_0_0(), 
-				new report_failure_compat_1_0(), 
-				new strrtg_list_loop1_1_0(), 
-				new strrtg_repeat_1_0(),
-				new pp_c_0_0(),
-				new pp_c_pretty_0_0(),
-				new strc_cgen_aterm_0_0());
+				$Read$From$File_cached_0_0.instance, 
+				report_failure_compat_1_0.instance, 
+				strrtg_list_loop1_1_0.instance, 
+				strrtg_repeat_1_0.instance,
+				pp_c_0_0.instance,
+				pp_c_pretty_0_0.instance,
+				strc_cgen_aterm_0_0.instance);
 	}
 
 	@Override
