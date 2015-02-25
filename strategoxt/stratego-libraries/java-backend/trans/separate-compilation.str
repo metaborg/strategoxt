@@ -342,6 +342,8 @@ strategies
 			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
 			+ ?"libstratego-parallel" + ?"libstrc"
 			
+		remove-lib-prefix: "libstrc" -> "stratego-strc"
+		remove-lib-prefix: "libstrategolib" -> "stratego-lib"
 		remove-lib-prefix = try(
 			  explode-string
 			; ?['l', 'i', 'b' | libname]
