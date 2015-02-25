@@ -308,11 +308,10 @@ strategies
 		; transform-imports-and-move-to-front(
 			{import, file:
 				  id => import
-				; <debug> ["Found import ", import]
-				; if not(Import(is-default-lib-rtree))
+				; where(<debug> ["Found import ", import])
+				; if Import(is-default-lib-rtree)
 				   then 
-				      !import
-					;  import-get-file => file
+					  import-get-file => file
 				    ; <debug> ["File is ", file]
 				    ; rules(File: import -> file)
 				   else
