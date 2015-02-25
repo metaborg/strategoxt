@@ -333,4 +333,3 @@ strategies
 			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
 			+ ?"libstratego-parallel" + ?"libstrc"
 			
-	    d
