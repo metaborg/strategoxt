@@ -1,8 +1,12 @@
 module separate-compilation/process-deps
 
 imports separate-compilation/utils
-imports cleardep/cleardep
 imports separate-compilation/unit-cache
+imports separate-compilation/fileutils
+imports separate-compilation/separate-compilation-options
+imports libstrc
+imports cleardep/cleardep
+imports cleardep/fileutils
 
 strategies
 
@@ -27,3 +31,12 @@ strategies
 		; map (unpack-stratego-unit)
 				  
 	
+		is-import-dependency =
+			  import-is-file
+			; ?Import(<id>)
+			; separate-compilation-get-relative-file
+			; path-get-full-path
+			; !(IncludePathName(<id>), <pack-include-path>)
+			; separate-compilation-parse-file
+			; Snd
+			; ?Module(_,_) // Specifications or not unit dependencies, they get included

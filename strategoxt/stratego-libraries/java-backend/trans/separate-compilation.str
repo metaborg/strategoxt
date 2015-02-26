@@ -6,6 +6,9 @@ imports separate-compilation/utils
 imports separate-compilation/process-deps
 imports separate-compilation/separate-compilation-options
 imports separate-compilation/fileutils
+imports separate-compilation/unit-cache
+imports separate-compilation/create-signature
+imports s2j-options
 imports libstrc
 
 signature
@@ -26,7 +29,7 @@ strategies
         )*/
 	  
 	strc-front-end1(back-end) =
-	{| CompilingModules, ImportMap :
+	{|  :
 		  log-timed(
 			  strc-get-infile
 			; log(|Info(), ["Calling separate front end ", <id>])
@@ -264,15 +267,28 @@ strategies
 				
 			}
 			
+			get-file-add-external-file-dependency(|import-name) =
+				  !import-name
+				; separate-compilation-get-relative-file
+				; add-external-file-dependency(|module-unit)
+			
 			process-import-str(|circular-source-files) =
 			{ term: 
 				  ?(term, <has-extension(|"str")>)
 				; where(<debug> ["Process file ", <id>])
-				; get-unit-add-dependency(|<\Import(name) -> name\> term)
-				; if !(<id;get-stratego-source-file>, circular-source-files); elem 
+				; if !term; is-import-dependency
+					then  // regular module dependency
+					   log(|Notice(), ["Import to module ", term])
+					 ; get-unit-add-dependency(|<\Import(name) -> name\> term)
+					 ; if !(<id;get-stratego-source-file>, circular-source-files); elem 
 						then fail // Circular, do not transform
-						else !term; to-library-import
-				  end
+						else !term; to-library-import // Transform term to library import
+				  	   end
+					else // Import contains not a module but a specification -> no module dependency because specification is not named
+					   log(|Notice(), ["Import to file but not module ", term])
+					 ; get-file-add-external-file-dependency(|<\Import(name) -> name\> term)
+					 ; !term //Leave term untransformed because want to include str file
+				  end			
 			}
 				
 			process-import-rtree(|circular-source-files) =
