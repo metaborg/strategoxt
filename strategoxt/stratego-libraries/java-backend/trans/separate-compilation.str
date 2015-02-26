@@ -50,7 +50,7 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-		scope-compiler-config( {| MainModule, CompilationUnitCache :
+		scope-compiler-config(scope-unit-cache( {| MainModule :
 		  where(collect-config)
 		; where(fileName := <\FILE(s) -> s\>) 
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
@@ -104,7 +104,7 @@ strategies
 				; map (write-compilation-unit)
 				//end
 		)
-	|})
+	|}))
 
 	
 	compile (back-end|working-package,working-output)=

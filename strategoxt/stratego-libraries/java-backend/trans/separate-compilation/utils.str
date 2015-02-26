@@ -1,7 +1,13 @@
 module separate-compilation/utils
 
-imports separate-compilation/fileutils
 imports libstrc
+imports libstratego-lib
+
+imports cleardep/cleardep
+
+imports separate-compilation/fileutils
+imports separate-compilation/compiler-config
+
 imports backend-simplify
 imports s2j
 

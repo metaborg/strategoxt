@@ -1,12 +1,16 @@
 module separate-compilation/unit-cache
 
 imports cleardep/cleardep
+imports cleardep/fileutils
 imports separate-compilation/fileutils
 
 strategies
 
 	
 	// Cache compilation unit queries by name because reading from clear dep interface involves a consistency check which is slow
+	
+	scope-unit-cache(f) =
+		{|CompilationUnitCache: f |}
 	
 	create-compilation-unit-for-module(|module-name) = 
 		  create-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name) => unit
