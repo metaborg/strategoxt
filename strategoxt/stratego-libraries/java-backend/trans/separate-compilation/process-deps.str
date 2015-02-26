@@ -21,7 +21,7 @@ strategies
 		; <filter(\Imports(x)->x\)> content
 		; map(mapconcat(pack-expand-import))
 		; concat
-		; filter(where(\x -> <debug;import-is-file> Import(x)\))
+		; filter(where(\x -> <debug;is-import-dependency> Import(x)\))
 		; map(
 					if complete-rebuild
 						then create-if-not-in-cache-or-read-compilation-unit-for-module(|<id>)
@@ -41,4 +41,4 @@ strategies
 			; separate-compilation-parse-file
 			; Snd
 			; where(<debug> ["Parse result", <id>])
-			; ?Module(_,_) // Specifications or not unit dependencies, they get included
+			; ?Module(_,_) // Specifications are not unit dependencies, they get included
