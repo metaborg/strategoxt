@@ -13,7 +13,7 @@
     <groupId>org.metaborg</groupId>
     <artifactId>org.metaborg.maven.parent</artifactId>
     <version>1.3.0-SNAPSHOT</version>
-    <relativePath>../../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
+    <relativePath>../../org.metaborg.maven.parent</relativePath>
   </parent>
 
   <properties>
