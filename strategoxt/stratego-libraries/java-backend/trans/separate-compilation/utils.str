@@ -45,6 +45,10 @@ strategies
 	import-get-file = 
 		  \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
 		; is-module-available-get-file
+	
+	import-get-relative-file = 
+		 \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
+		; is-module-available-get-relative-file
 		
 	import-is-file =
 		  import-get-file

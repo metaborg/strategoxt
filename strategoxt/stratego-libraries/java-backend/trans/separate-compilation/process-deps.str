@@ -34,9 +34,7 @@ strategies
 		is-import-dependency =
 			
 			where(<debug> ["Is dependency? ", <id>]);
-			  import-is-file
-			; ?Import(<id>)
-			; separate-compilation-get-relative-file
+			  import-get-relative-file
 			; where(<debug> ["Relative file ", <id>])
 			; path-get-full-path
 			; !(IncludePathName(<id>), <pack-include-path>)
