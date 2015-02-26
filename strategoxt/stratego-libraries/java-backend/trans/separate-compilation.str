@@ -328,7 +328,7 @@ strategies
 			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
 			; where(<debug> ["Result ", <id>])
 			, if try(File);has-extension(|"str")
-				then where(<debug> "FIle import"); import-to-flag
+				then where(<debug> "FIle import"); where ( is-import-dependency); import-to-flag
 				else 
 					  where(<debug> ["Lib import", <id> ])
 					; ?Import(<id>)
