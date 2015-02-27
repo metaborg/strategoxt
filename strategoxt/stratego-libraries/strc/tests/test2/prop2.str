@@ -1,4 +1,4 @@
-module prop
+module prop2
 imports libstratego-lib
 strategies
 

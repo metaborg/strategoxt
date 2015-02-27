@@ -142,7 +142,9 @@
 				<local name ="testmodule-jify"/>
 				<basename property="testfile" file="@{test-source}"/>
 				<basename property="testmodule" file="@{test-source}" suffix=".str"/>
-				<propertyregex property="testmodule-jify" input="${testmodule}" regexp="-" replace="_" global="true" />
+				<echo>${testmodule}</echo>
+				<propertyregex property="testmodule-jify" input="${testmodule}" regexp="-" replace="_" global="true" defaultValue="${testmodule}" />
+				<echo> ${testmodule-jify}</echo>
 				<trycatch property="failure">
 					<try>
 						<!-- do the test -->
