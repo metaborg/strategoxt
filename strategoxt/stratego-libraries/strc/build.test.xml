@@ -105,8 +105,7 @@
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
-						<delete dir="${test-gen}" />
-						<delete dir="${test-gen-bin}" /> 
+						 
 					</try>
 					
 					<catch>
@@ -114,7 +113,8 @@
 					</catch>
 
 					<finally>
-						
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" />
 					</finally>
 				</trycatch>
 			</sequential>
@@ -160,7 +160,7 @@
 							</strjargs>
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
+						<java classname="org.test.${testmodule}.${testmodule}" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
