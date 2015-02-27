@@ -48,7 +48,7 @@ rules
     )
   + Option(
       "--no-default-lib"
-      , <set-config> ("-la", <get-config;remove-all(?"org.strategoxt.stratego_lib")> "-la"); !()
+      , <set-config> ("-la", <get-config;remove-all(?(<translate-default-library>"stratego-lib"))> "-la"); !()
       , !"--no-default-lib   Default library is not added to imports.")
   + Option(
       "--strategy-forward-declaration"

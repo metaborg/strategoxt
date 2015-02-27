@@ -95,7 +95,7 @@
 								<arg value="-I" />
 								<arg value="${dep.stratego-front}" />
 								<arg value="--complete-rebuild" />
-								
+								<arg value="--no-default-lib"/>
 							</strjargs>
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
