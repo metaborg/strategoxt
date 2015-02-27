@@ -23,7 +23,7 @@
 
 	<target name="test-all" depends="test-compiler, test-interpreter" />
 
-	<target name="test-compiler" depends="test-test1, test-test2, test-testneg" />
+	<target name="test-compiler" depends="test-test2, test-testneg, test-test1" />
 	<target name="test-interpreter" depends="test-test1-interp, test-test2-interp" />
 
 	<!-- Skip that currently because I do not want to adjust all the sh scripts -> need another solution -->
