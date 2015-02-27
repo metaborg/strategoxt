@@ -139,8 +139,10 @@
 				<mkdir dir="${test-gen-bin}" />
 				<local name ="testfile"/>
 				<local name ="testmodule"/>
+				<local name ="testmodule-jify"/>
 				<basename property="testfile" file="@{test-source}"/>
 				<basename property="testmodule" file="@{test-source}" suffix=".str"/>
+				<propertyregex property="testmodule-jify" input="${testmodule}" regexp="-" replace="_" global="true" />
 				<trycatch property="failure">
 					<try>
 						<!-- do the test -->
@@ -160,7 +162,7 @@
 							</strjargs>
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-						<java classname="org.test.${testmodule}.${testmodule}" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
+						<java classname="org.test.${testmodule-jify}.${testmodule-jify}" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
