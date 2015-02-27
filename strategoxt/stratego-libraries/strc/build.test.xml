@@ -63,6 +63,7 @@
 		<local name="test-dir" />
 		<local name="test-gen" />
 		<local name="test-gen-bin" />
+		<local name="test-source" />
 		<property name="test-dir" location="tests/test1" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
@@ -127,8 +128,6 @@
 		<property name="test-dir" location="tests/test2" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
-		<basename property="testfile" file="@{test-source}"/>
-		<basename property="testmodule" file="@{test-source}" suffix=".str"/>
 		<for param="test-source">
 			<path>
 				<fileset dir="${test-dir}" includes="*.str" />
@@ -138,7 +137,10 @@
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
 				<mkdir dir="${test-gen-bin}" />
-				<basename property="testmodule" file="@{test-source}"/>
+				<local name ="testfile"/>
+				<local name ="testmodule"/>
+				<basename property="testfile" file="@{test-source}"/>
+				<basename property="testmodule" file="@{test-source}" suffix=".str"/>
 				<trycatch property="failure">
 					<try>
 						<!-- do the test -->
@@ -185,8 +187,7 @@
 		<property name="test-dir" location="tests/testneg" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
-		<basename property="testfile" file="@{test-source}"/>
-		<basename property="testmodule" file="@{test-source}" suffix=".str"/>
+		
 		<for param="test-source">
 			<path>
 				<fileset dir="${test-dir}" includes="test*.str" />
@@ -196,6 +197,10 @@
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
 				<mkdir dir="${test-gen-bin}" />
+				<local name ="testfile"/>
+				<local name ="testmodule"/>
+				<basename property="testfile" file="@{test-source}"/>
+				<basename property="testmodule" file="@{test-source}" suffix=".str"/>
 				<trycatch property="failure" reference="failure-refid">
 					<try>
 						<!-- do the test -->
