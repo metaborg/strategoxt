@@ -105,7 +105,8 @@
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
-						 
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" />
 					</try>
 					
 					<catch>
@@ -113,8 +114,7 @@
 					</catch>
 
 					<finally>
-						<delete dir="${test-gen}" />
-						<delete dir="${test-gen-bin}" />
+						
 					</finally>
 				</trycatch>
 			</sequential>
