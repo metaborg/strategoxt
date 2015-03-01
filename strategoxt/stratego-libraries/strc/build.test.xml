@@ -75,6 +75,8 @@
 				<local name ="testfile"/>
 				<local name ="testmodule"/>
 				<log message="Testing @{test-source}" />
+				<delete dir="${test-gen}" />
+				<delete dir="${test-gen-bin}" />
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
 				<mkdir dir="${test-gen-bin}" />
@@ -86,7 +88,7 @@
 						<echo>Test file @{test-source}</echo>
 						<echo>Input path ${test-dir} input module ${testmodule}</echo>
 						<echo>STRJ under test is ${strj-sut}</echo>
-						<strj-workingdir input-path="${test-dir}" input-module="${testfile}" strj="${strj-sut}" output="${test-gen}/org/test/" package="org.test" workdir="${test-dir}" generate-stdlib-import="false">
+						<strj-workingdir input-path="${test-dir}" input-module="${testfile}" strj="${strj-sut}" output="${test-gen}/org/test/" package="org.test" workdir="${test-dir}">
 							<strjargs>
 								<arg value="-I" />
 								<arg value="${dep.libstratego-lib}" />
@@ -105,8 +107,6 @@
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
-						<delete dir="${test-gen}" />
-						<delete dir="${test-gen-bin}" />
 					</try>
 					
 					<catch>
@@ -134,6 +134,8 @@
 			</path>
 			<sequential>
 				<log message="Testing @{test-source}" />
+				<delete dir="${test-gen}" />
+				<delete dir="${test-gen-bin}" />
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
 				<mkdir dir="${test-gen-bin}" />
@@ -168,8 +170,6 @@
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
-						<delete dir="${test-gen}" />
-						<delete dir="${test-gen-bin}" />
 					</try>
 
 					<catch>
