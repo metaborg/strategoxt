@@ -60,7 +60,6 @@ strategies
 		; fetch-elem(\IncludeDir(d) -> <path-relativize(| AbsolutePath(d))>  absolute-file\)
 		; path-remove-extension
 		; ?RelativePath(_,<id>)
-		; debug
 		; if complete-rebuild 
 			then create-compilation-unit-for-module(|<id>)
 			else read-or-create-compilation-unit-for-module(|<id>)
@@ -267,7 +266,6 @@ strategies
 			process-import-str(|circular-source-files) =
 			{ term: 
 				  ?(term, <has-extension(|"str")>)
-				; where(<debug> ["Process file ", <id>])
 				; if !term; is-import-dependency
 					then  // regular module dependency
 					   log(|Notice(), ["Import to module ", term])
@@ -295,7 +293,6 @@ strategies
 			process-import-default-lib(|circular-source-files) = 
 			{ lib, term:
 				  ?(term, lib)
-				; <debug> ["Processing lib ", lib]
   				; !term
 				; ?Import(<id>)
   				; is-default-lib-rtree
@@ -313,34 +310,26 @@ strategies
 		; transform-imports-and-move-to-front(
 			{import, file:
 				  id => import
-				; where(<debug> ["Found import ", import])
 				; if not(Import(is-default-lib-rtree))
 				   then 
 					  import-get-file => file
-				    ; <debug> ["File is ", file]
 				    ; rules(File: import -> file)
-				   else
-				   <debug> "Is default lib"
-			     end
+			       end
 			},
-			where(<debug> ["Process ", <id>]);
 			  !(<id>, <id;try(File)>)
 			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
-			; where(<debug> ["Result ", <id>])
 			, if try(File);has-extension(|"str")
-				then where(<debug> "FIle import"); where ( is-import-dependency); import-to-flag
+				then 
+					  where (is-import-dependency)
+					; import-to-flag
 				else 
-					  where(<debug> ["Lib import", <id> ])
-					; ?Import(<id>)
+					  ?Import(<id>)
 					; where(is-default-lib-rtree)
 					; remove-lib-prefix
-					; where(<debug> ["Without prefix ", <id>])
 					; translate-default-library // do not want to collect rtrees, but libraries
-					; where(<debug> ["Result ", <id>])
 			end
 			)
 		|}
-		; where ( <debug> ["Import transformation ", <id>])
 		end
 		
 	 	
