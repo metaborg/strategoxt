@@ -17,11 +17,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.aterm</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
 			<artifactId>org.spoofax.terms</artifactId>
 			<version>${metaborg-version}</version>
 		</dependency>
