@@ -8,12 +8,18 @@ imports
 
 strategies
 
+  io-explode-aterm =
+    io-wrap(explode-aterm)
+
   explode-aterm =
        aterm-explode-annotated
     <+ aterm-explode-list
     <+ aterm-explode-int
     <+ aterm-explode-fun
     <+ aterm-explode-appl
+
+  io-implode-aterm =
+    io-wrap(implode-aterm)
 
   implode-aterm =
        aterm-implode-annotated

@@ -127,10 +127,14 @@ strategies
 
            f =
              io-wrap(id)
+             
+           g = id  
       ]|
     where
         s2p-guess-module-name => M1
       ; guess-main-strategy-name => f
+      ; guess-language-name => lang
+      ; <conc-strings> ("parenthesize-", lang) => g
   
   innermost-module :
     rs@[_ | _] ->

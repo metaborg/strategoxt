@@ -38,6 +38,8 @@ public class InteropContext implements IContext {
 	private ThreadLocal<IStrategoTerm> current = new ThreadLocal<IStrategoTerm>();
 
 	private final Set<IStrategoConstructor> constructors = new HashSet<IStrategoConstructor>();
+	
+	private Object contextObject;
 
 	public InteropContext(Context context) {
 		this.context = context;
@@ -143,4 +145,12 @@ public class InteropContext implements IContext {
 	void addConstructors(Collection<IStrategoConstructor> newConstructors) {
 		constructors.addAll(newConstructors);
 	}
+
+    @Override public Object contextObject() {
+        return contextObject;
+    }
+
+    @Override public void setContextObject(Object context) {
+        this.contextObject = context;
+    }
 }

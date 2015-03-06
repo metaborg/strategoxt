@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.strategoxt" default="all">
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
 	<property name="baseline" value="baseline" />
 	<property name="base-strategoxt" location="${baseline}/share/strategoxt/strategoxt/strategoxt.jar" />
@@ -40,6 +41,7 @@
 		<echo>- install output (install-prefix): ${install-prefix}</echo>
 		<echo>- dependencies install output (subdists-install-prefix): ${subdists-install-prefix}</echo>
 		<echo>- sdf2bundle from: ${sdf2bundle}</echo>
+		<echo>- classpath from: ${java.class.path}</echo>
 	</target>
 
 	<target name="antcontrib-build">
@@ -61,6 +63,7 @@
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
 			<property name="base-strategoxt" value="${base-strategoxt}" />
+			<property name="baseline" value="${baseline}" />
 			<fileset dir="syntax" includes="build.xml" />
 			<target name="all" />
 		</subant>
@@ -75,8 +78,10 @@
 			<target name="all" />
 		</subant>
 	</target>
-	
-	<target name="clean" depends="clean-syntax, clean-libraries"/>
+
+	<target name="clean" depends="clean-syntax, clean-libraries">
+		<delete dir=".cache" />
+	</target>
 
 	<target name="clean-syntax">
 		<subant inheritall="false">
@@ -99,7 +104,7 @@
 		<delete dir="${subdists-install-prefix}" />
 		<delete dir="${bin}" />
 	</target>
-				
+
 	<target name="jar" depends="build">
 		<mkdir dir="${bin}" />
 		<jar destfile="${bin}/strategoxt.jar" manifest="stratego-libraries/java-backend/java/META-INF/MANIFEST.MF" update="false">
@@ -126,7 +131,7 @@
 			<fileset dir="${subdists-install-prefix}" includes="**/*" />
 		</copy>
 		<copy todir="${install-location}" verbose="true">
-			<fileset dir="${baseline}/share/strategoxt" includes="macosx/*, linux/*, build-lib/*" />
+			<fileset dir="${baseline}/share/strategoxt" includes="macosx/*, linux/*, cygwin/*, build-lib/*" />
 		</copy>
 		<copy todir="${install-prefix}/share" verbose="true">
 			<fileset dir="${baseline}/share" includes="sdf-library/**/*" />
@@ -140,9 +145,11 @@
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar</echo>
 	</target>
 
+	<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+
 	<target name="test-compiler" depends="antcontrib-load">
 		<subant inheritall="false">
-			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<property name="strj-sut" value="${strj-sut}" />
 			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="test-compiler" />
@@ -151,7 +158,7 @@
 
 	<target name="test-interpreter" depends="antcontrib-load">
 		<subant inheritall="false">
-			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<property name="strj-sut" value="${strj-sut}" />
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="test-interpreter" />

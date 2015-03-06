@@ -6,6 +6,8 @@
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
@@ -36,6 +38,8 @@
 				<srcfiles dir="spec" includes="**/*.str" />
 			</str-deps>
 		</strj-lib>
+		<copy file="spec/libstratego-lib-posix-xsi.ctree" todir="${bin}" />
+		<copy file="${bin}/libstratego-lib-posix-xsi.ctree" tofile="${bin}/libstratego-lib.ctree" />
 		<copy file="spec/libstratego-lib-posix-xsi.rtree" todir="${bin}" />
 		<copy file="${bin}/libstratego-lib-posix-xsi.rtree" tofile="${bin}/libstratego-lib.rtree" />
 	</target>
@@ -53,14 +57,14 @@
 	<target name="jar" depends="build-java">
 		<jar destfile="${bin}/libstratego-lib.jar" update="false">
 			<fileset dir="${bin.java}" includes="**/*.class" />
-			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
+			<fileset dir="${bin.stratego}" includes="**/*.ctree, **/*.rtree, **/*.pp.af, **/*.tbl" />
 		</jar>
 	</target>
 
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy todir="${install-location}">
-			<fileset dir="${bin}" includes="*.rtree, *.jar" />
+			<fileset dir="${bin}" includes="*.ctree, *.rtree, *.jar" />
 		</copy>
 	</target>
 
