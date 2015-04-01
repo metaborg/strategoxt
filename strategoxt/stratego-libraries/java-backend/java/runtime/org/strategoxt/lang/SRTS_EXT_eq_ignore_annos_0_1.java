@@ -19,7 +19,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
  */
 public class SRTS_EXT_eq_ignore_annos_0_1 extends RegisteringStrategy {
 	
-	private static SRTS_EXT_eq_ignore_annos_0_1 instance = new SRTS_EXT_eq_ignore_annos_0_1();
+	public static SRTS_EXT_eq_ignore_annos_0_1 instance = new SRTS_EXT_eq_ignore_annos_0_1();
 	
 	@Override
 	public void registerImplementators(StrategyCollector collector) {
