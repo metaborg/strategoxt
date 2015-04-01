@@ -10,8 +10,13 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SRTS_EXT_filter_1_0 extends Strategy {
-	public static SRTS_EXT_filter_1_0 instance = new SRTS_EXT_filter_1_0();
+public class SRTS_EXT_filter_1_0 extends RegisteringStrategy {
+	private static SRTS_EXT_filter_1_0 instance = new SRTS_EXT_filter_1_0();
+	
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_EXT_filter_1_0", instance);
+	}
 	
 	private static final int LARGE_LIST_SIZE = 10;
 	

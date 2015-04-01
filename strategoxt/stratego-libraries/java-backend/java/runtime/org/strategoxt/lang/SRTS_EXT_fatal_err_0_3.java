@@ -9,8 +9,13 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SRTS_EXT_fatal_err_0_3 extends Strategy {
-	public static SRTS_EXT_fatal_err_0_3 instance = new SRTS_EXT_fatal_err_0_3();
+public class SRTS_EXT_fatal_err_0_3 extends RegisteringStrategy {
+	private static SRTS_EXT_fatal_err_0_3 instance = new SRTS_EXT_fatal_err_0_3();
+	
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_EXT_fatal_err_0_3", instance);
+	}
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm message, IStrategoTerm term, IStrategoTerm trace) {

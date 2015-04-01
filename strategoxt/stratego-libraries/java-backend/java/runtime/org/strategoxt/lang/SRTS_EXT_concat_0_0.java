@@ -22,7 +22,12 @@ import org.spoofax.interpreter.terms.ITermFactory;
  */
 public class SRTS_EXT_concat_0_0 extends RegisteringStrategy {
 	
-	public static SRTS_EXT_concat_0_0 instance = new SRTS_EXT_concat_0_0();
+	private static SRTS_EXT_concat_0_0 instance = new SRTS_EXT_concat_0_0();
+	
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_EXT_concat_0_0", instance);
+	}
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
