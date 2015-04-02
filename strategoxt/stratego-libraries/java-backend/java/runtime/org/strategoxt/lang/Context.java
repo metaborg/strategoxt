@@ -127,6 +127,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
     
     public void setStrategyCollector(StrategyCollector strategyCollector) {
 		this.strategyCollector = strategyCollector;
+		strategyCollector.addLibraryInitializers(Arrays.asList(new InitializerSetEntry(new SRTS_EXT_LibraryInitializer()), new InitializerSetEntry(new SRTS_LibraryInitializer())));
 	}
 
     public StrategyCollector getStrategyCollector() {
