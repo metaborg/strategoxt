@@ -89,25 +89,31 @@ rules
       <RemoveClosureAlloc> x{} => inline
 		  
 
+   // Mark strategy calls which needs to be bind statically and not be name for a strategy
+   // Collect local definitions
    annotate-static-calls : 
     ( Let(defs,s), current_defs) -> 
 			Let(<annotate-static-calls> (defs, new_defs), <annotate-static-calls> (s, new_defs))
 		where
 			new_defs := <conc>(current_defs, <map(annotate-def-to-sig)> defs)
+			
    annotate-static-calls :
      (CallT(SVar(x{a*}), t, s), current_defs) -> CallT(SVar(x'), <annotate-static-calls> (t, current_defs), <annotate-static-calls> (s, current_defs))
      where
 	   newAnnos* := Cons("StaticBind",a*);
-	   x' := <if <can-bind-static>(<annotate-call-to-sig>CallT(SVar(x{a*}), t, s), current_defs) 
+	   x' := <if <need-bind-static>(<annotate-call-to-sig>CallT(SVar(x{a*}), t, s), current_defs) 
 	          then !x{newAnnos*} 
-			  else !x{a*} end>
-	   
-   can-bind-static : (def, defs) -> <elem> (def, defs)
-   can-bind-static : (def, defs) -> <elem> (def, ["_Id" , "_Fail", "SRTS_all", "SRTS_one", "SRTS_some", "SRTS_EXT_at_end_1_0", "SRTS_EXT_crush_3_0", "SRTS_EXT_eq_ignore_annos_0_1", "SRTS_EXT_fatal_err_0_3", "SRTS_EXT_filter_1_0", "SRTS_EXT_flatten_list_0_0", "SRTS_EXT_newint_0_0", "SRTS_EXT_repeat_1_0", "SRTS_EXT_string_replace_0_2"])
-   can-bind-static : (def, defs) -> <elem> (def, <(get-config <+ ![]);map(\(name, _) -> name\;dollars-for-capitals)> "-D")
-
+			  else !x{a*} end>	
+			  
    annotate-static-calls :
      ( x, current_defs) -> <all(\y -> <annotate-static-calls> (y, current_defs)\)> x
+			  
+   // In the following cases this needs to be done are:
+   need-bind-static : (name, local-defs) -> <elem> (name, local-defs) // For local definitions
+   need-bind-static : (name, _) -> <elem> (name, ["_Id" , "_Fail"]) // For ID and FAIL
+   need-bind-static : (name, _) -> <elem> (name, <(get-config <+ ![]);map(\(name, _) -> name\;dollars-for-capitals)> "-D") // And for generated constant value stratgies (really?)
+
+   
 
 
    annotate-def-to-sig:  SDefT(x,t*,s*,_) -> x{}

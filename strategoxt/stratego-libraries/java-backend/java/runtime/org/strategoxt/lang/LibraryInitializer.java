@@ -15,8 +15,8 @@ public abstract class LibraryInitializer {
 
 	private boolean isInitialized = false;
 	
-	public static void initializeIterop(final IContext context, final Context compiledContext, final LibraryInitializer...initializers) {
-		LibraryInitializer dummyParent = new LibraryInitializer() {
+	private static LibraryInitializer buildInitializer(final LibraryInitializer...initializers) {
+		return new LibraryInitializer() {
 			
 			@Override
 			protected void initializeLibrary(Context context) {
@@ -35,13 +35,21 @@ public abstract class LibraryInitializer {
 				return Arrays.asList(initializers);
 			}
 		};
-		dummyParent.registerInterop(context, compiledContext, context.getVarScope());
+	}
+	
+	public static void initializeInterop(final IContext context, final Context compiledContext, final LibraryInitializer...initializers) {
+		buildInitializer(initializers).registerInterop(context, compiledContext, context.getVarScope());
+	}
+	
+	public static void initialize(final Context context, final LibraryInitializer...initializers) {
+		buildInitializer(initializers).initialize(context);
 	}
 	
 	public final void initialize(Context context) {
 		StrategyCollector c = new StrategyCollector();
-		this.initialize(c, context);
 		context.setStrategyCollector(c);
+		this.initialize(c, context);
+		
 	}
 	
 	public final void registerInterop(final IContext context, final Context compiledContext, final VarScope varScope) {
@@ -62,8 +70,8 @@ public abstract class LibraryInitializer {
 	 * @author moritzlichter
 	 *
 	 */
-	private static class InitializerSetEntry {
-		private LibraryInitializer initializer;
+	public static class InitializerSetEntry {
+		public LibraryInitializer initializer;
 
 		public InitializerSetEntry(LibraryInitializer initializer) {
 			super();
@@ -103,27 +111,23 @@ public abstract class LibraryInitializer {
 			return;
 		}
 		final Set<InitializerSetEntry> dependentInitializer = new HashSet<>();
+		
 		this.collectDependentInitializer(dependentInitializer);
-		System.out.println("Initialzie with : " + dependentInitializer);
-		for (InitializerSetEntry initializer : dependentInitializer) {
-			initializer.initializer.registerImplementators(collector);
-		}
-		for (InitializerSetEntry initializer : dependentInitializer) {
-			initializer.initializer.initializeLibrary(context);
-		}
+		collector.addLibraryInitializers(dependentInitializer);
+		collector.collectImplementators();
+		collector.initializeLibraries(context);
 		collector.createExecutors();
-		for (InitializerSetEntry initializer : dependentInitializer) {
-			initializer.initializer.bindExecutors(collector);
-		}
+		collector.bindExecutors();
+		
 	}
 
-	private final void registerImplementators(final StrategyCollector collector) {
+	protected final void registerImplementators(final StrategyCollector collector) {
 		for (RegisteringStrategy s : this.getLibraryStrategies()) {
 			s.registerImplementators(collector);
 		}
 	}
 
-	private final void bindExecutors(final StrategyCollector collector) {
+	protected final void bindExecutors(final StrategyCollector collector) {
 		for (RegisteringStrategy s : this.getLibraryStrategies()) {
 			s.bindExecutors(collector);
 		}

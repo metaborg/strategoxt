@@ -3,8 +3,8 @@ package org.strategoxt.lang.compat.stratego_rtg_compat;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.RegisteringStrategy;
+import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.StrategyCollector;
 
 /**
@@ -15,7 +15,7 @@ public class strrtg_list_loop1_1_0 extends RegisteringStrategy {
 	public static final strrtg_list_loop1_1_0 instance = new strrtg_list_loop1_1_0();
 	
     public void registerImplementators(StrategyCollector collector) { 
-      collector.registerStrategyImplementator("strrtg-list-loop1", instance);
+      collector.registerStrategyImplementator("strrtg_list_loop1_1_0", instance);
     }
 	
     public void bindExecutors(StrategyCollector collector) { 

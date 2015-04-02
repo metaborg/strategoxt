@@ -9,9 +9,13 @@ import org.spoofax.interpreter.terms.ITermFactory;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SRTS_EXT_string_replace_0_2 extends Strategy {
+public class SRTS_EXT_string_replace_0_2 extends RegisteringStrategy {
 	
 	public static SRTS_EXT_string_replace_0_2 instance = new SRTS_EXT_string_replace_0_2();
+	
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_EXT_string_replace_0_2", instance);
+	}
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current,

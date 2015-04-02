@@ -11,7 +11,7 @@ public class strrtg_repeat_1_0 extends SRTS_EXT_repeat_1_0 {
 	public static final strrtg_repeat_1_0 instance = new strrtg_repeat_1_0();
 	
     public void registerImplementators(StrategyCollector collector) { 
-      collector.registerStrategyImplementator("strrtg-repeat", instance);
+      collector.registerStrategyImplementator("strrtg_repeat_1_0", instance);
     }
 	
     public void bindExecutors(StrategyCollector collector) { 

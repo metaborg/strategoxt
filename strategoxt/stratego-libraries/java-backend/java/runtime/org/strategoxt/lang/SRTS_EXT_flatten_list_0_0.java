@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
 
 /*
  * Optimization of `flatten-list'.
@@ -22,9 +21,14 @@ import org.strategoxt.lang.Strategy;
  *
  * @author Tobi Vollebregt
  */
-public class SRTS_EXT_flatten_list_0_0 extends Strategy {
+public class SRTS_EXT_flatten_list_0_0 extends RegisteringStrategy {
 
 	public static SRTS_EXT_flatten_list_0_0 instance = new SRTS_EXT_flatten_list_0_0();
+	
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_EXT_flatten_list_0_0", instance);
+	}
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {

@@ -4,6 +4,7 @@ import static org.strategoxt.lang.Term.NO_STRATEGIES;
 import static org.strategoxt.lang.Term.NO_TERMS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.interpreter.util.IAsyncCancellable;
 import org.spoofax.terms.TermFactory;
+import org.strategoxt.lang.LibraryInitializer.InitializerSetEntry;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
 
@@ -209,10 +211,14 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
 	public IStrategoTerm invokeStrategy(String strategy, IStrategoTerm input)
 			throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
+		Strategy collectedStrategy = getStrategyCollector().getStrategyExecutor(org.spoofax.interpreter.core.Interpreter.cify(strategy) + "_0_0");
+		if (collectedStrategy != null) {
+			return collectedStrategy.invoke(this, input);
+		}
 
 		SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
     	if (caller == null) caller = new SSL_EXT_java_call();
-    	return caller.call(this, strategy, input, false);
+    	return caller.call(this, strategy, input, true);
 	}
 
 	private IStrategoList toCLITerm(String appName, String... args) {

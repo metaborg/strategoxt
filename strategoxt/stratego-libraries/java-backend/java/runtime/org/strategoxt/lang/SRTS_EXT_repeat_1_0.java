@@ -15,7 +15,7 @@ public class SRTS_EXT_repeat_1_0 extends RegisteringStrategy {
 	public static SRTS_EXT_repeat_1_0 instance = new SRTS_EXT_repeat_1_0();
 	
     public void registerImplementators(StrategyCollector collector) { 
-      collector.registerStrategyImplementator("SRTS-EXT-repeat", instance);
+      collector.registerStrategyImplementator("SRTS_EXT_repeat_1_0", instance);
     }
 	
     public void bindExecutors(StrategyCollector collector) { 
