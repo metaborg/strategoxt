@@ -61,14 +61,6 @@
 		</subant>
 		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
-			<property name="dep.gpp" location="${repository.syntax}/share/strategoxt/gpp" />
-			<property name="base-strategoxt" value="${base-strategoxt}" />
-			<fileset dir="tool-doc" includes="build.xml" />
-			<target name="build" />
-			<target name="install" />
-		</subant>
-		<subant inheritall="false">
-			<property name="install-prefix" location="${install-prefix}" />
 			<property name="base-strategoxt" value="${base-strategoxt}" />
 			<fileset dir="lib" includes="build.xml" />
 			<target name="build" />
@@ -79,6 +71,15 @@
 			<property name="dep.libstratego-lib" location="${repository.libraries}/share/strategoxt/libstratego-lib" />
 			<property name="base-strategoxt" value="${base-strategoxt}" />
 			<fileset dir="xtc" includes="build.xml" />
+			<target name="build" />
+			<target name="install" />
+		</subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.gpp" location="${repository.syntax}/share/strategoxt/gpp" />
+			<property name="dep.xtc" location="${repository.libraries}/share/strategoxt/libstratego-xtc" />
+			<property name="base-strategoxt" value="${base-strategoxt}" />
+			<fileset dir="tool-doc" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
