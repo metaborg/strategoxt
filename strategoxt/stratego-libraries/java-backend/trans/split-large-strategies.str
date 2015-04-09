@@ -1,5 +1,7 @@
 module split-large-strategies
 
+imports libstrc
+
 overlays
   /**
    * Minimum number of _terms_ in a strategy definition required to split it up.

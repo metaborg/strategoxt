@@ -1,4 +1,7 @@
-module sdf/production/attributes
+module lib/sdf/production/attributes
+
+imports libstratego-sdf
+
 strategies
 
   /**

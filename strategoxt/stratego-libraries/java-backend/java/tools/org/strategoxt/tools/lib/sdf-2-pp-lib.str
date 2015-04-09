@@ -1,12 +1,15 @@
 /**
  * @author  Merijn de Jonge <mdjonge@cwi.nl>
  */
-module sdf-2-pp-lib
+module lib/sdf-2-pp-lib
 imports
-  pp-table
-  Bracket-Symbol
-  sdf/production/utils
-  sdf/production/attributes
+  lib/Bracket-Symbol
+  lib/sdf/production/utils
+  lib/sdf/production/attributes
+  lib/gen-renamed-sdf-module
+  libstratego-sdf
+  libstratego-xtc
+  libstratego-gpp
 
 strategies
 

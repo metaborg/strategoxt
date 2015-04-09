@@ -1,7 +1,8 @@
-module parse-pp-table
+module lib/parse-pp-table
 imports 
   libstratego-lib
   libstratego-xtc
+  libstratego-gpp
 
 strategies
   

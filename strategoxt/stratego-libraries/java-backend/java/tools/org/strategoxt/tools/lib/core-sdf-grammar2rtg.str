@@ -3,7 +3,7 @@
  *
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module lib/sdf2imp/core-sdf-grammar2rtg
+module lib/core-sdf-grammar2rtg
 imports
   libstratego-lib
   libstratego-rtg

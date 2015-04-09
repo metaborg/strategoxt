@@ -1,6 +1,7 @@
 module separate-compilation/unit-cache
 
 imports cleardep/cleardep
+imports cleardep/fileutils
 imports separate-compilation/fileutils
 
 strategies

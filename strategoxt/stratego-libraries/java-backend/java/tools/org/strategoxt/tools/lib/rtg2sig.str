@@ -3,12 +3,12 @@
  *
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module rtg2sig
+module lib/rtg2sig
 imports
   libstratego-lib
   libstratego-xtc
   libstratego-tool-doc
-  regular-xtc-tools
+  lib/regular-xtc-tools
   lib/core-rtg2sig
   lib/module-option
   Sdf2

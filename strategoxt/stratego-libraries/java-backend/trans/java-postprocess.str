@@ -9,6 +9,9 @@ module java-postprocess
 
 imports
   libjava-front
+  strj-options
+  s2j
+  
 
 overlays
 

@@ -1,7 +1,12 @@
 module separate-compilation/create-signature
 
-imports libstrategolib
+imports libstratego-lib
+imports libstrc
+imports libstratego-xtc
+
 imports separate-compilation/utils
+imports cleardep/cleardep
+imports cleardep/fileutils
 
 strategies
 

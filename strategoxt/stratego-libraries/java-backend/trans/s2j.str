@@ -262,27 +262,39 @@ rules
        Context context = init();
        context.setStandAlone(true);
        try {
-         IStrategoTerm result;
+         IStrategoTerm result = null;
          try {
            result = context.invokeStrategyCLI(context.getStrategyCollector().getStrategyExecutor("~x_main"), "~x_name", args);
+           System.out.println("Completed normally with result " + result);
          } finally {
            context.getIOAgent().closeAllFiles();
+           System.out.println("All files closed");
          }
+         
          if (result == null) {
            System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
            context.printStackTrace();
            context.setStandAlone(false);
            System.exit(1); 
          } else {
-           System.out.println(result);
-           context.setStandAlone(false);
+           System.out.println("Successful Result: " + result);
+           try {
+      		 context.setStandAlone(false);
+           } catch ( Throwable tw) {
+           	tw.printStackTrace();
+           }
+           
            System.exit(0);
          }
        } catch (StrategoErrorExit exit) {
+       	 System.out.println("Stratego Error Exit: " + exit.getClass());
+       	 exit.printStackTrace();
          context.setStandAlone(false);
          System.err.println(exit.getLocalizedMessage());
          System.exit(exit.getValue());
        } catch (StrategoExit exit) {
+       	 System.out.println("StrategoExit: " + exit.getClass());
+       	 exit.printStackTrace();
          context.setStandAlone(false);
          System.exit(exit.getValue());
        }
@@ -305,7 +317,7 @@ rules
    //  public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
    //    return x_main.instance;
    //  }
-    ]|
+    ]| 
     where
       <get-config> "-m" <+ not(<get-config> "--library")
     with

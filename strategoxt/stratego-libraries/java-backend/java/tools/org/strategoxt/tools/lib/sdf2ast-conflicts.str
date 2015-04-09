@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.11
  */
-module sdf2ast-conflicts
+module lib/sdf2ast-conflicts
 imports
   libstratego-lib
 //  Stratego
@@ -14,6 +14,7 @@ imports
   lib/sdf-spread-cons
   lib/native-transform
   lib/sdf/symbol/implode
+  lib/sdf-options
 
 
 strategies

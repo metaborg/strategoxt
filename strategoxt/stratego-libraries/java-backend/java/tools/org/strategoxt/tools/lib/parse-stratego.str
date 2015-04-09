@@ -1,4 +1,4 @@
-module parse-stratego
+module lib/parse-stratego
 imports 
   libstratego-lib
   libstratego-xtc 

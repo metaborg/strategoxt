@@ -3,7 +3,7 @@
  *
  * Positions start at 0.
  */
-module ast-conflicts
+module lib/ast-conflicts
 
 signature
  constructors

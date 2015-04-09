@@ -1,7 +1,7 @@
 /**
  * @todo Import sdf/tool/options and remove definitions.
  */
-module sdf-options
+module lib/sdf-options
 strategies
 
   sdf-main-module-option =

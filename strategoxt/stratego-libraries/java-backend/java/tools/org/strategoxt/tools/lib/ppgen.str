@@ -1,10 +1,11 @@
-module ppgen
+module lib/ppgen
 imports
   libstratego-lib
   libstratego-xtc
   libstratego-sdf
-  sdf-2-pp-table
-  pp-pp-table
+  libstratego-sglr
+  lib/sdf-2-pp-table
+  lib/pp-pp-table
 
 signature
   constructors

@@ -3,6 +3,7 @@ module cleardep/cleardep
 imports libstrategolib
 imports cleardep/fileutils
 imports separate-compilation/process-deps
+imports separate-compilation/compiler-config
 
 signature
 	constructors
@@ -263,7 +264,3 @@ strategies
 			; unpack-stratego-unit
 			; prim("ClearDep_CompilationUnit_set_interface_hash",|hash)
 		) <+ fail-with-message(|["Set local interface hash failed for ", <id> , " with hash " , hash])
-		
-	create-compiler-options = 
-		prim("ClearDep_create_compiler_options")
-		<+ fail-with-message(|["Create compiler options failed for ", <id>])

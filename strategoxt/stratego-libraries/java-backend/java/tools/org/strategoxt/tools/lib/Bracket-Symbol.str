@@ -4,7 +4,7 @@
  * Used to indicate postions in AST's where during
  * pretty-printing brackets should be inserted
  */
-module Bracket-Symbol
+module lib/Bracket-Symbol
 signature
   constructors
     bracket-symbol : S -> S
