@@ -9,6 +9,7 @@ module s2j-options
 
 imports
   libstrc
+  separate-compilation/std-lib-utils
   s2j
 
 rules
@@ -30,7 +31,7 @@ rules
     , if is-substring(!"/") + is-substring(!"\\") then
         warn(|"Ignoring library import: must be a Java package name")
       else
-        <post-extend-config> ("-la", [<translate-default-library>]); !()
+        <post-extend-config> ("-la", [<translate-library>]); !()
       end
     , !"-la <name>         Include library in package <name>"
     )
@@ -47,7 +48,15 @@ rules
     )
   + Option(
       "--no-default-lib"
-      , <set-config> ("-la", <get-config;remove-all(?"org.strategoxt.stratego_lib")> "-la"); !()
+      ,  log(|Warning(), "Dont link against default library")
+        ;<set-config> ("-la", 
+         	 <get-config
+         	;remove-all(
+         	 	  id => lib
+         	 	; <translate-default-library>"stratego-lib" => defaultlib
+         	 	; !lib
+         	 	; ?defaultlib
+         	 	)> "-la"); !()
       , !"--no-default-lib   Default library is not added to imports.")
   + Option(
       "--strategy-forward-declaration"
@@ -105,30 +114,15 @@ rules
     )
   
   // For compatibility, allow a number of built-in library names
-  translate-default-library =
-	switch id
-	case "stratego-aterm" + "stratego-gpp" + "stratego-rtg" + "stratego-sdf" + "stratego-sglr" + "stratego-tool-doc":
-		<conc-strings> ("org.strategoxt.", <explode-string;map(if ?'-' then !'_' else id end);implode-string>)
-	case "stratego-strc":
-		!"org.strategoxt.strc"
-	case "java-front":
-		!"org.strategoxt.javafront"
-	case "stratego-lib":
-		!"org.strategoxt.stratego_lib_posix_xsi"
-	case "stratego-xtc":
-		!"org.strategoxt.stratego_xtc_posix_xsi"
-	case "stratego-parallel":
-		<conc-strings> ("org.strategoxt.lang.parallel.", <id>)
-	otherwise:
-		jify
-	end
+  translate-library =
+	translate-default-library <+jify
   
   // For compatibility, ignore all built-in library paths
   // (e.g., -la /home/.../java-front.la)
-  translate-default-library-path =
+  translate-library-path =
     base-filename;
     remove-extension;
-    translate-default-library
+    translate-library
  
   parse-define-option =
     risky(

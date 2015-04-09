@@ -1,5 +1,9 @@
 module separate-compilation/fileutils
 
+imports libstratego-xtc
+imports libstrc
+imports cleardep/fileutils
+
 strategies
 		separate-compilation-get-file : name->
 			FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
@@ -42,9 +46,8 @@ strategies
 		; fetch-elem(
 			{file-extension:
 				  ?file-extension
-				; ![dir, "/", module-name, file-extension]
-				; concat-strings
-				; file-exists
+				; !RelativePath(AbsolutePath(dir), <concat-strings>[ module-name, file-extension])
+				; where(path-exists)
 			})	
 		
 	xtc-get-module-file(|module-name, file-extensions) =
@@ -62,8 +65,8 @@ strategies
 	get-module-file(|module-name, file-extensions) =
 		file-get-module-file(|module-name, file-extensions)
 		<+ xtc-get-module-file(|module-name, file-extensions)
-
-	is-module-available-get-file =
+		
+	is-module-available-get-relative-file =
 		  ?(IncludeFromPath(<id>), includes)
 		; if has-extension(|"str") then
 			remove-extension
@@ -72,6 +75,10 @@ strategies
 		; !includes
 		; fetch(get-module-file(|module-name, [".str", ".rtree"]); ?file)
 		; !file
+		  
+	is-module-available-get-file = 
+		is-module-available-get-relative-file
+		; path-get-full-path
 		
 		
 	

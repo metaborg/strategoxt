@@ -1,10 +1,22 @@
 module separate-compilation/utils
 
+imports libstrc
+imports libstratego-lib
+
+imports cleardep/cleardep
+
+imports separate-compilation/fileutils
+imports separate-compilation/compiler-config
+
+imports backend-simplify
+imports s2j
+
 strategies
 
+	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
+
 	is-main-module-contained(|circular-units) =
-	log(|Info(), "Is main module contained");
-		where(<debug;elem;debug> (<MainModule;get-stratego-source-file>, <map(get-stratego-source-file)> circular-units))
+		where(<elem> (<MainModule;get-stratego-source-file>, <map(get-stratego-source-file)> circular-units))
 
 	transform-imports-and-move-to-front (import-predicate, import-transform, collect-transform) =
 		  ?Module(name, content)
@@ -33,6 +45,10 @@ strategies
 	import-get-file = 
 		  \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
 		; is-module-available-get-file
+	
+	import-get-relative-file = 
+		 \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
+		; is-module-available-get-relative-file
 		
 	import-is-file =
 		  import-get-file
@@ -49,8 +65,8 @@ strategies
 		if is-main-module-contained(|circular-units)
 		then
 			log(|Info(), "Main mod contained");
-			if and(generate-main, InitialCompilerConfigList;debug;not(fetch-elem(?("--library",_))))
-				then where(<debug;set-config> ("-m", <get-config <+ !"main"> "-m"))
+			if and(generate-main, InitialCompilerConfigList;not(fetch-elem(?("--library",_))))
+				then where(<set-config> ("-m", <get-config <+ !"main"> "-m"))
 			end
 		else
 			where(	<rm-config> "-m")
@@ -60,4 +76,29 @@ strategies
 		
 		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout));
 		where(<if not(?()) then <set-config> ("-m", <id>) end> main )
+		
+		
+	to-library-name = separate-compilation-modify-filename(if ?"char" + ?"term" + ?"interface" + ?"class" then !["_", <id>];concat-strings end ; jify)
+	to-java-compilation-folder:   modulename -> <to-library-name;jify; dollars-for-capitals> modulename
+	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify; dollars-for-capitals> modulename
+	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
+	to-java-compilation-abs-path (| working-output):modulename -> <concat-strings> [working-output, <to-java-compilation-folder> modulename, "/"]
+	to-java-compilation-abs-file (| working-output) =
+		  id => modulename 
+		; to-java-compilation-filename
+		; string-path-append(|<to-java-compilation-abs-path(|working-output)> modulename)
+
+	
+	mkdirs = 
+		   file-exists 
+		<+ mkdir
+		<+   where(	  explode-string
+					;reverse
+					;drop(|1)
+					;drop-until(?'/')
+					;drop(|1)
+					;reverse
+					;implode-string
+					;mkdirs)
+		   ; mkdir
 	 

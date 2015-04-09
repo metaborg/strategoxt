@@ -15,6 +15,7 @@ imports
   strj-version
   strj
   separate-compilation/separate-compilation-options
+  separate-compilation/std-lib-utils
 
 strategies
 
@@ -25,7 +26,7 @@ strategies
   ; <set-config> ("-O", 0)
   ; <set-config> ("-I", [])
   ; <set-config> ("--no-concrete-syntax-externals", 1)
-  ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib"])
+  ; <post-extend-config> ("-la", [<translate-default-library>"stratego-lib"])
  
   strj-parse-options =
     with(

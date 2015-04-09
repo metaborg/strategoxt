@@ -6,6 +6,12 @@ imports separate-compilation/utils
 imports separate-compilation/process-deps
 imports separate-compilation/separate-compilation-options
 imports separate-compilation/fileutils
+imports separate-compilation/unit-cache
+imports separate-compilation/create-signature
+imports separate-compilation/compiler-config
+imports separate-compilation/std-lib-utils
+imports s2j-options
+imports libstrc
 
 signature
 	constructors
@@ -25,7 +31,7 @@ strategies
         )*/
 	  
 	strc-front-end1(back-end) =
-	{| CompilingModules, ImportMap :
+	{|  :
 		  log-timed(
 			  strc-get-infile
 			; log(|Info(), ["Calling separate front end ", <id>])
@@ -54,7 +60,7 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-	{| MainModule, InitialCompilerConfig, InitialCompilerConfigList, CompilationUnitCache :
+		scope-compiler-config(scope-unit-cache( {| MainModule :
 		  where(collect-config)
 		; where(fileName := <\FILE(s) -> s\>) 
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
@@ -64,7 +70,6 @@ strategies
 		; fetch-elem(\IncludeDir(d) -> <path-relativize(| AbsolutePath(d))>  absolute-file\)
 		; path-remove-extension
 		; ?RelativePath(_,<id>)
-		; debug
 		; if complete-rebuild 
 			then create-compilation-unit-for-module(|<id>)
 			else read-or-create-compilation-unit-for-module(|<id>)
@@ -87,8 +92,7 @@ strategies
 		; flattenBuildSchedule
 		; if is-global-compilation
 			then
-				  debug
-				; foldr(![], (task-get-units,id);conc)
+				  foldr(![], (task-get-units,id);conc)
 				; ![<id>]
 		  end
 		; log(|Info(), ["Calculated build schedule ", <id>])
@@ -109,7 +113,7 @@ strategies
 				; map (write-compilation-unit)
 				//end
 		)
-	|}	
+	|}))
 
 	
 	compile (back-end|working-package,working-output)=
@@ -198,8 +202,6 @@ strategies
 			
 				; !merged-ast
 				; !IncludeAST(merged-ast,fileName)
-				
-				; log(|Notice(), ["Packing ", merged-ast])
 
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec
@@ -236,24 +238,9 @@ strategies
 			}
 			; !circular-units
 			}
-	 
-
-	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	
 	
-	to-library-name = separate-compilation-modify-filename(if ?"char" + ?"term" + ?"interface" + ?"class" then !["_", <id>];concat-strings end ; jify)
-	to-java-compilation-folder:   modulename -> <to-library-name;jify; dollars-for-capitals> modulename
-	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify; dollars-for-capitals> modulename
-	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
-	to-java-compilation-abs-path (| working-output):modulename -> <concat-strings> [working-output, <to-java-compilation-folder> modulename, "/"]
-	to-java-compilation-abs-file (| working-output) =
-		  id => modulename 
-		; to-java-compilation-filename
-		; string-path-append(|<to-java-compilation-abs-path(|working-output)> modulename)
-
 	
-	mkdirs = 
-	file-exists <+ mkdir <+ where(explode-string;reverse;drop(|1);drop-until(?'/');drop(|1);reverse;implode-string;mkdirs);mkdir
 	
 	
 	separate-compilation-rewrite-imports(back-end|module-name, module-unit, working-package,working-output, circular-units) =
@@ -285,6 +272,11 @@ strategies
 					end
 				
 			}
+			
+			get-file-add-external-file-dependency(|import-name) =
+				  !import-name
+				; separate-compilation-get-relative-file
+				; add-external-file-dependency(|module-unit)
 			
 			process-import-str(|circular-source-files) =
 			{ term: 

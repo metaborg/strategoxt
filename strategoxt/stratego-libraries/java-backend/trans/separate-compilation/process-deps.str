@@ -1,8 +1,12 @@
 module separate-compilation/process-deps
 
 imports separate-compilation/utils
-imports cleardep/cleardep
 imports separate-compilation/unit-cache
+imports separate-compilation/fileutils
+imports separate-compilation/separate-compilation-options
+imports libstrc
+imports cleardep/cleardep
+imports cleardep/fileutils
 
 strategies
 
@@ -17,7 +21,7 @@ strategies
 		; <filter(\Imports(x)->x\)> content
 		; map(mapconcat(pack-expand-import))
 		; concat
-		; filter(where(\x -> <debug;import-is-file> Import(x)\))
+		; filter(where(\x -> <debug;is-import-dependency> Import(x)\))
 		; map(
 					if complete-rebuild
 						then create-if-not-in-cache-or-read-compilation-unit-for-module(|<id>)
@@ -27,3 +31,14 @@ strategies
 		; map (unpack-stratego-unit)
 				  
 	
+		is-import-dependency =
+			
+			//where(<debug> ["Is dependency? ", <id>]);
+			  import-get-relative-file
+			//; where(<debug> ["Relative file ", <id>])
+			; path-get-full-path
+			; !(IncludePathName(<id>), <pack-include-path>)
+			; separate-compilation-parse-file
+			; Snd
+			//; where(<debug> ["Parse result", <id>])
+			; ?Module(_,_) // Specifications are not unit dependencies, they get included
