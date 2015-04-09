@@ -2,6 +2,9 @@
  * Use for POSIX and POSIX+XSI
  */
 module stratego/xtc/posix/Repository
+
+imports stratego/xtc/Repository
+
 strategies
 
   read-repository-file = 

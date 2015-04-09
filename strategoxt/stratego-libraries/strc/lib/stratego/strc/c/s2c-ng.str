@@ -4,7 +4,7 @@
  * performed; this module will not invoke the C compiler.
  * 
  */
-module s2c-ng
+module stratego/strc/c/s2c-ng
 
 imports 
   libstratego-lib

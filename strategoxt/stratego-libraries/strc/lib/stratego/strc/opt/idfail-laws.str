@@ -1,5 +1,9 @@
-module idfail-laws
-imports Stratego
+module stratego/strc/opt/idfail-laws
+
+imports
+	Stratego
+	stratego/strc/pp/stratego2abox
+	
 strategies
 
   ElimId = I1 + I2 + I3 + I4 + I7 + I8 + I9 + I10 + I12 + I16

@@ -2,7 +2,7 @@
  * Desugar list matching.
  */
 
-module desugar-list-matching
+module stratego/strc/front/desugar-list-matching
 
 imports Stratego-Sugar 
 	stratego/strc/front/desugar 

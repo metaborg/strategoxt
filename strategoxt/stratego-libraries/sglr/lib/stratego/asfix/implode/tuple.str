@@ -2,6 +2,9 @@
  * Implosion of AsFix tuples
  */
 module stratego/asfix/implode/tuple
+
+imports stratego/asfix/signature
+
 rules
 
   ImplodeTuple : 

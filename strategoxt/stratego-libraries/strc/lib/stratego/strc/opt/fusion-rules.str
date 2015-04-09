@@ -1,4 +1,4 @@
-module fusion-rules
+module stratego/strc/opt/fusion-rules
 imports Stratego
 
 rules

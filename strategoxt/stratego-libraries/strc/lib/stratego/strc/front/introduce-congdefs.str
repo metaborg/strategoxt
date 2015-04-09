@@ -2,13 +2,14 @@
  * Introduce congruence definitions
  */
 
-module introduce-congdefs
+module stratego/strc/front/introduce-congdefs
 
 imports Stratego-Sugar 
 	stratego/strc/front/desugar 
 	stratego/strc/lib/stratlib 
 	Stratego-Sugar-MetaTransition
 	stratego/strc/front/strategy-annos
+	stratego/strc/front/DefaultStrat
 
 strategies
 

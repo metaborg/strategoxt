@@ -1,4 +1,4 @@
-module needed-constructors
+module stratego/strc/front/needed-constructors
 imports stratego/strc/lib/stratlib Stratego-MetaTransition
 strategies 
 

@@ -1,6 +1,7 @@
 module stratego/rtg/parse
 imports
   libstratego-sglr
+  stratego/rtg/signature
 
 strategies
 
@@ -26,7 +27,6 @@ strategies
        ; ?tbl
        ; rules(MemoRTGParseTable: _ -> tbl)
 
-  external STRRTG-get-rtg-parsetable(|)
 
 strategies
 

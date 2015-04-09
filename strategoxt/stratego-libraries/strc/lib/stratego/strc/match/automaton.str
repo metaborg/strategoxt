@@ -1,4 +1,4 @@
-module automaton
+module stratego/strc/match/automaton
 imports Stratego
 
 signature

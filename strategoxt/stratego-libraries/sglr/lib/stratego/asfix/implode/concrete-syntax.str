@@ -4,6 +4,10 @@
 module stratego/asfix/implode/concrete-syntax
 imports
   stratego/concrete-syntax/markers
+  stratego/asfix/implode/layout
+  stratego/asfix/signature
+  stratego/asfix/implode/constructor
+  stratego/asfix/implode/lexical
 
 strategies
     

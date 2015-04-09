@@ -1,4 +1,4 @@
-module overlay-test
+module overlay-test-b
 imports libstratego-lib
 signature
   sorts AsFixTerm

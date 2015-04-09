@@ -2,7 +2,7 @@
  * Translate rewrite rules to strategy definitions.
  */
 
-module rules-to-sdefs
+module stratego/strc/front/rules-to-sdefs
 imports Stratego-Sugar 
 	stratego/strc/lib/stratlib
 strategies

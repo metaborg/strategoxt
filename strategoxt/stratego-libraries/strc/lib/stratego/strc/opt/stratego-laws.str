@@ -1,6 +1,6 @@
 // This module specifies basic simplification rules for strategies.
 
-module stratego-laws
+module stratego/strc/opt/stratego-laws
 
 imports 
   libstratego-lib 

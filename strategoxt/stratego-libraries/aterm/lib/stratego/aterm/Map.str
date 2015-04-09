@@ -1,7 +1,7 @@
 /**
  * @author  Martin Bravenboer
  */
-module stratego/aterm/sMap
+module stratego/aterm/Map
 imports
   libstratego-lib	
   libstratego-xtc

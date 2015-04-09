@@ -2,6 +2,9 @@
  * Implosion of AsFix Layout
  */
 module stratego/asfix/implode/layout
+
+imports stratego/asfix/signature
+
 strategies
 
   /**

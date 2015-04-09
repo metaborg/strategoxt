@@ -2,7 +2,7 @@
  * @TODO: Use new abstract syntax for annotations.
  */
 
-module congruence-laws
+module stratego/strc/opt/congruence-laws
 imports Stratego-Sugar Stratego-Sugar-MetaTransition 
 	stratego/strc/front/desugar
 

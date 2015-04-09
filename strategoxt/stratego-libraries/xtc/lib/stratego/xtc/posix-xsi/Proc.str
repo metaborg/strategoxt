@@ -2,6 +2,10 @@
  * Used for POSIX+XSI
  */
 module stratego/xtc/posix-xsi/Proc
+
+imports
+	stratego/xtc/posix/Proc
+
 strategies
 
   /**

@@ -10,6 +10,9 @@
  * Note: these strategies are not used in the main implode-asfix.
  */
 module stratego/asfix/implode/conc
+
+imports stratego/asfix/signature
+
 rules
 
   CTC0 : Snoc(x, y) -> Conc(x, Ins(y))

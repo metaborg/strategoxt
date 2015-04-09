@@ -1,4 +1,4 @@
-module frames
+module stratego/strc/c/frames
 signature
   constructors
     Offsets      : Int * Int -> Annotation

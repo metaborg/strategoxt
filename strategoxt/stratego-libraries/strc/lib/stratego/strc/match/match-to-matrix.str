@@ -1,4 +1,4 @@
-module match-to-matrix
+module stratego/strc/match/match-to-matrix
 imports Stratego 
 	stratego/strc/match/matrix 
 	stratego/strc/front/desugar 

@@ -1,6 +1,6 @@
 // Translating renamed matrix to automaton
 
-module matrix-to-dfa
+module stratego/strc/match/matrix-to-dfa
 imports stratego/strc/match/matrix 
 	stratego/strc/opt/stratego-laws 
 	stratego/strc/front/desugar 

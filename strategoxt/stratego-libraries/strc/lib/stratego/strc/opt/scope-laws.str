@@ -1,5 +1,9 @@
-module scope-laws
-imports Stratego libstratego-lib
+module stratego/strc/opt/scope-laws
+
+imports
+	Stratego
+	libstratego-lib
+	stratego/strc/lib/stratlib
 
 rules
 

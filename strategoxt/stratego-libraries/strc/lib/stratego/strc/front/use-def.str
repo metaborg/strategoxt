@@ -1,4 +1,4 @@
-module use-def
+module stratego/strc/front/use-def
 imports Stratego-Sugar 
 	stratego/strc/lib/stratlib 
 	stratego/strc/opt/bound-unbound-vars

@@ -1,9 +1,10 @@
-module inlining
+module stratego/strc/opt/inlining
 
 imports Stratego-Amb 
 	stratego/strc/lib/stratlib 
 	stratego/strc/opt/stratego-laws 
 	stratego/strc/front/rename-defs
+	stratego/strc/opt/optimizer
 
 /**
  * Inlining with Definition Environment

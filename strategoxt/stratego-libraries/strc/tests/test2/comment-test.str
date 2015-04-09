@@ -1,6 +1,6 @@
 /**** WARNING **** THIS FILE WAS GENERATED **** DO NOT EDIT **** WARNING ****/
 
-module bol-syntax
+module comment-test
 signature
   sorts
     BOLLambda BOLBndVar BOLVar

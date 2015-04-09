@@ -11,6 +11,7 @@ imports
   libstratego-lib
   libstratego-xtc
   libstratego-gpp
+  stratego/tool-doc/PrettyPrint
 
 strategies
 
@@ -225,13 +226,14 @@ rules
   DesugarToolDoc :
     Config(items) -> HSection("Configuration:", [DefList(items)])
 
+  // TODO Needed for bootstrapping
+  external xtc-GetInternalDefaultXtcRepository(|)
+
   DesugarToolDoc :
-    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <GetInternalDefaultXtcRepository <+ !"not available"> ())
+    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <xtc-GetInternalDefaultXtcRepository <+ !"not available"> ())
 
   DesugarToolDoc :
     CurrentXTCRepository() -> ConfigItem("Current XTC Repository", <xtc-location <+ !"not available"> ())
-
-  external GetInternalDefaultXtcRepository(|)
 
   DesugarToolDoc :
     ConfigItem(k, v) -> Def(k, Line(v))

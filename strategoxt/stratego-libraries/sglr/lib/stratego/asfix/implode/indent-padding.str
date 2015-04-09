@@ -4,8 +4,12 @@
  * @author Lennart Kats
  */
 module stratego/asfix/implode/indent-padding
+
 imports
   stratego/concrete-syntax/markers
+  stratego/asfix/signature
+  stratego/asfix/implode/lexical
+  stratego/asfix/implode/conc
 
 signature constructors
 

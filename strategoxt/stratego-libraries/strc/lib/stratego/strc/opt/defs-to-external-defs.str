@@ -1,5 +1,10 @@
-module defs-to-external-defs
-imports libstratego-lib Stratego
+module stratego/strc/opt/defs-to-external-defs
+
+imports
+	libstratego-lib
+	Stratego
+	stratego/strc/lib/stratlib
+
 strategies
 
   dted-options =

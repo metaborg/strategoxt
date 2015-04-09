@@ -1,4 +1,4 @@
-module bound-unbound-vars
+module stratego/strc/opt/bound-unbound-vars
 imports stratego/strc/lib/stratlib
 strategies
 

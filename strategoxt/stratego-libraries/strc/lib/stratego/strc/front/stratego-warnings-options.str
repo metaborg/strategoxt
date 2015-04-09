@@ -10,7 +10,7 @@
  *
  * @author Merijn de Jonge (m.de.jonge@tue.nl)
  */
-module stratego-warnings-options
+module stratego/strc/front/stratego-warnings-options
 
 imports Stratego-Sugar
 

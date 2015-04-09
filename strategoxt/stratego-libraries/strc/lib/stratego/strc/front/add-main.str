@@ -1,4 +1,9 @@
-module add-main
+module stratego/strc/front/add-main
+
+imports
+	Stratego-Sugar
+	stratego/strc/model/model
+
 strategies
 
   /**
