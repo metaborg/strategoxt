@@ -47,16 +47,6 @@ strategies
   	  	; frontend
 		; strc-optimize
 		
-	collect-config = 
-		  get-config-keys(id)
-		; map(
-			  !(<id>,<id>)
-			;(id,get-config)
-		) => value-list
-		; create-compiler-options => options
-		; rules(InitialCompilerConfig : _ -> options)
-		; rules(InitialCompilerConfigList : _ -> value-list)
-		
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
@@ -196,7 +186,7 @@ strategies
 			  ?(moduleName, work-unit, merged-ast, new-libs, fileName)
 			; save-and-set-options(
 				  where(libs := <get-config <+ ![]> "-la")
-				; where(<set-config>("-la", <conc;make-set> (libs, <map(Fst)> new-libs)))
+				; where(<set-config>("-la", <conc;make-set> (libs, new-libs)))
 				; log(|Notice(), ["Import transformation for ", moduleName])
 				; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
 			
@@ -252,13 +242,8 @@ strategies
 				; !Import(<id>)
 			
 			import-to-flag = \Import(name) -> 
-				(<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],
-		
-				 <concat-strings> [working-output, <to-library-name> name], 
-					 
-				 (name,Import(<to-java-compilation-rel-file> name)),
-				 
-				 <separate-compilation-get-file> name )\
+				<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name]
+				\
 			
 		
 					
@@ -281,11 +266,19 @@ strategies
 			process-import-str(|circular-source-files) =
 			{ term: 
 				  ?(term, <has-extension(|"str")>)
-				; get-unit-add-dependency(|<\Import(name) -> name\> term)
-				; if !(<id;get-stratego-source-file>, circular-source-files); elem 
+				; if !term; is-import-dependency
+					then  // regular module dependency
+					   log(|Notice(), ["Import to module ", term])
+					 ; get-unit-add-dependency(|<\Import(name) -> name\> term)
+					 ; if !(<id;get-stratego-source-file>, circular-source-files); elem 
 						then fail // Circular, do not transform
-						else !term; to-library-import
-				  end
+						else !term; to-library-import // Transform term to library import
+				  	   end
+					else // Import contains not a module but a specification -> no module dependency because specification is not named
+					   log(|Notice(), ["Import to file but not module ", term])
+					 ; get-file-add-external-file-dependency(|<\Import(name) -> name\> term)
+					 ; !term //Leave term untransformed because want to include str file
+				  end			
 			}
 				
 			process-import-rtree(|circular-source-files) =
@@ -300,7 +293,8 @@ strategies
 			process-import-default-lib(|circular-source-files) = 
 			{ lib, term:
 				  ?(term, lib)
-  				; !lib
+  				; !term
+				; ?Import(<id>)
   				; is-default-lib-rtree
   				; !term
   				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
@@ -316,22 +310,26 @@ strategies
 		; transform-imports-and-move-to-front(
 			{import, file:
 				  id => import
-				; import-get-file => file
-				; rules(File: import -> file)
+				; if not(Import(is-default-lib-rtree))
+				   then 
+					  import-get-file => file
+				    ; rules(File: import -> file)
+			       end
 			},
-			  !(<id>, <id;File>)
-			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
-			, if File;has-extension(|"str")
-				then import-to-flag
-				else fail // do not want to collect rtrees
+			  !(<id>, <id;try(File)>)
+			; (process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
+			, if try(File);has-extension(|"str")
+				then 
+					  where (is-import-dependency)
+					; import-to-flag
+				else 
+					  ?Import(<id>)
+					; where(is-default-lib-rtree)
+					; remove-lib-prefix
+					; translate-default-library // do not want to collect rtrees, but libraries
 			end
 			)
 		|}
 		end
 		
-	 	// Returns the rtree file for a default library import like libstrategolib
-		is-default-lib-rtree =
-			  ?"libstratego-lib" + ?"libstrategolib" + ?"libstratego-xtc"
-			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
-			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
-			+ ?"libstratego-parallel" + ?"libstrc"
+	 	

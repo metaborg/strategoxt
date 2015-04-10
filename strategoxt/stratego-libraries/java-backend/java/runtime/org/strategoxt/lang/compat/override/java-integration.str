@@ -3,7 +3,7 @@
  *
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-module java-integration
+module lang/compat/override/java-integration
 
 imports
   libstratego-lib

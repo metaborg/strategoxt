@@ -4,7 +4,7 @@
  *
  * @author Lennart Kats
  */
-module jsglr-parser-compat
+module lang/compat/override/jsglr-parser-compat
 
 imports
   libstratego-lib
