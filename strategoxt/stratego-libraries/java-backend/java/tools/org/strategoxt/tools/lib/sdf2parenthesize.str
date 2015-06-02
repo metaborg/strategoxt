@@ -175,7 +175,8 @@ strategies
   + signature-name-option
   + language-name-option
   + rule-prefix-option
-
+  + native-path-option
+  
   report-config =
       log(|Info(), <conc-strings> ("SDF main module is ", <get-sdf-main-module>))
     ; log(|Info(), <conc-strings> ("Name of output module is ", <s2p-guess-module-name>))
@@ -200,6 +201,12 @@ strategies
        ; <exit> 1
 
 strategies
+
+  native-path-option =
+  	ArgOption("--nativepath"
+    , ?s; <set-config> ("-Xnativepath", s)
+    , !HelpString("--nativepath", "Path where native executable for sdf2table resides")
+    )
 
   main-strategy-name-option =
     ArgOption("--main-strategy"
