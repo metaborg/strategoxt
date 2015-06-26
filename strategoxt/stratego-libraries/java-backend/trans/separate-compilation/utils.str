@@ -101,4 +101,13 @@ strategies
 					;implode-string
 					;mkdirs)
 		   ; mkdir
-	 
+
+   output-dirname =
+  //   (OutputDirName;where(<debug> "Cache");debug)
+ //  <+
+    <get-config> "-o"
+   ; if has-extension(|"java") + has-extension(|"ctree") then
+       dirname
+     end
+   ; try(file-exists <+ mkdir <+ fatal-err(|"Output directory does not exist"))
+   ; rules(OutputDirName := <id>)

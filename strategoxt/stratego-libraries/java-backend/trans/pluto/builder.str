@@ -1,0 +1,9 @@
+module pluto/builder
+
+imports cleardep/fileutils
+
+strategies
+	
+	require(|builder) = 
+		  path-get-full-path
+		; prim("PlutoInterface_Builder_RequireBuild", |builder)

@@ -1,0 +1,10 @@
+module pluto/builderfactory
+
+strategies
+	
+	builder-factory(description-strategy, persistent-path-strategy, build-strategy | factory-name) =
+		<Factories> factory-name <+ (
+			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, persistent-path-strategy, build-strategy |) => generated-factory
+			; rules(Factories: factory-name -> generated-factory)
+			; !generated-factory
+			)

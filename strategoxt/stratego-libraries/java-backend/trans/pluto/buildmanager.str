@@ -1,0 +1,5 @@
+module pluto/buildmanager
+
+strategies
+	
+	require-initially = prim("PlutoInterface_BuildManager_RequireInitially")

@@ -26,6 +26,14 @@ public class ObjectWrapperTerm<T> extends StrategoTerm {
 		this.object = object;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static <T> T get(IStrategoTerm term) {
+		if (!(term instanceof ObjectWrapperTerm)) {
+			throw new IllegalArgumentException("Need to get from an ObjectWrapperTerm");
+		}
+		return ((ObjectWrapperTerm<T>) term).get();
+	}
+	
 	public T get() {
 		return this.object;
 	}
