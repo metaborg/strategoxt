@@ -13,6 +13,10 @@ imports separate-compilation/std-lib-utils
 imports s2j-options
 imports libstrc
 
+imports pluto/buildmanager
+imports pluto/buildrequest
+imports separate-compilation/builder/-
+
 signature
 	constructors
 		IncludeAST: Term * String -> Include
@@ -32,6 +36,7 @@ strategies
 	  
 	strc-front-end1(back-end) =
 	{|  :
+		where(init-builders);
 		  log-timed(
 			  strc-get-infile
 			; log(|Info(), ["Calling separate front end ", <id>])
@@ -115,14 +120,13 @@ strategies
 		then 
 			  log(|Info(),["Check to compile, is consistent to interfaces, do not compile ", circular-units])
 		else
-			  map ( {parseResult, work-unit, fileName, moduleName:
-				  get-stratego-source-file
+			  map ( {parseResult, work-unit, fileName, moduleName, source-file:
+				  get-stratego-source-file => source-file
 				; path-get-full-path => fileName
-				; !(IncludePathName(fileName),<pack-include-path>)
-				 
-				; log(|Info(), ["Parse file:         ", <id>])
-				; (separate-compilation-parse-file <+ log(|Error(), ["File not found: ", <id>])) => parseResult
-				; where(moduleName:=<\(_,Module(name,_))->name\><id>)
+				
+				; <require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(source-file, <pack-include-path>))
+				  	=> ParseStrategoOutput(moduleName, parseResult)
+			
 				; log(|Info(), ["Check to compile, need to compile ", moduleName])
 				; log(|Info(), ["Compile to package: ", working-package])
 				; log(|Info(), ["Place files in:     ", working-output])

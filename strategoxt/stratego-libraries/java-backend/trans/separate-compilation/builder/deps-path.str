@@ -1,0 +1,16 @@
+module deps-path
+
+imports libstrategolib
+imports cleardep/fileutils
+imports separate-compilation/utils
+
+strategies
+	
+	
+	get-dep-path(|prefix): RelativePath(_, src-file) -> RelativePath(AbsolutePath(<output-dirname>), dest-file)
+		
+	 where
+	 	escaped-underscores := <string-char-string-replace(|'_', "__")> src-file;
+	 	flattend-dir := <string-char-replace(|'/', '_')> escaped-underscores;
+	 	dest-file := <conc-strings>(prefix, "_", flattend-dir , ".dep")
+	 	

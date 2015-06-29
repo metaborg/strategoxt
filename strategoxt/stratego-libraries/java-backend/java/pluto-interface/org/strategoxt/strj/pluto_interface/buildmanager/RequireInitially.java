@@ -8,7 +8,9 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
 import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory;
 import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory.GeneratedBuilder;
+import org.sugarj.common.Log;
 
+import build.pluto.builder.BuildManager;
 import build.pluto.builder.BuildManagers;
 import build.pluto.builder.BuildRequest;
 import build.pluto.output.Out;
@@ -24,10 +26,20 @@ public static final String NAME = "PlutoInterface_BuildManager_RequireInitially"
 	
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
+		try {
 		BuildRequest<IStrategoTerm, Out<IStrategoTerm>, GeneratedBuilder, GeneratedBuilderFactory> request = Conversions
 				.convertBuildRequest(arg0.current());
+		System.out.println("Request: " + request);
+		System.out.println("Factory: " + request.factory);
+		System.out.println("Input: " + request.input);
+		System.out.flush();
+		BuildManager.ASSERT_SERIALIZABLE = true;
 		IStrategoTerm result = BuildManagers.build(request).val();
 		arg0.setCurrent(result);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 

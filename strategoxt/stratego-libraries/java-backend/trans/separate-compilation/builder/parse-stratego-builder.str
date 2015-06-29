@@ -1,11 +1,14 @@
 module parse-stratego-builder
 
+imports libstrategolib
 imports libstrc
 imports cleardep/fileutils
 imports pluto/builder
 imports pluto/builderfactory
 imports separate-compilation/utils
 imports separate-compilation/fileutils
+
+imports separate-compilation/builder/deps-path
 
 signature
 	constructors
@@ -14,31 +17,37 @@ signature
 		
 strategies
 	
-	parse-stratego-builder-factory = builder-factory(
-		parse-stratego-builder-description,
-		parse-stratego-builder-persistent-path,
-		parse-stratego-builder-build | "ParseStrategoBuilderFactory"
-	)
+	parse-stratego-builder-factory =  let
 	
-	parse-stratego-builder-description :
-			ParseStrategoInput(file, _) -> <conc-strings> ("Parse ", file)
+		description :
+			ParseStrategoInput(RelativePath(_, src-file), _) -> <conc-strings> ("Parse ", src-file)
 			
-	parse-stratego-builder-persistent-path :
-			ParseStrategoInput(file, _) -> absolute-persistent-path
-		where
-			relative-file-name:= <separate-compilation-get-relative-file> file;
-			relative-persistent-path :=<conc-strings>(<to-java-compilation-folder> relative-file-name, "/parse.dep");
-			absolute-persistent-path := RelativePath(AbsolutePath(<output-dirname>), relative-persistent-path)
+		persistent-path :
+			ParseStrategoInput(file, _) -> <get-dep-path(|"parse")> file
+			
+		build = let
+			extract-module-name : (_, Module(name,_)) -> name
+		 in
+		  	?ParseStrategoInput(file, pack-include-path);
+			<require> file;
+			<path-get-full-path> file => file-path;
+			!(IncludePathName(file-path),pack-include-path);
+			(separate-compilation-parse-file 
+			<+ (log(|Error(), ["File not found: ", <id>]); fail)) => ast;
+			<extract-module-name> ast => module-name;
+			!ParseStrategoOutput(module-name, ast)
+     	end
 	
-	parse-stratego-builder-build = let
-		extract-module-name : (_, Module(name,_)) -> name
-	 in
-		  ?(builder, ParseStrategoInput(file, pack-include-path))
-		; <require> file
-		; <path-get-full-path> file => file-path
-	    ; !(IncludePathName(file-path),pack-include-path)
-	    ; (separate-compilation-parse-file 
-	      	<+ (log(|Error(), ["File not found: ", <id>]); fail)) => ast
-		; <extract-module-name> ast => module-name
-		; !ParseStrategoOutput(module-name, ast)
-     end
+	in 
+		builder-factory(
+			description,
+			persistent-path,
+			build | "ParseStrategoBuilderFactory"
+		)
+	end
+	
+	
+			
+	
+	
+	

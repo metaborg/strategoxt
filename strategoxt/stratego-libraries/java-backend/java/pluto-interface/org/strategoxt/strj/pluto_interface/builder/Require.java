@@ -34,6 +34,7 @@ public class Require extends AbstractPrimitive {
 		GeneratedBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
 		IStrategoTerm fileTerm = arg0.current();
 		String filePath = Term.asJavaString(fileTerm);
+		System.out.println("Require " + filePath);
 		enclosingBuilder.require(new File(filePath));
 		return true;
 	}

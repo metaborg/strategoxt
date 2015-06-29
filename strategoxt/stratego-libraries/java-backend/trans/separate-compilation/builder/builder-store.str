@@ -1,0 +1,11 @@
+module separate-compilation/builder/builder-store
+
+imports pluto/builderfactory
+imports separate-compilation/builder/-
+
+strategies
+	
+	init-builders = 
+		init-builder-factory-store;
+		parse-stratego-builder-factory
+		

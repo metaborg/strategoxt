@@ -14,6 +14,11 @@ imports s2j
 strategies
 
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
+	string-char-string-replace(|c1, c2) =
+		explode-string; 
+		map((?c1;!c2)<+![<id>]); 
+		flatten-list;
+		implode-string
 
 	is-main-module-contained(|circular-units) =
 		where(<elem> (<MainModule;get-stratego-source-file>, <map(get-stratego-source-file)> circular-units))

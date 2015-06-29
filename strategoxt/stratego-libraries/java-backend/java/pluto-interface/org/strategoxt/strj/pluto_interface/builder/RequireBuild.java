@@ -38,6 +38,15 @@ public class RequireBuild extends AbstractPrimitive {
 			GeneratedBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
 			BuildRequest<IStrategoTerm, Out<IStrategoTerm>, GeneratedBuilder, GeneratedBuilderFactory> request = Conversions
 					.convertBuildRequest(arg0.current());
+			if (request == null) {
+				System.out.println("Build request was null");
+				return false;
+			}
+			if (request.factory == null) {
+				System.out.println("Builder factory was null");
+				return false;
+			}
+			System.out.println("Request: " + request);
 			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request);
 			arg0.setCurrent(result.val());
 			return true;

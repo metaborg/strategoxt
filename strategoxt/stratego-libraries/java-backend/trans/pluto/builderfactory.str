@@ -1,19 +1,33 @@
 module pluto/builderfactory
 
+imports libstrategolib
+imports cleardep/fileutils
+
 strategies
+	
+	init-builder-factory-store = 
+		prim("InitBuilderFactoryStore", Factories|)
 	
 	builder-factory(description-strategy, persistent-path-strategy, build-strategy | factory-name) =
 		
-		let scope-builder-and-build = {|Builder:
+		let 
+			// The dynamic rule Builder is used by require/provide etc to refer to the running builder
+			scope-builder-and-build = {|Builder:
 				  ?(builder, input)
-				; rules(Builder : builder)
+				; rules(Builder : _ -> builder)
 				; <build-strategy> input => output
 				; !output
 			|}
-		in
+			
+			flat-persistent-path = 
+	    		persistent-path-strategy;
+	    		log(|Info(), ["Persistent path " , <id>]);
+	    		path-get-full-path;
+	    		log(|Info(), ["Flat ", <id>])
+	    in
 			
 		<Factories> factory-name <+ (
-			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, persistent-path-strategy, scope-builder-and-build |) => generated-factory
+			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, flat-persistent-path, scope-builder-and-build | factory-name) => generated-factory
 			; rules(Factories: factory-name -> generated-factory)
 			; !generated-factory
 			)
