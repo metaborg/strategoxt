@@ -34,7 +34,7 @@ strategies
 		extract-module-name : (_, Module(name,_)) -> name
 	 in
 		  ?(builder, ParseStrategoInput(file, pack-include-path))
-		; <require(|builder)> file
+		; <require> file
 		; <path-get-full-path> file => file-path
 	    ; !(IncludePathName(file-path),pack-include-path)
 	    ; (separate-compilation-parse-file 

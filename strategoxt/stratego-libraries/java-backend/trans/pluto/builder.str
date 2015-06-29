@@ -1,9 +1,10 @@
 module pluto/builder
 
 imports cleardep/fileutils
+imports pluto/builderfactory
 
 strategies
 	
-	require(|builder) = 
+	require = 
 		  path-get-full-path
-		; prim("PlutoInterface_Builder_RequireBuild", |builder)
+		; prim("PlutoInterface_Builder_RequireBuild", |<Builder>)

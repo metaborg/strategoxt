@@ -3,8 +3,18 @@ module pluto/builderfactory
 strategies
 	
 	builder-factory(description-strategy, persistent-path-strategy, build-strategy | factory-name) =
+		
+		let scope-builder-and-build = {|Builder:
+				  ?(builder, input)
+				; rules(Builder : builder)
+				; <build-strategy> input => output
+				; !output
+			|}
+		in
+			
 		<Factories> factory-name <+ (
-			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, persistent-path-strategy, build-strategy |) => generated-factory
+			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, persistent-path-strategy, scope-builder-and-build |) => generated-factory
 			; rules(Factories: factory-name -> generated-factory)
 			; !generated-factory
 			)
+	    end
