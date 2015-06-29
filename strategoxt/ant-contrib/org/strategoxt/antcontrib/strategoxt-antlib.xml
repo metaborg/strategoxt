@@ -261,8 +261,8 @@
 						<arg value="VERSION_TERM=&quot;${version}&quot;" />
 						<arg value="-D" />
 						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
-						<arg value="--verbose" />
-						<arg value="0" /> 
+						<!-- ><arg value="- -verbose" />
+						<arg value="2" /> -->
 						<arg value="--clean"/>
 						<arg value="--slack"/>
 						<arg value="--strategy-forward-declaration" />
@@ -399,7 +399,7 @@
 							<arg value="-D" />
 							<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
 							<arg value="--verbose" />
-							<arg value="0" />
+							<arg value="2" />
 							<arg value="--clean"/>
 						<!--	<arg value="-slack"/> -->
 						<!--	<arg value="-strategy-forward-declaration" />
