@@ -298,6 +298,7 @@
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
 			<zipgroupfileset dir="java" includes="sugarj-common.jar" />
+			<zipgroupfileset dir="java" includes="pluto.jar" />
 		</jar>
 	</target>
 
