@@ -6,14 +6,14 @@
 >
   <modelVersion>4.0.0</modelVersion>
   <artifactId>strategoxt-distrib-parent-prebuild</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   
 
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>org.metaborg.maven.parent</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
     <relativePath>../../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
   </parent>
 
@@ -22,6 +22,7 @@
     <strategoxt-build-location>${basedir}/../</strategoxt-build-location>
 
     <strategoxt-skip-build>false</strategoxt-skip-build>
+    <strategoxt-skip-assembly>false</strategoxt-skip-assembly>
     <strategoxt-baseline-version>${metaborg-version}</strategoxt-baseline-version>
     <strategoxt-baseline-id>strategoxt-distrib</strategoxt-baseline-id>
 
@@ -43,7 +44,7 @@
         <strategoxt-nativepath>share/strategoxt/linux</strategoxt-nativepath>
       </properties>
     </profile>
-    <!-- Order of profiles is important here because OSX is of both the unix and mac families, last profile that 
+    <!-- Order of profiles is important here because OSX is of both the unix and mac families, last profile that
       gets activated overrides the value of the property. -->
     <profile>
       <id>macosx-os-profile</id>
@@ -54,6 +55,17 @@
       </activation>
       <properties>
         <strategoxt-nativepath>share/strategoxt/macosx</strategoxt-nativepath>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows-os-profile</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <strategoxt-nativepath>share/strategoxt/cygwin</strategoxt-nativepath>
       </properties>
     </profile>
   </profiles>
@@ -265,7 +277,7 @@
               <goal>single</goal>
             </goals>
             <configuration>
-              <skipAssembly>${strategoxt-skip-build}</skipAssembly>
+              <skipAssembly>${strategoxt-skip-assembly}</skipAssembly>
             </configuration>
           </execution>
         </executions>

@@ -12,3 +12,6 @@ imports
   lib/sdf2ast-conflicts
   lib/sdf2parenthesize
   lib/parse-stratego
+  lib/pack-sdf-ext
+  lib/pp-sdf
+  

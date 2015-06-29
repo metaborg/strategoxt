@@ -4,5 +4,8 @@
 /.cache
 /strategoxt.jar
 /src-gen
+/.classpath
+/.project
+/.settings
+/META-INF
 /target
-META-INF

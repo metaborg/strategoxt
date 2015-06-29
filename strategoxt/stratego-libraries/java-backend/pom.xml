@@ -1,164 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>org.strategoxt.strj</artifactId>
-	<packaging>jar</packaging>
-	<description>Stratego/XT Java backend and runtime</description>
-	<url>https://github.com/metaborg/strategoxt</url>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.strategoxt.strj</artifactId>
+  <packaging>jar</packaging> 
+  <description>Stratego/XT Java backend and runtime</description>
+  <url>https://github.com/metaborg/strategoxt</url>
 
-	<parent>
-		<groupId>org.metaborg</groupId>
-		<artifactId>org.metaborg.maven.parent.java</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
-		<relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent.java</relativePath>
-	</parent>
+  <parent>
+    <groupId>org.metaborg</groupId>
+    <artifactId>org.metaborg.maven.parent.java</artifactId>
+    <version>1.5.0-SNAPSHOT</version>
+    <relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent.java</relativePath>
+  </parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.aterm</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.terms</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.interpreter.core</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.interpreter.library.xml</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.interpreter.library.interpreter</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.interpreter.library.java</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.interpreter.library.index</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>org.spoofax.jsglr</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.metaborg</groupId>
-			<artifactId>strategoxt-min-jar</artifactId>
-			<version>${metaborg-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>build.pluto</groupId>
-			<artifactId>pluto</artifactId>
-			<version>1.3.0-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.terms</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.core</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.library.xml</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.library.java</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.library.index</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.jsglr</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.library.jsglr</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>strategoxt-min-jar</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<sourceDirectory>java/runtime</sourceDirectory>
+  <build>
+    <sourceDirectory>java/runtime</sourceDirectory>
 
-		<resources>
-			<resource>
-				<directory>java</directory>
-				<targetPath>java</targetPath>
-				<includes>
-					<include>strategoxt.jar</include>
-				</includes>
-			</resource>
-		</resources>
+    <resources>
+      <resource>
+        <directory>java</directory>
+        <targetPath>java</targetPath>
+        <includes>
+          <include>strategoxt.jar</include>
+        </includes>
+      </resource>
+    </resources>
 
-		<plugins>
-			<!-- Use Eclipse JDT compiler, regular compiler cannot handle this number of classes. -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.plexus</groupId>
-						<artifactId>plexus-compiler-eclipse</artifactId>
-						<version>${maven-eclipse-compiler-version}</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<compilerId>eclipse</compilerId>
-				</configuration>
-			</plugin>
+    <plugins>
+      <!-- Use Eclipse JDT compiler, regular compiler cannot handle this number of classes. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-compiler-eclipse</artifactId>
+            <version>${maven-eclipse-compiler-version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <compilerId>eclipse</compilerId>
+        </configuration>
+      </plugin>
 
-			<!-- Copy the StrategoXT runnable JAR into project, which is exported as a resource. -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-strategoxt-jar</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.metaborg</groupId>
-									<artifactId>strategoxt-jar</artifactId>
-									<version>${metaborg-version}</version>
-									<type>jar</type>
-									<outputDirectory>java</outputDirectory>
-									<destFileName>strategoxt.jar</destFileName>
-									<overWrite>true</overWrite>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+      <!-- Copy the StrategoXT runnable JAR into project, which is exported as a resource. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-strategoxt-jar</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>strategoxt-jar</artifactId>
+                  <version>${metaborg-version}</version>
+                  <type>jar</type>
+                  <outputDirectory>java</outputDirectory>
+                  <destFileName>strategoxt.jar</destFileName>
+                  <overWrite>true</overWrite>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
-	<developers>
-		<developer>
-			<name>Vlad Vergu</name>
-			<email>v.a.vergu@tudelft.nl</email>
-			<organization>Delft University of Technology</organization>
-			<organizationUrl>http://www.ewi.tudelft.nl/en</organizationUrl>
-		</developer>
-		<developer>
-			<name>Eelco Visser</name>
-			<email>visser@tudelft.nl</email>
-			<organization>Delft University of Technology</organization>
-			<organizationUrl>https://www.ewi.tudelft.nl/en</organizationUrl>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <name>Vlad Vergu</name>
+      <email>v.a.vergu@tudelft.nl</email>
+      <organization>Delft University of Technology</organization>
+      <organizationUrl>http://www.ewi.tudelft.nl/en</organizationUrl>
+    </developer>
+    <developer>
+      <name>Eelco Visser</name>
+      <email>visser@tudelft.nl</email>
+      <organization>Delft University of Technology</organization>
+      <organizationUrl>https://www.ewi.tudelft.nl/en</organizationUrl>
+    </developer>
+  </developers>
 
-	<scm>
-		<connection>scm:git:git@github.com:metaborg/strategoxt.git</connection>
-		<developerConnection>scm:git:git@github.com:metaborg/strategoxt.git</developerConnection>
-		<url>https://github.com/metaborg/strategoxt</url>
-	</scm>
-	
-	<repositories>
-		<repository>
-			<id>pluto-build</id>
-			<url>https://raw.githubusercontent.com/pluto-build/pluto-build.github.io/master/mvnrepository/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	
+  <scm>
+    <connection>scm:git:git@github.com:metaborg/strategoxt.git</connection>
+    <developerConnection>scm:git:git@github.com:metaborg/strategoxt.git</developerConnection>
+    <url>https://github.com/metaborg/strategoxt</url>
+  </scm>
 </project>

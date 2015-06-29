@@ -296,4 +296,12 @@ public class Context extends StackTracer implements IAsyncCancellable {
 		getIOAgent().closeAllFiles();
 		throw new CancellationException("Stratego interpreter cancelled");
 	}
+	
+    public Object contextObject() {
+        return interopContext.contextObject();
+    }
+
+    public void setContextObject(Object context) {
+        interopContext.setContextObject(context);
+    }
 }
