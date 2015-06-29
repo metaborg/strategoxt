@@ -8,6 +8,7 @@
   <artifactId>strategoxt-distrib-parent-prebuild</artifactId>
   <version>1.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  
 
   <parent>
     <groupId>org.metaborg</groupId>
@@ -68,18 +69,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <artifactItems>
-            <artifactItem>
-              <groupId>org.metaborg</groupId>
-              <artifactId>${strategoxt-baseline-id}</artifactId>
-              <version>${strategoxt-baseline-version}</version>
-              <type>tar</type>
-              <classifier>bin</classifier>
-              <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
-            </artifactItem>
-          </artifactItems>
-        </configuration>
         <executions>
           <execution>
             <id>strategoxt-unpack-baseline-build</id>
@@ -87,6 +76,18 @@
             <goals>
               <goal>unpack</goal>
             </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>${strategoxt-baseline-id}</artifactId>
+                  <version>${strategoxt-baseline-version}</version>
+                  <type>tar</type>
+                  <classifier>bin</classifier>
+                  <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
           </execution>
           <execution>
             <id>strategoxt-unpack-baseline-clean</id>
@@ -94,9 +95,62 @@
             <goals>
               <goal>unpack</goal>
             </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>${strategoxt-baseline-id}</artifactId>
+                  <version>${strategoxt-baseline-version}</version>
+                  <type>tar</type>
+                  <classifier>bin</classifier>
+                  <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-pluto-jar-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+             <artifactItems>
+              <artifactItem>
+                <groupId>build.pluto</groupId>
+                <artifactId>pluto</artifactId>
+                <version>1.3.0-SNAPSHOT</version>
+                <type>jar</type>
+                <outputDirectory>${strategoxt-build-location}/stratego-libraries/java-backend/java</outputDirectory>
+                <destFileName>pluto.jar</destFileName>
+                <overWrite>true</overWrite>
+              </artifactItem>
+             </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-pluto-jar-build</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+	        <configuration>
+             <artifactItems>
+              <artifactItem>
+                <groupId>build.pluto</groupId>
+                <artifactId>pluto</artifactId>
+                <version>1.3.0-SNAPSHOT</version>
+                <type>jar</type>
+                <outputDirectory>${strategoxt-build-location}/stratego-libraries/java-backend/java</outputDirectory>
+                <destFileName>pluto.jar</destFileName>
+                <overWrite>true</overWrite>
+              </artifactItem>
+             </artifactItems>
+            </configuration>
           </execution>
         </executions>
       </plugin>
+	  
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
