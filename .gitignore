@@ -2,3 +2,5 @@
 /**/test-gen
 strategoxt/sub-dist
 strategoxt/baseline
+dependency-reduced-pom.xml
+pluto.jar
