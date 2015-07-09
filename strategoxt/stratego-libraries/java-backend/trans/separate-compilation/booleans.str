@@ -1,0 +1,15 @@
+module sparate-compilation/booleans
+
+signature
+	constructors
+		True:  Boolean
+		False: Boolean
+	
+		
+strategies
+	
+	b-or: (True(), _) -> True()
+	b-or: (_, True()) -> True()
+	b-or: _ -> False()
+	
+	b-true = ? True()

@@ -1,0 +1,39 @@
+module pluto/build-cycle-at-once-builderfactory
+
+imports libstrategolib
+imports cleardep/fileutils
+imports pluto/builderfactory
+
+strategies
+	
+	// The dynamic rule Builder is used by require/provide etc to refer to the running builder
+			scope-builder-and-build(build-all-strategy) = log(|Notice(),["LOG"]) ;{builder, input, output: {|Builder:
+				
+				log(|Notice(), ["Scope builder ", <id>]);
+
+				  ?(builder, input);
+				  
+				 rules(Builder : _ -> builder);
+				 log(|Notice(), ["Call builder ", <id>]);
+				 <build-all-strategy> input => output;
+				 !output
+			|}}
+	
+	build-cycle-at-once-builder-factory(description-strategy, single-persistent-path-strategy, build-all-strategy | factory-name) =
+		
+		let 
+			
+			
+			flat-single-persistent-path = 
+	    		single-persistent-path-strategy;
+	    		path-get-full-path
+	    in
+			
+		<Factories> factory-name <+ (
+			  prim("PlutoInterface_MakeBuildCycleAtOnceBuilderFactory", description-strategy, flat-single-persistent-path, scope-builder-and-build(build-all-strategy) | factory-name) => generated-factory
+			; rules(Factories: factory-name -> generated-factory)
+			; !generated-factory
+			)
+	    end
+	    
+	    

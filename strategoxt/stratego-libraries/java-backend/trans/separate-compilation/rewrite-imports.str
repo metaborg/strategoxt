@@ -1,0 +1,116 @@
+module separate-compilation/rewrite-imports
+
+imports libstrategolib
+imports libstrc
+
+imports cleardep/fileutils
+
+imports pluto/builder
+
+imports separate-compilation/utils
+imports separate-compilation/fileutils
+imports separate-compilation/process-deps
+imports separate-compilation/std-lib-utils
+
+imports separate-compilation/builder/compile-module-builder
+
+
+strategies
+	
+	separate-compilation-rewrite-imports(|module-name, circular-module-names, working-package, working-output) =
+		let
+			to-library-import:
+				Import(name) -> Import(<to-java-compilation-rel-file> name)
+			
+			import-to-flag(|working-package):
+				Import(name) -> 
+					<conc-strings>(working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name)
+				
+			
+		
+					
+			get-unit-add-dependency(|imported-module-name) = 
+			
+				 if <equal>(module-name, imported-module-name)
+					then	  log(|Info(), ["Module imports itself ", module-name])
+					else
+						<require-build-module> imported-module-name
+					end
+				
+			
+			
+			get-file-add-external-file-dependency = {import-name, file: \
+				import-name -> ()
+				where 
+					file := <separate-compilation-get-relative-file> import-name;
+					<require> file\}
+			
+			process-import-str =
+			{ term, name, module-name: 
+				  ?(term, <has-extension(|"str")>)
+				; where(<\Import(name) -> name\> term => module-name)
+				; if !term; is-import-dependency
+					then  // regular module dependency
+					   log(|Notice(), ["Import to module ", term])
+					 ; get-unit-add-dependency(|module-name)
+					 ; if <elem> (module-name, circular-module-names) 
+						then fail // Circular, do not transform
+						else !term; to-library-import // Transform term to library import
+				  	   end
+					else // Import contains not a module but a specification -> no module dependency because specification is not named
+					   log(|Notice(), ["Import to file but not module ", term])
+					 ; <get-file-add-external-file-dependency> module-name
+					 ; !term //Leave term untransformed because want to include str file
+				  end			
+			}
+				
+			process-import-rtree =
+			{ file, term :
+				  ?(term, file)
+				; where(<has-extension(|"rtree")> file)
+				; <require> AbsolutePath(file)
+				; !term
+				}
+				
+			process-import-default-lib = 
+			{ lib, term:
+				  ?(term, lib)
+  				; !term
+				; ?Import(<id>)
+  				; is-default-lib-rtree
+  				; !term
+  				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
+			}
+			
+				
+			
+				
+	
+		in {| File: 
+		  log(|Notice(), ["Rewrite ", <id>]);
+		  transform-imports-and-move-to-front(
+			{import, file:
+				  id => import
+				; if not(Import(is-default-lib-rtree))
+				   then 
+					  import-get-file => file
+				    ; rules(File: import -> file)
+			       end
+			},
+			  !(<id>, <id;try(File)>)
+			; (process-import-str + process-import-rtree + process-import-default-lib)
+			, if try(File);has-extension(|"str")
+				then 
+					  where (is-import-dependency)
+					; import-to-flag(|working-package)
+				else 
+					  ?Import(<id>)
+					; where(is-default-lib-rtree)
+					; remove-lib-prefix
+					; translate-default-library // do not want to collect rtrees, but libraries
+			end
+			)
+		|}
+		end
+		
+	 	

@@ -6,5 +6,12 @@ imports pluto/builderfactory
 strategies
 	
 	require = 
-		  path-get-full-path
-		; prim("PlutoInterface_Builder_Require", |<Builder>)
+		log (|Notice(), ["Require ", <id>]);
+		path-get-full-path;
+		prim("PlutoInterface_Builder_Require", |<Builder>)
+		  
+	require-build = 
+		log (|Notice(), ["Require Build", <id>]);	
+		log(|Notice(), ["Call require build primitive"]);
+		prim("PlutoInterface_Builder_RequireBuild", |<Builder>);
+		log(|Notice(), ["Successful with " , <id>])

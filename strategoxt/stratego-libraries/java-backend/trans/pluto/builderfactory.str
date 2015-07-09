@@ -12,14 +12,16 @@ strategies
 		
 		let 
 			// The dynamic rule Builder is used by require/provide etc to refer to the running builder
-			scope-builder-and-build = {|Builder:
+			scope-builder-and-build = {builder, input, output: {|Builder:
 				  ?(builder, input)
 				; rules(Builder : _ -> builder)
 				; <build-strategy> input => output
 				; !output
-			|}
+			|}}
 			
 			flat-persistent-path = 
+				
+	    		log(|Info(), ["Persistent path for ", <id>]);
 	    		persistent-path-strategy;
 	    		log(|Info(), ["Persistent path " , <id>]);
 	    		path-get-full-path;
@@ -32,3 +34,4 @@ strategies
 			; !generated-factory
 			)
 	    end
+	    

@@ -45,12 +45,12 @@ strategies
   ; <exit> 1
   
   
-  strj-back-end(|comp-units) =
+  strj-back-end =
   	  try(mark-always-needed(|<get-config> "-m", 0, 0))
 	; strc-output-frontend
 	; s2j
 	; with(clean-output-dir)
-	; log-timed(list-loop(output-java(|comp-units)) | "Pretty printing succeeded", 1)
+	; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
   
   strj =
     if FILE(get-extension => "ctree") then
@@ -98,7 +98,7 @@ strategies
   <+
     warn(|"Could not clean output directory")
 
-  output-java(|comp-units) :
+  output-java :
     ast -> name
     with
       name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
@@ -106,10 +106,11 @@ strategies
         ; box  := <pp-java5-to-abox> ast
         ; <box2text-stream(|80, file)> box
         ; <fclose> file
-		; where(!comp-units;map({comp-unit:
-			  ?comp-unit
-			; add-generated-file(|comp-unit, AbsolutePath(name))
-			}))
+		//; where(!comp-units;map({comp-unit:
+		//	  ?comp-unit
+		// TODO Store java files
+		//	; add-generated-file(|comp-unit, AbsolutePath(name))
+	//		}))
       // end
     <+
       output-java-error

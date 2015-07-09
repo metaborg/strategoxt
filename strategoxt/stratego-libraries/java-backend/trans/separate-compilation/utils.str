@@ -4,9 +4,11 @@ imports libstrc
 imports libstratego-lib
 
 imports cleardep/cleardep
+imports cleardep/fileutils
 
 imports separate-compilation/fileutils
 imports separate-compilation/compiler-config
+imports separate-compilation/booleans
 
 imports backend-simplify
 imports s2j
@@ -19,9 +21,6 @@ strategies
 		map((?c1;!c2)<+![<id>]); 
 		flatten-list;
 		implode-string
-
-	is-main-module-contained(|circular-units) =
-		where(<elem> (<MainModule;get-stratego-source-file>, <map(get-stratego-source-file)> circular-units))
 
 	transform-imports-and-move-to-front (import-predicate, import-transform, collect-transform) =
 		  ?Module(name, content)
@@ -59,7 +58,9 @@ strategies
 		  import-get-file
 		; has-extension(|"str")
 		
-	save-and-set-options(s, generate-main|working-package,working-output,filename, modulename, circular-units) = 
+	save-and-set-options(s|generate-main, working-package,working-output,filename, modulename, circular-units) = 
+	{libs, input, output, package, islib, baseout, main:
+		where(libs := <get-config <+ ![]> "-la");
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
 		where(main := <get-config <+ !()> "-m");
 		where(	<set-config> ("-i",filename));
@@ -67,27 +68,23 @@ strategies
 		where(	<set-config> ("-o", <to-java-compilation-abs-path(|working-output); (mkdirs <+ err(|"Creating dir failed"))> modulename));
 		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(|working-output)> modulename));
 		where(  <set-config> ("--library" ,""));
-		if is-main-module-contained(|circular-units)
-		then
-			log(|Info(), "Main mod contained");
-			if and(generate-main, InitialCompilerConfigList;not(fetch-elem(?("--library",_))))
-				then where(<set-config> ("-m", <get-config <+ !"main"> "-m"))
-			end
+		if and(<b-true> generate-main, InitialCompilerConfigList;not(fetch-elem(?("--library",_))))
+			then where(<set-config> ("-m", <get-config <+ !"main"> "-m"))
 		else
 			where(	<rm-config> "-m")
 		end;
-			
 		s;
 		
 		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout));
-		where(<if not(?()) then <set-config> ("-m", <id>) end> main )
+		where(<set-config> ("-la", libs));
+		where(<if not(?()) then <set-config> ("-m", <id>) end> main )}
 		
 		
 	to-library-name = separate-compilation-modify-filename(if ?"char" + ?"term" + ?"interface" + ?"class" then !["_", <id>];concat-strings end ; jify)
 	to-java-compilation-folder:   modulename -> <to-library-name;jify; dollars-for-capitals> modulename
 	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify; dollars-for-capitals> modulename
 	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
-	to-java-compilation-abs-path (| working-output):modulename -> <concat-strings> [working-output, <to-java-compilation-folder> modulename, "/"]
+	to-java-compilation-abs-path (| working-output):modulename -> <concat-strings> [<path-get-full-path>working-output, <to-java-compilation-folder> modulename, "/"]
 	to-java-compilation-abs-file (| working-output) =
 		  id => modulename 
 		; to-java-compilation-filename
