@@ -34,7 +34,7 @@ strategies
 			
 		build = let
 			extract-module-name = {name: \Module(name,_) -> name\}
-		in {file, pack-include-path, ast, module-name: 
+		in {file, pack-include-path, ast, module-name, file-path: 
 			log(|Notice(), "A");
 			?ParseStrategoInput(file, pack-include-path,_);
 			log(|Notice(), "B");

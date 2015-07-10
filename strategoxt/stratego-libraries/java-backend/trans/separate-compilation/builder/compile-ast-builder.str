@@ -66,7 +66,7 @@ strategies
 				output-folder := <get-output-folder> input;
 				generate-main := <get-generate-main> input;
 				pack-include-path := <get-pack-include-path> input;
-				<separate-compilation-rewrite-imports(|module-name, java-package, output-folder, circular-module-names, pack-include-path)> ast => (transformed-ast, new-libs)
+				<separate-compilation-rewrite-imports(|module-name, circular-module-names, java-package, output-folder, pack-include-path)> ast => (transformed-ast, new-libs)
 			\}
 			
 		combine-modules = {:

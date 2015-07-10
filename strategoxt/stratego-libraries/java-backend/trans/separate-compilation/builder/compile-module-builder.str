@@ -36,10 +36,13 @@ strategies
 			\}
 			
 		single-persistent-path = {input, output-folder, module-name: \
-			input -> <get-dep-path(|"compile", output-folder)> module-name
+			input -> <get-dep-path(|"compile", output-folder);debug> module-name
 			where
+				log(|Notice() , ["SinglePersistentPath for compile module", input]);
 				output-folder := <compile-module-input-pack-output-folder> input;
-				module-name := <compile-module-input-module-name> input
+				log(|Notice(), [output-folder]);
+				module-name := <compile-module-input-module-name> input;
+				log(|Notice(), [module-name])
 			\}
 			
 		build-all = let
