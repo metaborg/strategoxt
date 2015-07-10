@@ -2,7 +2,6 @@ module cleardep/cleardep
 
 imports libstrategolib
 imports cleardep/fileutils
-imports separate-compilation/process-deps
 imports separate-compilation/compiler-config
 
 signature

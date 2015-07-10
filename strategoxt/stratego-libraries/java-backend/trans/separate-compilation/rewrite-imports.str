@@ -10,7 +10,6 @@ imports pluto/buildrequest
 
 imports separate-compilation/utils
 imports separate-compilation/fileutils
-imports separate-compilation/process-deps
 imports separate-compilation/std-lib-utils
 imports separate-compilation/booleans
 

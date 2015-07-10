@@ -3,7 +3,6 @@ module separate-compilation
 imports cleardep/cleardep
 imports cleardep/fileutils
 imports separate-compilation/utils
-imports separate-compilation/process-deps
 imports separate-compilation/separate-compilation-options
 imports separate-compilation/fileutils
 imports separate-compilation/unit-cache
