@@ -24,57 +24,72 @@ strategies
 	compile-module-input-pack-generate-main : CompileModuleInput(_, _, _, _, main) -> main
 	
 	require-build-module : module-name -> <fail>
+			
+	compile-module-builder-factory = let
 	
-	compile-module-builder-description :
-		[input] -> <conc-strings>("Compile module ", <compile-module-input-module-name> input)
-	compile-module-builder-description :
-		inputs -> <conc-strings> ("Compile cyclic modules ", joined-module-names)
-		where
-			module-names := <map(compile-module-input-module-name)> inputs;
-			joined-module-names := <foldl(\(name, joined) -> <conc-strings> (name, ", ", joined)\)> module-names
+		description = {input: \
+			[input] -> <conc-strings>("Compile module ", <compile-module-input-module-name> input)
+			\}
+		description = {inputs, module-names, joined-module-names: \
+			inputs -> <conc-strings> ("Compile cyclic modules ", joined-module-names)
+			where
+				module-names := <map(compile-module-input-module-name)> inputs;
+				joined-module-names := <foldl(\(name, joined) -> <conc-strings> (name, ", ", joined)\)> module-names
+			\}
+			
+		single-persistent-path = {input, output-folder, module-name: \
+			input -> <get-dep-path(|"compile", output-folder)> module-name
+			where
+				output-folder := <compile-module-input-pack-output-folder> input;
+				module-name := <compile-module-input-module-name> input
+			\}
+			
+		build-all = let
+			
+			find-source-file = {module-name, pack-include-path: \
+				 (module-name, pack-include-path) -> 
+					<fetch-elem({dir:
+						 \IncludeDir(dir) -> <path-add-extension(|"str");where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\})> pack-include-path
+				\}
+			
+			parse-module = {module-name, parsed-module-name, pack-include-path, output-folder, source-file, ast: \
+				 (module-name, pack-include-path, output-folder) -> (source-file, ast)
+	   			where
+	   				log(|Notice(), 1);
+	   				source-file := <find-source-file <+ log(|Error(), ["No file found for module ", module-name])> (module-name, pack-include-path);
+	   				log(|Notice(), [2, " Source file ", source-file]);
+	   				<require> source-file; // TODO File exists stamper should be enough
+	   				log(|Notice(), 3);
+	   				<require-build> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(source-file, pack-include-path, output-folder))
+			  			=> ParseStrategoOutput(parsed-module-name, ast);
+			  		if <not(eq)> (module-name, parsed-module-name) then
+			  			log(|Error(), ["Module name ", parsed-module-name, " does not match file name in ", source-file]);
+			  			fail
+			  		end;
+		  			log(|Notice(), 4)
+				\}
 		
-	compile-module-builder-single-persistent-path :
-		input -> <get-dep-path(|"compile", output-folder)> module-name
-		where
-			output-folder := <compile-module-input-pack-output-folder> input;
-			module-name := <compile-module-input-module-name> input
-			
-	compile-module-builder-find-source-file : (module-name, pack-include-path) -> 
-			<fetch-elem(\IncludeDir(dir) -> <path-add-extension(|"str");where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\)> pack-include-path
-			
-			
-	compile-module-builder-parse-module : (module-name, pack-include-path, output-folder) -> (source-file, ast)
-	   	where
-	   		log(|Notice(), 1);
-	   		source-file := <compile-module-builder-find-source-file <+ log(|Error(), ["No file found for module ", module-name])> (module-name, pack-include-path);
-	   		log(|Notice(), [2, " Source file ", source-file]);
-	   		<require> source-file; // TODO File exists stamper should be enough
-	   		log(|Notice(), 3);
-	   		<require-build> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(source-file, pack-include-path, output-folder))
-			  	=> ParseStrategoOutput(module-name, ast);
-		  	log(|Notice(), 4)
-		 // TODO Validate that names are equal
-		
-	compile-module-builder-translate-to-ast-input:
-		input -> CompileASTInput(module-name, ast, source-file, java-package, output-folder, generate-main)
-	    where 
-	    	module-name := <compile-module-input-module-name> input;
-	    	java-package := <compile-module-input-pack-java-package> input;
-	    	output-folder := <compile-module-input-pack-output-folder> input;
-	    	generate-main := <compile-module-input-pack-generate-main> input;
-	    	pack-include-path := <compile-module-input-pack-include-path> input;
-	    	<compile-module-builder-parse-module> (module-name, pack-include-path, output-folder) => (source-file, ast)
-				
-	compile-module-builder-build-all = 
-		log(|Notice(), ["Translate to ast"]);
-		map(compile-module-builder-translate-to-ast-input);
-		log(|Notice(), ["Start compiling"]);
-		compile-asts;
-		![()] // TODO Put rtree for each module here
-		
-			
-	compile-module-builder-factory = build-cycle-at-once-builder-factory(
-		compile-module-builder-description,
-		compile-module-builder-single-persistent-path,
-		compile-module-builder-build-all | "CompileASTBuilderFactory")
+			translate-to-ast-input = {input, module-name, java-package, output-folder, generate-main, pack-include-path, source-file, ast: \
+				input -> CompileASTInput(module-name, ast, source-file, java-package, output-folder, generate-main)
+	    		where 
+	    			module-name := <compile-module-input-module-name> input;
+	    			java-package := <compile-module-input-pack-java-package> input;
+	    			output-folder := <compile-module-input-pack-output-folder> input;
+	    			generate-main := <compile-module-input-pack-generate-main> input;
+	    			pack-include-path := <compile-module-input-pack-include-path> input;
+	    			<parse-module> (module-name, pack-include-path, output-folder) => (source-file, ast)
+	    		\}
+		in 
+			log(|Notice(), ["Translate to ast"]);
+			map(translate-to-ast-input);
+			log(|Notice(), ["Start compiling"]);
+			compile-asts;
+			![()] // TODO Put rtree for each module here
+		end
+	
+	in	build-cycle-at-once-builder-factory(
+		description,
+		single-persistent-path,
+		build-all | "CompileASTBuilderFactory")
+	end
 		

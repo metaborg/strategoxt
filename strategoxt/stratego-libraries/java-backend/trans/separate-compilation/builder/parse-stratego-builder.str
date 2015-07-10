@@ -12,33 +12,47 @@ imports separate-compilation/builder/deps-path
 
 signature
 	constructors
-		ParseStrategoInput : Path * IncludePath -> ParseStrategoInput
+		ParseStrategoInput : Path * IncludePath * OutputFolder -> ParseStrategoInput
 		ParseStrategoOutput : ModuleName * AST -> ParseStrategoOutput
 		
 strategies
 	
-	parse-stratego-builder-factory =  let
 	
-		description :
-			ParseStrategoInput(RelativePath(_, src-file), _) -> <conc-strings> ("Parse ", src-file)
+	parse-stratego-builder-factory = let
+	
+		description = {file: \
+			ParseStrategoInput(RelativePath(_,file), _, _) -> <conc-strings> ("Parse ", file)
+			\} <+ {file: \
+			ParseStrategoInput(file, _, _) -> <conc-strings> ("Parse ", <path-get-full-path> file)
+			\}
 			
-		persistent-path :
-			ParseStrategoInput(file, _) -> <get-dep-path(|"parse")> file
+		persistent-path = {file, include-path, output-folder, relative-path: \
+			ParseStrategoInput(file, include-path, output-folder) -> <get-dep-path(|"parse", output-folder)> relative-path
+			where
+				<fetch-elem({dir: \IncludeDir(dir) -> <path-relativize(|AbsolutePath(dir))> file\})> include-path => RelativePath(_, relative-path)
+			\}
 			
 		build = let
-			extract-module-name : (_, Module(name,_)) -> name
-		 in
-		  	?ParseStrategoInput(file, pack-include-path);
+			extract-module-name = {name: \Module(name,_) -> name\}
+		in {file, pack-include-path, ast, module-name: 
+			log(|Notice(), "A");
+			?ParseStrategoInput(file, pack-include-path,_);
+			log(|Notice(), "B");
 			<require> file;
+			log(|Notice(), "C");
 			<path-get-full-path> file => file-path;
+			log(|Notice(), "D");
 			!(IncludePathName(file-path),pack-include-path);
+			log(|Notice(), "E");
 			(separate-compilation-parse-file 
-			<+ (log(|Error(), ["File not found: ", <id>]); fail)) => ast;
+			<+ (log(|Error(), ["File not found: ", <id>]); fail)) => (_, ast);
+			log(|Notice(), "F");
 			<extract-module-name> ast => module-name;
+			log(|Notice(), "G");
 			!ParseStrategoOutput(module-name, ast)
-     	end
+     	} end 
 	
-	in 
+	in
 		builder-factory(
 			description,
 			persistent-path,

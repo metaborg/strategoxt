@@ -25,130 +25,145 @@ signature
 		
 		
 strategies
+		
+	compile-asts = let
 	
-	
+		// Accessor strategies such that the input can be extended with other values without need to change all pattern matches
+		get-module-name = {name: \ CompileASTInput(name, _, _, _, _, _) -> name\}
+		get-ast = {ast: \ CompileASTInput(_, ast, _, _, _, _) -> ast\}
+		get-path = {path: \ CompileASTInput(_, _, path, _, _, _) -> path\}
+		get-java-package = {package: \ CompileASTInput(_, _, _, package, _, _) -> package\}
+		get-output-folder = {folder: \ CompileASTInput(_, _, _, _, folder, _) -> folder\}
+		get-generate-main = {generate: \ CompileASTInput(_, _, _, _, _, generate) -> generate\}
 		
-		compile-asts = let
-		
-			input-get-module-name: CompileASTInput(name, _, _, _, _, _) -> name
-		
-			determine-circular-result-module(select-module-name) = 
-		  		?[x|xs];
-				!(xs, ([], x));
-				foldl(
-				{other-modules, first-module, current-module:
-				  ?(current-module, (other-modules, first-module))
-				; if !(current-module, first-module);tmap(select-module-name);string-gt
+		/* Selects from a list of inputs the input with the module name, which is first in lexicographical order
+		 * Returns a pair of the other inputs and the selected ones
+		 * The module name is extracted by select-module-name from the input
+		 *
+		 * @param select-module-name: a -> String
+		 * @type [a] -> ([a], a)
+		 */ 
+		determine-circular-result-module(select-module-name) = {x, xs:
+			?[x|xs];
+			!(xs, ([], x));
+			foldl( {other-modules, first-module, current-module:
+				?(current-module, (other-modules, first-module));
+				if !(current-module, first-module);tmap(select-module-name);string-gt
 					then !([current-module | other-modules], first-module)
 					else !([first-module | other-modules], current-module)
-				end
-				})
+				end })
+			}
 				
-			rewrite-imports(|circular-module-names) :
-				CompileASTInput(module-name, ast, path, java-package, output-folder, generate-main) -> (module-name, transformed-ast, new-libs, path, generate-main)
+		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, transformed-ast, new-libs: \
+			input -> (module-name, transformed-ast, new-libs, path, generate-main)
+			where
+				log(|Notice(), ["Rewrite imports"]);
+				module-name := <get-module-name> input;
+				ast := <get-ast> input;
+				path := <get-path> input;
+				java-package := <get-java-package> input;
+				output-folder := <get-output-folder> input;
+				generate-main := <get-generate-main> input;
+				<separate-compilation-rewrite-imports(|module-name, java-package, output-folder, circular-module-names)> ast => (transformed-ast, new-libs)
+			\}
+			
+		combine-modules = {:
+			log(|Notice(), ["Combine modules ", <id>]);
+			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
+			foldl({imports, content, libs, generate-main: \
+				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-generate-main), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-generate-main) ) ->
+				(moduleName, Module(merged-name, [imports | content]), libs, fileName, generate-main)
 				where
-					log(|Notice(), ["Rewrite imports"]);
-					<separate-compilation-rewrite-imports(|module-name, java-package, output-folder, circular-module-names)> ast => (transformed-ast, new-libs)
+					imports := Imports(<conc;make-set> (new-imports, merged-imports));
+					content := <conc> (new-content, merged-content);
+					libs := <conc> (new-libs, merged-libs);
+					generate-main := <b-or>(new-generate-main, merged-generate-main)
+			\});
+			log(|Notice(), ["Result ", <id>])
+			}
 			
-			combine-modules =
-				log(|Notice(), ["Combine modules ", <id>]);
-				// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
-				foldl({imports, content, libs, generate-main: \
-					( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-generate-main), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-generate-main) ) ->
-					(moduleName, Module(merged-name, [imports | content]), libs, fileName, generate-main)
-					where
-						imports := Imports(<conc;make-set> (new-imports, merged-imports));
-						content := <conc> (new-content, merged-content);
-						libs := <conc> (new-libs, merged-libs);
-						generate-main := <b-or>(new-generate-main, merged-generate-main)
-				\});
-				log(|Notice(), ["Result ", <id>])
-			
-			add-std-lib-import-if-required = let
-					add-default-lib-import =  {merged-name, imports, content :
-		  				is-generate-stdlib-import;
-						log(|Notice(), "Add import to libstratego-lib");
-		 				((
-		  					?Module(merged-name, [Imports(imports)|content]);
-							!Module(merged-name, [Imports(<make-set> [Import("libstratego-lib")|imports]) | content])
-						) <+ fatal-err(|["Unable to add default lib import to ", <id>])) }
-				in
-					(id, try(add-default-lib-import), id, id, id)
-				end
-			
-			call-front-end = {moduleName,merged-ast, fileName:
-				?(moduleName, merged-ast, _, fileName, _)
-				
-				; log(|Notice(), ["Import transformation for ", moduleName])
-				; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
-			
-				; !merged-ast
-				; !IncludeAST(merged-ast,fileName)
-
-				; pack-stratego(|<pack-include-path>) => (files, spec)
-				; !spec
-			
-				; log(|Notice(), ["Calling Frontend for ", moduleName])
-				; tfc1(|"Stratego-Sugar-Cong", "pack")
-        		; strc-output-ast
-  	  			; frontend
-				; strc-optimize }
-			
-			call-back-end =
-				 
-				// Remove Overlays for Backend, they are only important for externals
-				 \Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\
-				
-				; strj-back-end
-				
-			
-			generate-dummy-module-input(|result-module-name, java-package, output-folder) = {module-name, file-name: \
-					(module-name, _, _, file-name, _) ->
-						CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, False()) \}
-		
-			create-dummy-modules(|java-package, output-folder) :
-				 (other-modules, (result-module-name, _,_,_,_)) -> ()
-				where
-					log(|Notice(), 120);
-					dummy-inputs := <map(generate-dummy-module-input(|result-module-name, java-package, output-folder))> other-modules;
-					log(|Notice(), 121);
-					<map(compile-asts)> dummy-inputs
-				 
-		
+		add-std-lib-import-if-required = let
+			add-default-lib-import =  {merged-name, imports, content :
+		  		is-generate-stdlib-import;
+				log(|Notice(), "Add import to libstratego-lib");
+		 		((
+		  			?Module(merged-name, [Imports(imports)|content]);
+					!Module(merged-name, [Imports(<make-set> [Import("libstratego-lib")|imports]) | content])
+				) <+ fatal-err(|["Unable to add default lib import to ", <id>])) 
+				}
 		in
-			id => inputs;
-			where(
-				circular-module-names := <map(input-get-module-name)> inputs;
-				!inputs;
-				?[CompileASTInput(_, _, _, java-package, output-folder, _)|_]
-			);
-			// Rewrite the imports in the AST
-			<map(rewrite-imports(|circular-module-names))> inputs;
-			// Circular modules will be merged, make the result module deterministic
-			determine-circular-result-module(Fst) => (other-inputs, result-input);
-			combine-modules;
-			log (|Notice(), 10);
-			add-std-lib-import-if-required;
-			log (|Notice(), 11);
-			{moduleName, merged-ast, new-libs, fileName, libs, generate-main:
-				?(moduleName, merged-ast, new-libs, fileName, generate-main);
-				log (|Notice(), 115);
-			save-and-set-options(
-				log (|Notice(), 12);
-				where(<set-config>("-la", <conc;make-set> (<get-config <+ ![]> "-la", new-libs)));
-				log (|Notice(), 13);
-				call-front-end;
-				log (|Notice(), 14);
-				// TODO Generate rtree
-				log(|Notice(), ["Calling Backend for ", moduleName]);
-				call-back-end;
-				log (|Notice(), 15)
-			|generate-main, java-package, output-folder, fileName, moduleName, circular-module-names)	};
-			log (|Notice(), 16);
-			where(<debug;create-dummy-modules(|java-package, output-folder)> (other-inputs, result-input));
-			log (|Notice(), 17)
-			
+			(id, try(add-default-lib-import), id, id, id)
 		end
+			
+		call-front-end = {moduleName,merged-ast, fileName:
+			?(moduleName, merged-ast, _, fileName, _);
+			
+			log(|Notice(), ["Import transformation for ", moduleName]);
+			log(|Notice(), ["Use libraries:   " , <get-config> "-la"]);
+			
+			<pack-stratego(|<pack-include-path>)> IncludeAST(merged-ast,fileName) => (files, spec);
+			
+			log(|Notice(), ["Calling Frontend for ", moduleName]);
+			!spec;
+			tfc1(|"Stratego-Sugar-Cong", "pack");
+         	strc-output-ast;
+  	  		frontend;
+			strc-optimize 
+			}
+			
+		call-back-end = {ops, defs:
+			// Remove Overlays for Backend, they are only important for externals
+			\Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\;
+			strj-back-end
+			}
+				
+			
+		generate-dummy-module-input(|result-module-name, java-package, output-folder) = {module-name, file-name: \
+			(module-name, _, _, file-name, _) ->
+					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, False()) 
+			\}
 		
+		create-dummy-modules(|java-package, output-folder) = {dummy-inputs, other-modules, result-module-name: \
+			 (other-modules, (result-module-name, _,_,_,_)) -> ()
+			where
+				log(|Notice(), 120);
+				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, java-package, output-folder))> other-modules;
+				log(|Notice(), 121);
+				<map(compile-asts)> dummy-inputs
+		\}
+				 
 		
-	
+	in {inputs, circular-module-names, java-package, output-folder, other-inputs, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main:
+		id => inputs;
+		where( {first-input:
+			circular-module-names := <map(get-module-name)> inputs;
+			!inputs;
+			?[first-input|_];
+			java-package := <get-java-package> first-input;
+			output-folder := <get-output-folder> first-input
+		});
+		// Rewrite the imports in the AST
+		<map(rewrite-imports(|circular-module-names))> inputs;
+		// Circular modules will be merged, make the result module deterministic
+		determine-circular-result-module(Fst) => (other-inputs, result-input);
+		combine-modules;
+		log (|Notice(), 10);
+		add-std-lib-import-if-required;
+		log (|Notice(), 11);
+		?(moduleName, merged-ast, new-libs, fileName, generate-main);
+		log (|Notice(), 115);
+		save-and-set-options(
+			log (|Notice(), 12);
+			where(<set-config>("-la", <conc;make-set> (<get-config <+ ![]> "-la", new-libs)));
+			log (|Notice(), 13);
+			call-front-end;
+			log (|Notice(), 14);
+			// TODO Generate rtree
+			log(|Notice(), ["Calling Backend for ", moduleName]);
+			call-back-end;
+			log (|Notice(), 15)
+		|generate-main, java-package, output-folder, fileName, moduleName, circular-module-names);
+		log (|Notice(), 16);
+		where(<debug;create-dummy-modules(|java-package, output-folder)> (other-inputs, result-input));
+		log (|Notice(), 17)
+	} end
