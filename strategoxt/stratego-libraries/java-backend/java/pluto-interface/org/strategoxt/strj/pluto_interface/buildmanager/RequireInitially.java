@@ -6,8 +6,8 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
-import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory;
-import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory.GeneratedBuilder;
+import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory;
+import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory.GeneratedBuilder;
 import org.sugarj.common.Log;
 
 import build.pluto.builder.BuildManager;

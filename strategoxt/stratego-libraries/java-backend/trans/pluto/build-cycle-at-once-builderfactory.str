@@ -2,7 +2,7 @@ module pluto/build-cycle-at-once-builderfactory
 
 imports libstrategolib
 imports cleardep/fileutils
-imports pluto/builderfactory
+imports pluto/singleton-store
 
 strategies
 	
@@ -29,11 +29,9 @@ strategies
 	    		path-get-full-path
 	    in
 			
-		<Factories> factory-name <+ (
-			  prim("PlutoInterface_MakeBuildCycleAtOnceBuilderFactory", description-strategy, flat-single-persistent-path, scope-builder-and-build(build-all-strategy) | factory-name) => generated-factory
-			; rules(Factories: factory-name -> generated-factory)
-			; !generated-factory
-			)
+		create-pluto-singleton(
+			  prim("PlutoInterface_MakeBuildCycleAtOnceBuilderFactory", description-strategy, flat-single-persistent-path, scope-builder-and-build(build-all-strategy) | factory-name)
+			 |factory-name)
 	    end
 	    
 	    

@@ -10,6 +10,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
 import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory.GeneratedBuilder;
+import org.strategoxt.strj.pluto_interface.stamper.StrategoStamper;
 
 import build.pluto.builder.Builder;
 
@@ -20,22 +21,23 @@ import build.pluto.builder.Builder;
  * @author moritzlichter
  *
  */
-public class Require extends AbstractPrimitive {
+public class RequireStamper extends AbstractPrimitive {
 
-	public static final String NAME = "PlutoInterface_Builder_Require";
+	public static final String NAME = "PlutoInterface_Builder_RequireStamper";
 	
 
-	public Require() {
-		super(NAME,0,1);
+	public RequireStamper() {
+		super(NAME,0,2);
 	}
 	
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
 		Builder<?, ?> enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
+		StrategoStamper stamper = ObjectWrapperTerm.get(arg2[1]);
 		IStrategoTerm fileTerm = arg0.current();
 		String filePath = Term.asJavaString(fileTerm);
-		System.out.println("Require " + filePath);
-		enclosingBuilder.require(new File(filePath));
+		System.out.println("Require Stamper" + filePath);
+		enclosingBuilder.require(new File(filePath), stamper);
 		return true;
 	}
 

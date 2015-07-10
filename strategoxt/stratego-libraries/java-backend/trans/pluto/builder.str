@@ -9,6 +9,11 @@ strategies
 		log (|Notice(), ["Require ", <id>]);
 		path-get-full-path;
 		prim("PlutoInterface_Builder_Require", |<Builder>)
+	
+	require-stamper(|stamper) = 
+		log (|Notice(), ["Require ", <id>]);
+		path-get-full-path;
+		prim("PlutoInterface_Builder_RequireStamper", |<Builder>)
 		  
 	require-build = 
 		log (|Notice(), ["Require Build", <id>]);	

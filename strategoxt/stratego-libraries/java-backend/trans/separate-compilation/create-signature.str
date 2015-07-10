@@ -9,6 +9,19 @@ imports cleardep/cleardep
 imports cleardep/fileutils
 
 strategies
+	
+	
+			
+		/*create-rtree-file = 
+			log(|Info(), ["Calculating transitive externals for ", work-unit])
+			where(
+				calculate-transitive-externals(
+					and(is-remove-overlays-from-externals, is-main-module-contained(|circular-units))
+						|work-unit, circular-units) => (rtree-file, signature-term) 
+					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
+					; set-interface-hash(|work-unit, signature-term) 
+				
+				)*/
 
 	calculate-transitive-externals(remove-overlays|comp-unit, circular-units) =
 		  defs-to-external-defs; unpack-specification => local-externals

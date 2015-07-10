@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.spoofax.interpreter.core.IContext;
-import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
@@ -20,8 +19,8 @@ import build.pluto.output.Out;
 import build.pluto.output.Output;
 import build.pluto.output.OutputPersisted;
 
-public class GeneratedBuilderFactory
-		implements BuilderFactory<IStrategoTerm, Out<IStrategoTerm>, GeneratedBuilderFactory.GeneratedBuilder> {
+public class StrategoBuilderFactory
+		implements BuilderFactory<IStrategoTerm, Out<IStrategoTerm>, StrategoBuilderFactory.GeneratedBuilder>, NamedSingleton {
 
 	/**
 	 * 
@@ -37,36 +36,15 @@ public class GeneratedBuilderFactory
 	private transient final Strategy descriptionStrategy;
 	private transient final Strategy persistentPathStrategy;
 	private transient final Strategy buildStrategy;
-	private transient final Strategy cycleSupportStrategy;
 
-	public GeneratedBuilderFactory(String name, IContext context, Strategy descriptionStrategy, Strategy persistentPathStrategy,
-			Strategy buildStrategy, Strategy cycleSupportStrategy) {
+	public StrategoBuilderFactory(String name, IContext context, Strategy descriptionStrategy, Strategy persistentPathStrategy,
+			Strategy buildStrategy) {
 		super();
 		this.name = name;
 		this.context = context;
 		this.descriptionStrategy = descriptionStrategy;
 		this.persistentPathStrategy = persistentPathStrategy;
 		this.buildStrategy = buildStrategy;
-		this.cycleSupportStrategy = cycleSupportStrategy;
-	}
-
-	private IStrategoTerm invoke(Strategy strategy, IStrategoTerm arg) {
-		context.setCurrent(arg);
-		try {
-			boolean success = strategy.evaluate(context);
-			if (!success) {
-				String[] trace =context.getStackTracer().getTrace();
-				String traceFormatted = "";
-				for (String s : trace)
-					traceFormatted += s + "\n";
-				throw new InterpreterException(
-						"GeneratedBuilderFactory: Could not evaluate " + strategy + " successfully. Current " + context.current() + "\n" + traceFormatted );
-			}
-			IStrategoTerm result = context.current();
-			return result;
-		} catch (InterpreterException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public class GeneratedBuilder extends Builder<IStrategoTerm, Out<IStrategoTerm>> implements PublicBuilder {
@@ -85,19 +63,19 @@ public class GeneratedBuilderFactory
 
 		@Override
 		protected Out<IStrategoTerm> build(IStrategoTerm input) throws Throwable {
-			IStrategoTerm result = invoke(buildStrategy, pairWithBuilder(input));
+			IStrategoTerm result = StrategoUtils.invoke(StrategoBuilderFactory.this,buildStrategy, pairWithBuilder(input));
 			return OutputPersisted.of(result);
 		}
 
 		@Override
 		protected String description(IStrategoTerm input) {
-			IStrategoTerm descriptionTerm = invoke(descriptionStrategy, input);
+			IStrategoTerm descriptionTerm = StrategoUtils.invoke(StrategoBuilderFactory.this,descriptionStrategy, input);
 			return Term.asJavaString(descriptionTerm);
 		}
 
 		@Override
 		protected File persistentPath(IStrategoTerm input) {
-			IStrategoTerm fileTerm = invoke(persistentPathStrategy, input);
+			IStrategoTerm fileTerm = StrategoUtils.invoke(StrategoBuilderFactory.this,persistentPathStrategy, input);
 			File file = new File(Term.asJavaString(fileTerm));
 			return file;
 		}
@@ -120,16 +98,6 @@ public class GeneratedBuilderFactory
 		return new GeneratedBuilder(input);
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return this == obj;
-	}
-	
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-	
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeObject(name);
 	}
@@ -139,7 +107,17 @@ public class GeneratedBuilderFactory
 	}
 	
 	private Object readResolve() {
-		return BuilderFactoryStore.readFactoryFromStore(name);
+		return SingletonStore.readFromSingletonStore(name);
+	}
+
+	@Override
+	public String getName() {
+		return this.name;
+	}
+	
+	@Override
+	public IContext getContext() {
+		return this.context;
 	}
 
 }

@@ -1,0 +1,20 @@
+module pluto/stamper
+
+imports cleardep/fileutils
+imports pluto/singleton-store
+
+strategies
+	
+	stamper(stamp-strategy | name) = let
+	
+		wrapped-stamp-strategy =
+			!AbsolutePath(<id>);
+			stamp-strategy
+	
+	in
+		create-pluto-singleton({stamper:
+			prim("PlutoInterface_Stamper_CreateStamper", wrapped-stamp-strategy | name) => stamper;
+			rules(Factories: factory-name -> stamper)
+			} | name)
+	end
+		

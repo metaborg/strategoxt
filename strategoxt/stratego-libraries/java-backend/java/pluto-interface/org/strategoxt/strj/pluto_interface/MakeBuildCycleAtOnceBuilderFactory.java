@@ -23,9 +23,8 @@ public class MakeBuildCycleAtOnceBuilderFactory extends AbstractPrimitive {
 		final Strategy descriptionStrategy = arg1[0];
 		final Strategy singlePersistentPathStrategy = arg1[1];
 		final Strategy buildAllStrategy = arg1[2];
-		final Strategy cycleSupportStrategy = null;
 		
-		final IStrategoTerm factoryTerm = new ObjectWrapperTerm<>(new StrategoBuildCycleAtOnceBuilderFactory(name, arg0, descriptionStrategy, singlePersistentPathStrategy, buildAllStrategy, cycleSupportStrategy), GeneratedBuilderFactory.WRAPPED_TERM_TYPE);
+		final IStrategoTerm factoryTerm = new ObjectWrapperTerm<>(new StrategoBuildCycleAtOnceBuilderFactory(name, arg0, descriptionStrategy, singlePersistentPathStrategy, buildAllStrategy), StrategoBuildCycleAtOnceBuilderFactory.WRAPPED_TERM_TYPE);
 		arg0.setCurrent(factoryTerm);
 		return true;
 	}

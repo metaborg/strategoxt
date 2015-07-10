@@ -1,0 +1,14 @@
+module pluto/singleton-store
+
+strategies
+
+	init-pluto-singleton-store = 
+		prim("InitBuilderFactoryStore", PlutoSingletonStore|)
+	
+	create-pluto-singleton(init-strategy | name) = 
+		<PlutoSingletonStore> name <+ {value: 
+			init-strategy => value;
+			rules(PlutoSingletonStore: name -> value);
+			!value
+			}
+	    

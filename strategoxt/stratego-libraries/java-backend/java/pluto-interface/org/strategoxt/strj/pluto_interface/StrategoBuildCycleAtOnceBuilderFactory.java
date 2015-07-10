@@ -26,14 +26,14 @@ import build.pluto.output.Output;
 import build.pluto.output.OutputPersisted;
 
 public class StrategoBuildCycleAtOnceBuilderFactory
-		implements BuilderFactory<ArrayList<IStrategoTerm>, Out<IStrategoTerm>, StrategoBuildCycleAtOnceBuilderFactory.StrategoBuildAtOnceBuilder> {
+		implements BuilderFactory<ArrayList<IStrategoTerm>, Out<IStrategoTerm>, StrategoBuildCycleAtOnceBuilderFactory.StrategoBuildAtOnceBuilder> , NamedSingleton {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -705279049840986577L;
 
-	public static final int WRAPPED_TERM_TYPE = 928382;
+	public static final int WRAPPED_TERM_TYPE = 234122;
 
 	
 	private  String name;
@@ -43,48 +43,26 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 	private transient final Strategy descriptionStrategy;
 	private transient final Strategy persistentPathStrategy;
 	private transient final Strategy buildStrategy;
-	private transient final Strategy cycleSupportStrategy;
 
 	public StrategoBuildCycleAtOnceBuilderFactory(String name, IContext context, Strategy descriptionStrategy, Strategy persistentPathStrategy,
-			Strategy buildStrategy, Strategy cycleSupportStrategy) {
+			Strategy buildStrategy) {
 		super();
 		this.name = name;
 		this.context = context;
 		this.descriptionStrategy = descriptionStrategy;
 		this.persistentPathStrategy = persistentPathStrategy;
 		this.buildStrategy = buildStrategy;
-		this.cycleSupportStrategy = cycleSupportStrategy;
-	}
-
-	private IStrategoTerm invoke(Strategy strategy, IStrategoTerm arg) {
-		context.setCurrent(arg);
-		try {
-			boolean success = strategy.evaluate(context);
-			if (!success) {
-				String[] trace =context.getStackTracer().getTrace();
-				String traceFormatted = "";
-				for (String s : trace)
-					traceFormatted += s + "\n";
-				throw new InterpreterException(
-						"StrategoBuildCycleAtOnceBuilderFactory: Could not evaluate " + strategy + " successfully. Current " + context.current() + "\n" + traceFormatted );
-			}
-			IStrategoTerm result = context.current();
-			return result;
-		} catch (InterpreterException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public class StrategoBuildAtOnceBuilder extends BuildCycleAtOnceBuilder<IStrategoTerm, Out<IStrategoTerm>> implements PublicBuilder {
 
 	
-		public StrategoBuildAtOnceBuilder(ArrayList<IStrategoTerm> input,
-				BuilderFactory<ArrayList<IStrategoTerm>, Out<IStrategoTerm>, ? extends BuildCycleAtOnceBuilder<IStrategoTerm, Out<IStrategoTerm>>> factory) {
-			super(input, factory);
+		public StrategoBuildAtOnceBuilder(ArrayList<IStrategoTerm> input) {
+			super(input, StrategoBuildCycleAtOnceBuilderFactory.this);
 			// TODO Auto-generated constructor stub
 		}
 
-		private static final int BUILDER_TERM_TYPE = 29321;
+		private static final int BUILDER_TERM_TYPE = 1821931;
 		private final IStrategoTerm builderTerm = new ObjectWrapperTerm<>(this, BUILDER_TERM_TYPE);
 
 		private IStrategoTerm pairWithBuilder(IStrategoTerm value) {
@@ -105,7 +83,7 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 
 		@Override
 		protected List<Out<IStrategoTerm>> buildAll(ArrayList<IStrategoTerm> input) throws Throwable {
-			IStrategoTerm resultList = invoke(buildStrategy, pairWithBuilder(context.getFactory().makeList(input)));
+			IStrategoTerm resultList = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, buildStrategy, pairWithBuilder(context.getFactory().makeList(input)));
 			ArrayList<Out<IStrategoTerm>> convertedList = new ArrayList<>(((IStrategoList)resultList).size());
 			for (IStrategoTerm resultTerm : (IStrategoList)resultList) {
 				convertedList.add(OutputPersisted.of(resultTerm));
@@ -115,29 +93,17 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 
 		@Override
 		protected File singletonPersistencePath(IStrategoTerm input) {
-			IStrategoTerm fileTerm = invoke(persistentPathStrategy, input);
+			IStrategoTerm fileTerm = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, persistentPathStrategy, input);
 			File file = new File(Term.asJavaString(fileTerm));
 			return file;
 		}
 
 		@Override
 		protected String description(ArrayList<IStrategoTerm> input) {
-			IStrategoTerm descriptionTerm = invoke(descriptionStrategy, context.getFactory().makeList(input));
+			IStrategoTerm descriptionTerm = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, descriptionStrategy, context.getFactory().makeList(input));
 			return Term.asJavaString(descriptionTerm);
 		}
 
-	}
-
-	
-	@Override
-	public boolean equals(Object obj) {
-		System.out.println("Factory equals: " + this + " <-> " + obj);
-		return this == obj;
-	}
-	
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 	
 	private void writeObject(ObjectOutputStream stream) throws IOException {
@@ -149,12 +115,22 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 	}
 	
 	private Object readResolve() {
-		return BuilderFactoryStore.readFactoryFromStore(name);
+		return SingletonStore.readFromSingletonStore(name);
 	}
 
 	@Override
 	public StrategoBuildAtOnceBuilder makeBuilder(ArrayList<IStrategoTerm> input) {
-		return new StrategoBuildAtOnceBuilder(input, this);
+		return new StrategoBuildAtOnceBuilder(input);
+	}
+
+	@Override
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public IContext getContext() {
+		return context;
 	}
 
 }

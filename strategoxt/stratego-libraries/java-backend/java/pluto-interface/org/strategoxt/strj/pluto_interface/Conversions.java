@@ -19,7 +19,7 @@ public class Conversions {
 			IStrategoTerm factoryTerm = Term.termAt(term, 0);
 			IStrategoTerm input = Term.termAt(term, 1);
 
-			GeneratedBuilderFactory factory = ObjectWrapperTerm.get(factoryTerm);
+			StrategoBuilderFactory factory = ObjectWrapperTerm.get(factoryTerm);
 
 			return new BuildRequest<>(factory, input);
 		case "BuildAtOnceBuildRequest":

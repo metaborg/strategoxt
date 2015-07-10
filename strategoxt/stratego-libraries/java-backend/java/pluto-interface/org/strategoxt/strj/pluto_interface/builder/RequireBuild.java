@@ -10,9 +10,9 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
-import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory;
+import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory;
 import org.strategoxt.strj.pluto_interface.PublicBuilder;
-import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory.GeneratedBuilder;
+import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory.GeneratedBuilder;
 
 import build.pluto.builder.BuildRequest;
 import build.pluto.builder.Builder;

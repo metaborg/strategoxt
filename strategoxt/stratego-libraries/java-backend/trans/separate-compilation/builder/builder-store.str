@@ -1,12 +1,12 @@
 module separate-compilation/builder/builder-store
 
-imports pluto/builderfactory
+imports pluto/singleton-store
 imports separate-compilation/builder/-
 
 strategies
 	
 	init-builders = 
-		init-builder-factory-store;
+		init-pluto-singleton-store;
 		parse-stratego-builder-factory;
 		compile-module-builder-factory
 		

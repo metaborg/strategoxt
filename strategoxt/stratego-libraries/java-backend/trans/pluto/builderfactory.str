@@ -2,11 +2,10 @@ module pluto/builderfactory
 
 imports libstrategolib
 imports cleardep/fileutils
+imports pluto/singleton-store
 
 strategies
 	
-	init-builder-factory-store = 
-		prim("InitBuilderFactoryStore", Factories|)
 	
 	builder-factory(description-strategy, persistent-path-strategy, build-strategy | factory-name) =
 		
@@ -28,10 +27,8 @@ strategies
 	    		log(|Info(), ["Flat ", <id>])
 	    in
 			
-		<Factories> factory-name <+ (
-			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, flat-persistent-path, scope-builder-and-build | factory-name) => generated-factory
-			; rules(Factories: factory-name -> generated-factory)
-			; !generated-factory
-			)
+		create-pluto-singleton(
+			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, flat-persistent-path, scope-builder-and-build | factory-name)
+			| factory-name)
 	    end
 	    
