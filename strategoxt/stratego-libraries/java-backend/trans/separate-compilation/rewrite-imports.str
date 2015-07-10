@@ -15,6 +15,7 @@ imports separate-compilation/std-lib-utils
 imports separate-compilation/booleans
 
 imports separate-compilation/builder/compile-module-builder
+imports separate-compilation/builder/parse-stratego-builder
 
 
 strategies
@@ -48,11 +49,23 @@ strategies
 					file := <separate-compilation-get-relative-file> import-name;
 					<require> file\}
 			
+			is-import-module= {ast, parse-input, module-name:
+				log(|Notice(), ["Is Module import ", <id>]);
+				?Import(module-name);
+				<parse-stratego-input-for-module;debug> (module-name,pack-include-path, working-output ) => (_, parse-input);
+				log(|Notice(), ["Input ", parse-input]);
+				<require-build;debug> BuildRequest(<parse-stratego-builder-factory>, parse-input)
+			  			=> ParseStrategoOutput(_, ast);
+			  	log(|Notice(), ["Result ", parse-input]);
+			  	<?Module(_,_)> ast
+			  	}
+			  			
+			
 			process-import-str =
 			{ term, name, module-name: 
 				  ?(term, <has-extension(|"str")>)
 				; where(<\Import(name) -> name\> term => module-name)
-				; if !term; is-import-dependency
+				; if <is-import-module> term
 					then  // regular module dependency
 					   log(|Notice(), ["Import to module ", term])
 					 ; if <elem> (module-name, circular-module-names) 
@@ -103,16 +116,19 @@ strategies
 			},
 			  !(<id>, <id;try(File)>)
 			; (process-import-str + process-import-rtree + process-import-default-lib)
-			, if try(File);has-extension(|"str")
+			, {term:
+			  	?term;
+			  	if try(File);has-extension(|"str")
 				then 
-					  where (is-import-dependency)
+					  where (<is-import-module> term)
 					; import-to-flag(|working-package)
 				else 
 					  ?Import(<id>)
 					; where(is-default-lib-rtree)
 					; remove-lib-prefix
 					; translate-default-library // do not want to collect rtrees, but libraries
-			end
+				end
+			   }
 			)
 		|}
 		end

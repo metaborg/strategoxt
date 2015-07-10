@@ -10,25 +10,6 @@ imports cleardep/fileutils
 
 strategies
 
-	extract-dependencies =
-		  pack-stratego-unit
-		; get-stratego-source-file
-		; path-get-full-path
-		; !(IncludePathName(<id>), <pack-include-path>)
-		; (separate-compilation-parse-file <+ (log(|Error(), ["File not found: ", <id>]);fail))
-		; Snd
-		; ?Module(name, content)
-		; <filter(\Imports(x)->x\)> content
-		; map(mapconcat(pack-expand-import))
-		; concat
-		; filter(where(\x -> <debug;is-import-dependency> Import(x)\))
-		; map(
-					if complete-rebuild
-						then create-if-not-in-cache-or-read-compilation-unit-for-module(|<id>)
-						else read-or-create-compilation-unit-for-module(|<id>)
-					  end
-					)
-		; map (unpack-stratego-unit)
 				  
 	
 		is-import-dependency =

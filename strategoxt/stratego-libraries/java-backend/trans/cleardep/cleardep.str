@@ -213,12 +213,12 @@ strategies
 			)
 		; !RelativePath(AbsolutePath(<output-dirname>), <conc-strings>(<to-java-compilation-folder>name, "/dependencies.dep"))
 		
-	createBuildSchedule(|schedule-mode) =
+	/*createBuildSchedule(|schedule-mode) =
 		    (is-list
 		  ; map(unpack-stratego-unit)
 		  ; prim("ClearDep_BuildSchedule_createBuildSchedule", extract-dependencies | schedule-mode)
 		  ; !BuildSchedule(<id>)
-		) <+ fail-with-message(|["createBuildSchedule failed for ", <id>])
+		) <+ fail-with-message(|["createBuildSchedule failed for ", <id>])*/
 	
 	flattenBuildSchedule =
 		(    ?BuildSchedule(<id>)

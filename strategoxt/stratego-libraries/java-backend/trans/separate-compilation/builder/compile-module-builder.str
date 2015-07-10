@@ -47,21 +47,13 @@ strategies
 			
 		build-all = let
 			
-			find-source-file = {module-name, pack-include-path: \
-				 (module-name, pack-include-path) -> 
-					<fetch-elem({dir:
-						 \IncludeDir(dir) -> <path-add-extension(|"str");where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\})> pack-include-path
-				\}
-			
-			parse-module = {module-name, parsed-module-name, pack-include-path, output-folder, source-file, ast: \
+			parse-module = {module-name, parsed-module-name, pack-include-path, output-folder, source-file, ast, parse-input: \
 				 (module-name, pack-include-path, output-folder) -> (source-file, ast)
 	   			where
 	   				log(|Notice(), 1);
-	   				source-file := <find-source-file <+ log(|Error(), ["No file found for module ", module-name])> (module-name, pack-include-path);
-	   				log(|Notice(), [2, " Source file ", source-file]);
-	   				<require> source-file; // TODO File exists stamper should be enough
+	   				<parse-stratego-input-for-module> (module-name, pack-include-path, output-folder) => (source-file, parse-input);
 	   				log(|Notice(), 3);
-	   				<require-build> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(source-file, pack-include-path, output-folder))
+	   				<require-build> BuildRequest(<parse-stratego-builder-factory>, parse-input)
 			  			=> ParseStrategoOutput(parsed-module-name, ast);
 			  		if <not(eq)> (module-name, parsed-module-name) then
 			  			log(|Error(), ["Module name ", parsed-module-name, " does not match file name in ", source-file]);

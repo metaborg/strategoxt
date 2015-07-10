@@ -17,6 +17,12 @@ signature
 		
 strategies
 	
+	parse-stratego-input-for-module = {module-name, pack-include-path, output-folder, source-file: \
+		(module-name, pack-include-path, output-folder) -> (source-file, ParseStrategoInput(source-file, pack-include-path, output-folder))	
+		where
+			source-file := <fetch-elem({dir:\IncludeDir(dir) -> <path-add-extension(|"str");where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\})> pack-include-path;
+			<require> source-file // TODO file exists should be enough
+		\}
 	
 	parse-stratego-builder-factory = let
 	
