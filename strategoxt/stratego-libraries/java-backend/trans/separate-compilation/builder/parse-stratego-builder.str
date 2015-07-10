@@ -34,11 +34,13 @@ strategies
 			
 		build = let
 			extract-module-name = {name: \Module(name,_) -> name\}
-		in {file, pack-include-path, ast, module-name, file-path: 
+		in {file, pack-include-path, ast, module-name, file-path, meta-file: 
 			log(|Notice(), "A");
 			?ParseStrategoInput(file, pack-include-path,_);
 			log(|Notice(), "B");
 			<require> file;
+			<path-replace-extension(|"meta")> file => meta-file;
+			<require> meta-file; // Require meta file whether it exists or not -> when the file is added or deleted, reparsing is required, too
 			log(|Notice(), "C");
 			<path-get-full-path> file => file-path;
 			log(|Notice(), "D");
