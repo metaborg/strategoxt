@@ -33,9 +33,6 @@ public class GeneratedBuilderFactory
 	
 	private  String name;
 	
-	public static IContext factoryByNameContext;
-	public static Strategy factoryByNameStrategy;
-	
 	private transient final IContext context;
 	private transient final Strategy descriptionStrategy;
 	private transient final Strategy persistentPathStrategy;
@@ -72,7 +69,7 @@ public class GeneratedBuilderFactory
 		}
 	}
 
-	public class GeneratedBuilder extends Builder<IStrategoTerm, Out<IStrategoTerm>> {
+	public class GeneratedBuilder extends Builder<IStrategoTerm, Out<IStrategoTerm>> implements PublicBuilder {
 
 		public GeneratedBuilder(IStrategoTerm input) {
 			super(input);
@@ -125,7 +122,6 @@ public class GeneratedBuilderFactory
 	
 	@Override
 	public boolean equals(Object obj) {
-		System.out.println("Factory equals: " + this + " <-> " + obj);
 		return this == obj;
 	}
 	
@@ -143,16 +139,7 @@ public class GeneratedBuilderFactory
 	}
 	
 	private Object readResolve() {
-		factoryByNameContext.setCurrent(factoryByNameContext.getFactory().makeString(name));
-		try {
-		boolean result = factoryByNameStrategy.evaluate(factoryByNameContext);
-		if (!result) {
-			throw new InterpreterException("Failed to evalute");
-		}
-		return ObjectWrapperTerm.<GeneratedBuilderFactory>get(factoryByNameContext.current());
-		} catch (InterpreterException e){
-			throw new RuntimeException("Failed to load factory \"" + name +"\"", e);
-		}
+		return BuilderFactoryStore.readFactoryFromStore(name);
 	}
 
 }

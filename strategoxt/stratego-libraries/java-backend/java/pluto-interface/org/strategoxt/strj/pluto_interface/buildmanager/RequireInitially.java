@@ -27,7 +27,7 @@ public static final String NAME = "PlutoInterface_BuildManager_RequireInitially"
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
 		try {
-		BuildRequest<IStrategoTerm, Out<IStrategoTerm>, GeneratedBuilder, GeneratedBuilderFactory> request = Conversions
+		BuildRequest<?, Out<IStrategoTerm>, ?, ?> request = Conversions
 				.convertBuildRequest(arg0.current());
 		System.out.println("Request: " + request);
 		System.out.println("Factory: " + request.factory);

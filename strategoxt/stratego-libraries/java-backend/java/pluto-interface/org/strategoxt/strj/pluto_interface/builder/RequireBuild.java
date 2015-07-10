@@ -11,6 +11,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
 import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory;
+import org.strategoxt.strj.pluto_interface.PublicBuilder;
 import org.strategoxt.strj.pluto_interface.GeneratedBuilderFactory.GeneratedBuilder;
 
 import build.pluto.builder.BuildRequest;
@@ -35,8 +36,9 @@ public class RequireBuild extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
 		try {
-			GeneratedBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
-			BuildRequest<IStrategoTerm, Out<IStrategoTerm>, GeneratedBuilder, GeneratedBuilderFactory> request = Conversions
+			System.out.println("Call!");
+			PublicBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
+			BuildRequest<?, Out<IStrategoTerm>, ?, ?> request = Conversions
 					.convertBuildRequest(arg0.current());
 			if (request == null) {
 				System.out.println("Build request was null");
@@ -50,7 +52,8 @@ public class RequireBuild extends AbstractPrimitive {
 			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request);
 			arg0.setCurrent(result.val());
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new InterpreterException(e);
 		}
 	}

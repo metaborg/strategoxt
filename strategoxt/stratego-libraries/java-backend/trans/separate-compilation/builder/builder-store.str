@@ -7,5 +7,6 @@ strategies
 	
 	init-builders = 
 		init-builder-factory-store;
-		parse-stratego-builder-factory
+		parse-stratego-builder-factory;
+		compile-module-builder-factory
 		

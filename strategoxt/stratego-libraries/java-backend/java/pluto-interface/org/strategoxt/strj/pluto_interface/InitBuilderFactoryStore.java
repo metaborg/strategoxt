@@ -17,8 +17,8 @@ public class InitBuilderFactoryStore extends AbstractPrimitive {
 	
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
-		GeneratedBuilderFactory.factoryByNameContext = arg0;
-		GeneratedBuilderFactory.factoryByNameStrategy = arg1[0];
+		BuilderFactoryStore.factoryByNameContext = arg0;
+		BuilderFactoryStore.factoryByNameStrategy = arg1[0];
 		return true;
 	}
 

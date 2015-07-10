@@ -10,6 +10,7 @@ public class PlutoLibrary extends AbstractStrategoOperatorRegistry{
 
 	public PlutoLibrary() {
 		this.add(new MakeBuilderFactory());
+		this.add(new MakeBuildCycleAtOnceBuilderFactory());
 		this.add(new Provide());
 		this.add(new Require());
 		this.add(new RequireBuild());

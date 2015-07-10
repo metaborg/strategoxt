@@ -31,7 +31,7 @@ public class Require extends AbstractPrimitive {
 	
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
-		GeneratedBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
+		Builder<?, ?> enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
 		IStrategoTerm fileTerm = arg0.current();
 		String filePath = Term.asJavaString(fileTerm);
 		System.out.println("Require " + filePath);
