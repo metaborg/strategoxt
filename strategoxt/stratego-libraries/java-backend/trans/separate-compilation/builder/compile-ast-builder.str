@@ -21,7 +21,7 @@ imports strj
 signature
 	constructors
 		
-		CompileASTInput: ModuleName * AST * Path * JavaPackage * OutputFolder * GenerateMain -> CompileASTInput
+		CompileASTInput: ModuleName * AST * Path * JavaPackage * OutputFolder * GenerateMain * PackIncludePath -> CompileASTInput
 		
 		
 strategies
@@ -29,12 +29,13 @@ strategies
 	compile-asts = let
 	
 		// Accessor strategies such that the input can be extended with other values without need to change all pattern matches
-		get-module-name = {name: \ CompileASTInput(name, _, _, _, _, _) -> name\}
-		get-ast = {ast: \ CompileASTInput(_, ast, _, _, _, _) -> ast\}
-		get-path = {path: \ CompileASTInput(_, _, path, _, _, _) -> path\}
-		get-java-package = {package: \ CompileASTInput(_, _, _, package, _, _) -> package\}
-		get-output-folder = {folder: \ CompileASTInput(_, _, _, _, folder, _) -> folder\}
-		get-generate-main = {generate: \ CompileASTInput(_, _, _, _, _, generate) -> generate\}
+		get-module-name = {name: \ CompileASTInput(name, _, _, _, _, _, _) -> name\}
+		get-ast = {ast: \ CompileASTInput(_, ast, _, _, _, _, _) -> ast\} 
+		get-path = {path: \ CompileASTInput(_, _, path, _, _, _, _) -> path\}
+		get-java-package = {package: \ CompileASTInput(_, _, _, package, _, _, _) -> package\}
+		get-output-folder = {folder: \ CompileASTInput(_, _, _, _, folder, _, _) -> folder\}
+		get-generate-main = {generate: \ CompileASTInput(_, _, _, _, _, generate, _) -> generate\}
+		get-pack-include-path = {path: \ CompileASTInput(_, _, _, _, _, _, path) -> path\}
 		
 		/* Selects from a list of inputs the input with the module name, which is first in lexicographical order
 		 * Returns a pair of the other inputs and the selected ones
@@ -54,7 +55,7 @@ strategies
 				end })
 			}
 				
-		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, transformed-ast, new-libs: \
+		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs: \
 			input -> (module-name, transformed-ast, new-libs, path, generate-main)
 			where
 				log(|Notice(), ["Rewrite imports"]);
@@ -64,7 +65,8 @@ strategies
 				java-package := <get-java-package> input;
 				output-folder := <get-output-folder> input;
 				generate-main := <get-generate-main> input;
-				<separate-compilation-rewrite-imports(|module-name, java-package, output-folder, circular-module-names)> ast => (transformed-ast, new-libs)
+				pack-include-path := <get-pack-include-path> input;
+				<separate-compilation-rewrite-imports(|module-name, java-package, output-folder, circular-module-names, pack-include-path)> ast => (transformed-ast, new-libs)
 			\}
 			
 		combine-modules = {:
@@ -118,29 +120,30 @@ strategies
 			}
 				
 			
-		generate-dummy-module-input(|result-module-name, java-package, output-folder) = {module-name, file-name: \
+		generate-dummy-module-input(|result-module-name, java-package, output-folder, pack-include-path) = {module-name, file-name: \
 			(module-name, _, _, file-name, _) ->
-					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, False()) 
+					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, False(), pack-include-path) 
 			\}
 		
-		create-dummy-modules(|java-package, output-folder) = {dummy-inputs, other-modules, result-module-name: \
+		create-dummy-modules(|java-package, output-folder, pack-include-path) = {dummy-inputs, other-modules, result-module-name: \
 			 (other-modules, (result-module-name, _,_,_,_)) -> ()
 			where
 				log(|Notice(), 120);
-				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, java-package, output-folder))> other-modules;
+				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, java-package, output-folder, pack-include-path))> other-modules;
 				log(|Notice(), 121);
 				<map(compile-asts)> dummy-inputs
 		\}
 				 
 		
-	in {inputs, circular-module-names, java-package, output-folder, other-inputs, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main:
+	in {inputs, circular-module-names, java-package, output-folder, pack-include-path, other-inputs, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main:
 		id => inputs;
 		where( {first-input:
 			circular-module-names := <map(get-module-name)> inputs;
 			!inputs;
 			?[first-input|_];
 			java-package := <get-java-package> first-input;
-			output-folder := <get-output-folder> first-input
+			output-folder := <get-output-folder> first-input;
+			pack-include-path := <get-pack-include-path> first-input
 		});
 		// Rewrite the imports in the AST
 		<map(rewrite-imports(|circular-module-names))> inputs;
@@ -164,6 +167,6 @@ strategies
 			log (|Notice(), 15)
 		|generate-main, java-package, output-folder, fileName, moduleName, circular-module-names);
 		log (|Notice(), 16);
-		where(<debug;create-dummy-modules(|java-package, output-folder)> (other-inputs, result-input));
+		where(<debug;create-dummy-modules(|java-package, output-folder, pack-include-path)> (other-inputs, result-input));
 		log (|Notice(), 17)
 	} end

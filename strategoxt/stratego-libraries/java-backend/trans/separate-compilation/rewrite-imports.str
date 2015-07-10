@@ -6,18 +6,20 @@ imports libstrc
 imports cleardep/fileutils
 
 imports pluto/builder
+imports pluto/buildrequest
 
 imports separate-compilation/utils
 imports separate-compilation/fileutils
 imports separate-compilation/process-deps
 imports separate-compilation/std-lib-utils
+imports separate-compilation/booleans
 
 imports separate-compilation/builder/compile-module-builder
 
 
 strategies
 	
-	separate-compilation-rewrite-imports(|module-name, circular-module-names, working-package, working-output) =
+	separate-compilation-rewrite-imports(|module-name, circular-module-names, working-package, working-output, pack-include-path) =
 		let
 			to-library-import:
 				Import(name) -> Import(<to-java-compilation-rel-file> name)
@@ -29,13 +31,14 @@ strategies
 			
 		
 					
-			get-unit-add-dependency(|imported-module-name) = 
-			
-				 if <equal>(module-name, imported-module-name)
-					then	  log(|Info(), ["Module imports itself ", module-name])
+			require-imported-module(|imported-module-name) = 
+				if <equal>(module-name, imported-module-name)
+					then	log(|Info(), ["Module imports itself ", module-name])
 					else
-						<require-build-module> imported-module-name
-					end
+						// Require to build the imported module, then the rtree file can be used
+						<require-build> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(imported-module-name, pack-include-path, working-package, working-output, False())])
+						// TODO require the rtree file
+				end
 				
 			
 			
@@ -52,10 +55,11 @@ strategies
 				; if !term; is-import-dependency
 					then  // regular module dependency
 					   log(|Notice(), ["Import to module ", term])
-					 ; get-unit-add-dependency(|module-name)
 					 ; if <elem> (module-name, circular-module-names) 
 						then fail // Circular, do not transform
-						else !term; to-library-import // Transform term to library import
+						else 
+							require-imported-module(|module-name);
+							<to-library-import> term  // Transform term to library import
 				  	   end
 					else // Import contains not a module but a specification -> no module dependency because specification is not named
 					   log(|Notice(), ["Import to file but not module ", term])
