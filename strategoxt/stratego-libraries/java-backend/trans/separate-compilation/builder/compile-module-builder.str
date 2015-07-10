@@ -13,6 +13,7 @@ imports separate-compilation/builder/compile-ast-builder
 signature
 	constructors
 		CompileModuleInput: ModuleName * PackIncludePath * JavaPackage * OutputFolder * GenerateMain -> CompileModuleInput
+		CompileModuleOutput: RTreeFile -> CompileModuleOutput
 		
 
 strategies
@@ -47,6 +48,15 @@ strategies
 			
 		build-all = let
 			
+			find-input(|all-inputs) = {module-name: \
+				module-name -> <fetch-elem({input, name:\
+					input -> input
+					where 
+						name := <compile-module-input-module-name> input;
+						<eq> (name, module-name)
+					\})> all-inputs
+				\}
+			
 			parse-module = {module-name, parsed-module-name, pack-include-path, output-folder, source-file, ast, parse-input: \
 				 (module-name, pack-include-path, output-folder) -> (source-file, ast)
 	   			where
@@ -72,12 +82,14 @@ strategies
 	    			pack-include-path := <compile-module-input-pack-include-path> input;
 	    			<parse-module> (module-name, pack-include-path, output-folder) => (source-file, ast)
 	    		\}
-		in 
+		in {all-inputs:
+			?all-inputs;
 			log(|Notice(), ["Translate to ast"]);
 			map(translate-to-ast-input);
 			log(|Notice(), ["Start compiling"]);
-			compile-asts;
+			compile-asts(find-input(|all-inputs));
 			![()] // TODO Put rtree for each module here
+		  }
 		end
 	
 	in	build-cycle-at-once-builder-factory(

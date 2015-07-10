@@ -103,6 +103,11 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 			IStrategoTerm descriptionTerm = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, descriptionStrategy, context.getFactory().makeList(input));
 			return Term.asJavaString(descriptionTerm);
 		}
+		
+		@Override
+		public void provide(IStrategoTerm input, File p) {
+			super.provide(input, p);
+		}
 
 	}
 	
@@ -132,5 +137,6 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 	public IContext getContext() {
 		return context;
 	}
+	
 
 }

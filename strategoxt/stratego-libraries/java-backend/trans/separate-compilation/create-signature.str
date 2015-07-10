@@ -12,34 +12,29 @@ strategies
 	
 	
 			
-		/*create-rtree-file = 
-			log(|Info(), ["Calculating transitive externals for ", work-unit])
-			where(
-				calculate-transitive-externals(
-					and(is-remove-overlays-from-externals, is-main-module-contained(|circular-units))
-						|work-unit, circular-units) => (rtree-file, signature-term) 
-					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
-					; set-interface-hash(|work-unit, signature-term) 
-				
-				)*/
+		
 
-	calculate-transitive-externals(remove-overlays|comp-unit, circular-units) =
-		  defs-to-external-defs; unpack-specification => local-externals
-		; !circular-units
-		; mapconcat(get-all-module-dependencies)
-		; make-set
-		; !(<id>, circular-units)
-		; diff
-		; map((get-generated-rtree <+ (log(|Error(), ["Failed to get rtree for ", <id>]);fail));path-get-full-path;ReadFromFile;unpack-specification) => dep-externals
-		; foldr(!local-externals, merge-rtrees)
-		; if remove-overlays
+	calculate-transitive-externals(remove-overlays|dep-rtree-files) = {local-externals, dep-externals, externals,file:
+		log(|Notice(), [300, <id>]);
+		defs-to-external-defs;
+		log(|Notice(), [301, <id>]);
+		unpack-specification => local-externals;
+		log(|Notice(), [302, <id>]);
+		<map(path-get-full-path;ReadFromFile;unpack-specification)> dep-rtree-files => dep-externals;
+		log(|Notice(), [303, <id>]);
+		foldr(!local-externals, merge-rtrees);
+		log(|Notice(), [304, <id>]);
+		if remove-overlays
 			then \(cs,os,ss) -> (cs, [], ss)\
-			end
-		; unify-and-sort-externals
-		; pack-specification
-		; where(export-externals(|".rtree") => externals-file)
-		; externals-to-signature => signature-term
-		; !(externals-file, signature-term)
+		end;
+		log(|Notice(), [305, <id>]);
+		unify-and-sort-externals;
+		log(|Notice(), [306, <id>]);
+		pack-specification;
+		log(|Notice(), [307, <id>]);
+		export-externals(|".rtree") => externals-file;
+		!externals-file
+		 }
 	
 	
 	unpack-specification =
@@ -56,9 +51,10 @@ strategies
 		  ?(cs, os, ss)
 		; !Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
 
-	merge-rtrees =
+	merge-rtrees = {cs1, os2, ss1, cs2, os2, ss2:
 		  ?((cs1, os1, ss1), (cs2, os2, ss2))
 		; !(<conc> (cs1,cs2), <conc>(os1, os2), <conc> (ss1, ss2))
+		  }
 		
 		
 	unify-and-sort-externals =
@@ -95,7 +91,7 @@ strategies
 	            write-to
 	          ; copy-to(strc-getoutfile(!ext) => file1)
 	          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
-			  ; !file1
+			  ; !AbsolutePath(file1)
 	        | "Export of externals succeeded"
 	        , 1
 	        )

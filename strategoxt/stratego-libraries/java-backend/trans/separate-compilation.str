@@ -58,6 +58,13 @@ strategies
 		  where(collect-config)
 		; where(fileName := <\FILE(s) -> s\>) ;
 		!AbsolutePath(fileName) => absolute-file;
+		// But the output directory in the search path to find generated rtrees
+		 where({i , is:
+			  !"-I"
+			; get-config => [i|is]
+			; !("-I", <make-set>[i,IncludeDir(working-output)|is])
+			; set-config
+		});
 		<pack-include-path> () => pack-include-path;
 		
 		<require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(absolute-file, pack-include-path, AbsolutePath(working-output)))
