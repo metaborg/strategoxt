@@ -31,6 +31,19 @@
     <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
     <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
   </properties>
+  
+  <repositories>
+  		<repository>
+  			<id>pluto-build</id>
+  			<url>https://raw.githubusercontent.com/pluto-build/pluto-build.github.io/master/mvnrepository/</url>
+  			<releases>
+  				<enabled>false</enabled>
+  			</releases>
+  			<snapshots>
+  				<enabled>true</enabled>
+  			</snapshots>
+  		</repository>
+  	</repositories>
 
   <profiles>
     <profile>
