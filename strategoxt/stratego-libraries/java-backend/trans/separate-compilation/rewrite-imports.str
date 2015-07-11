@@ -15,7 +15,7 @@ imports separate-compilation/booleans
 
 imports separate-compilation/builder/compile-module-builder
 imports separate-compilation/builder/parse-stratego-builder
-imports separate-compilation/builder/rtree-stamper
+imports separate-compilation/stamper/rtree
 imports separate-compilation/stamper/is-specification
 
 
@@ -55,15 +55,13 @@ strategies
 					file := <separate-compilation-get-relative-file> import-name;
 					<require> file\}
 			
-			is-import-module= {ast, parse-input, module-name, file:
-				log(|Notice(), ["Is Module import ", <id>]);
+			is-import-module= {ast, parse-input, module-name:
 				?Import(module-name);
-				<parse-stratego-input-for-module;debug> (module-name,pack-include-path, working-output ) => (file, parse-input);
-				//<require-stamper(|<is-specification-stamper>)> file; // 
-				log(|Notice(), ["Input ", parse-input]);
+				<parse-stratego-input-for-module;debug> (module-name,pack-include-path, working-output ) => (_, parse-input);
+				// Dont need to require the file explicitly, this is done by the following build request
+				// Only depend on whether the AST is a module or a specification (more precicly: a specification or any thing else)
 				<require-build-stamper(|<is-parse-statrego-output-specification-stamper>);debug> BuildRequest(<parse-stratego-builder-factory>, parse-input)
 			  			=> ParseStrategoOutput(_, ast);
-			  	log(|Notice(), ["Result ", parse-input]);
 			  	<?Module(_,_)> ast
 			  	}
 			  			

@@ -6,12 +6,11 @@ imports separate-compilation/stamper/-
 
 strategies
 	
-	init-builders(|pack-include-path, output-folder) = 
+	init-builders = 
 		init-pluto-singleton-store;
 		parse-stratego-builder-factory;
 		compile-module-builder-factory;
 		rtree-stamper;
 		file-exists-stamper;
-		is-parse-statrego-output-specification-stamper;
-		is-specification-stamper(|pack-include-path, output-folder)
+		is-parse-statrego-output-specification-stamper
 		
