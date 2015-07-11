@@ -67,7 +67,8 @@ strategies
 		});
 		<pack-include-path> () => pack-include-path;
 		where(init-builders);
-		<require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(absolute-file, pack-include-path, AbsolutePath(working-output)))
+		where(relative-file := <fetch-elem({dir: \IncludeDir(dir) -> <path-relativize(|AbsolutePath(dir))> absolute-file\})> pack-include-path);
+		<require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(relative-file, pack-include-path, AbsolutePath(working-output)))
 				  	=> ParseStrategoOutput(module-name, _);
 		
 		<require-initially> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(module-name, pack-include-path, working-package, AbsolutePath(working-output), True())]) 
