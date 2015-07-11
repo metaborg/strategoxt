@@ -57,8 +57,8 @@ strategies
 				end })
 			}
 				
-		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs: \
-			input -> (module-name, transformed-ast, new-libs, path, generate-main)
+		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files: \
+			input -> (module-name, transformed-ast, new-libs, path, generate-main, imported-rtree-files)
 			where
 				log(|Notice(), ["Rewrite imports"]);
 				module-name := <get-module-name> input;
@@ -68,20 +68,21 @@ strategies
 				output-folder := <get-output-folder> input;
 				generate-main := <get-generate-main> input;
 				pack-include-path := <get-pack-include-path> input;
-				<separate-compilation-rewrite-imports(|module-name, circular-module-names, java-package, output-folder, pack-include-path)> ast => (transformed-ast, new-libs)
+				<separate-compilation-rewrite-imports(|module-name, circular-module-names, java-package, output-folder, pack-include-path)> ast => ((transformed-ast, new-libs), imported-rtree-files)
 			\}
 			
 		combine-modules = {:
 			log(|Notice(), ["Combine modules ", <id>]);
 			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
-			foldl({imports, content, libs, generate-main: \
-				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-generate-main), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-generate-main) ) ->
-				(moduleName, Module(merged-name, [imports | content]), libs, fileName, generate-main)
+			foldl({imports, content, libs, generate-main, rtree-files: \
+				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-generate-main, new-rtree-files), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-generate-main, merged-rtree-files) ) ->
+				(moduleName, Module(merged-name, [imports | content]), libs, fileName, generate-main, rtree-files)
 				where
 					imports := Imports(<conc;make-set> (new-imports, merged-imports));
 					content := <conc> (new-content, merged-content);
 					libs := <conc> (new-libs, merged-libs);
-					generate-main := <b-or>(new-generate-main, merged-generate-main)
+					generate-main := <b-or>(new-generate-main, merged-generate-main);
+					rtree-files := <conc>(new-rtree-files, merged-rtree-files)
 			\});
 			log(|Notice(), ["Result ", <id>])
 			}
@@ -96,11 +97,11 @@ strategies
 				) <+ fatal-err(|["Unable to add default lib import to ", <id>])) 
 				}
 		in
-			(id, try(add-default-lib-import), id, id, id)
+			(id, try(add-default-lib-import), id, id, id, id)
 		end
 			
 		call-front-end(|pack-include-path) = {moduleName,merged-ast, fileName:
-			?(moduleName, merged-ast, _, fileName, _);
+			?(moduleName, merged-ast, _, fileName, _, _);
 			
 			log(|Notice(), ["Import transformation for ", moduleName]);
 			log(|Notice(), ["Use libraries:   " , <get-config> "-la"]);
@@ -133,12 +134,12 @@ strategies
 				
 			
 		generate-dummy-module-input(|result-module-name, java-package, output-folder, pack-include-path) = {module-name, file-name: \
-			(module-name, _, _, file-name, _) ->
+			(module-name, _, _, file-name, _, _) ->
 					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, False(), pack-include-path) 
 			\}
 		
 		create-dummy-modules(|java-package, output-folder, pack-include-path) = {dummy-inputs, other-modules, result-module-name: \
-			 (other-modules, (result-module-name, _,_,_,_)) -> ()
+			 (other-modules, (result-module-name, _,_,_,_,_)) -> ()
 			where
 				log(|Notice(), 120);
 				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, java-package, output-folder, pack-include-path))> other-modules;
@@ -147,7 +148,7 @@ strategies
 		\}
 				 
 		
-	in {inputs, circular-module-names, java-package, output-folder, pack-include-path, other-inputs, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file:
+	in {inputs, circular-module-names, java-package, output-folder, pack-include-path, other-inputs, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files:
 		id => inputs;
 		where( {first-input:
 			circular-module-names := <map(get-module-name)> inputs;
@@ -165,7 +166,7 @@ strategies
 		log (|Notice(), 10);
 		add-std-lib-import-if-required;
 		log (|Notice(), 11);
-		?(moduleName, merged-ast, new-libs, fileName, generate-main);
+		?(moduleName, merged-ast, new-libs, fileName, generate-main, imported-rtree-files);
 		log (|Notice(), 115);
 		save-and-set-options(
 			log (|Notice(), 12);
@@ -174,13 +175,16 @@ strategies
 			call-front-end(|pack-include-path);
 			log (|Notice(), 14);
 			// TODO Generate rtree
-			where(<create-rtree-file(|moduleName,  generate-main, [])> <id> => rtree-file);
+			log(|Notice(), ["Imported rtree files ", imported-rtree-files]);
+			where(<create-rtree-file(|moduleName,  generate-main, imported-rtree-files)> <id> => rtree-file);
+			log(|Notice(), ["Generated rtree-file " , rtree-file]);
 			log(|Notice(), ["Calling Backend for ", moduleName]);
 			call-back-end;
 			log (|Notice(), 15)
 		|generate-main, java-package, output-folder, fileName, moduleName, circular-module-names);
 		log (|Notice(), 16);
-		where(<debug;create-dummy-modules(|java-package, output-folder, pack-include-path)> (other-inputs, result-input));
+		where(<create-dummy-modules(|java-package, output-folder, pack-include-path)> (other-inputs, result-input));
 		log (|Notice(), 17);
-		!CompileASTOutput(rtree-file)
+		![CompileASTOutput(rtree-file)];
+		debug
 	} end

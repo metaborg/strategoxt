@@ -15,11 +15,12 @@ imports separate-compilation/booleans
 
 imports separate-compilation/builder/compile-module-builder
 imports separate-compilation/builder/parse-stratego-builder
+imports separate-compilation/builder/rtree-stamper
 
 
 strategies
 	
-	separate-compilation-rewrite-imports(|module-name, circular-module-names, working-package, working-output, pack-include-path) =
+	separate-compilation-rewrite-imports(|module-name, circular-module-names, working-package, working-output, pack-include-path) = {|RTreeFiles :
 		let
 			to-library-import:
 				Import(name) -> Import(<to-java-compilation-rel-file> name)
@@ -31,15 +32,19 @@ strategies
 			
 		
 					
-			require-imported-module(|imported-module-name) = 
+			require-imported-module(|imported-module-name) = {rtree-file:
 				if <equal>(module-name, imported-module-name)
 					then	log(|Info(), ["Module imports itself ", module-name])
 					else
 						// Require to build the imported module, then the rtree file can be used
 						<require-build> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(imported-module-name, pack-include-path, working-package, working-output, False())])
+							=> CompileModuleOutput(rtree-file);
+						log(|Notice(), ["Require rtree file ", rtree-file]);
+						<require-stamper(|<rtree-stamper>)> rtree-file;
+						log(|Notice(), ["Collect rtree file ", rtree-file]);
+						where (rules(RTreeFiles :+= rtree-file))
 						
-						// TODO require the rtree file
-				end
+				end }
 				
 			
 			
@@ -129,8 +134,9 @@ strategies
 					; translate-default-library // do not want to collect rtrees, but libraries
 				end
 			   }
-			)
+			);
+			!(<id>, <bagof-RTreeFiles <+ ![]>)
 		|}
-		end
+		end |}
 		
 	 	

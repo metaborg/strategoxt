@@ -8,5 +8,6 @@ strategies
 	init-builders = 
 		init-pluto-singleton-store;
 		parse-stratego-builder-factory;
-		compile-module-builder-factory
+		compile-module-builder-factory;
+		rtree-stamper
 		

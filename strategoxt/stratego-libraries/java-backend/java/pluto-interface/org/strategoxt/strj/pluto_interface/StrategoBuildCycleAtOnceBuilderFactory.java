@@ -69,13 +69,6 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 			return context.getFactory().makeTuple(builderTerm, value);
 		}
 
-
-		// Need to make the following methods public
-		@Override
-		public void provide(File file) {
-			super.provide(file);
-		}
-
 		public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>> Out_ requireBuild(
 				BuildRequest<In_, Out_, B_, F_> req) throws IOException {
 			return super.requireBuild(req);
@@ -107,6 +100,11 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 		@Override
 		public void provide(IStrategoTerm input, File p) {
 			super.provide(input, p);
+		}
+		
+		@Override
+		public String toString() {
+			return super.toString() + ":" + name + "@{"+ description()+"}";
 		}
 
 	}

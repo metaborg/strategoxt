@@ -12,9 +12,8 @@ strategies
 			stamp-strategy
 	
 	in
-		create-pluto-singleton({stamper:
-			prim("PlutoInterface_Stamper_CreateStamper", wrapped-stamp-strategy | name) => stamper;
-			rules(Factories: factory-name -> stamper)
-			} | name)
+		create-pluto-singleton(
+			prim("PlutoInterface_Stamper_CreateStamper", wrapped-stamp-strategy | name)
+		 	| name)
 	end
 		

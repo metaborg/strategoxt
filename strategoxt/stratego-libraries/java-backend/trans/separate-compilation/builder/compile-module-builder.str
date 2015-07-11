@@ -82,13 +82,13 @@ strategies
 	    			pack-include-path := <compile-module-input-pack-include-path> input;
 	    			<parse-module> (module-name, pack-include-path, output-folder) => (source-file, ast)
 	    		\}
-		in {all-inputs:
+		in {all-inputs, rtree-file:
 			?all-inputs;
 			log(|Notice(), ["Translate to ast"]);
 			map(translate-to-ast-input);
 			log(|Notice(), ["Start compiling"]);
-			compile-asts(find-input(|all-inputs));
-			![()] // TODO Put rtree for each module here
+			compile-asts(find-input(|all-inputs)) => [CompileASTOutput(rtree-file)];
+			![CompileModuleOutput(rtree-file)]// TODO Put rtree for each module here
 		  }
 		end
 	

@@ -13,7 +13,7 @@ strategies
 	require-stamper(|stamper) = 
 		log (|Notice(), ["Require ", <id>]);
 		path-get-full-path;
-		prim("PlutoInterface_Builder_RequireStamper", |<Builder>)
+		prim("PlutoInterface_Builder_RequireStamper", |<Builder>, stamper)
 		  
 	require-build = 
 		log (|Notice(), ["Require Build", <id>]);	
