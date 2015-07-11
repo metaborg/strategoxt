@@ -2,12 +2,16 @@ module separate-compilation/builder/builder-store
 
 imports pluto/singleton-store
 imports separate-compilation/builder/-
+imports separate-compilation/stamper/-
 
 strategies
 	
-	init-builders = 
+	init-builders(|pack-include-path, output-folder) = 
 		init-pluto-singleton-store;
 		parse-stratego-builder-factory;
 		compile-module-builder-factory;
-		rtree-stamper
+		rtree-stamper;
+		file-exists-stamper;
+		is-parse-statrego-output-specification-stamper;
+		is-specification-stamper(|pack-include-path, output-folder)
 		

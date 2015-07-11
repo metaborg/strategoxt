@@ -1,8 +1,5 @@
 package org.strategoxt.strj.pluto_interface.builder;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
@@ -10,13 +7,14 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
-import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory;
 import org.strategoxt.strj.pluto_interface.PublicBuilder;
-import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory.GeneratedBuilder;
+import org.strategoxt.strj.pluto_interface.stamper.StrategoOutputStamper;
 
 import build.pluto.builder.BuildRequest;
 import build.pluto.builder.Builder;
+import build.pluto.builder.BuilderFactory;
 import build.pluto.output.Out;
+import build.pluto.output.OutputStamper;
 
 /**
  * Wraps {@link Builder#require(java.io.File)}. 0 strategy arguments, 1 term
@@ -25,12 +23,12 @@ import build.pluto.output.Out;
  * @author moritzlichter
  *
  */
-public class RequireBuild extends AbstractPrimitive {
+public class RequireBuildStamper extends AbstractPrimitive {
 
-	public static final String NAME = "PlutoInterface_Builder_RequireBuild";
+	public static final String NAME = "PlutoInterface_Builder_RequireBuildStamper";
 
-	public RequireBuild() {
-		super(NAME, 0, 1);
+	public RequireBuildStamper() {
+		super(NAME, 0, 2);
 	}
 
 	@Override
@@ -38,7 +36,8 @@ public class RequireBuild extends AbstractPrimitive {
 		try {
 			System.out.println("Call!");
 			PublicBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
-			BuildRequest<?, Out<IStrategoTerm>, ?, ?> request = Conversions
+			StrategoOutputStamper outputStamper = ObjectWrapperTerm.get(arg2[1]);
+			BuildRequest<?, Out<IStrategoTerm>, ?,  ?> request = Conversions
 					.convertBuildRequest(arg0.current());
 			if (request == null) {
 				System.out.println("Build request was null");
@@ -48,8 +47,8 @@ public class RequireBuild extends AbstractPrimitive {
 				System.out.println("Builder factory was null");
 				return false;
 			}
-			System.out.println("Request: " + request.factory + " @ " + request.input);
-			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request);
+			System.out.println("Request: " + request);
+			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request, (OutputStamper<Out<IStrategoTerm>>) outputStamper);
 			arg0.setCurrent(result.val());
 			return true;
 		} catch (Exception e) {

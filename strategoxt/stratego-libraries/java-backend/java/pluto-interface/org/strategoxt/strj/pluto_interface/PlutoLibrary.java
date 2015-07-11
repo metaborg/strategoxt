@@ -5,8 +5,10 @@ import org.strategoxt.strj.pluto_interface.builder.Provide;
 import org.strategoxt.strj.pluto_interface.builder.ProvideFor;
 import org.strategoxt.strj.pluto_interface.builder.Require;
 import org.strategoxt.strj.pluto_interface.builder.RequireBuild;
+import org.strategoxt.strj.pluto_interface.builder.RequireBuildStamper;
 import org.strategoxt.strj.pluto_interface.builder.RequireStamper;
 import org.strategoxt.strj.pluto_interface.buildmanager.RequireInitially;
+import org.strategoxt.strj.pluto_interface.stamper.CreateOutputStamper;
 import org.strategoxt.strj.pluto_interface.stamper.CreateStamper;
 
 public class PlutoLibrary extends AbstractStrategoOperatorRegistry{
@@ -19,9 +21,11 @@ public class PlutoLibrary extends AbstractStrategoOperatorRegistry{
 		this.add(new Require());
 		this.add(new RequireStamper());
 		this.add(new RequireBuild());
+		this.add(new RequireBuildStamper());
 		this.add(new RequireInitially());
 		this.add(new InitBuilderFactoryStore());
 		this.add(new CreateStamper());
+		this.add(new CreateOutputStamper());
 	}
 	
 	@Override

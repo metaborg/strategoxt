@@ -9,11 +9,13 @@ imports separate-compilation/utils
 imports separate-compilation/fileutils
 
 imports separate-compilation/builder/deps-path
+imports separate-compilation/stamper/file-exists
 
 signature
 	constructors
 		ParseStrategoInput : Path * IncludePath * OutputFolder -> ParseStrategoInput
 		ParseStrategoOutput : ModuleName * AST -> ParseStrategoOutput
+		NoModule : NoModule
 		
 strategies
 	
@@ -21,7 +23,7 @@ strategies
 		(module-name, pack-include-path, output-folder) -> (source-file, ParseStrategoInput(source-file, pack-include-path, output-folder))	
 		where
 			source-file := <fetch-elem({dir:\IncludeDir(dir) -> <path-add-extension(|"str");where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\})> pack-include-path;
-			<require> source-file // TODO file exists should be enough
+			<require-stamper(|<file-exists-stamper>)> source-file
 		\}
 	
 	parse-stratego-builder-factory = let
@@ -55,7 +57,7 @@ strategies
 			(separate-compilation-parse-file 
 			<+ (log(|Error(), ["File not found: ", <id>]); fail)) => (_, ast);
 			log(|Notice(), "F");
-			<extract-module-name> ast => module-name;
+			<extract-module-name <+ !NoModule()> ast => module-name; // NoModule if no module but a specification term
 			log(|Notice(), "G");
 			!ParseStrategoOutput(module-name, ast)
      	} end 

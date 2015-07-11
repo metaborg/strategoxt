@@ -13,3 +13,6 @@ strategies
 	b-or: _ -> False()
 	
 	b-true = ? True()
+	
+	b-strategy-successful(s) = 
+		if s then !True() else !False() end

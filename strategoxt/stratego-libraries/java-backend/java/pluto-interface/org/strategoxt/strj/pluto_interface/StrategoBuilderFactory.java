@@ -18,6 +18,7 @@ import build.pluto.builder.BuilderFactory;
 import build.pluto.output.Out;
 import build.pluto.output.Output;
 import build.pluto.output.OutputPersisted;
+import build.pluto.output.OutputStamper;
 
 public class StrategoBuilderFactory
 		implements BuilderFactory<IStrategoTerm, Out<IStrategoTerm>, StrategoBuilderFactory.GeneratedBuilder>, NamedSingleton {
@@ -90,20 +91,18 @@ public class StrategoBuilderFactory
 				BuildRequest<In_, Out_, B_, F_> req) throws IOException {
 			return super.requireBuild(req);
 		}
+		
+		@Override
+		public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>, SubIn_ extends In_> Out_ requireBuild(
+				BuildRequest<In_, Out_, B_, F_> req, OutputStamper<? super Out_> ostamper) throws IOException {
+			return super.requireBuild(req.factory, req.input, ostamper);
+		}
 
 	}
 
 	@Override
 	public GeneratedBuilder makeBuilder(IStrategoTerm input) {
 		return new GeneratedBuilder(input);
-	}
-	
-	private void writeObject(ObjectOutputStream stream) throws IOException {
-		stream.writeObject(name);
-	}
-	
-	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		this.name = (String)stream.readObject();
 	}
 	
 	private Object readResolve() {

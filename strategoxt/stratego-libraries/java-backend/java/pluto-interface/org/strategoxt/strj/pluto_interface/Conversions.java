@@ -9,11 +9,12 @@ import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 
 import build.pluto.builder.BuildCycleAtOnceBuilder;
 import build.pluto.builder.BuildRequest;
+import build.pluto.builder.BuilderFactory;
 import build.pluto.output.Out;
 
 public class Conversions {
 
-	public static BuildRequest<?, Out<IStrategoTerm>, ?, ?> convertBuildRequest(IStrategoTerm term) {
+	public static BuildRequest<?, Out<IStrategoTerm>, ?, ? extends BuilderFactory<?, Out<IStrategoTerm>, ?>> convertBuildRequest(IStrategoTerm term) {
 		switch (Term.tryGetName(term)) {
 		case "BuildRequest":
 			IStrategoTerm factoryTerm = Term.termAt(term, 0);

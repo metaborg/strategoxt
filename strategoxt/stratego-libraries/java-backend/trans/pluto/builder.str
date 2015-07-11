@@ -21,9 +21,16 @@ strategies
 		prim("PlutoInterface_Builder_RequireBuild", |<Builder>);
 		log(|Notice(), ["Successful with " , <id>])
 		
+	require-build-stamper(|stamper) = 
+		log (|Notice(), ["Require Build", <id>]);	
+		log(|Notice(), ["Call require build primitive"]);
+		prim("PlutoInterface_Builder_RequireBuildStamper", |<Builder>, stamper);
+		log(|Notice(), ["Successful with " , <id>])
+		
 	provide-for(|input) = 
 		log(|Notice(), ["Provide for ", <id>]);
 		path-get-full-path;
 		prim("PlutoInterface_Builder_ProvideFor", |<Builder>, input);
 		log(|Notice(), ["Succesfull provided for ", input])
+		
 		

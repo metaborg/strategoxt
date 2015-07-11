@@ -1,0 +1,39 @@
+module separate-compilation/stamper/is-specification
+
+imports cleardep/fileutils
+imports pluto/stamper
+imports pluto/buildmanager
+imports pluto/buildrequest
+imports separate-compilation/builder/parse-stratego-builder
+imports separate-compilation/booleans
+
+strategies
+	
+	is-parse-statrego-output-specification-stamper = let
+	
+		stamp = 
+			b-strategy-successful(?ParseStrategoOutput(NoModule(),_))
+		
+	in
+		output-stamper(stamp | "ParseStrategoOutputStamper")
+	end
+	
+	is-specification-stamper (|pack-include-path, output-folder)= let
+	
+		stamp = 
+			?file;
+			b-strategy-successful(
+				<require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(file, pack-include-path, output-folder))
+					=> ParseStrategoOutput(NoModule(), _)
+			)
+			// TODO include file stamp to avoid parsing if not necessary
+		
+	in 
+		rules(SpecificationStamper : _ -> (pack-include-path, output-folder));
+		stamper(stamp | <write-to-string> ["Is Specification Stamper:", pack-include-path, output-folder])
+	end
+	
+	is-specification-stamper =  {pack-include-path, output-folder:
+		<SpecificationStamper> <id> =>(pack-include-path, output-folder);
+		is-specification-stamper(|pack-include-path, output-folder)
+		}

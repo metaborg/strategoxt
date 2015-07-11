@@ -1,0 +1,15 @@
+module separate-compilation/stamper/file-exists
+
+imports pluto/stamper
+imports cleardep/fileutils
+imports separate-compilation/booleans
+
+strategies
+	
+	file-exists-stamper = let
+	
+		stamp = b-strategy-successful(path-exists)
+	
+	in
+		stamper(stamp | "FileExistsStamper")
+	end

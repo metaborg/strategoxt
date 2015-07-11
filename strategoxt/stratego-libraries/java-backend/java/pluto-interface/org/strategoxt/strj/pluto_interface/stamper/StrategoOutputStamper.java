@@ -1,54 +1,54 @@
 package org.strategoxt.strj.pluto_interface.stamper;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.pluto_interface.NamedSingleton;
 import org.strategoxt.strj.pluto_interface.SingletonStore;
 import org.strategoxt.strj.pluto_interface.StrategoUtils;
-import org.spoofax.interpreter.stratego.Strategy;
 
-import build.pluto.stamp.Stamp;
-import build.pluto.stamp.Stamper;
+import build.pluto.output.Out;
+import build.pluto.output.OutputStamp;
+import build.pluto.output.OutputStamper;
 
-public class StrategoStamper implements Stamper, NamedSingleton {
+public class StrategoOutputStamper implements OutputStamper<Out<IStrategoTerm>>, NamedSingleton {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 431253504815262145L;
-	public static final int WRAPPER_TERM_TYPE = 1234912;
+	private static final long serialVersionUID = 2009584416084194758L;
+	public static final int WRAPPER_TERM_TYPE = 23423212;
 
-	private static class StrategoStamp implements Stamp {
+	private static class StrategoOutputStamp implements OutputStamp<Out<IStrategoTerm>> {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 1834652963960638903L;
+		private static final long serialVersionUID = -7107171777361598442L;
 		private final IStrategoTerm stamp;
 		private final String stamperName;
 
-		private StrategoStamp(IStrategoTerm stamp, String stamperName) {
+		private StrategoOutputStamp(IStrategoTerm stamp, String stamperName) {
 			super();
 			this.stamp = stamp;
 			this.stamperName = stamperName;
 		}
 
 		@Override
-		public boolean equals(Stamp o) {
+		public boolean equals(OutputStamp<?> o) {
 			if (o == null)
 				return false;
-			if (!(o instanceof StrategoStamp))
+			if (!(o instanceof StrategoOutputStamp))
 				return false;
-			StrategoStamp otherStamp = (StrategoStamp) o;
+			StrategoOutputStamp otherStamp = (StrategoOutputStamp) o;
 			return stamperName.equals(otherStamp.stamperName) && stamp.match(otherStamp.stamp);
 		}
 
 		@Override
-		public Stamper getStamper() {
+		public OutputStamper<Out<IStrategoTerm>> getStamper() {
 			return SingletonStore.readFromSingletonStore(this.stamperName);
 		}
 
@@ -58,13 +58,12 @@ public class StrategoStamper implements Stamper, NamedSingleton {
 	private transient final IContext context;
 	private transient final Strategy stamperStrategy;
 
-	public StrategoStamper(String name, IContext context, Strategy stamperStrategy) {
+	public StrategoOutputStamper(String name, IContext context, Strategy stamperStrategy) {
 		super();
 		this.name = name;
 		this.context = context;
 		this.stamperStrategy = stamperStrategy;
 	}
-
 
 	private Object readResolve() {
 		return SingletonStore.readFromSingletonStore(name);
@@ -79,12 +78,12 @@ public class StrategoStamper implements Stamper, NamedSingleton {
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
-	public Stamp stampOf(File p) {
-		String filePath = p.getAbsolutePath();
-		IStrategoTerm stamp = StrategoUtils.invoke(this, stamperStrategy, context.getFactory().makeString(filePath));
-		return new StrategoStamp(stamp, name);
+	public OutputStamp<Out<IStrategoTerm>> stampOf(Out<IStrategoTerm> p) {
+		IStrategoTerm output = p.val();
+		IStrategoTerm stamp = StrategoUtils.invoke(this, stamperStrategy, output);
+		return new StrategoOutputStamp(stamp, name);
 	}
 
 }

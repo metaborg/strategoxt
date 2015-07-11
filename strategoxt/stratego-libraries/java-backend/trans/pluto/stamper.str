@@ -16,4 +16,12 @@ strategies
 			prim("PlutoInterface_Stamper_CreateStamper", wrapped-stamp-strategy | name)
 		 	| name)
 	end
+	
+	output-stamper(stamp-strategy | name) = let
+	
+	in
+		create-pluto-singleton(
+			prim("PlutoInterface_Stamper_CreateOutputStamper", stamp-strategy | name)
+		 	| name)
+	end
 		

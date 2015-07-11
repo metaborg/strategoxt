@@ -16,6 +16,7 @@ imports separate-compilation/booleans
 imports separate-compilation/builder/compile-module-builder
 imports separate-compilation/builder/parse-stratego-builder
 imports separate-compilation/builder/rtree-stamper
+imports separate-compilation/stamper/is-specification
 
 
 strategies
@@ -54,12 +55,13 @@ strategies
 					file := <separate-compilation-get-relative-file> import-name;
 					<require> file\}
 			
-			is-import-module= {ast, parse-input, module-name:
+			is-import-module= {ast, parse-input, module-name, file:
 				log(|Notice(), ["Is Module import ", <id>]);
 				?Import(module-name);
-				<parse-stratego-input-for-module;debug> (module-name,pack-include-path, working-output ) => (_, parse-input);
+				<parse-stratego-input-for-module;debug> (module-name,pack-include-path, working-output ) => (file, parse-input);
+				//<require-stamper(|<is-specification-stamper>)> file; // 
 				log(|Notice(), ["Input ", parse-input]);
-				<require-build;debug> BuildRequest(<parse-stratego-builder-factory>, parse-input)
+				<require-build-stamper(|<is-parse-statrego-output-specification-stamper>);debug> BuildRequest(<parse-stratego-builder-factory>, parse-input)
 			  			=> ParseStrategoOutput(_, ast);
 			  	log(|Notice(), ["Result ", parse-input]);
 			  	<?Module(_,_)> ast
@@ -90,7 +92,7 @@ strategies
 			{ file, term :
 				  ?(term, file)
 				; where(<has-extension(|"rtree")> file)
-				; <require> AbsolutePath(file)
+				; <require-stamper(|<rtree-stamper>)> AbsolutePath(file)
 				; !term
 				}
 				

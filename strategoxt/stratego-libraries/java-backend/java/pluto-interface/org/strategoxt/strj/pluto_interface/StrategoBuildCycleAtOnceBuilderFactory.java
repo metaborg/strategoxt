@@ -24,6 +24,7 @@ import build.pluto.builder.BuilderFactory;
 import build.pluto.output.Out;
 import build.pluto.output.Output;
 import build.pluto.output.OutputPersisted;
+import build.pluto.output.OutputStamper;
 
 public class StrategoBuildCycleAtOnceBuilderFactory
 		implements BuilderFactory<ArrayList<IStrategoTerm>, Out<IStrategoTerm>, StrategoBuildCycleAtOnceBuilderFactory.StrategoBuildAtOnceBuilder> , NamedSingleton {
@@ -37,8 +38,7 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 
 	
 	private  String name;
-	
-	
+
 	private transient final IContext context;
 	private transient final Strategy descriptionStrategy;
 	private transient final Strategy persistentPathStrategy;
@@ -67,11 +67,6 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 
 		private IStrategoTerm pairWithBuilder(IStrategoTerm value) {
 			return context.getFactory().makeTuple(builderTerm, value);
-		}
-
-		public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>> Out_ requireBuild(
-				BuildRequest<In_, Out_, B_, F_> req) throws IOException {
-			return super.requireBuild(req);
 		}
 
 		@Override
@@ -106,17 +101,19 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 		public String toString() {
 			return super.toString() + ":" + name + "@{"+ description()+"}";
 		}
+		
+		public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>> Out_ requireBuild(
+				BuildRequest<In_, Out_, B_, F_> req) throws IOException {
+			return super.requireBuild(req);
+		}
+		
+		@Override
+		public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>, SubIn_ extends In_> Out_ requireBuild(
+				BuildRequest<In_, Out_, B_, F_> req, OutputStamper<? super Out_> ostamper) throws IOException {
+			return super.requireBuild(req.factory, req.input, ostamper);
+		}
 
 	}
-	
-	private void writeObject(ObjectOutputStream stream) throws IOException {
-		stream.writeObject(name);
-	}
-	
-	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		this.name = (String)stream.readObject();
-	}
-	
 	private Object readResolve() {
 		return SingletonStore.readFromSingletonStore(name);
 	}
