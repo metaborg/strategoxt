@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.naming.Context;
+
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -39,16 +41,14 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 	
 	private  String name;
 
-	private transient final IContext context;
 	private transient final Strategy descriptionStrategy;
 	private transient final Strategy persistentPathStrategy;
 	private transient final Strategy buildStrategy;
 
-	public StrategoBuildCycleAtOnceBuilderFactory(String name, IContext context, Strategy descriptionStrategy, Strategy persistentPathStrategy,
+	public StrategoBuildCycleAtOnceBuilderFactory(String name, Strategy descriptionStrategy, Strategy persistentPathStrategy,
 			Strategy buildStrategy) {
 		super();
 		this.name = name;
-		this.context = context;
 		this.descriptionStrategy = descriptionStrategy;
 		this.persistentPathStrategy = persistentPathStrategy;
 		this.buildStrategy = buildStrategy;
@@ -65,13 +65,14 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 		private static final int BUILDER_TERM_TYPE = 1821931;
 		private final IStrategoTerm builderTerm = new ObjectWrapperTerm<>(this, BUILDER_TERM_TYPE);
 
-		private IStrategoTerm pairWithBuilder(IStrategoTerm value) {
-			return context.getFactory().makeTuple(builderTerm, value);
+		private IStrategoTerm pairWithBuilder(IContext context, IStrategoTerm term) {
+			return context.getFactory().makeTuple(builderTerm, term);
 		}
 
 		@Override
-		protected List<Out<IStrategoTerm>> buildAll(ArrayList<IStrategoTerm> input) throws Throwable {
-			IStrategoTerm resultList = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, buildStrategy, pairWithBuilder(context.getFactory().makeList(input)));
+		protected List<Out<IStrategoTerm>> buildAll(ArrayList<IStrategoTerm> inputs) throws Throwable {
+			IContext context = PlutoIContextManager.currentContext();
+			IStrategoTerm resultList = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this,"buildAll", buildStrategy, context, pairWithBuilder(context, context.getFactory().makeList(inputs)));
 			ArrayList<Out<IStrategoTerm>> convertedList = new ArrayList<>(((IStrategoList)resultList).size());
 			for (IStrategoTerm resultTerm : (IStrategoList)resultList) {
 				convertedList.add(OutputPersisted.of(resultTerm));
@@ -81,14 +82,15 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 
 		@Override
 		protected File singletonPersistencePath(IStrategoTerm input) {
-			IStrategoTerm fileTerm = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, persistentPathStrategy, input);
+			IStrategoTerm fileTerm = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, "persistencePath", persistentPathStrategy, input);
 			File file = new File(Term.asJavaString(fileTerm));
 			return file;
 		}
 
 		@Override
-		protected String description(ArrayList<IStrategoTerm> input) {
-			IStrategoTerm descriptionTerm = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, descriptionStrategy, context.getFactory().makeList(input));
+		protected String description(ArrayList<IStrategoTerm> inputs) {
+			IContext context = PlutoIContextManager.currentContext();
+			IStrategoTerm descriptionTerm = StrategoUtils.invoke(StrategoBuildCycleAtOnceBuilderFactory.this, "description", descriptionStrategy, context, context.getFactory().makeList(inputs));
 			return Term.asJavaString(descriptionTerm);
 		}
 		
@@ -127,11 +129,5 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 	public String getName() {
 		return this.name;
 	}
-
-	@Override
-	public IContext getContext() {
-		return context;
-	}
-	
 
 }

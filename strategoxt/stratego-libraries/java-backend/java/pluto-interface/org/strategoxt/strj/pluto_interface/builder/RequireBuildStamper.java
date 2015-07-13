@@ -7,6 +7,7 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
+import org.strategoxt.strj.pluto_interface.PlutoIContextManager;
 import org.strategoxt.strj.pluto_interface.PublicBuilder;
 import org.strategoxt.strj.pluto_interface.stamper.StrategoOutputStamper;
 
@@ -33,12 +34,12 @@ public class RequireBuildStamper extends AbstractPrimitive {
 
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
+		PlutoIContextManager.pushContext(arg0);
 		try {
-			System.out.println("Call!");
 			PublicBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
 			StrategoOutputStamper outputStamper = ObjectWrapperTerm.get(arg2[1]);
 			BuildRequest<?, Out<IStrategoTerm>, ?,  ?> request = Conversions
-					.convertBuildRequest(arg0.current());
+					.convertBuildRequest( arg0.current());
 			if (request == null) {
 				System.out.println("Build request was null");
 				return false;
@@ -47,13 +48,14 @@ public class RequireBuildStamper extends AbstractPrimitive {
 				System.out.println("Builder factory was null");
 				return false;
 			}
-			System.out.println("Request: " + request);
 			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request, (OutputStamper<Out<IStrategoTerm>>) outputStamper);
 			arg0.setCurrent(result.val());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new InterpreterException(e);
+		} finally {
+			PlutoIContextManager.popContext();
 		}
 	}
 

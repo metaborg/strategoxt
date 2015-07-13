@@ -8,12 +8,16 @@ import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.strategoxt.lang.StrategoException;
 import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
+import org.strategoxt.strj.pluto_interface.NamedSingleton;
+import org.strategoxt.strj.pluto_interface.PlutoIContextManager;
 import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory;
 import org.strategoxt.strj.pluto_interface.PublicBuilder;
 import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory.GeneratedBuilder;
 
+import build.pluto.builder.BuildCycleException;
 import build.pluto.builder.BuildRequest;
 import build.pluto.builder.Builder;
 import build.pluto.output.Out;
@@ -35,11 +39,11 @@ public class RequireBuild extends AbstractPrimitive {
 
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
+		PlutoIContextManager.pushContext(arg0);
 		try {
-			System.out.println("Call!");
 			PublicBuilder enclosingBuilder = ObjectWrapperTerm.get(arg2[0]);
 			BuildRequest<?, Out<IStrategoTerm>, ?, ?> request = Conversions
-					.convertBuildRequest(arg0.current());
+					.convertBuildRequest( arg0.current());
 			if (request == null) {
 				System.out.println("Build request was null");
 				return false;
@@ -48,13 +52,22 @@ public class RequireBuild extends AbstractPrimitive {
 				System.out.println("Builder factory was null");
 				return false;
 			}
-			System.out.println("Request: " + request.factory + " @ " + request.input);
 			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request);
 			arg0.setCurrent(result.val());
 			return true;
+		} catch (StrategoException e) {
+			if (e.getCause() instanceof BuildCycleException) {
+				throw (BuildCycleException) e.getCause();
+			} else {
+				throw e;
+			}
+		} catch (BuildCycleException e) {
+			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new InterpreterException(e);
+		} finally {
+			PlutoIContextManager.popContext();
 		}
 	}
 

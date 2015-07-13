@@ -24,7 +24,7 @@ public class MakeBuilderFactory extends AbstractPrimitive {
 		final Strategy persistentPathStrategy = arg1[1];
 		final Strategy buildStrategy = arg1[2];
 		
-		final IStrategoTerm factoryTerm = new ObjectWrapperTerm<>(new StrategoBuilderFactory(name, arg0, descriptionStrategy, persistentPathStrategy, buildStrategy), StrategoBuilderFactory.WRAPPED_TERM_TYPE);
+		final IStrategoTerm factoryTerm = new ObjectWrapperTerm<>(new StrategoBuilderFactory(name, descriptionStrategy, persistentPathStrategy, buildStrategy), StrategoBuilderFactory.WRAPPED_TERM_TYPE);
 		arg0.setCurrent(factoryTerm);
 		return true;
 	}

@@ -33,16 +33,14 @@ public class StrategoBuilderFactory
 	
 	private  String name;
 	
-	private transient final IContext context;
 	private transient final Strategy descriptionStrategy;
 	private transient final Strategy persistentPathStrategy;
 	private transient final Strategy buildStrategy;
 
-	public StrategoBuilderFactory(String name, IContext context, Strategy descriptionStrategy, Strategy persistentPathStrategy,
+	public StrategoBuilderFactory(String name, Strategy descriptionStrategy, Strategy persistentPathStrategy,
 			Strategy buildStrategy) {
 		super();
 		this.name = name;
-		this.context = context;
 		this.descriptionStrategy = descriptionStrategy;
 		this.persistentPathStrategy = persistentPathStrategy;
 		this.buildStrategy = buildStrategy;
@@ -59,24 +57,24 @@ public class StrategoBuilderFactory
 		private final IStrategoTerm builderTerm = new ObjectWrapperTerm<>(this, BUILDER_TERM_TYPE);
 
 		private IStrategoTerm pairWithBuilder(IStrategoTerm value) {
-			return context.getFactory().makeTuple(builderTerm, value);
+			return PlutoIContextManager.currentContext().getFactory().makeTuple(builderTerm, value);
 		}
 
 		@Override
 		protected Out<IStrategoTerm> build(IStrategoTerm input) throws Throwable {
-			IStrategoTerm result = StrategoUtils.invoke(StrategoBuilderFactory.this,buildStrategy, pairWithBuilder(input));
+			IStrategoTerm result = StrategoUtils.invoke(StrategoBuilderFactory.this, "build", buildStrategy, pairWithBuilder(input));
 			return OutputPersisted.of(result);
 		}
 
 		@Override
 		protected String description(IStrategoTerm input) {
-			IStrategoTerm descriptionTerm = StrategoUtils.invoke(StrategoBuilderFactory.this,descriptionStrategy, input);
+			IStrategoTerm descriptionTerm = StrategoUtils.invoke(StrategoBuilderFactory.this,"description", descriptionStrategy, input);
 			return Term.asJavaString(descriptionTerm);
 		}
 
 		@Override
 		protected File persistentPath(IStrategoTerm input) {
-			IStrategoTerm fileTerm = StrategoUtils.invoke(StrategoBuilderFactory.this,persistentPathStrategy, input);
+			IStrategoTerm fileTerm = StrategoUtils.invoke(StrategoBuilderFactory.this, "persistentPath", persistentPathStrategy, input);
 			File file = new File(Term.asJavaString(fileTerm));
 			return file;
 		}
@@ -114,9 +112,4 @@ public class StrategoBuilderFactory
 		return this.name;
 	}
 	
-	@Override
-	public IContext getContext() {
-		return this.context;
-	}
-
 }

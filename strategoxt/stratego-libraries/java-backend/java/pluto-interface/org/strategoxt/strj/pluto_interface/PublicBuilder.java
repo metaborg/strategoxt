@@ -3,6 +3,8 @@ package org.strategoxt.strj.pluto_interface;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.spoofax.interpreter.core.IContext;
+
 import build.pluto.builder.BuildRequest;
 import build.pluto.builder.Builder;
 import build.pluto.builder.BuilderFactory;

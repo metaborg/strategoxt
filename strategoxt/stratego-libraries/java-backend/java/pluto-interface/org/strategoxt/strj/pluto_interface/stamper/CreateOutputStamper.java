@@ -21,7 +21,7 @@ public class CreateOutputStamper extends AbstractPrimitive {
 		Strategy stamperStrategy = arg1[0];
 		String stamperName = Term.asJavaString(arg2[0]);
 		
-		StrategoOutputStamper stamper = new StrategoOutputStamper(stamperName, arg0, stamperStrategy);
+		StrategoOutputStamper stamper = new StrategoOutputStamper(stamperName, stamperStrategy);
 		arg0.setCurrent(new ObjectWrapperTerm<>(stamper, StrategoOutputStamper.WRAPPER_TERM_TYPE));
 		
 		return true;

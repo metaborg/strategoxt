@@ -29,15 +29,15 @@ strategies
 		description = {input: \
 			[input] -> <conc-strings>("Compile module ", <compile-module-input-module-name> input)
 			\}
-		description = {inputs, module-names, joined-module-names: \
+			<+ {inputs, module-names, joined-module-names:  \
 			inputs -> <conc-strings> ("Compile cyclic modules ", joined-module-names)
 			where
 				module-names := <map(compile-module-input-module-name)> inputs;
-				joined-module-names := <foldl(\(name, joined) -> <conc-strings> (name, ", ", joined)\)> module-names
+				joined-module-names := <foldl({name, joined : \(name, joined) -> <conc-strings> (name, ", ", joined)\})> (module-names, "")
 			\}
 			
 		single-persistent-path = {input, output-folder, module-name: \
-			input -> <get-dep-path(|"compile", output-folder);debug> module-name
+			input -> <get-dep-path(|"compile", output-folder)> module-name
 			where
 				log(|Notice() , ["SinglePersistentPath for compile module", input]);
 				output-folder := <compile-module-input-pack-output-folder> input;
@@ -46,7 +46,7 @@ strategies
 				log(|Notice(), [module-name])
 			\}
 			
-		build-all = let
+		build-all = log(|Notice(), ["Build all ", <id>]); let
 			
 			find-input(|all-inputs) = {module-name: \
 				module-name -> <fetch-elem({input, name:\
@@ -82,19 +82,25 @@ strategies
 	    			pack-include-path := <compile-module-input-pack-include-path> input;
 	    			<parse-module> (module-name, pack-include-path, output-folder) => (source-file, ast)
 	    		\}
-		in {all-inputs, rtree-file:
+	    	
+	    	translate-from-ast-output = {rtree-file:\
+	    			CompileASTOutput(rtree-file) -> CompileModuleOutput(rtree-file)
+	    		\}
+	    		
+		in {all-inputs:
 			?all-inputs;
 			log(|Notice(), ["Translate to ast"]);
 			map(translate-to-ast-input);
 			log(|Notice(), ["Start compiling"]);
-			compile-asts(find-input(|all-inputs)) => [CompileASTOutput(rtree-file)];
-			![CompileModuleOutput(rtree-file)]// TODO Put rtree for each module here
+			compile-asts(find-input(|all-inputs));
+			log(|Notice(), ["Translate to output"]);
+			map(translate-from-ast-output)
 		  }
 		end
 	
 	in	build-cycle-at-once-builder-factory(
 		description,
 		single-persistent-path,
-		build-all | "CompileASTBuilderFactory")
+		build-all | "CompileModuleBuilderFactory")
 	end
 		

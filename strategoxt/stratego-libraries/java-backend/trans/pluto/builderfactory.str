@@ -6,21 +6,24 @@ imports pluto/singleton-store
 
 strategies
 	
+	scope-builder(s) = {builder:
+			where(builder:= <Builder <+ !()>);
+			s;
+			where(if <not(eq)> (builder, ()) then rules(Builder: _ -> builder) end )
+		}
+	
 	// The dynamic rule Builder is used by require/provide etc to refer to the running builder
 	scope-builder-and-build(build-strategy) = 
 		// For some reasons, scoping Builder does not work, do it manually
-	{ scoped-builder :
-		where (scoped-builder := <Builder <+ !()>);
+		scope-builder(
 		{|Builder: {builder, input, output: 
 			log(|Notice(), ["Scope builder ", <id>]);
 			?(builder, input);
 			rules(Builder : _ -> builder);
+			log(|Notice(), ["Call builder ", <id>]);
 			<build-strategy> input => output;
 			!output
-		}|};
-	if <not(eq)> (scoped-builder, ()) then
-		rules(Builder : _ -> scoped-builder)
-	end}
+		}|})
 	
 	builder-factory(description-strategy, persistent-path-strategy, build-strategy | factory-name) =
 		

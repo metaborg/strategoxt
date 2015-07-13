@@ -57,7 +57,7 @@ strategies
 			
 			is-import-module= {ast, parse-input, module-name:
 				?Import(module-name);
-				<parse-stratego-input-for-module;debug> (module-name,pack-include-path, working-output ) => (_, parse-input);
+				<parse-stratego-input-for-module> (module-name,pack-include-path, working-output ) => (_, parse-input);
 				// Dont need to require the file explicitly, this is done by the following build request
 				// Only depend on whether the AST is a module or a specification (more precicly: a specification or any thing else)
 				<require-build-stamper(|<is-parse-statrego-output-specification-stamper>);debug> BuildRequest(<parse-stratego-builder-factory>, parse-input)

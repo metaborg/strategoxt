@@ -1,8 +1,5 @@
 package org.strategoxt.strj.pluto_interface.stamper;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -55,13 +52,11 @@ public class StrategoOutputStamper implements OutputStamper<Out<IStrategoTerm>>,
 	}
 
 	private final String name;
-	private transient final IContext context;
 	private transient final Strategy stamperStrategy;
 
-	public StrategoOutputStamper(String name, IContext context, Strategy stamperStrategy) {
+	public StrategoOutputStamper(String name, Strategy stamperStrategy) {
 		super();
 		this.name = name;
-		this.context = context;
 		this.stamperStrategy = stamperStrategy;
 	}
 
@@ -70,11 +65,6 @@ public class StrategoOutputStamper implements OutputStamper<Out<IStrategoTerm>>,
 	}
 
 	@Override
-	public IContext getContext() {
-		return context;
-	}
-	
-	@Override
 	public String getName() {
 		return name;
 	}
@@ -82,7 +72,7 @@ public class StrategoOutputStamper implements OutputStamper<Out<IStrategoTerm>>,
 	@Override
 	public OutputStamp<Out<IStrategoTerm>> stampOf(Out<IStrategoTerm> p) {
 		IStrategoTerm output = p.val();
-		IStrategoTerm stamp = StrategoUtils.invoke(this, stamperStrategy, output);
+		IStrategoTerm stamp = StrategoUtils.invoke(this, "stampOf",  stamperStrategy, output);
 		return new StrategoOutputStamp(stamp, name);
 	}
 

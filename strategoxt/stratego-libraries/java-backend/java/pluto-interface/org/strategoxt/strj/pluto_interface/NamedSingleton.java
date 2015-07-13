@@ -5,6 +5,5 @@ import org.spoofax.interpreter.core.IContext;
 public interface NamedSingleton {
 	
 	String getName();
-	IContext getContext();
 	
 }

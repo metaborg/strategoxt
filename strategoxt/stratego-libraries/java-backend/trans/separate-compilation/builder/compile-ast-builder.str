@@ -29,8 +29,7 @@ signature
 strategies
 		
 	compile-asts(input-for-module) = let
-	
-		// Accessor strategies such that the input can be extended with other values without need to change all pattern matches
+	// Accessor strategies such that the input can be extended with other values without need to change all pattern matches
 		get-module-name = {name: \ CompileASTInput(name, _, _, _, _, _, _) -> name\}
 		get-ast = {ast: \ CompileASTInput(_, ast, _, _, _, _, _) -> ast\} 
 		get-path = {path: \ CompileASTInput(_, _, path, _, _, _, _) -> path\}
@@ -38,6 +37,10 @@ strategies
 		get-output-folder = {folder: \ CompileASTInput(_, _, _, _, folder, _, _) -> folder\}
 		get-generate-main = {generate: \ CompileASTInput(_, _, _, _, _, generate, _) -> generate\}
 		get-pack-include-path = {path: \ CompileASTInput(_, _, _, _, _, _, path) -> path\}
+		
+	compile-asts(input-for-module|circular-module-names) = let
+	
+		
 		
 		/* Selects from a list of inputs the input with the module name, which is first in lexicographical order
 		 * Returns a pair of the other inputs and the selected ones
@@ -100,7 +103,7 @@ strategies
 			(id, try(add-default-lib-import), id, id, id, id)
 		end
 			
-		call-front-end(|pack-include-path) = {moduleName,merged-ast, fileName:
+		call-front-end(|pack-include-path) = {moduleName,merged-ast, fileName, files, spec:
 			?(moduleName, merged-ast, _, fileName, _, _);
 			
 			log(|Notice(), ["Import transformation for ", moduleName]);
@@ -144,24 +147,30 @@ strategies
 				log(|Notice(), 120);
 				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, java-package, output-folder, pack-include-path))> other-modules;
 				log(|Notice(), 121);
-				<map(compile-asts)> dummy-inputs
+				<map(
+					log(|Notice(), ["Compiling circular dummy module for ", <get-module-name>]);
+					![<id>];
+					compile-asts(input-for-module|circular-module-names))> dummy-inputs
 		\}
 				 
 		
-	in {inputs, circular-module-names, java-package, output-folder, pack-include-path, other-inputs, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files:
+	in {inputs, java-package, output-folder, pack-include-path, other-inputs, result-input, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files:
 		id => inputs;
+		log (|Notice(), 6);
 		where( {first-input:
-			circular-module-names := <map(get-module-name)> inputs;
 			!inputs;
 			?[first-input|_];
 			java-package := <get-java-package> first-input;
 			output-folder := <get-output-folder> first-input;
 			pack-include-path := <get-pack-include-path> first-input
 		});
+		log (|Notice(), 7);
 		// Rewrite the imports in the AST
 		<map(rewrite-imports(|circular-module-names))> inputs;
+		log (|Notice(), 8);
 		// Circular modules will be merged, make the result module deterministic
 		determine-circular-result-module(Fst) => (other-inputs, result-input);
+		log (|Notice(), 9);
 		combine-modules;
 		log (|Notice(), 10);
 		add-std-lib-import-if-required;
@@ -185,6 +194,16 @@ strategies
 		log (|Notice(), 16);
 		where(<create-dummy-modules(|java-package, output-folder, pack-include-path)> (other-inputs, result-input));
 		log (|Notice(), 17);
-		![CompileASTOutput(rtree-file)];
-		debug
+		log (|Notice(), ["Output for " , result-input, " is " , rtree-file]);
+		where( {result-module-name:
+			result-module-name := <Fst> result-input;
+			rules(Output: result-module-name -> CompileASTOutput(rtree-file))})
 	} end
+	
+	in {inputs: {|Output: 
+		?inputs;
+		<compile-asts(input-for-module|<map(get-module-name)> inputs)> inputs;
+		log (|Notice(), 18);
+		<map(get-module-name;Output)> inputs;
+		log (|Notice(), 19)
+	|}}end

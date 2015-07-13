@@ -2,6 +2,7 @@ package org.strategoxt.strj.pluto_interface;
 
 import java.util.ArrayList;
 
+import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
@@ -14,7 +15,7 @@ import build.pluto.output.Out;
 
 public class Conversions {
 
-	public static BuildRequest<?, Out<IStrategoTerm>, ?, ? extends BuilderFactory<?, Out<IStrategoTerm>, ?>> convertBuildRequest(IStrategoTerm term) {
+	public static BuildRequest<?, Out<IStrategoTerm>, ?, ? extends BuilderFactory<?, Out<IStrategoTerm>, ?>> convertBuildRequest( IStrategoTerm term) {
 		switch (Term.tryGetName(term)) {
 		case "BuildRequest":
 			IStrategoTerm factoryTerm = Term.termAt(term, 0);
@@ -33,7 +34,7 @@ public class Conversions {
 					inputs.add(i);
 				}
 			} else {
-				inputs = BuildCycleAtOnceBuilder.singletonArrayList(input);
+				inputs = BuildCycleAtOnceBuilder.singletonArrayList( input);
 			}
 			StrategoBuildCycleAtOnceBuilderFactory cycleBuilderfactory = ObjectWrapperTerm.get(factoryTerm);
 			return new BuildRequest<>(cycleBuilderfactory, inputs);

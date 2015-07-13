@@ -1,15 +1,13 @@
 package org.strategoxt.strj.pluto_interface.stamper;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
-import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.pluto_interface.NamedSingleton;
+import org.strategoxt.strj.pluto_interface.PlutoIContextManager;
 import org.strategoxt.strj.pluto_interface.SingletonStore;
 import org.strategoxt.strj.pluto_interface.StrategoUtils;
-import org.spoofax.interpreter.stratego.Strategy;
 
 import build.pluto.stamp.Stamp;
 import build.pluto.stamp.Stamper;
@@ -55,24 +53,17 @@ public class StrategoStamper implements Stamper, NamedSingleton {
 	}
 
 	private final String name;
-	private transient final IContext context;
 	private transient final Strategy stamperStrategy;
 
-	public StrategoStamper(String name, IContext context, Strategy stamperStrategy) {
+	public StrategoStamper(String name, Strategy stamperStrategy) {
 		super();
 		this.name = name;
-		this.context = context;
 		this.stamperStrategy = stamperStrategy;
 	}
 
 
 	private Object readResolve() {
 		return SingletonStore.readFromSingletonStore(name);
-	}
-
-	@Override
-	public IContext getContext() {
-		return context;
 	}
 	
 	@Override
@@ -83,7 +74,7 @@ public class StrategoStamper implements Stamper, NamedSingleton {
 	@Override
 	public Stamp stampOf(File p) {
 		String filePath = p.getAbsolutePath();
-		IStrategoTerm stamp = StrategoUtils.invoke(this, stamperStrategy, context.getFactory().makeString(filePath));
+		IStrategoTerm stamp = StrategoUtils.invoke(this, "stampOf",  stamperStrategy, PlutoIContextManager.currentContext().getFactory().makeString(filePath));
 		return new StrategoStamp(stamp, name);
 	}
 

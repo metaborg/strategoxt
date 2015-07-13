@@ -10,22 +10,22 @@ strategies
 		path-get-full-path;
 		prim("PlutoInterface_Builder_Require", |<Builder>)
 	
-	require-stamper(|stamper) = 
+	require-stamper(|stamper) =
 		log (|Notice(), ["Require ", <id>]);
 		path-get-full-path;
 		prim("PlutoInterface_Builder_RequireStamper", |<Builder>, stamper)
 		  
-	require-build = 
+	require-build = scope-builder(
 		log (|Notice(), ["Require Build", <id>]);	
 		log(|Notice(), ["Call require build primitive"]);
 		prim("PlutoInterface_Builder_RequireBuild", |<Builder>);
-		log(|Notice(), ["Successful with " , <id>])
+		log(|Notice(), ["Successful with " , <id>]))
 		
-	require-build-stamper(|stamper) = 
+	require-build-stamper(|stamper) = scope-builder(
 		log (|Notice(), ["Require Build", <id>]);	
 		log(|Notice(), ["Call require build primitive"]);
 		prim("PlutoInterface_Builder_RequireBuildStamper", |<Builder>, stamper);
-		log(|Notice(), ["Successful with " , <id>])
+		log(|Notice(), ["Successful with " , <id>]))
 		
 	provide-for(|input) = 
 		log(|Notice(), ["Provide for ", <id>]);

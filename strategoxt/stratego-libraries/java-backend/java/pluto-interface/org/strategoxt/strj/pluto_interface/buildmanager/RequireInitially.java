@@ -6,6 +6,7 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
+import org.strategoxt.strj.pluto_interface.PlutoIContextManager;
 import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory;
 import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory.GeneratedBuilder;
 import org.sugarj.common.Log;
@@ -26,9 +27,10 @@ public static final String NAME = "PlutoInterface_BuildManager_RequireInitially"
 	
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
+		PlutoIContextManager.pushContext(arg0);
 		try {
 		BuildRequest<?, Out<IStrategoTerm>, ?, ?> request = Conversions
-				.convertBuildRequest(arg0.current());
+				.convertBuildRequest( arg0.current());
 		System.out.println("Request: " + request);
 		System.out.println("Factory: " + request.factory);
 		System.out.println("Input: " + request.input);
@@ -39,6 +41,8 @@ public static final String NAME = "PlutoInterface_BuildManager_RequireInitially"
 		} catch (Throwable t) {
 			t.printStackTrace();
 			return false;
+		} finally {
+			PlutoIContextManager.popContext();
 		}
 		return true;
 	}
