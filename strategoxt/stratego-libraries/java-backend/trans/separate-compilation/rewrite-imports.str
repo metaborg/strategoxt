@@ -23,12 +23,14 @@ strategies
 	
 	separate-compilation-rewrite-imports(|module-name, circular-module-names, working-package, working-output, pack-include-path) = {|RTreeFiles :
 		let
-			to-library-import:
+			to-library-import = {name: \
 				Import(name) -> Import(<to-java-compilation-rel-file> name)
+				\}
 			
-			import-to-flag(|working-package):
+			import-to-flag(|working-package)= {name: \
 				Import(name) -> 
 					<conc-strings>(working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name)
+				\}
 				
 			
 		
@@ -38,6 +40,8 @@ strategies
 					then	log(|Info(), ["Module imports itself ", module-name])
 					else
 						// Require to build the imported module, then the rtree file can be used
+						log(|Warning(), ["Require module ", imported-module-name , " to rewrite " , module-name]);
+						log(|Warning(), ["Cycles ", circular-module-names]);
 						<require-build> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(imported-module-name, pack-include-path, working-package, working-output, False())])
 							=> CompileModuleOutput(rtree-file);
 						log(|Notice(), ["Require rtree file ", rtree-file]);
@@ -60,7 +64,7 @@ strategies
 				<parse-stratego-input-for-module> (module-name,pack-include-path, working-output ) => (_, parse-input);
 				// Dont need to require the file explicitly, this is done by the following build request
 				// Only depend on whether the AST is a module or a specification (more precicly: a specification or any thing else)
-				<require-build-stamper(|<is-parse-statrego-output-specification-stamper>);debug> BuildRequest(<parse-stratego-builder-factory>, parse-input)
+				<require-build-stamper(|<is-parse-statrego-output-specification-stamper>)> BuildRequest(<parse-stratego-builder-factory>, parse-input)
 			  			=> ParseStrategoOutput(_, ast);
 			  	<?Module(_,_)> ast
 			  	}

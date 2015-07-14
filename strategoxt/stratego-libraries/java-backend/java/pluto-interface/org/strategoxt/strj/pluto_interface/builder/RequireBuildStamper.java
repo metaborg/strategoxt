@@ -52,7 +52,6 @@ public class RequireBuildStamper extends AbstractPrimitive {
 			arg0.setCurrent(result.val());
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new InterpreterException(e);
 		} finally {
 			PlutoIContextManager.popContext();

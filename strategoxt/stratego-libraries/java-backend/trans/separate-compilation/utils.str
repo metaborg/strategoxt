@@ -37,10 +37,8 @@ strategies
 		  ) => all-imports
 		; map(\x -> Import(x)\)
 		; partition(where(import-predicate)) => (filtered-imports, other-imports)
-		; !filtered-imports
-		; filter(collect-transform) => collected-imports
-		; !filtered-imports
-		; filter(import-transform) => transformed-imports
+		; <filter(import-transform)> filtered-imports => transformed-imports
+		; <filter(collect-transform)> filtered-imports => collected-imports
 		; !(transformed-imports, other-imports)
 		; conc
 		; !(Module(name, [Imports(<id>) | other-content]), collected-imports)

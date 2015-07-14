@@ -36,8 +36,6 @@ public class RequireStamper extends AbstractPrimitive {
 		StrategoStamper stamper = ObjectWrapperTerm.get(arg2[1]);
 		IStrategoTerm fileTerm = arg0.current();
 		String filePath = Term.asJavaString(fileTerm);
-		System.out.println("Require Stamper " + filePath + " with stamper " + stamper);
-		System.out.println("For builder " + enclosingBuilder);
 		enclosingBuilder.require(new File(filePath), stamper);
 		return true;
 	}

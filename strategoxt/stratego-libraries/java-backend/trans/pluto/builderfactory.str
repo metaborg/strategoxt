@@ -30,12 +30,8 @@ strategies
 		let 
 			
 			flat-persistent-path = 
-				
-	    		log(|Info(), ["Persistent path for ", <id>]);
 	    		persistent-path-strategy;
-	    		log(|Info(), ["Persistent path " , <id>]);
-	    		path-get-full-path;
-	    		log(|Info(), ["Flat ", <id>])
+	    		path-get-full-path
 	    in
 			
 		create-pluto-singleton(
