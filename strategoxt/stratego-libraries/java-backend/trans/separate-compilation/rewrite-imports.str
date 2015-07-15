@@ -21,7 +21,7 @@ imports separate-compilation/stamper/is-specification
 
 strategies
 	
-	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, working-package, working-output, pack-include-path) = {|RTreeFiles :
+	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, working-package, working-output, pack-include-path) = {| :
 		let
 			to-library-import = {name: \
 				Import(name) -> Import(<to-java-compilation-rel-file> name)
@@ -35,7 +35,7 @@ strategies
 			
 		
 					
-			require-imported-module(|imported-module-name) = {rtree-file:
+			require-imported-module(|imported-module-name) = {rtree-file, all-rtree-files:
 				if <equal>(module-name, imported-module-name)
 					then	log(|Info(), ["Module imports itself ", module-name])
 					else
@@ -47,7 +47,8 @@ strategies
 						log(|Notice(), ["Require rtree file ", rtree-file]);
 						<require-stamper(|<rtree-stamper>)> rtree-file;
 						log(|Notice(), ["Collect rtree file ", rtree-file]);
-						where (rules(RTreeFiles :+= rtree-file))
+						where(all-rtree-files := [rtree-file | <RTreeFiles>]);
+						where (rules(RTreeFiles : _ -> all-rtree-files))
 						
 				end }
 				
@@ -72,8 +73,9 @@ strategies
 			
 			process-import-str =
 			{ term, name, module-name: 
+				log(|Notice(), ["Process import str " , <id>]);
 				  ?(term, <has-extension(|"str")>)
-				; where(<\Import(name) -> name\> term => module-name)
+				; where(<{name: \Import(name) -> name\}> term => module-name)
 				; if <is-import-module> term
 					then  // regular module dependency
 					   log(|Notice(), ["Import to module ", term])
@@ -112,8 +114,9 @@ strategies
 			
 				
 	
-		in {| File: 
+		in {| File, RTreeFiles: 
 		  log(|Notice(), ["Rewrite ", <id>]);
+		  where(rules(RTreeFiles : _ -> []));
 		  transform-imports-and-move-to-front(
 			{import, file:
 				  id => import
@@ -132,15 +135,18 @@ strategies
 					  where (<is-import-module> term)
 					; import-to-flag(|working-package)
 				else 
+					 log(|Notice(), ["No str file import " , <id>]);
 					  ?Import(<id>)
 					; where(is-default-lib-rtree)
+					; log(|Notice(), ["Is dafult liv rtree"])
 					; remove-lib-prefix
 					; translate-default-library // do not want to collect rtrees, but libraries
 				end
+				
 			   }
 			);
-			!(<id>, <bagof-RTreeFiles <+ ![]>)
-		|}
+			!(<id>, <(RTreeFiles <+ ![]);make-set>)
+		 |}
 		end |}
 		
 	 	

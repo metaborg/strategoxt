@@ -15,23 +15,23 @@ strategies
 		
 
 	calculate-transitive-externals(remove-overlays|dep-rtree-files) = {local-externals, dep-externals, externals,file:
-		log(|Notice(), [300, <id>]);
+		log(|Notice(), [300]);
 		defs-to-external-defs;
-		log(|Notice(), [301, <id>]);
+		log(|Notice(), [301]);
 		unpack-specification => local-externals;
-		log(|Notice(), [302, <id>]);
+		log(|Notice(), [302]);
 		<map(path-get-full-path;ReadFromFile;unpack-specification)> dep-rtree-files => dep-externals;
-		log(|Notice(), [303, <id>]);
+		log(|Notice(), [303]);
 		foldr(!local-externals, merge-rtrees);
-		log(|Notice(), [304, <id>]);
+		log(|Notice(), [304]);
 		if remove-overlays
 			then \(cs,os,ss) -> (cs, [], ss)\
 		end;
-		log(|Notice(), [305, <id>]);
+		log(|Notice(), [305]);
 		unify-and-sort-externals;
-		log(|Notice(), [306, <id>]);
+		log(|Notice(), [306]);
 		pack-specification;
-		log(|Notice(), [307, <id>]);
+		log(|Notice(), [307]);
 		export-externals(|".rtree") => externals-file;
 		!externals-file
 		 }
