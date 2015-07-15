@@ -279,8 +279,7 @@
 	</macrodef>
 
 	<macrodef name="strj-lib">
-		<attribute name="input-path"/>
-		<attribute name="input-module" />
+		<attribute name="input"/>
 		<attribute name="lib-output" default="@{input-path}/lib${@{input-module}.basename}.ctree" />
 		<attribute name="package" />
 		<attribute name="output"/>
@@ -299,7 +298,7 @@
 							<strjlibargs />
 						</strjargs>
 					</strj> -->
-					<strj input-path="@{input-path}" input-module="@{input-module}" output="@{output}" package="@{package}" generate-stdlib-import="@{generate-stdlib-import}">
+					<strj input="@{input}"  output="@{output}" package="@{package}" generate-stdlib-import="@{generate-stdlib-import}">
 						<strjargs>
 							<arg value="--library" />
 							<strjlibargs />

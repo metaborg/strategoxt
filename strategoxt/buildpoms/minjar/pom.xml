@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>strategoxt-min-jar-prebuild</artifactId>
+	<artifactId>strategoxt-min-jar</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.metaborg</groupId>
-			<artifactId>strategoxt-jar-prebuild</artifactId>
+			<artifactId>strategoxt-jar</artifactId>
 			<version>${metaborg-version}</version>
 		</dependency>
 	</dependencies>
@@ -33,12 +33,12 @@
 						<configuration>
 							<artifactSet>
 								<includes>
-									<include>org.metaborg:strategoxt-jar-prebuild</include>
+									<include>org.metaborg:strategoxt-jar</include>
 								</includes>
 							</artifactSet>
 							<filters>
 								<filter>
-									<artifact>org.metaborg:strategoxt-jar-prebuild</artifact>
+									<artifact>org.metaborg:strategoxt-jar</artifact>
 									<excludes>
 										<exclude>run.class</exclude>
 										<exclude>start.class</exclude>
