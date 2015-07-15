@@ -229,8 +229,7 @@
 	</macrodef>
 
 	<macrodef name="strj">
-		<attribute name="input-path"/>
-		<attribute name="input-module" />
+		<attribute name="input" />
 		<attribute name="output" />
 		<attribute name="package" />
 		<attribute name="generate-stdlib-import" default="true"/>
@@ -238,7 +237,7 @@
 		<element name="str-deps" optional="true" />
 		<sequential>
 			<echo>Calling strj</echo>
-			<property name="@{input-path}.abs" location="@{input-path}" />
+			<property name="@{input}.abs" location="@{input}" />
 			<property name="@{output}.abs" location="@{output}" />
 			<!-- For backward compatibility, because compiler needs stdlib in scope the most times -->
 			<!-- Repeat the clean arg in the else case, because we need a valid arg here -->
@@ -246,13 +245,11 @@
 				<equals arg1="@{generate-stdlib-import}" arg2="true"/>
 			</condition>
 			
-			<uptodate-mio input="@{input-path}/@{input-module}" output="@{output}" type="strj" force="true">
+			<uptodate-mio input="@{input}" output="@{output}" type="strj" force="true">
 				<action>
 					<java classname="org.strategoxt.strj.Main" failonerror="true">
-						<arg value="-I"/>
-						<arg value="${@{input-path}.abs}"/>
 						<arg value="-i" />
-						<arg value="${@{input-path}.abs}/@{input-module}" />
+						<arg value="${@{input}.abs}" />
 						<arg value="-o" />
 						<arg value="${@{output}.abs}" />
 						<arg value="-p" />

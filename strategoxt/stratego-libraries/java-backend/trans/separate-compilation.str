@@ -53,210 +53,44 @@ strategies
 		; strc-optimize
 		
 
-	separate-compilation-front-end(back-end|working-package,working-output)=
+	separate-compilation-front-end(back-end|working-package,working-output)= let
+		remove-module-from-path(|absolute-path) = {module-name:
+			? module-name;
+			log(|Notice(), ["Reolve include path " , module-name, " " , absolute-path]);
+			<path-get-full-path> absolute-path => full-path;
+			<explode-string> full-path => path-chars;
+			<explode-string> module-name => name-chars;
+			<length> path-chars => num-path-chars;
+			<length> name-chars => num-name-chars;
+			<subti> (num-path-chars, num-name-chars) => num-chars;
+			<take(|num-chars)> path-chars => removed-chars;
+			<drop(|num-chars)> path-chars => module-chars;
+			((<equal(|module-name)> (<implode-string;debug> module-chars) ) <+ (log(|Error(), "Main module does not match file name"); fail));
+			<implode-string> removed-chars
+			}
+			
+	in
 		scope-compiler-config(
-		  where(collect-config)
-		; where(fileName := <\FILE(s) -> s\>) ;
+		  where(collect-config);
+		where(fileName := <\FILE(s) -> s\>) ;
+		where(init-builders);
+		
+		// Parse file and derive include paths from it
+		// Sadly it is not possible to share that parse result with compiling (as long as the input is an AbsolutePath/RelativePath term)
 		!AbsolutePath(fileName) => absolute-file;
+		<require-initially;debug> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(absolute-file, <pack-include-path>, AbsolutePath(working-output)))
+				  	=> ParseStrategoOutput(module-name, _);
+				  	
+		<remove-module-from-path(|absolute-file)> (<conc-strings;debug> (module-name, ".str")) => main-dir;
+		
 		// But the output directory in the search path to find generated rtrees
 		 where({i , is:
-			  !"-I"
-			; get-config => [i|is]
-			; !("-I", <make-set>[i,IncludeDir(working-output)|is])
-			; set-config
+			  <get-config <+ ![]> "-I" => include-dirs
+			; <set-config> ("-I", <make-set>[IncludeDir(main-dir), IncludeDir(working-output) |include-dirs])
 		});
 		<pack-include-path> () => pack-include-path;
-		where(init-builders);
-		where(relative-file := <fetch-elem({dir: \IncludeDir(dir) -> <path-relativize(|AbsolutePath(dir))> absolute-file\})> pack-include-path);
-		<require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(relative-file, pack-include-path, AbsolutePath(working-output)))
-				  	=> ParseStrategoOutput(module-name, _);
+		log(|Notice(), ["New include path ", pack-include-path]);
+		
 		
 		<require-initially> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(module-name, pack-include-path, working-package, AbsolutePath(working-output), module-name)]) 
-	)
-
-	/*separate-compilation-front-end(back-end|working-package,working-output)=
-		scope-compiler-config(scope-unit-cache( {| MainModule :
-		  where(collect-config)
-		; where(fileName := <\FILE(s) -> s\>) 
-	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
-		; !AbsolutePath(fileName) => absolute-file
-		; pack-include-path
-		; log(|Info(), ["Relativize path from ", <id>])
-		; fetch-elem(\IncludeDir(d) -> <path-relativize(| AbsolutePath(d))>  absolute-file\)
-		; path-remove-extension
-		; ?RelativePath(_,<id>)
-		; if complete-rebuild 
-			then create-compilation-unit-for-module(|<id>)
-			else read-or-create-compilation-unit-for-module(|<id>)
-		  end => main-compilation-unit
-		; where(rules(MainModule :  _ -> main-compilation-unit))
-		; pack-process-options
-	// But the output directory in the search path to find generated rtrees
-		; where({i , is:
-			  !"-I"
-			; get-config => [i|is]
-			; !("-I", <make-set>[i,IncludeDir(working-output)|is])
-			; set-config
-		})
-	// Remember initial la flags to generate imports later
-		; where(<set-config> ("-la-init", <get-config <+ ![]> "-la"))
-	// Create the build schedule for the compilation unit and flatten it
-		; log(|Notice(), ["Calculating build schedule for ", <id>])
-		; ![<id>]
-		; createBuildSchedule(|<get-schedule-mode>)
-		; flattenBuildSchedule
-		; if is-global-compilation
-			then
-				  foldr(![], (task-get-units,id);conc)
-				; ![<id>]
-		  end
-		; log(|Info(), ["Calculated build schedule ", <id>])
-	// Compile according to the build schedule, outer map maps over the build tasks in the build schedule
-		; map(	//if  debug("Check "); ((is-global-compilation;debug(!"GLobal")) <+ (not(needsTaskToBeBuild);) then 
-		// TODO Reinclude the if when problem with istasktobebuild is completed
-				  log(|Info(), ["Compile Build Task " , <id>])
-				; (is-global-compilation <+ task-get-units)
-	// Compiles a strongly connected component
-				; compile(back-end|working-package,working-output)
-	// Update the interface versions of the dependencies 
-				; where( map ({unit: 
-					  id => unit
-					; get-all-module-dependencies
-					; map(update-module-dependency-interface(|unit))
-					}))
-	// Finally write all units
-				; map (write-compilation-unit)
-				//end
-		)
-	|}))*/
-
-	
-/*	compile (back-end|working-package,working-output)=
-	  if !AbsolutePath(working-output);not(path-is-directory)
-	    then log(|Error(), ["Given path is not a directory or does not end with a slash: ", working-output]); fail
-	  end
-	; id => circular-units
-	; if not(complete-rebuild);!circular-units; map(is-persisted; is-consistent-shallow; is-consistent-to-interfaces)
-		then 
-			  log(|Info(),["Check to compile, is consistent to interfaces, do not compile ", circular-units])
-		else
-			  map ( {parseResult, work-unit, fileName, moduleName, source-file:
-				  get-stratego-source-file => source-file
-				; path-get-full-path => fileName
-				
-				; <require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(source-file, <pack-include-path>))
-				  	=> ParseStrategoOutput(moduleName, parseResult)
-			
-				; log(|Info(), ["Check to compile, need to compile ", moduleName])
-				; log(|Info(), ["Compile to package: ", working-package])
-				; log(|Info(), ["Place files in:     ", working-output])
-				; (create-compilation-unit-for-module(|moduleName) => work-unit
-					<+ (log(|Error(), ["Module name does not match file name: ", moduleName, " in " , fileName]); fail))
-				; !(moduleName, work-unit, parseResult, fileName)
-				 })
-			; compile-asts(back-end|working-package,working-output, circular-units)
-		end
-		*/
-/*	add-default-lib-import = 
-		  is-generate-stdlib-import
-		 ; log(|Notice(), "Add import to libstratego-lib")
-		 ; ((
-		  ?Module(merged-name, [Imports(imports)|content])
-		; !Module(merged-name, [Imports(<make-set> [Import("libstratego-lib")|imports]) | content])
-		) <+ fatal-err(|["Unable to add default lib import to ", <id>]))
-	
-	determine-circular-result-unit = 
-		  ?[x|xs]
-		; !(xs, ([], x))
-		; foldl(
-			{other-units, first-unit, current-unit:
-				  ?(current-unit, (other-units, first-unit))
-				; if !(current-unit, first-unit);tmap(Fst);string-gt
-					then !([current-unit | other-units], first-unit)
-					else !([first-unit | other-units], current-unit)
-				end
-			}
-		) */
-	
-/*	compile-asts(back-end|working-package,working-output, circular-units)= {x, xs, other-circular-units :
-			  log(|Info(), ["Transforming import"])
-			//  where(map(\(moduleName, _, _, _) -> moduleName\) => moduleNames)
-			; map( {moduleName, work-unit, ast, fileName, transformed-ast, new-libs :
-				  ?(moduleName, work-unit, ast, fileName)
-				; !ast
-				; (separate-compilation-rewrite-imports(back-end|moduleName, work-unit, working-package,working-output, circular-units)) => (transformed-ast, new-libs)
-				; !(moduleName, work-unit, transformed-ast, new-libs, fileName)
-				})
-			// We know, that the list of units to compile at once is not empty, so we can guarantee a first element
-			; determine-circular-result-unit
-			; ?(xs, x)
-			; if not(!xs;?[]) then
-				  log(|Info(), ["Compile circular source files to ", <Snd> x])
-			  end
-			; log(|Notice(), ["Combine modules"])
-			
-			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
-			; foldl( {new-content, new-libs, moduleName, work-unit, merged-name, merged-content, merged-libs, fileName, new-imports, merged-imports :
-				  ?( (_, _, Module(_, [Imports(new-imports)| new-content]), new-libs, _), (moduleName, work-unit, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName) )
-				; !(moduleName, work-unit, Module(merged-name, [Imports(<conc;make-set> (new-imports, merged-imports)) | <conc> (new-content, merged-content)]), <conc> (new-libs, merged-libs), fileName)
-			})
-			// Add import to stdlib if required by options
-			; (id, id, try(add-default-lib-import), id, id)
-	
-	
-			; where(!xs;map(Snd) => other-circular-units)
-
-			; log(|Info(), ["Prepare for front end"])
-			; {moduleName, merged-ast, new-libs, fileName, work-unit, rtree-file, signature-term, externals:  
-			  ?(moduleName, work-unit, merged-ast, new-libs, fileName)
-			; save-and-set-options(
-				  where(libs := <get-config <+ ![]> "-la")
-				; where(<set-config>("-la", <conc;make-set> (libs, new-libs)))
-				; log(|Notice(), ["Import transformation for ", moduleName])
-				; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
-			
-				; !merged-ast
-				; !IncludeAST(merged-ast,fileName)
-
-				; pack-stratego(|<pack-include-path>) => (files, spec)
-				; !spec
-			
-				; log(|Notice(), ["Calling Frontend for ", moduleName])
-				; strc-front-end2
-			
-			
-	// TODO CONTINUE HERE
-			
-				;  log(|Info(), ["Calculating transitive externals for ", work-unit])
-				; where(
-					  calculate-transitive-externals(
-						  and(is-remove-overlays-from-externals, is-main-module-contained(|circular-units))
-						|work-unit, circular-units) => (rtree-file, signature-term) 
-					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
-					; set-interface-hash(|work-unit, signature-term) 
-				
-				)
-				
-				; log(|Notice(), ["Calling Backend for ", moduleName])
-				// Remove Overlays for Backend, they are only important for externals
-				; \Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\
-				
-				; back-end(|circular-units)
-				; where(<set-config> ("-la", libs))
-			, <tmap(get-stratego-source-file);eq> (<MainModule>, work-unit) | working-package,working-output,fileName,moduleName, circular-units)}
-			;{compiled-module-name:
-			  !x
-			; ?(compiled-module-name, _, _ ,_,_)
-			; !xs
-			; map( {module-name, module-unit,  file-name:
-				  ?(module-name, module-unit, _, _, file-name)
-				; ![(module-name, module-unit, (file-name, Module(module-name, [Imports([Import(compiled-module-name)])])), file-name)]
-				})
-			; map(compile-asts(back-end|working-package,working-output, other-circular-units))
-			}
-			; !circular-units
-			}
-	*/
-	
-	
-	
+	)end
