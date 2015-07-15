@@ -38,7 +38,7 @@ strategies
 		get-pack-include-path = {path: \ CompileASTInput(_, _, _, _, _, _, path) -> path\}
 		get-main-module-name = {path: \ CompileASTInput(_, _, _, _, _, main-module, _) -> main-module\}
 		
-	compile-asts(input-for-module|circular-module-names) = let
+	compile-asts(input-for-module|circular-module-names, circular-main-module) = let
 	
 		
 		
@@ -72,7 +72,7 @@ strategies
 				output-folder := <get-output-folder> input;
 				main-module-name := <get-main-module-name> input;
 				pack-include-path := <get-pack-include-path> input;
-				<separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, java-package, output-folder, pack-include-path)> ast => ((transformed-ast, new-libs), imported-rtree-files)
+				<separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, java-package, output-folder, pack-include-path)> ast => ((transformed-ast, new-libs), imported-rtree-files)
 			\}
 			
 		combine-modules = {:
@@ -143,7 +143,7 @@ strategies
 					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, main-module-name, pack-include-path) 
 			\}
 		
-		create-dummy-modules(|java-package, output-folder, pack-include-path) = {dummy-inputs, other-modules, result-module-name, main-module-name: \
+		create-dummy-modules(|java-package, output-folder, pack-include-path, circular-rtree-file) = {dummy-inputs, other-modules, result-module-name, main-module-name: \
 			 (other-modules, (result-module-name, _,_,_,main-module-name,_)) -> ()
 			where
 				log(|Notice(), 120);
@@ -152,7 +152,7 @@ strategies
 				<map(
 					log(|Notice(), ["Compiling circular dummy module for ", <get-module-name>]);
 					![<id>];
-					compile-asts(input-for-module|circular-module-names))> dummy-inputs
+					compile-asts(input-for-module|circular-module-names, Some((result-module-name,circular-rtree-file))))> dummy-inputs
 		\}
 				 
 		
@@ -197,7 +197,7 @@ strategies
 			log (|Notice(), 15)
 		|generate-main, java-package, output-folder, fileName, moduleName, circular-module-names);
 		log (|Notice(), 16);
-		where(<create-dummy-modules(|java-package, output-folder, pack-include-path)> (other-inputs, result-input));
+		where(<create-dummy-modules(|java-package, output-folder, pack-include-path,rtree-file)> (other-inputs, result-input));
 		log (|Notice(), 17);
 		log (|Notice(), ["Output for " , result-input, " is " , rtree-file]);
 		where( {result-module-name:
@@ -207,7 +207,7 @@ strategies
 	
 	in {inputs: {|Output: 
 		?inputs;
-		<compile-asts(input-for-module|<map(get-module-name)> inputs)> inputs;
+		<compile-asts(input-for-module|<map(get-module-name)> inputs, None())> inputs;
 		log (|Notice(), 18);
 		<map(get-module-name;Output)> inputs;
 		log (|Notice(), 19)

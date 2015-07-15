@@ -21,7 +21,20 @@ imports separate-compilation/stamper/is-specification
 
 strategies
 	
-	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, working-package, working-output, pack-include-path) = {| :
+	/*
+	 * Rewrites the imports of the given AST. During rewriting, the compilation of each imported module is required. The imports of these modules are adapted to point
+	 * to the generated rtree file of this module
+	 *
+	 * @param module-name : String , the name of the module to rewrite
+	 * @param main-module-name: String, the name of the module on which the compiler was invoked
+	 * @param circular-module-names: List[String], the names of all modules in the current cycle
+	 * @param circular-main-module: Option[(String, Path)] : Some((module-name, rtree-file)) if a dummy module for a circle is imported, then for the import to module-name the rtree-file is included without requiring a build
+	 * @param working-package: Path, the output Java package
+	 * @param workping-output: Path, the toplevel folder to place generated files to
+	 * @param pack-include-path: List[IncludeDir | IncludeXTC], the pack include path for finding source files
+	 *
+	 */
+	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, working-package, working-output, pack-include-path) = {| :
 		let
 			to-library-import = {name: \
 				Import(name) -> Import(<to-java-compilation-rel-file> name)
@@ -52,6 +65,14 @@ strategies
 						
 				end }
 				
+			require-circular-main-module() = {rtree-file, all-rtree-files, circular-module, circular-rtree-file:
+				!circular-main-module;
+				? Some((circular-module, circular-rtree-file)); // Only matches if a dummy module in the circle is created
+				<to-library-import> Import(circular-module);
+				where(all-rtree-files := [circular-rtree-file | <RTreeFiles>]);
+				where (rules(RTreeFiles : _ -> all-rtree-files))		
+				}
+				
 			
 			
 			get-file-add-external-file-dependency = {import-name, file: \
@@ -72,7 +93,7 @@ strategies
 			  			
 			
 			process-import-str =
-			{ term, name, module-name: 
+			{ term, name, module-name, circular-module: 
 				log(|Notice(), ["Process import str " , <id>]);
 				  ?(term, <has-extension(|"str")>)
 				; where(<{name: \Import(name) -> name\}> term => module-name)
@@ -80,7 +101,9 @@ strategies
 					then  // regular module dependency
 					   log(|Notice(), ["Import to module ", term])
 					 ; if <elem> (module-name, circular-module-names) 
-						then fail // Circular, do not transform
+						then 
+							require-circular-main-module // Only matches if a dummy module in the circle is created
+							 // Circular, do not transform
 						else 
 							require-imported-module(|module-name);
 							<to-library-import> term  // Transform term to library import
