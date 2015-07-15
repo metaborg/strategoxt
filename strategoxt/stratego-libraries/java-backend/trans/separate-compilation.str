@@ -71,7 +71,7 @@ strategies
 		<require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(relative-file, pack-include-path, AbsolutePath(working-output)))
 				  	=> ParseStrategoOutput(module-name, _);
 		
-		<require-initially> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(module-name, pack-include-path, working-package, AbsolutePath(working-output), True())]) 
+		<require-initially> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(module-name, pack-include-path, working-package, AbsolutePath(working-output), module-name)]) 
 	)
 
 	/*separate-compilation-front-end(back-end|working-package,working-output)=

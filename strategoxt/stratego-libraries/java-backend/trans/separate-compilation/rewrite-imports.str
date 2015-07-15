@@ -21,7 +21,7 @@ imports separate-compilation/stamper/is-specification
 
 strategies
 	
-	separate-compilation-rewrite-imports(|module-name, circular-module-names, working-package, working-output, pack-include-path) = {|RTreeFiles :
+	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, working-package, working-output, pack-include-path) = {|RTreeFiles :
 		let
 			to-library-import = {name: \
 				Import(name) -> Import(<to-java-compilation-rel-file> name)
@@ -42,7 +42,7 @@ strategies
 						// Require to build the imported module, then the rtree file can be used
 						log(|Warning(), ["Require module ", imported-module-name , " to rewrite " , module-name]);
 						log(|Warning(), ["Cycles ", circular-module-names]);
-						<require-build> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(imported-module-name, pack-include-path, working-package, working-output, False())])
+						<require-build> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(imported-module-name, pack-include-path, working-package, working-output, main-module-name)])
 							=> CompileModuleOutput(rtree-file);
 						log(|Notice(), ["Require rtree file ", rtree-file]);
 						<require-stamper(|<rtree-stamper>)> rtree-file;

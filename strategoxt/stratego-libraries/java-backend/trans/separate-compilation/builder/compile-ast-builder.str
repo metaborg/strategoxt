@@ -22,7 +22,7 @@ imports strj
 signature
 	constructors
 		
-		CompileASTInput: ModuleName * AST * Path * JavaPackage * OutputFolder * GenerateMain * PackIncludePath -> CompileASTInput
+		CompileASTInput: ModuleName * AST * Path * JavaPackage * OutputFolder * MainModule * PackIncludePath -> CompileASTInput
 		CompileASTOutput: RTreeFile -> CompileASTOutput
 		
 		
@@ -35,33 +35,34 @@ strategies
 		get-path = {path: \ CompileASTInput(_, _, path, _, _, _, _) -> path\}
 		get-java-package = {package: \ CompileASTInput(_, _, _, package, _, _, _) -> package\}
 		get-output-folder = {folder: \ CompileASTInput(_, _, _, _, folder, _, _) -> folder\}
-		get-generate-main = {generate: \ CompileASTInput(_, _, _, _, _, generate, _) -> generate\}
 		get-pack-include-path = {path: \ CompileASTInput(_, _, _, _, _, _, path) -> path\}
+		get-main-module-name = {path: \ CompileASTInput(_, _, _, _, _, main-module, _) -> main-module\}
 		
 	compile-asts(input-for-module|circular-module-names) = let
 	
 		
 		
-		/* Selects from a list of inputs the input with the module name, which is first in lexicographical order
+		/* Selects from a list of inputs the input with the module name, which is first in lexicographical order. But of the
+		 * given main-module-name is contained, this one is taken.
 		 * Returns a pair of the other inputs and the selected ones
 		 * The module name is extracted by select-module-name from the input
 		 *
 		 * @param select-module-name: a -> String
 		 * @type [a] -> ([a], a)
 		 */ 
-		determine-circular-result-module(select-module-name) = {x, xs:
+		determine-circular-result-module(select-module-name | main-module-name) = {x, xs:
 			?[x|xs];
 			!(xs, ([], x));
 			foldl( {other-modules, first-module, current-module:
 				?(current-module, (other-modules, first-module));
-				if !(current-module, first-module);tmap(select-module-name);string-gt
+				if (<select-module-name;equal(|main-module-name)>  first-module)  <+ (<tmap(select-module-name);string-gt> (current-module, first-module))
 					then !([current-module | other-modules], first-module)
 					else !([first-module | other-modules], current-module)
 				end })
 			}
 				
-		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files: \
-			input -> (module-name, transformed-ast, new-libs, path, generate-main, imported-rtree-files)
+		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files, main-module-name: \
+			input -> (module-name, transformed-ast, new-libs, path, main-module-name, imported-rtree-files)
 			where
 				log(|Notice(), ["Rewrite imports"]);
 				module-name := <get-module-name> input;
@@ -69,22 +70,23 @@ strategies
 				path := <get-path> input;
 				java-package := <get-java-package> input;
 				output-folder := <get-output-folder> input;
-				generate-main := <get-generate-main> input;
+				main-module-name := <get-main-module-name> input;
 				pack-include-path := <get-pack-include-path> input;
-				<separate-compilation-rewrite-imports(|module-name, circular-module-names, java-package, output-folder, pack-include-path)> ast => ((transformed-ast, new-libs), imported-rtree-files)
+				<separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, java-package, output-folder, pack-include-path)> ast => ((transformed-ast, new-libs), imported-rtree-files)
 			\}
 			
 		combine-modules = {:
 			log(|Notice(), ["Combine modules ", <id>]);
 			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
-			foldl({imports, content, libs, generate-main, rtree-files: \
-				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-generate-main, new-rtree-files), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-generate-main, merged-rtree-files) ) ->
-				(moduleName, Module(merged-name, [imports | content]), libs, fileName, generate-main, rtree-files)
+			foldl({imports, content, libs, main-module-name, rtree-files: \
+				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-main-module-name, new-rtree-files), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-main-module-name, merged-rtree-files) ) ->
+				(moduleName, Module(merged-name, [imports | content]), libs, fileName, main-module-name, rtree-files)
 				where
 					imports := Imports(<conc;make-set> (new-imports, merged-imports));
 					content := <conc> (new-content, merged-content);
 					libs := <conc> (new-libs, merged-libs);
-					generate-main := <b-or>(new-generate-main, merged-generate-main);
+					main-module-name := merged-main-module-name;
+					<eq> (new-main-module-name, merged-main-module-name);
 					rtree-files := <conc>(new-rtree-files, merged-rtree-files)
 			\});
 			log(|Notice(), ["Result ", <id>])
@@ -136,16 +138,16 @@ strategies
 			}
 				
 			
-		generate-dummy-module-input(|result-module-name, java-package, output-folder, pack-include-path) = {module-name, file-name: \
+		generate-dummy-module-input(|result-module-name, main-module-name, java-package, output-folder, pack-include-path) = {module-name, file-name: \
 			(module-name, _, _, file-name, _, _) ->
-					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, False(), pack-include-path) 
+					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, main-module-name, pack-include-path) 
 			\}
 		
-		create-dummy-modules(|java-package, output-folder, pack-include-path) = {dummy-inputs, other-modules, result-module-name: \
-			 (other-modules, (result-module-name, _,_,_,_,_)) -> ()
+		create-dummy-modules(|java-package, output-folder, pack-include-path) = {dummy-inputs, other-modules, result-module-name, main-module-name: \
+			 (other-modules, (result-module-name, _,_,_,main-module-name,_)) -> ()
 			where
 				log(|Notice(), 120);
-				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, java-package, output-folder, pack-include-path))> other-modules;
+				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, main-module-name, java-package, output-folder, pack-include-path))> other-modules;
 				log(|Notice(), 121);
 				<map(
 					log(|Notice(), ["Compiling circular dummy module for ", <get-module-name>]);
@@ -154,7 +156,7 @@ strategies
 		\}
 				 
 		
-	in {inputs, java-package, output-folder, pack-include-path, other-inputs, result-input, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files:
+	in {inputs, java-package, output-folder, pack-include-path, other-inputs, result-input, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files, main-module-name:
 		id => inputs;
 		log (|Notice(), 6);
 		where( {first-input:
@@ -162,20 +164,23 @@ strategies
 			?[first-input|_];
 			java-package := <get-java-package> first-input;
 			output-folder := <get-output-folder> first-input;
-			pack-include-path := <get-pack-include-path> first-input
+			pack-include-path := <get-pack-include-path> first-input;
+			main-module-name := <get-main-module-name> first-input
 		});
 		log (|Notice(), 7);
 		// Rewrite the imports in the AST
 		<map(rewrite-imports(|circular-module-names))> inputs;
 		log (|Notice(), 8);
 		// Circular modules will be merged, make the result module deterministic
-		determine-circular-result-module(Fst) => (other-inputs, result-input);
+		determine-circular-result-module(Fst | main-module-name) => (other-inputs, result-input);
 		log (|Notice(), 9);
 		combine-modules;
 		log (|Notice(), 10);
 		add-std-lib-import-if-required;
 		log (|Notice(), 11);
-		?(moduleName, merged-ast, new-libs, fileName, generate-main, imported-rtree-files);
+		?(moduleName, merged-ast, new-libs, fileName, main-module-name, imported-rtree-files);
+		where (generate-main := <b-strategy-successful(fetch-elem(equal(|main-module-name)))> circular-module-names );
+		log(|Notice(), ["Generate main ", generate-main]);
 		log (|Notice(), 115);
 		save-and-set-options(
 			log (|Notice(), 12);
