@@ -73,8 +73,9 @@ strategies
 			if <debug;has-extension(|"java")> output-folder  
 				then !output-folder; log(|Notice(), ["Ignoring java file in output ", <id>]);
 					dirname;
+					string-ensure-trailing-slash;
 					!AbsolutePath(<id>)
-				else !AbsolutePath(output-folder)
+				else !AbsolutePath(<string-ensure-trailing-slash>output-folder)
 			end
 			
 	in
