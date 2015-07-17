@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<antlib>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<macrodef name="if-separate-compilation">
+		<element name="separate" />
+		<element name="global" />
+
+		<sequential>
+			<available classname="org.strategoxt.strj.pluto_interface.PlutoLibrary" 
+				classpath="${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar"
+				property="separate-compilation-supported" />
+			<if>
+				<equals arg1="${separate-compilation-supported}" arg2="true" />
+				<then>
+					<echo>"Separate compilation supported"</echo>
+					<separate/>
+				</then>
+				<else>
+					<echo>"Separate compilation not supported"</echo>
+					<global/>
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="if-separate-compilation-property">
+		<attribute name="property" />
+		<attribute name="separate" />
+		<attribute name="global" />
+		<sequential>
+			<if-separate-compilation>
+				<separate>
+					<property name="@{property}" value="@{separate}"/>
+				</separate>
+				<global>
+					<property name="@{property}" value="@{global}"/>
+				</global>
+			</if-separate-compilation>
+		</sequential>
+	</macrodef>
+		
+		
+</antlib>
