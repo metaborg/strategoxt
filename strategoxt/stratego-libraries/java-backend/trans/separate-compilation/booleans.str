@@ -1,4 +1,4 @@
-module sparate-compilation/booleans
+module separate-compilation/booleans
 
 signature
 	constructors

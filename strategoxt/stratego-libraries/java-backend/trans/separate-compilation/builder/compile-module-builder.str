@@ -1,4 +1,4 @@
-module separate-complation/buikder/compile-module-builder
+module separate-compilation/builder/compile-module-builder
 
 imports libstrc
 imports libstrategolib

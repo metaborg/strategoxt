@@ -1,4 +1,4 @@
-module parse-stratego-builder
+module separate-compilation/builder/parse-stratego-builder
 
 imports libstrategolib
 imports libstrc

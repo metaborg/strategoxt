@@ -1,4 +1,4 @@
-module separate-compilation/builder/rtree
+module separate-compilation/stamper/rtree
 
 imports cleardep/fileutils
 imports pluto/stamper

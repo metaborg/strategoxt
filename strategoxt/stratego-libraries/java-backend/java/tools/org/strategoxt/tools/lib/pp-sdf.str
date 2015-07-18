@@ -1,4 +1,4 @@
-module pp-sdf
+module lib/pp-sdf
 imports 
   libstratego-lib
   libstratego-gpp

@@ -1,4 +1,4 @@
-module deps-path
+module separate-compilation/builder/deps-path
 
 imports libstrategolib
 imports cleardep/fileutils
