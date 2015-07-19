@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -29,7 +31,10 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/strc" />
-		<strj-lib input="lib/strc.str" output="${bin.stratego}/org/strategoxt/strc/Main.java" package="org.strategoxt.strc">
+		<if-separate-compilation-property property="strc.output" separate="org/strategoxt/" global="org/strategoxt/strc/Main.java"/>
+		<if-separate-compilation-property property="strc.package" separate="org.strategoxt" global="org.strategoxt.strc"/>
+		
+		<strj-lib input="lib/strc.str" output="${bin.stratego}/${strc.output}" package="${strc.package}">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -65,8 +70,16 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstrc.ctree" todir="${bin}" />
-		<copy file="lib/libstrc.rtree" todir="${bin}" />
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin.stratego}/org/strategoxt/strc/strc.rtree" tofile="${bin}/libstrc.rtree" />
+			</separate>
+			<global>
+				<copy file="lib/libstrc.ctree" todir="${bin}" />
+				<copy file="lib/libstrc.rtree" todir="${bin}" />
+			</global>
+		</if-separate-compilation>
+		
 	</target>
 
 	<path id="build.classpath">

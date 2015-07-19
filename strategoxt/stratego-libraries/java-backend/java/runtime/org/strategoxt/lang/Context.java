@@ -26,6 +26,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.interpreter.util.IAsyncCancellable;
 import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.LibraryInitializer.InitializerSetEntry;
+import org.strategoxt.lang.compat.CompatLibraryInitializer;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
 
@@ -127,7 +128,10 @@ public class Context extends StackTracer implements IAsyncCancellable {
     
     public void setStrategyCollector(StrategyCollector strategyCollector) {
 		this.strategyCollector = strategyCollector;
-		strategyCollector.addLibraryInitializers(Arrays.asList(new InitializerSetEntry(new SRTS_EXT_LibraryInitializer()), new InitializerSetEntry(new SRTS_LibraryInitializer())));
+		this.strategyCollector.addLibraryInitializers(Arrays.asList(
+				new InitializerSetEntry(new CompatLibraryInitializer()),
+				new InitializerSetEntry(new SRTS_LibraryInitializer()),
+				new InitializerSetEntry(new SRTS_EXT_LibraryInitializer())));
 	}
 
     public StrategyCollector getStrategyCollector() {
@@ -212,10 +216,14 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
 	public IStrategoTerm invokeStrategy(String strategy, IStrategoTerm input)
 			throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
+		Strategy collectedStrategy = getStrategyCollector().getStrategyExecutor(org.spoofax.interpreter.core.Interpreter.cify(strategy) + "_0_0");
+		if (collectedStrategy != null) {
+			return collectedStrategy.invoke(this, input);
+		}
 
 		SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
     	if (caller == null) caller = new SSL_EXT_java_call();
-    	return caller.call(this, strategy, input, false);
+    	return caller.call(this, strategy, input, true);
 	}
 
 	private IStrategoList toCLITerm(String appName, String... args) {
@@ -296,12 +304,4 @@ public class Context extends StackTracer implements IAsyncCancellable {
 		getIOAgent().closeAllFiles();
 		throw new CancellationException("Stratego interpreter cancelled");
 	}
-	
-    public Object contextObject() {
-        return interopContext.contextObject();
-    }
-
-    public void setContextObject(Object context) {
-        interopContext.setContextObject(context);
-    }
 }

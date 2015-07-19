@@ -10,7 +10,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class SRTS_EXT_fatal_err_0_3 extends RegisteringStrategy {
-	public static SRTS_EXT_fatal_err_0_3 instance = new SRTS_EXT_fatal_err_0_3();
+	private static SRTS_EXT_fatal_err_0_3 instance = new SRTS_EXT_fatal_err_0_3();
 	
 	@Override
 	public void registerImplementators(StrategyCollector collector) {

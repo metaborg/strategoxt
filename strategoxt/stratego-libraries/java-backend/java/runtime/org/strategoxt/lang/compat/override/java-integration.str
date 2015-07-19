@@ -29,6 +29,10 @@ strategies
   
   override report-failure(|message, term) = SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
   
+  external ReadFromFile-cached(|)
+  
+  external report-failure-compat(s|)
+  
   
   /**
   * Raise an execution exception with a stack trace

@@ -11,7 +11,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
  */
 public class SRTS_EXT_string_replace_0_2 extends RegisteringStrategy {
 	
-	public static SRTS_EXT_string_replace_0_2 instance = new SRTS_EXT_string_replace_0_2();
+	private static SRTS_EXT_string_replace_0_2 instance = new SRTS_EXT_string_replace_0_2();
 	
 	public void registerImplementators(StrategyCollector collector) {
 		collector.registerStrategyImplementator("SRTS_EXT_string_replace_0_2", instance);

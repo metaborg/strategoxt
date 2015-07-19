@@ -5,6 +5,8 @@
 	
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -28,7 +30,10 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_gpp" />
-		<strj-lib input="lib/stratego-gpp.str" output="${bin.stratego}/org/strategoxt/stratego_gpp/Main.java" package="org.strategoxt.stratego_gpp">
+		
+		<if-separate-compilation-property property="gpp.output" separate="org/strategoxt/" global="org/strategoxt/stratego_gpp/Main.java"/>
+		<if-separate-compilation-property property="gpp.package" separate="org.strategoxt" global="org.strategoxt.stratego_gpp"/>
+		<strj-lib input="lib/stratego-gpp.str" output="${bin.stratego}/${gpp.output}" package="${gpp.package}">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -47,8 +52,15 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstratego-gpp.ctree" todir="${bin}" />
-		<copy file="lib/libstratego-gpp.rtree" todir="${bin}" />
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin.stratego}/org/strategoxt/stratego_gpp/stratego_gpp.rtree" tofile="${bin}/libstratego-gpp.rtree" />
+			</separate>
+			<global>
+				<copy file="lib/libstratego-gpp.ctree" todir="${bin}" />
+				<copy file="lib/libstratego-gpp.rtree" todir="${bin}" />
+			</global>
+		</if-separate-compilation>
 	</target>
 
 	<path id="build.classpath">

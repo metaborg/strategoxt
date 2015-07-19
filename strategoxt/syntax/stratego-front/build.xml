@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -98,7 +100,15 @@
 			</includeargs>
 		</sdf2generated>
 		<mkdir dir="${bin}/stratego/strc/pp" />
-		<sdf2parenthesize input="${bin}/Stratego.tbl" output="${bin}/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
+		<!-- for separate compilation, output module must(!) match output folder, but main strategy name should stay equal -->
+		<if-separate-compilation>
+			<separate>
+				<sdf2parenthesize input="${bin}/Stratego.tbl" output="${bin}/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego/strc/pp/stratego-parenthesize" main-strategy="io-stratego-parenthesize"/>
+			</separate>
+			<global>
+				<sdf2parenthesize input="${bin}/Stratego.tbl" output="${bin}/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize"/>
+			</global>
+		</if-separate-compilation>
 		<copy file="${syn}/Stratego-MetaTransition.str" todir="${bin}" />
 		<copy file="${syn}/Stratego-Sugar-MetaTransition.str" todir="${bin}" />
 		<sglri input="${pp}/Stratego-Core-pretty.pp" output="${bin}/Stratego-Core-pretty.pp.af" parsetable="${dep.box}/sdf/pp-table.tbl" />

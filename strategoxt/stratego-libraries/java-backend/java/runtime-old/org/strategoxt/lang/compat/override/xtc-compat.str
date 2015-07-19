@@ -1,0 +1,19 @@
+/**
+ * XTC handling.
+ *
+ * @author Lennart Kats <lennart add lclnet.nl>
+ */
+module lang/compat/override/xtc-compat
+
+imports
+  libstratego-lib
+  libstratego-xtc
+
+strategies
+
+  override xtc-find =
+    warn-msg(|[<whoami <+ !"application">, " uses xtc to find non-local file ", <id>]);
+    proceed
+  <+
+    id // HACK: try to find something on the path instead
+

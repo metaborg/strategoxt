@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -26,7 +28,10 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_xtc" />
-		<strj-lib input="lib/stratego-xtc-posix-xsi.str" output="${bin.stratego}/org/strategoxt/stratego_xtc/Main.java" package="org.strategoxt.stratego_xtc">
+		<if-separate-compilation-property property="xtc.output" separate="org/strategoxt/" global="org/strategoxt/stratego_xtc/Main.java"/>
+		<if-separate-compilation-property property="xtc.package" separate="org.strategoxt" global="org.strategoxt.stratego_xtc"/>
+		
+		<strj-lib input="lib/stratego-xtc-posix-xsi.str" output="${bin.stratego}/${xtc.output}" package="${xtc.package}">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -44,10 +49,19 @@
 				<srcfiles dir="${dep.libstratego-lib}" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstratego-xtc-posix-xsi.ctree" todir="${bin}" />
-		<copy file="${bin}/libstratego-xtc-posix-xsi.ctree" tofile="${bin}/libstratego-xtc.ctree" />
-		<copy file="lib/libstratego-xtc-posix-xsi.rtree" todir="${bin}" />
-		<copy file="${bin}/libstratego-xtc-posix-xsi.rtree" tofile="${bin}/libstratego-xtc.rtree" />
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin}/stratego/org/strategoxt/stratego_xtc_posix_xsi/stratego_xtc_posix_xsi.rtree" tofile="${bin}/libstratego-xtc-posix-xsi.rtree" />
+				<copy file="${bin}/libstratego-xtc-posix-xsi.rtree" tofile="${bin}/libstratego-xtc.rtree" />
+			</separate>
+			<global>
+				<copy file="lib/libstratego-xtc-posix-xsi.ctree" todir="${bin}" />
+				<copy file="${bin}/libstratego-xtc-posix-xsi.ctree" tofile="${bin}/libstratego-xtc.ctree" />
+				<copy file="lib/libstratego-xtc-posix-xsi.rtree" todir="${bin}" />
+				<copy file="${bin}/libstratego-xtc-posix-xsi.rtree" tofile="${bin}/libstratego-xtc.rtree" />
+			</global>
+		</if-separate-compilation>
+		
 	</target>
 
 	<path id="build.classpath">

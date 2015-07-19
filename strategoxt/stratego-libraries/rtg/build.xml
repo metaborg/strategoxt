@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -27,7 +29,10 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_rtg" />
-		<strj-lib input="lib/stratego-rtg.str" output="${bin.stratego}/org/strategoxt/stratego_rtg/Main.java" package="org.strategoxt.stratego_rtg">
+		<if-separate-compilation-property property="rtg.output" separate="org/strategoxt/" global="org/strategoxt/stratego_rtg/Main.java"/>
+		<if-separate-compilation-property property="rtg.package" separate="org.strategoxt" global="org.strategoxt.stratego_rtg"/>
+		
+		<strj-lib input="lib/stratego-rtg.str" output="${bin.stratego}/${rtg.output}" package="${rtg.package}">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -43,8 +48,16 @@
 				<srcfiles dir="${dep.stratego-regular}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstratego-rtg.ctree" todir="${bin}" />
-		<copy file="lib/libstratego-rtg.rtree" todir="${bin}" />
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin.stratego}/org/strategoxt/stratego_rtg/stratego_rtg.rtree" tofile="${bin}/libstratego-rtg.rtree" />
+			</separate>
+			<global>
+				<copy file="lib/libstratego-rtg.ctree" todir="${bin}" />
+				<copy file="lib/libstratego-rtg.rtree" todir="${bin}" />
+			</global>
+		</if-separate-compilation>
+		
 	</target>
 
 	<path id="build.classpath">

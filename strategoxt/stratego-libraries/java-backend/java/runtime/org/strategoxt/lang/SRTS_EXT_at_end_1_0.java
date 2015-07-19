@@ -15,7 +15,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
  */
 public class SRTS_EXT_at_end_1_0 extends RegisteringStrategy {
 	
-	public static SRTS_EXT_at_end_1_0 instance = new SRTS_EXT_at_end_1_0();
+	private static SRTS_EXT_at_end_1_0 instance = new SRTS_EXT_at_end_1_0();
 	
 	@Override
 	public void registerImplementators(StrategyCollector collector) {

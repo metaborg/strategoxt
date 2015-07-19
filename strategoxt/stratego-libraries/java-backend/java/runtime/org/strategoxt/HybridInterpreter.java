@@ -41,16 +41,14 @@ import org.spoofax.terms.attachments.AbstractWrappedTermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.InteropSDefT;
+import org.strategoxt.lang.LibraryInitializer;
+import org.strategoxt.lang.MissingLibraryException;
 import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
+import org.strategoxt.lang.StrategyCollector;
 import org.strategoxt.lang.parallel.stratego_parallel.ParallelContext;
-import org.strategoxt.strc.desugar_0_0;
-import org.strategoxt.strc.desugar_list_matching_0_0;
-import org.strategoxt.strc.pre_desugar_0_0;
-import org.strategoxt.strc.raise_annotations_0_0;
-import org.strategoxt.strc.simplify_0_0;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
@@ -70,6 +68,20 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 	protected static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
 	                                    "      run                    PACKAGE.MAINCLASS [ARGUMENT]...";
+
+	private static final LibraryInitializer[] STANDARD_LIBRARIES = new LibraryInitializer[] {
+		new org.strategoxt.tools.LibraryInitializer(),
+		new org.strategoxt.stratego_gpp.LibraryInitializer(),
+		new org.strategoxt.stratego_aterm.LibraryInitializer(),
+		new org.strategoxt.stratego_rtg.LibraryInitializer(),
+		new org.strategoxt.stratego_sdf.LibraryInitializer(),
+		new org.strategoxt.stratego_sglr.LibraryInitializer(),
+		new org.strategoxt.stratego_tool_doc.LibraryInitializer(),
+		new org.strategoxt.stratego_xtc_posix_xsi.LibraryInitializer(),
+		new org.strategoxt.javafront.LibraryInitializer(),
+		new org.strategoxt.stratego_lib_posix_xsi.LibraryInitializer(),
+		new org.strategoxt.strc.LibraryInitializer()
+	};
 
 	private final HybridCompiledContext compiledContext;
 
@@ -230,13 +242,52 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		}
 		return i;
 	}
+	
+	private static LibraryInitializer loadLibraryInitializer(String libraryName) throws MissingLibraryException{
+		StringBuilder classNameBuilder = new StringBuilder();
+		String[] parts = libraryName.split("\\.");
+
+		classNameBuilder.append(parts[0]);
+		for (int i = 1; i < parts.length; i++) {
+			classNameBuilder.append('.');
+			classNameBuilder.append(Interpreter.cify(parts[i]));
+		}
+		classNameBuilder.append(".LibraryInitializer");
+		String className = classNameBuilder.toString();
+		try {
+			Class<?> initializerClass = Class.forName(className);
+			Object instantiatedObject = initializerClass.newInstance();
+			if (!(instantiatedObject instanceof LibraryInitializer)) {
+				throw new MissingLibraryException("Library " + libraryName + " points to an invalid library.");
+			}
+			return (LibraryInitializer) instantiatedObject;
+		} catch (ClassNotFoundException e) {
+			throw new MissingLibraryException("Library " + libraryName +" not found. ", e);
+		} catch (InstantiationException | IllegalAccessException e)  {
+			throw new MissingLibraryException("Unable to load library " + libraryName, e);
+		}
+	}
+	
+	
 
 	private static void mainLocalJar(String... args) {
-		String strategy = args[0];
+		String libraryStrategyName = args[0];
+		int lastIndex = libraryStrategyName.lastIndexOf('.');
+		String library = libraryStrategyName.substring(0, lastIndex);
+		String strategy = libraryStrategyName.substring(lastIndex+1, libraryStrategyName.length());
+		
 		String[] mainArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, mainArgs, 0, mainArgs.length);
+		
 		try {
 			Context context = new Context();
+			System.out.println("Transformed class name to call strategy \""+strategy+"\" and load library " + library );
+			
+			LibraryInitializer[] allInitializers = new LibraryInitializer[STANDARD_LIBRARIES.length + 1];
+			System.arraycopy(STANDARD_LIBRARIES,0,allInitializers, 0, STANDARD_LIBRARIES.length);
+			allInitializers[STANDARD_LIBRARIES.length] = loadLibraryInitializer(library);
+			
+			LibraryInitializer.initialize(context,allInitializers);
 			IStrategoTerm result;
 			try {
 				result = context.invokeStrategyCLI(strategy, strategy, mainArgs);
@@ -255,6 +306,9 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		} catch (MissingStrategyException e) {
 			System.err.println(e.getMessage());
 			System.exit(125);
+		} catch (MissingLibraryException e) {
+			System.err.println(e.getMessage());
+			System.exit(126);
 		} catch (StrategoExit e) {
 			System.exit(e.getValue());
 		}
@@ -395,17 +449,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 		// FIXME: HybridInterpreter loads all libs into the same namespace
 		//        Which may affect interpreted code and invoke()
-		org.strategoxt.tools.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_gpp.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_aterm.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_rtg.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_sdf.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_sglr.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_tool_doc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_xtc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.java_front.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_lib.Main.registerInterop(context, compiledContext);
-		org.strategoxt.strc.Main.registerInterop(context, compiledContext);
+		LibraryInitializer.initializeInterop(context, compiledContext,STANDARD_LIBRARIES);
 	}
 
 	public final Context getCompiledContext() {
@@ -481,11 +525,13 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		final ITermFactory factory = getProgramFactory();
 		final IStrategoConstructor callT = factory.makeConstructor("CallT", 3);
 		final IStrategoConstructor sdefT = factory.makeConstructor("SDefT", 4);
-		s = (IStrategoAppl) pre_desugar_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) desugar_list_matching_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) desugar_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) raise_annotations_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) simplify_0_0.instance.invoke(getCompiledContext(), s);
+		final Context compiledContext = getCompiledContext();
+		final StrategyCollector collector = compiledContext.getStrategyCollector();
+		s = (IStrategoAppl) collector.getStrategyExecutor("pre_desugar_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("desugar_list_matching_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("desugar_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("raise_annotations_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("simplify_0_0").invoke(compiledContext, s);
 		s = (IStrategoAppl) new TermTransformer(factory, false) {
 				@Override
 				public IStrategoTerm preTransform(IStrategoTerm term) {

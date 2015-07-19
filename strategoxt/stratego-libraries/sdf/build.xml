@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -27,7 +29,9 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_sdf" />
-		<strj-lib input="lib/stratego-sdf.str" output="${bin.stratego}/org/strategoxt/stratego_sdf/Main.java" package="org.strategoxt.stratego_sdf">
+		<if-separate-compilation-property property="sdf.output" separate="org/strategoxt/" global="org/strategoxt/stratego_sdf/Main.java"/>
+		<if-separate-compilation-property property="sdf.package" separate="org.strategoxt" global="org.strategoxt.stratego_sdf"/>
+		<strj-lib input="lib/stratego-sdf.str" output="${bin.stratego}/${sdf.output}" package="${sdf.package}">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -48,8 +52,16 @@
 				<srcfiles dir="${dep.sdf-front}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstratego-sdf.ctree" todir="${bin}" />
-		<copy file="lib/libstratego-sdf.rtree" todir="${bin}" />
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin.stratego}/org/strategoxt/stratego_sdf/stratego_sdf.rtree" tofile="${bin}/libstratego-sdf.rtree" />
+			</separate>
+			<global>
+				<copy file="lib/libstratego-sdf.ctree" todir="${bin}" />
+				<copy file="lib/libstratego-sdf.rtree" todir="${bin}" />
+			</global>
+		</if-separate-compilation>
+		
 	</target>
 
 	<path id="build.classpath">

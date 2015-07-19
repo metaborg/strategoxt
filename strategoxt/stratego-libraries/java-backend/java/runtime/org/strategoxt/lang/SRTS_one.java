@@ -11,7 +11,7 @@ import org.spoofax.interpreter.terms.IStrategoTuple;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class SRTS_one extends RegisteringStrategy {
-	public static SRTS_one instance = new SRTS_one();
+	private static SRTS_one instance = new SRTS_one();
 
 	 @Override
 	public void registerImplementators(StrategyCollector collector) {

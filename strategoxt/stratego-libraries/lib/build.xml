@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -25,7 +27,9 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_lib" />
-		<strj-lib input="spec/stratego-lib-posix-xsi.str" output="${bin.stratego}/org/strategoxt/stratego_lib/Main.java" package="org.strategoxt.stratego_lib">
+		<if-separate-compilation-property property="lib.output" separate="org/strategoxt/" global="org/strategoxt/stratego_lib/Main.java"/>
+		<if-separate-compilation-property property="lib.package" separate="org.strategoxt" global="org.strategoxt.stratego_lib"/>
+		<strj-lib input="spec/stratego-lib-posix-xsi.str" output="${bin.stratego}/${lib.output}" package="${lib.package}">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="org.strategoxt.lang.compat.override.java_integration" />
@@ -38,10 +42,19 @@
 				<srcfiles dir="spec" includes="**/*.str" />
 			</str-deps>
 		</strj-lib>
-		<copy file="spec/libstratego-lib-posix-xsi.ctree" todir="${bin}" />
-		<copy file="${bin}/libstratego-lib-posix-xsi.ctree" tofile="${bin}/libstratego-lib.ctree" />
-		<copy file="spec/libstratego-lib-posix-xsi.rtree" todir="${bin}" />
-		<copy file="${bin}/libstratego-lib-posix-xsi.rtree" tofile="${bin}/libstratego-lib.rtree" />
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin.stratego}/org/strategoxt/stratego_lib_posix_xsi/stratego_lib_posix_xsi.rtree" tofile="${bin}/libstratego-lib-posix-xsi.rtree" />
+				<copy file="${bin}/libstratego-lib-posix-xsi.rtree" tofile="${bin}/libstratego-lib.rtree" />
+			</separate>
+			<global>
+				<copy file="spec/libstratego-lib-posix-xsi.ctree" todir="${bin}" />
+				<copy file="${bin}/libstratego-lib-posix-xsi.ctree" tofile="${bin}/libstratego-lib.ctree" />
+				<copy file="spec/libstratego-lib-posix-xsi.rtree" todir="${bin}" />
+				<copy file="${bin}/libstratego-lib-posix-xsi.rtree" tofile="${bin}/libstratego-lib.rtree" />
+			</global>
+		</if-separate-compilation>
+		
 	</target>
 
 	<path id="build.classpath">

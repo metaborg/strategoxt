@@ -23,7 +23,7 @@ import org.strategoxt.lang.Context;
  */
 public class SRTS_EXT_flatten_list_0_0 extends RegisteringStrategy {
 
-	public static SRTS_EXT_flatten_list_0_0 instance = new SRTS_EXT_flatten_list_0_0();
+	private static SRTS_EXT_flatten_list_0_0 instance = new SRTS_EXT_flatten_list_0_0();
 	
 	@Override
 	public void registerImplementators(StrategyCollector collector) {
