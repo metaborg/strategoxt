@@ -34,7 +34,7 @@ strategies
 	 * @param pack-include-path: List[IncludeDir | IncludeXTC], the pack include path for finding source files
 	 *
 	 */
-	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, working-package, working-output, pack-include-path) = {| :
+	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, working-package, working-output, pack-include-path) = 
 		let
 			to-library-import = {name: \
 				Import(name) -> Import(<to-java-compilation-rel-file> name)
@@ -48,7 +48,8 @@ strategies
 			
 		
 					
-			require-imported-module(|imported-module-name) = {rtree-file, all-rtree-files:
+			require-imported-module(|imported-module-name-x) = {rtree-file, all-rtree-files, imported-module-name:
+				!imported-module-name-x => imported-module-name;
 				if <equal>(module-name, imported-module-name)
 					then	log(|Info(), ["Module imports itself ", module-name])
 					else
@@ -60,9 +61,7 @@ strategies
 						log(|Notice(), ["Require rtree file ", rtree-file]);
 						<require-stamper(|<rtree-stamper>)> rtree-file;
 						log(|Notice(), ["Collect rtree file for ", module-name, ": ",  rtree-file]);
-						where(all-rtree-files := [rtree-file | <RTreeFiles>]);
-						log(|Notice(), ["All rtree files ", all-rtree-files]);
-						where (rules(RTreeFiles : _ -> all-rtree-files))
+						where (rules(RTreeFiles : imported-module-name -> rtree-file))
 						
 				end }
 				
@@ -70,8 +69,7 @@ strategies
 				!circular-main-module;
 				? Some((circular-module, circular-rtree-file)); // Only matches if a dummy module in the circle is created
 				<to-library-import> Import(circular-module);
-				where(all-rtree-files := [circular-rtree-file | <RTreeFiles>]);
-				where (rules(RTreeFiles : _ -> all-rtree-files))		
+					where (rules(RTreeFiles :circular-module -> circular-rtree-file))	
 				}
 				
 			
@@ -138,9 +136,9 @@ strategies
 			
 				
 	
-		in {| File, RTreeFiles: 
+		in {| File :  {ast, collected-imports, flags, rtree-files:
 		  log(|Vomit(), ["Rewrite ", <id>]);
-		  where(rules(RTreeFiles : _ -> []));
+		 // where(rules(RTreeFiles : _ -> []));
 		  transform-imports-and-move-to-front(
 			{import, file:
 				  id => import
@@ -152,12 +150,14 @@ strategies
 			},
 			  !(<id>, <id;try(File)>)
 			; (process-import-str + process-import-rtree + process-import-default-lib)
-			, {term:
+			, {term, rtree-file, flag:
 			  	?term;
 			  	if try(File);has-extension(|"str")
 				then 
-					  where (<is-import-module> term)
-					; import-to-flag(|working-package)
+					?Import(<id>);
+					RTreeFiles => rtree-file; // Only successful if import is a module
+					<import-to-flag(|working-package)> term => flag;
+					!(flag, rtree-file)
 				else 
 					 log(|Notice(), ["No str file import " , <id>]);
 					  ?Import(<id>)
@@ -165,12 +165,16 @@ strategies
 					; log(|Notice(), ["Is dafult liv rtree"])
 					; remove-lib-prefix
 					; translate-default-library // do not want to collect rtrees, but libraries
+					; !(<id>, ())
 				end
 				
 			   }
-			);
-			!(<id>, <(RTreeFiles <+ ![]);make-set>)
-		 |}
-		end |}
+			);debug => (ast, collected-imports);
+			log(|Notice(), ["Collected imports ", collected-imports]);
+			<map(Fst)> collected-imports => flags;
+			<filter(Snd;not(?()));make-set> collected-imports => rtree-files;
+			!((ast, flags), rtree-files)
+		 }|}
+		end 
 		
 	 	
