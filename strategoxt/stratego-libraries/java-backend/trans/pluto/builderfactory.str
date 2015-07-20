@@ -17,10 +17,10 @@ strategies
 		// For some reasons, scoping Builder does not work, do it manually
 		scope-builder(
 		{|Builder: {builder, input, output: 
-			log(|Notice(), ["Scope builder ", <id>]);
+			log(|Vomit(), ["Scope builder ", <id>]);
 			?(builder, input);
 			rules(Builder : _ -> builder);
-			log(|Notice(), ["Call builder ", <id>]);
+			log(|Vomit(), ["Call builder ", <id>]);
 			<build-strategy> input => output;
 			!output
 		}|})

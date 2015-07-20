@@ -6,31 +6,31 @@ imports pluto/builderfactory
 strategies
 	
 	require = 
-		log (|Notice(), ["Require ", <id>]);
+		log (|Vomit(), ["Require ", <id>]);
 		path-get-full-path;
 		prim("PlutoInterface_Builder_Require", |<Builder>)
 	
 	require-stamper(|stamper) =
-		log (|Notice(), ["Require ", <id>]);
+		log (|Vomit(), ["Require ", <id>]);
 		path-get-full-path;
 		prim("PlutoInterface_Builder_RequireStamper", |<Builder>, stamper)
 		  
 	require-build = scope-builder(
-		log (|Notice(), ["Require Build", <id>]);	
+		log (|Vomit(), ["Require Build", <id>]);	
 		log(|Notice(), ["Call require build primitive"]);
 		prim("PlutoInterface_Builder_RequireBuild", |<Builder>);
-		log(|Notice(), ["Successful with " , <id>]))
+		log(|Vomit(), ["Successful with " , <id>]))
 		
 	require-build-stamper(|stamper) = scope-builder(
-		log (|Notice(), ["Require Build", <id>]);	
+		log (|Vomit(), ["Require Build", <id>]);	
 		log(|Notice(), ["Call require build primitive"]);
 		prim("PlutoInterface_Builder_RequireBuildStamper", |<Builder>, stamper);
-		log(|Notice(), ["Successful with " , <id>]))
+		log(|Vomit(), ["Successful with " , <id>]))
 		
 	provide-for(|input) = 
-		log(|Notice(), ["Provide for ", <id>]);
+		log(|Vomit(), ["Provide for ", <id>]);
 		path-get-full-path;
 		prim("PlutoInterface_Builder_ProvideFor", |<Builder>, input);
-		log(|Notice(), ["Succesfull provided for ", input])
+		log(|Vomit(), ["Succesfull provided for ", input])
 		
 		

@@ -64,8 +64,8 @@ strategies
 		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files, main-module-name: \
 			input -> (module-name, transformed-ast, new-libs, path, main-module-name, imported-rtree-files)
 			where
-				log(|Notice(), ["Rewrite imports"]);
 				module-name := <get-module-name> input;
+				log(|Notice(), ["Rewrite imports for ", module-name]);
 				ast := <get-ast> input;
 				path := <get-path> input;
 				java-package := <get-java-package> input;
@@ -76,7 +76,7 @@ strategies
 			\}
 			
 		combine-modules = {:
-			log(|Notice(), ["Combine modules ", <id>]);
+			log(|Vomit(), ["Combine modules ", <id>]);
 			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
 			foldl({imports, content, libs, main-module-name, rtree-files: \
 				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-main-module-name, new-rtree-files), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-main-module-name, merged-rtree-files) ) ->
@@ -89,7 +89,7 @@ strategies
 					<eq> (new-main-module-name, merged-main-module-name);
 					rtree-files := <conc>(new-rtree-files, merged-rtree-files)
 			\});
-			log(|Notice(), ["Result ", <id>])
+			log(|Vomit(), ["Result ", <id>])
 			}
 			
 		add-std-lib-import-if-required = let
@@ -110,9 +110,9 @@ strategies
 			
 			log(|Notice(), ["Import transformation for ", moduleName]);
 			log(|Notice(), ["Use libraries:   " , <get-config> "-la"]);
-			log(|Notice(), ["Pre pack ",merged-ast]);
+			log(|Vomit(), ["Pre pack ",merged-ast]);
 			<pack-stratego(|pack-include-path)> IncludeAST(merged-ast,fileName) => (files, spec);
-			log(|Notice(), ["After pack ", files, " " , spec]);
+			log(|Vomit(), ["After pack ", files, " " , spec]);
 			log(|Notice(), ["Calling Frontend for ", moduleName]);
 			!spec;
 			tfc1(|"Stratego-Sugar-Cong", "pack");
@@ -181,6 +181,7 @@ strategies
 		?(moduleName, merged-ast, new-libs, fileName, main-module-name, imported-rtree-files);
 		where (generate-main := <b-strategy-successful(fetch-elem(equal(|main-module-name)))> circular-module-names );
 		log(|Notice(), ["Generate main ", generate-main]);
+		log(|Notice(), ["Merged libaries for ", moduleName , ": ", new-libs]);
 		log (|Notice(), 115);
 		save-and-set-options(
 			log (|Notice(), 12);
@@ -194,12 +195,12 @@ strategies
 			log(|Notice(), ["Generated rtree-file " , rtree-file]);
 			log(|Notice(), ["Calling Backend for ", moduleName]);
 			call-back-end;
-			log (|Notice(), 15)
+			log (|Notice(), 15) 
 		|generate-main, java-package, output-folder, fileName, moduleName, circular-module-names);
 		log (|Notice(), 16);
 		where(<create-dummy-modules(|java-package, output-folder, pack-include-path,rtree-file)> (other-inputs, result-input));
 		log (|Notice(), 17);
-		log (|Notice(), ["Output for " , result-input, " is " , rtree-file]);
+		log (|Vomit(), ["Output for " , result-input, " is " , rtree-file]);
 		where( {result-module-name:
 			result-module-name := <Fst> result-input;
 			rules(Output: result-module-name -> CompileASTOutput(rtree-file))})

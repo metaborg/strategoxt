@@ -30,6 +30,7 @@
     <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
     <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
     <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
+	<strj-enable-forward-declarations>false</strj-enable-forward-declarations>
   </properties>
   
   <repositories>
@@ -200,6 +201,9 @@
                 <property
                   name="bin"
                   value="${strategoxt-bin-location}" />
+				  <property
+					  name="strj-enable-forward-declarations"
+					  value="${strj-enable-forward-declarations}" />
 
                 <ant
                   antfile="build.xml"
@@ -237,6 +241,9 @@
                 <property
                   name="bin"
                   value="${strategoxt-bin-location}" />
+				  <property
+					  name="strj-enable-forward-declarations"
+					  value="${strj-enable-forward-declarations}" />
 
                 <ant
                   antfile="build.xml"

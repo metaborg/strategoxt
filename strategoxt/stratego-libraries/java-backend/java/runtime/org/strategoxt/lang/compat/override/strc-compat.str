@@ -16,8 +16,8 @@ strategies
   override strc-get-include-dirs =
     <get-config> "-I"
   
-  extend pack-stratego-parse-stratego:
-    (IncludeFromPath(name), includes) -> ("", ast) // (empty result name goes into .dep)
+  extend pack-stratego-parse-stratego = {ast :
+    \(IncludeFromPath(name), includes) -> ("", ast) // (empty result name goes into .dep)
     where
       switch !name
         case "libstratego-lib" + "libstrategolib":
@@ -33,7 +33,8 @@ strategies
         case "libstrc":              import-term(libstrc.rtree)
       end => ast
 	 ; !name
-	 ; pack-log-include
+	 ; pack-log-include\
+	}
  
   
    extend pack-stratego-parse-stratego:

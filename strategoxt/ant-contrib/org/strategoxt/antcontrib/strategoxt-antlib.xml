@@ -245,9 +245,28 @@
 				<equals arg1="@{generate-stdlib-import}" arg2="true"/>
 			</condition>
 			
+			<local name="strj.strategy-forward-declaration"/>
+			<local name="strj.constructor-forward-declaration"/>
+			<local name="strj.separate-compiled"/>
+			<local name="strj.main-strategy"/>
+			<condition property="strj.strategy-forward-declaration" value="--strategy-forward-declaration" else="--clean">
+				<istrue value="${strj-enable-forward-declarations}"/>
+			</condition>
+			<condition property="strj.constructor-forward-declaration" value="--constructor-forward-declaration" else="--clean">
+				<istrue value="${strj-enable-forward-declarations}"/>
+			</condition>
+			<available classname="org.strategoxt.strj.pluto.builder.LibraryInitializer" 
+							property="strj.separate-compiled" />
+			<condition property="strj.main-strategy" value="org.strategoxt.strj.strj.main-strj" else="org.strategoxt.strj.main-strj">
+				<isset property="strj.separate-compiled"/>
+			</condition>
+			
+			<echo>Enable Forward Declarations: ${strj-enable-forward-declarations}</echo>
+			
 			<uptodate-mio input="@{input}" output="@{output}" type="strj" force="true">
 				<action>
-					<java classname="org.strategoxt.strj.Main" failonerror="true">
+					<java classname="run" failonerror="true">
+						<arg value="${strj.main-strategy}"/>
 						<arg value="-i" />
 						<arg value="${@{input}.abs}" />
 						<arg value="-o" />
@@ -258,12 +277,12 @@
 						<arg value="VERSION_TERM=&quot;${version}&quot;" />
 						<arg value="-D" />
 						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
-						<!-- ><arg value="- -verbose" />
-						<arg value="2" /> -->
+						<arg value="--verbose"/>
+						<arg value="2"/>
 						<arg value="--clean"/>
 						<arg value="--slack"/>
-						<arg value="--strategy-forward-declaration" />
-						<arg value="--constructor-forward-declaration" />
+						<arg value="${strj.strategy-forward-declaration}" />
+						<arg value="${strj.constructor-forward-declaration}" />
 						<arg value="--no-default-lib" /> <!-- No default lib: do not compile against the old stdlib provided with the used compiler -->
 						<arg value="--independent-java-compilation"/> <!-- Here are dependency cycles from stdlib to java_integration and back. We brake it here and want this library to be compiled independently. Works here, because std-lib does not use strategies from dependencies but dependencies only override/extend strategies -->
 						<arg value="--remove-overlays-from-externals"/> <!-- Backward compatability: Overlays are only visible inside a library -->

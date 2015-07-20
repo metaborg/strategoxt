@@ -28,31 +28,47 @@
 	<target name="build" depends="build-stratego, build-java" />
 
 	<target name="build-stratego">
-		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_rtg" />
-		<if-separate-compilation-property property="rtg.output" separate="org/strategoxt/" global="org/strategoxt/stratego_rtg/Main.java"/>
-		<if-separate-compilation-property property="rtg.package" separate="org.strategoxt" global="org.strategoxt.stratego_rtg"/>
 		
-		<strj-lib input="lib/stratego-rtg.str" output="${bin.stratego}/${rtg.output}" package="${rtg.package}">
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="stratego-lib" />
-				<arg value="-la" />
-				<arg value="stratego-sglr" />
-				<arg value="-la" />
-				<arg value="org.strategoxt.lang.compat.stratego_rtg_compat" />
-				<arg value="-I" />
-				<arg value="${dep.stratego-regular}/sdf" />
-			</strjlibargs>
-			<str-deps>
-				<srcfiles dir="lib" includes="**/*.str" />
-				<srcfiles dir="${dep.stratego-regular}/sdf" includes="**/*" />
-			</str-deps>
-		</strj-lib>
 		<if-separate-compilation>
 			<separate>
+				<mkdir dir="${bin.stratego}/org/strategoxt" />
+				<strj-lib input="lib/stratego-rtg.str" output="${bin.stratego}/org/strategoxt/" package="org.strategoxt">
+					<strjlibargs>
+						<arg value="-la" />
+						<arg value="stratego-lib" />
+						<arg value="-la" />
+						<arg value="stratego-sglr" />
+						<!-- Is done by CompatLibrary in runtime -->
+					<!--	<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.stratego_rtg_compat" /> -->
+						<arg value="-I" />
+						<arg value="${dep.stratego-regular}/sdf" />
+					</strjlibargs>
+					<str-deps>
+						<srcfiles dir="lib" includes="**/*.str" />
+						<srcfiles dir="${dep.stratego-regular}/sdf" includes="**/*" />
+					</str-deps>
+				</strj-lib>
 				<copy file="${bin.stratego}/org/strategoxt/stratego_rtg/stratego_rtg.rtree" tofile="${bin}/libstratego-rtg.rtree" />
 			</separate>
 			<global>
+				<mkdir dir="${bin.stratego}/org/strategoxt/stratego_rtg" />
+				<strj-lib input="lib/stratego-rtg.str" output="${bin.stratego}/org/strategoxt/stratego_rtg/Main.java" package="org.strategoxt.stratego_rtg">
+					<strjlibargs>
+						<arg value="-la" />
+						<arg value="stratego-lib" />
+						<arg value="-la" />
+						<arg value="stratego-sglr" />
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.stratego_rtg_compat" /> 
+						<arg value="-I" />
+						<arg value="${dep.stratego-regular}/sdf" />
+					</strjlibargs>
+					<str-deps>
+						<srcfiles dir="lib" includes="**/*.str" />
+						<srcfiles dir="${dep.stratego-regular}/sdf" includes="**/*" />
+					</str-deps>
+				</strj-lib>
 				<copy file="lib/libstratego-rtg.ctree" todir="${bin}" />
 				<copy file="lib/libstratego-rtg.rtree" todir="${bin}" />
 			</global>

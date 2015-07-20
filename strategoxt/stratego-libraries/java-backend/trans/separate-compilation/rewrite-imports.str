@@ -59,8 +59,9 @@ strategies
 							=> CompileModuleOutput(rtree-file);
 						log(|Notice(), ["Require rtree file ", rtree-file]);
 						<require-stamper(|<rtree-stamper>)> rtree-file;
-						log(|Notice(), ["Collect rtree file ", rtree-file]);
+						log(|Notice(), ["Collect rtree file for ", module-name, ": ",  rtree-file]);
 						where(all-rtree-files := [rtree-file | <RTreeFiles>]);
+						log(|Notice(), ["All rtree files ", all-rtree-files]);
 						where (rules(RTreeFiles : _ -> all-rtree-files))
 						
 				end }
@@ -138,7 +139,7 @@ strategies
 				
 	
 		in {| File, RTreeFiles: 
-		  log(|Notice(), ["Rewrite ", <id>]);
+		  log(|Vomit(), ["Rewrite ", <id>]);
 		  where(rules(RTreeFiles : _ -> []));
 		  transform-imports-and-move-to-front(
 			{import, file:

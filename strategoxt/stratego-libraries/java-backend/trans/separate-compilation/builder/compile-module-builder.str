@@ -47,7 +47,7 @@ strategies
 				log(|Notice(), [module-name])
 			\}
 			
-		build-all = log(|Notice(), ["Build all ", <id>]); let
+		build-all = log(|Vomit(), ["Build all ", <id>]); let
 			
 			find-input(|all-inputs) = {module-name: \
 				module-name -> <fetch-elem({input, name:\

@@ -5,7 +5,6 @@ imports cleardep/fileutils
 imports separate-compilation/utils
 imports separate-compilation/separate-compilation-options
 imports separate-compilation/fileutils
-imports separate-compilation/unit-cache
 imports separate-compilation/create-signature
 imports separate-compilation/compiler-config
 imports separate-compilation/std-lib-utils
@@ -98,7 +97,7 @@ strategies
 		// But the output directory in the search path to find generated rtrees
 		 where({i , is:
 			  <get-config <+ ![]> "-I" => include-dirs
-			; <set-config> ("-I", <make-set>[IncludeDir(main-dir), IncludeDir(working-output) |include-dirs])
+			; <set-config> ("-I", <make-set>[IncludeDir(main-dir), IncludeDir(<?AbsolutePath(<id>)> output-folder) |include-dirs])
 		});
 		<pack-include-path> () => pack-include-path;
 		log(|Notice(), ["New include path ", pack-include-path]);

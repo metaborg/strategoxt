@@ -14,10 +14,12 @@
 	<property name="install-prefix" location="dist" />
 	<property name="repository.syntax" location="../syntax/dist" />
 	<property name="repository.libraries" location="${install-prefix}" />
+	<property name="strj-enable-forward-declarations" value="false"/>
 
 	<target name="all" depends="build-install" />
 
 	<target name="build-install">
+		<echo>Forward DECLS ${strj-enable-forward-declarations}</echo>
 		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.aterm-front" location="${repository.syntax}/share/strategoxt/aterm-front" />
@@ -110,6 +112,7 @@
 			<property name="dep.libstratego-tool-doc" location="${repository.libraries}/share/strategoxt/libstratego-tool-doc" />
 			<property name="dep.libstrc" location="${repository.libraries}/share/strategoxt/libstrc" />
 			<property name="base-strategoxt" value="${base-strategoxt}" />
+			<property name="strj-enable-forward-declarations" value="${strj-enable-forward-declarations}"/>
 			<fileset dir="java-backend" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />

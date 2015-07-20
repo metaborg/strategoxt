@@ -27,7 +27,7 @@ strategies
 	switch id
 	case "stratego-aterm" + "stratego-gpp" + "stratego-rtg" + "stratego-sdf" + "stratego-sglr" + "stratego-tool-doc":
 		<conc-strings> ("org.strategoxt.", <explode-string;map(if ?'-' then !'_' else id end);implode-string>)
-	case "stratego-strc":
+	case "stratego-strc" + "strc":
 		!"org.strategoxt.strc"
 	case "java-front":
 		!"org.strategoxt.javafront"

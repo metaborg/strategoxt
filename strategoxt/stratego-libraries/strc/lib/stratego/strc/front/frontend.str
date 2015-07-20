@@ -8,6 +8,7 @@ imports
   stratego/strc/strc/format-check
   stratego/strc/model/model
   stratego/strc/opt/defs-to-external-defs
+  stratego/strc/front/add-main
   stratego/strc/front/check-constructors
   stratego/strc/front/expand-overlays
   stratego/strc/front/call-graph

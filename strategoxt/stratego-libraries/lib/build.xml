@@ -27,27 +27,38 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_lib" />
-		<if-separate-compilation-property property="lib.output" separate="org/strategoxt/" global="org/strategoxt/stratego_lib/Main.java"/>
-		<if-separate-compilation-property property="lib.package" separate="org.strategoxt" global="org.strategoxt.stratego_lib"/>
-		<strj-lib input="spec/stratego-lib-posix-xsi.str" output="${bin.stratego}/${lib.output}" package="${lib.package}">
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="org.strategoxt.lang.compat.override.java_integration" />
-				<arg value="-la" />
-				<arg value="org.strategoxt.lang.compat.override.performance_tweaks" />
-				<arg value="-la" />
-				<arg value="org.strategoxt.lang.compat.override.native_calls_compat" />
-			</strjlibargs>
-			<str-deps>
-				<srcfiles dir="spec" includes="**/*.str" />
-			</str-deps>
-		</strj-lib>
 		<if-separate-compilation>
 			<separate>
+				<strj-lib input="spec/stratego-lib-posix-xsi.str" output="${bin.stratego}/org/strategoxt/" package="org.strategoxt" generate-stdlib-import="false">
+					<strjlibargs>
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.override.java_integration" />
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.override.performance_tweaks" />
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.override.native_calls_compat" />
+					</strjlibargs>
+					<str-deps>
+						<srcfiles dir="spec" includes="**/*.str" />
+					</str-deps>
+				</strj-lib>
 				<copy file="${bin.stratego}/org/strategoxt/stratego_lib_posix_xsi/stratego_lib_posix_xsi.rtree" tofile="${bin}/libstratego-lib-posix-xsi.rtree" />
 				<copy file="${bin}/libstratego-lib-posix-xsi.rtree" tofile="${bin}/libstratego-lib.rtree" />
 			</separate>
 			<global>
+				<strj-lib input="spec/stratego-lib-posix-xsi.str" output="${bin.stratego}/org/strategoxt/stratego_lib/Main.java" package="org.strategoxt.stratego_lib" >
+					<strjlibargs>
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.override.java_integration" />
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.override.performance_tweaks" />
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.override.native_calls_compat" />
+					</strjlibargs>
+					<str-deps>
+						<srcfiles dir="spec" includes="**/*.str" />
+					</str-deps>
+				</strj-lib>
 				<copy file="spec/libstratego-lib-posix-xsi.ctree" todir="${bin}" />
 				<copy file="${bin}/libstratego-lib-posix-xsi.ctree" tofile="${bin}/libstratego-lib.ctree" />
 				<copy file="spec/libstratego-lib-posix-xsi.rtree" todir="${bin}" />

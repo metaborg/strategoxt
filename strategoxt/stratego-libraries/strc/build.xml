@@ -31,50 +31,84 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/strc" />
-		<if-separate-compilation-property property="strc.output" separate="org/strategoxt/" global="org/strategoxt/strc/Main.java"/>
-		<if-separate-compilation-property property="strc.package" separate="org.strategoxt" global="org.strategoxt.strc"/>
 		
-		<strj-lib input="lib/strc.str" output="${bin.stratego}/${strc.output}" package="${strc.package}">
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="stratego-lib" />
-				<arg value="-la" />
-				<arg value="stratego-xtc" />
-				<arg value="-la" />
-				<arg value="stratego-gpp" />
-				<arg value="-la" />
-				<arg value="stratego-sglr" />
-				<arg value="-la" />
-				<arg value="stratego-rtg" />
-				<arg value="-la" />
-				<arg value="org.strategoxt.lang.compat.strc_compat" />
-				<arg value="-I" />
-				<arg value="${dep.stratego-front}" />
-				<arg value="-I" />
-				<arg value="${dep.stratego-front}/sdf" />
-				<arg value="-I" />
-				<arg value="${dep.stratego-front}/stratego" />
-				<arg value="-I" />
-				<arg value="${dep.gpp}" />
-				<arg value="-I" />
-				<arg value="${dep.gpp}/sdf" />
-				<arg value="-O" />
-				<arg value="2" />
-			</strjlibargs>
-			<str-deps>
-				<srcfiles dir="lib" includes="**/*.str" />
-				<srcfiles dir="${dep.stratego-front}" includes="**/*" />
-				<srcfiles dir="${dep.stratego-front}/sdf" includes="**/*" />
-				<srcfiles dir="${dep.stratego-front}/stratego" includes="**/*" />
-				<srcfiles dir="${dep.gpp}" includes="**/*" />
-				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
-			</str-deps>
-		</strj-lib>
 		<if-separate-compilation>
 			<separate>
+				<strj-lib input="lib/strc.str" output="${bin.stratego}/org/strategoxt/" package="org.strategoxt">
+					<strjlibargs>
+						<arg value="-la" />
+						<arg value="stratego-lib" />
+						<arg value="-la" />
+						<arg value="stratego-xtc" />
+						<arg value="-la" />
+						<arg value="stratego-gpp" />
+						<arg value="-la" />
+						<arg value="stratego-sglr" />
+						<arg value="-la" />
+						<arg value="stratego-rtg" />
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.override.strc-compat" />
+						<arg value="-I" />
+						<arg value="${dep.stratego-front}" />
+						<arg value="-I" />
+						<arg value="${dep.stratego-front}/sdf" />
+						<arg value="-I" />
+						<arg value="${dep.stratego-front}/stratego" />
+						<arg value="-I" />
+						<arg value="${dep.gpp}" />
+						<arg value="-I" />
+						<arg value="${dep.gpp}/sdf" />
+						<arg value="-O" />
+						<arg value="2" />
+					</strjlibargs>
+					<str-deps>
+						<srcfiles dir="lib" includes="**/*.str" />
+						<srcfiles dir="${dep.stratego-front}" includes="**/*" />
+						<srcfiles dir="${dep.stratego-front}/sdf" includes="**/*" />
+						<srcfiles dir="${dep.stratego-front}/stratego" includes="**/*" />
+						<srcfiles dir="${dep.gpp}" includes="**/*" />
+						<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
+					</str-deps>
+				</strj-lib>
 				<copy file="${bin.stratego}/org/strategoxt/strc/strc.rtree" tofile="${bin}/libstrc.rtree" />
 			</separate>
 			<global>
+				<strj-lib input="lib/strc.str" output="${bin.stratego}/org/strategoxt/strc/Main.java" package="org.strategoxt.strc">
+					<strjlibargs>
+						<arg value="-la" />
+						<arg value="stratego-lib" />
+						<arg value="-la" />
+						<arg value="stratego-xtc" />
+						<arg value="-la" />
+						<arg value="stratego-gpp" />
+						<arg value="-la" />
+						<arg value="stratego-sglr" />
+						<arg value="-la" />
+						<arg value="stratego-rtg" />
+						<arg value="-la" />
+						<arg value="org.strategoxt.lang.compat.strc_compat" />
+						<arg value="-I" />
+						<arg value="${dep.stratego-front}" />
+						<arg value="-I" />
+						<arg value="${dep.stratego-front}/sdf" />
+						<arg value="-I" />
+						<arg value="${dep.stratego-front}/stratego" />
+						<arg value="-I" />
+						<arg value="${dep.gpp}" />
+						<arg value="-I" />
+						<arg value="${dep.gpp}/sdf" />
+						<arg value="-O" />
+						<arg value="2" />
+					</strjlibargs>
+					<str-deps>
+						<srcfiles dir="lib" includes="**/*.str" />
+						<srcfiles dir="${dep.stratego-front}" includes="**/*" />
+						<srcfiles dir="${dep.stratego-front}/sdf" includes="**/*" />
+						<srcfiles dir="${dep.stratego-front}/stratego" includes="**/*" />
+						<srcfiles dir="${dep.gpp}" includes="**/*" />
+						<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
+					</str-deps>
+				</strj-lib>
 				<copy file="lib/libstrc.ctree" todir="${bin}" />
 				<copy file="lib/libstrc.rtree" todir="${bin}" />
 			</global>

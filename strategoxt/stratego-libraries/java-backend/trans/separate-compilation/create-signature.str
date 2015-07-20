@@ -20,7 +20,7 @@ strategies
 		log(|Notice(), [301]);
 		unpack-specification => local-externals;
 		log(|Notice(), [302]);
-		<map(path-get-full-path;ReadFromFile;unpack-specification)> dep-rtree-files => dep-externals;
+		<map(path-get-full-path;log(|Notice(), ["Include rtree file ", <id>]);ReadFromFile;unpack-specification)> dep-rtree-files => dep-externals;
 		log(|Notice(), [303]);
 		foldr(!local-externals, merge-rtrees);
 		log(|Notice(), [304]);

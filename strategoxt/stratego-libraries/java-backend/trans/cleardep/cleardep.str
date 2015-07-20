@@ -31,34 +31,7 @@ strategies
 		  log(|Info(), message)
 		; fail
 
-	create-compilation-unit(|source-file) =
-		  (where(<is-path;path-exists> source-file)
-		; !source-file; path-replace-extension(|"meta") => meta-file
-		; (if !meta-file; path-exists
-			then ![source-file, meta-file]
-			else ![source-file] 
-			end) => sources
-		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), Some(source-file), None(), None(), sources, [], Compile(), None())
-		; prim("ClearDep_CompilationUnit_create")
-		; prim("ClearDep_CompilationUnit_set_current_options",|<InitialCompilerConfig>)
-		; !StrategoCompilationUnit(<id>))
-		<+ fail-with-message(|["Failed to create Compilation unit for ", source-file])
-			
-	create-compilation-unit = create-compilation-unit(|<id>)
-
-	read-compilation-unit(|source-file) =
-		  (where(<is-path;path-exists> source-file)
-		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), None(), [], Compile())
-		; prim("ClearDep_CompilationUnit_read")
-		; prim("ClearDep_CompilationUnit_set_current_options",|<InitialCompilerConfig>)
-		; !StrategoCompilationUnit(<id>))
-		<+ fail-with-message(|["Failed to read Compilation unit for ", source-file])
 	
-	read-or-create-compilation-unit =
-		read-compilation-unit(|<id>) <+ create-compilation-unit(|<id>)
-	
-	read-or-create-compilation-unit(|source-file) =
-		read-compilation-unit(|source-file) <+ create-compilation-unit(|source-file)
 
 	get-source-files =
 		  (   unpack-stratego-unit
@@ -193,38 +166,7 @@ strategies
 		  !(<get-module-dependencies>, <get-module-circular-dependencies>)
 		; conc
 		
-		
 	
-	get-dep-file(|source-file) =
-		  !source-file
-		; ?RelativePath(_, relative-source-file)
-		; path-get-full-path
-		; !(IncludePathName(<id>), <pack-include-path>)
-		; separate-compilation-parse-file
-		; Snd
-		; ?Module(name, _)
-		; where(
-			if <eq>(<remove-extension> relative-source-file, name)
-				then id
-				else   log(|Error(), ["Module name ", name, " does not match path ", relative-source-file])
-					 ; fail
-			end
-			)
-		; !RelativePath(AbsolutePath(<output-dirname>), <conc-strings>(<to-java-compilation-folder>name, "/dependencies.dep"))
-		
-	/*createBuildSchedule(|schedule-mode) =
-		    (is-list
-		  ; map(unpack-stratego-unit)
-		  ; prim("ClearDep_BuildSchedule_createBuildSchedule", extract-dependencies | schedule-mode)
-		  ; !BuildSchedule(<id>)
-		) <+ fail-with-message(|["createBuildSchedule failed for ", <id>])*/
-	
-	flattenBuildSchedule =
-		(    ?BuildSchedule(<id>)
-		  ; prim("ClearDep_BuildSchedule_flatten")
-		  ; is-list
-		  ; map(!BuildTask(<id>))
-		) <+ fail-with-message(|["flattenBuildSchedule failed for ", <id>])
 	
 	needsTaskToBeBuild =
 		(   ?BuildTask(<id>)
