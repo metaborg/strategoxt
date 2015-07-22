@@ -401,7 +401,7 @@
 						<java classname="run" failonerror="true">
 							<arg value="org.strategoxt.strj.strj.main-strj"/>
 							<arg value="-i" />
-							<arg value="${@{input-path}.abs}/@{input-module}" />
+							<arg value="${@{input}.abs}" />
 							<arg value="-o" />
 							<arg value="${@{output}.abs}" />
 							<arg value="-p" />
