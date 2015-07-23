@@ -63,6 +63,7 @@
 		<local name="test-dir" />
 		<local name="test-gen" />
 		<local name="test-gen-bin" />
+		<local name ="testmodule"/>
 		<property name="test-dir" location="tests/test1" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
@@ -75,6 +76,7 @@
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
 				<mkdir dir="${test-gen-bin}" />
+				<basename property="testmodule" file="@{test-source}" suffix=".str"/>
 				<trycatch property="failure">
 					<try>
 						<!-- do the test -->
@@ -91,7 +93,7 @@
 							</strjargs>
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
+						<java classname="org.test.${testmodule}.${testmodule}" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
 						</java>
