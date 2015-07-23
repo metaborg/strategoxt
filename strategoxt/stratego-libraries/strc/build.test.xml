@@ -63,7 +63,6 @@
 		<local name="test-dir" />
 		<local name="test-gen" />
 		<local name="test-gen-bin" />
-		<local name ="testmodule"/>
 		<property name="test-dir" location="tests/test1" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
@@ -72,6 +71,7 @@
 				<fileset dir="${test-dir}" includes="test??.str, test???.str" />
 			</path>
 			<sequential>
+				<local name ="testmodule"/>
 				<log message="Testing @{test-source}" />
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
