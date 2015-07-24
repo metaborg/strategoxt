@@ -35,4 +35,7 @@ strategies
 		prim("PlutoInterface_Builder_ProvideFor", |<Builder>, input);
 		log(|Vomit(), ["Succesfull provided for ", input])
 		
+	builder-report-message(|message) = 
+		where (prim("PlutoInterface_Builder_ReportMessage", |<Builder>, message))
+		
 		

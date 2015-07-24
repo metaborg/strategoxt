@@ -18,5 +18,7 @@ public interface PublicBuilder {
 	
 	public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>, SubIn_ extends In_> Out_ requireBuild(
 			BuildRequest<In_, Out_, B_, F_> req, OutputStamper<? super Out_> ostamper) throws IOException;
+	
+	public void reportMessage(String message);
 
 }

@@ -6,7 +6,7 @@ strategies
 
 	// Scopes the dynamic rules used to store the compiler configuration
 	scope-compiler-config(f) =
-		{| InitialCompilerConfig, InitialCompilerConfigList :
+		{| InitialCompilerConfigList :
 			f
 			|}
 	
@@ -16,12 +16,6 @@ strategies
 		; map(
 			  !(<id>,<id>)
 			;(id,get-config)
-		) => value-list
-		; create-compiler-options => options
-		; rules(InitialCompilerConfig : _ -> options)
-		; rules(InitialCompilerConfigList : _ -> value-list)
+		) => options
+		; rules(InitialCompilerConfigList : _ -> options)
 	
-	// Packs a list of config tupes (key,value) up to a Java Object which can be put to compilation units
-	create-compiler-options = 
-		prim("ClearDep_create_compiler_options")
-		<+ (log(|Info(), ["Create compiler options failed for ", <id>]); fail)

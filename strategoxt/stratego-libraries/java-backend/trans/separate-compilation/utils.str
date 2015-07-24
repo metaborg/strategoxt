@@ -3,7 +3,6 @@ module separate-compilation/utils
 imports libstrc
 imports libstratego-lib
 
-imports cleardep/cleardep
 imports cleardep/fileutils
 
 imports separate-compilation/fileutils

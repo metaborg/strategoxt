@@ -96,6 +96,11 @@ public class StrategoBuilderFactory
 			return super.requireBuild(req.factory, req.input, ostamper);
 		}
 
+		@Override
+		public void reportMessage(String message) {
+			this.report(message);
+		}
+		
 	}
 
 	@Override

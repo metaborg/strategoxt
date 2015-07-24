@@ -1,6 +1,5 @@
 module separate-compilation
 
-imports cleardep/cleardep
 imports cleardep/fileutils
 imports separate-compilation/utils
 imports separate-compilation/separate-compilation-options
@@ -11,6 +10,7 @@ imports separate-compilation/std-lib-utils
 imports s2j-options
 imports libstrc
 
+imports pluto/log-integration
 imports pluto/buildmanager
 imports pluto/buildrequest
 imports separate-compilation/builder/-

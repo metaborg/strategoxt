@@ -1,0 +1,34 @@
+module pluto/log-integration
+
+imports libstratego-lib
+imports pluto/builder
+
+strategies
+	
+	// Overrite log strategies: they try to log to the builder API if possible (if a builder is running)
+	// Otherwise prints logs as usual
+	
+	override log(|severity : Severity, msg, term) =
+    if-log-severity(
+      log(|severity, msg)
+      ; where(
+        	builder-report-message(|<write-to-string> term) <+ (
+          		  <copy-char; log-puts> (<add> (<severity-string; string-length> severity, 3), ' ')
+        		; <write-in-text-to-stream> (<log-stream>, term)
+        		; <log-puts> "\n")
+        )
+    | severity
+    )
+    
+    override log(|severity : Severity, msg) = 
+    if-log-severity(
+      where(
+        <try(not(is-list) ; ![<id>])>msg 
+      ; map(is-string <+ write-to-string)
+      ; (builder-report-message(|<concat-strings> [<severity-string> severity, ": " | <id>]) <+ (
+        	  <concat-strings; log-puts> ["[ ", <log-src>, " | ",  <severity-string> severity, " ] " | <id> ] 
+        	; <log-puts> "\n"
+        ))
+      )
+    | severity
+    ) 

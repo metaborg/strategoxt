@@ -114,6 +114,11 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 				BuildRequest<In_, Out_, B_, F_> req, OutputStamper<? super Out_> ostamper) throws IOException {
 			return super.requireBuild(req.factory, req.input, ostamper);
 		}
+		
+		@Override
+		public void reportMessage(String message) {
+			this.report(message);
+		}
 
 	}
 	private Object readResolve() {
