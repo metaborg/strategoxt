@@ -9,13 +9,13 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.StrategoException;
-import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.Conversions;
 import org.strategoxt.strj.pluto_interface.NamedSingleton;
 import org.strategoxt.strj.pluto_interface.PlutoIContextManager;
 import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory;
 import org.strategoxt.strj.pluto_interface.PublicBuilder;
 import org.strategoxt.strj.pluto_interface.StrategoBuilderFactory.GeneratedBuilder;
+import org.strategoxt.strj.pluto_interface.util.ObjectWrapperTerm;
 
 import build.pluto.builder.BuildCycleException;
 import build.pluto.builder.BuildRequest;

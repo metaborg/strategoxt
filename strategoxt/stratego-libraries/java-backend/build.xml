@@ -327,14 +327,11 @@
 		<path id="build.classpath">
 			<!-- <pathelement path="${java.class.path}" /> -->
 			<pathelement location="${strj.runtime-path}" />
-			<pathelement location="java/cleardep-interface" />
 			<pathelement location="java/pluto-interface" />
-			<!-- Currently need revision  4da27af6d53b80fb92df8ce7b03ae555ecc6d5d6 -->
-			<pathelement location="java/sugarj-common.jar" />
 			<pathelement location="${bin.java}" />
 			<pathelement location="${bin.stratego}" />
 			<pathelement location="java/spoofax-libs.jar" />
-			<pathelement location="java/pluto.jar" />
+			<pathelement location="java/pluto.jar" /> <!-- is copied to this location by the build-parent pom -->
 			<pathelement location="${dep.libstrc}/libstrc.jar" />
 			<pathelement location="${dep.libstratego-aterm}/libstratego-aterm.jar" />
 			<pathelement location="${dep.libstratego-sdf}/libstratego-sdf.jar" />
@@ -353,7 +350,6 @@
 		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="${strj.runtime-path}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/commandline" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
-		<javac srcdir="java/cleardep-interface" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/pluto-interface" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		
 	</target>
@@ -363,7 +359,6 @@
 			<fileset dir="${bin.java}" includes="**/*.class" />
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
-			<zipgroupfileset dir="java" includes="sugarj-common.jar" />
 			<zipgroupfileset dir="java" includes="pluto.jar" />
 		</jar>
 	</target>

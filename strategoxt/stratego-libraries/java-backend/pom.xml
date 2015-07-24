@@ -16,6 +16,20 @@
     <version>1.5.0-SNAPSHOT</version>
     <relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent.java</relativePath>
   </parent>
+  
+  <repositories>
+  		<repository>
+  			<id>pluto-build</id>
+  			<url>https://raw.githubusercontent.com/pluto-build/pluto-build.github.io/master/mvnrepository/</url>
+  			<releases>
+  				<enabled>false</enabled>
+  			</releases>
+  			<snapshots>
+  				<enabled>true</enabled>
+  			</snapshots>
+  		</repository>
+  	</repositories>
+  
 
   <dependencies>
     <dependency>
@@ -61,7 +75,7 @@
     <dependency>
     	<groupId>build.pluto</groupId>
     	<artifactId>pluto-shaded</artifactId>
-    	<version>1.3.0-SNAPSHOT</version>
+    	<version>1.4.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

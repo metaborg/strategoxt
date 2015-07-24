@@ -1,4 +1,4 @@
-package org.strategoxt.strj.util;
+package org.strategoxt.strj.pluto_interface.util;
 
 import java.util.Comparator;
 

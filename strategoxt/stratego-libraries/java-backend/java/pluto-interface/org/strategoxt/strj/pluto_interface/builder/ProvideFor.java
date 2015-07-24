@@ -8,8 +8,8 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
-import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
 import org.strategoxt.strj.pluto_interface.StrategoBuildCycleAtOnceBuilderFactory.StrategoBuildAtOnceBuilder;
+import org.strategoxt.strj.pluto_interface.util.ObjectWrapperTerm;
 
 import build.pluto.builder.Builder;
 

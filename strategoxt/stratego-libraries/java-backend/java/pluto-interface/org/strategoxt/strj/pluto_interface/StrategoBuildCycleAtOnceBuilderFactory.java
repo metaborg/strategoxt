@@ -17,7 +17,7 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
-import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
+import org.strategoxt.strj.pluto_interface.util.ObjectWrapperTerm;
 
 import build.pluto.builder.BuildCycleAtOnceBuilder;
 import build.pluto.builder.BuildRequest;

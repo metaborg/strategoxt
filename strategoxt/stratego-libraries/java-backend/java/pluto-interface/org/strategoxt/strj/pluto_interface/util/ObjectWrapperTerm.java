@@ -1,4 +1,4 @@
-package org.strategoxt.strj.cleardep_interface;
+package org.strategoxt.strj.pluto_interface.util;
 
 import java.io.IOException;
 import java.util.Collections;

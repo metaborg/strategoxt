@@ -13,7 +13,6 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropSDefT;
 import org.strategoxt.lang.SRTS_EXT_eq_ignore_annos_0_1;
 import org.strategoxt.lang.SRTS_EXT_newint_0_0;
-import org.strategoxt.strj.cleardep_interface.ClearDepLibrary;
 import org.strategoxt.strj.pluto_interface.PlutoLibrary;
 
 /**
@@ -73,7 +72,6 @@ public class CompatManager {
 		} else if ("stratego_sglr".equals(component)) {
 			context.addOperatorRegistry(new JSGLRLibrary());
 		} else if ("strj".equals(component)) {
-			context.addOperatorRegistry(new ClearDepLibrary());
 			context.addOperatorRegistry(new PlutoLibrary());
 		}
 	}

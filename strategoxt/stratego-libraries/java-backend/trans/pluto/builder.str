@@ -3,6 +3,8 @@ module pluto/builder
 imports cleardep/fileutils
 imports pluto/builderfactory
 
+// DONT RENAME THIS MODULE, THE ANT SCRIPT CHECKS WHETHER JAVA FILES FOR THIS MODULE ARE CREATED
+// DO DETERMINE WHETHER THE COMPILER WAS COMPILED BY THE SEPARATE COMPILATION COMPILER
 strategies
 	
 	require = 

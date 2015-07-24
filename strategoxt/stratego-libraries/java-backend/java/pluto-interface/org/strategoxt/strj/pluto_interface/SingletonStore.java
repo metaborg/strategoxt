@@ -3,7 +3,7 @@ package org.strategoxt.strj.pluto_interface;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.strategoxt.strj.cleardep_interface.ObjectWrapperTerm;
+import org.strategoxt.strj.pluto_interface.util.ObjectWrapperTerm;
 
 public class SingletonStore {
 
