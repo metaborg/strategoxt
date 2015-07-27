@@ -32,7 +32,7 @@ public static final String NAME = "PlutoInterface_BuildManager_RequireInitially"
 		System.out.println("Factory: " + request.factory);
 		System.out.println("Input: " + request.input);
 		System.out.flush();
-		BuildManager.ASSERT_SERIALIZABLE = true;
+		BuildManager.ASSERT_SERIALIZABLE = false;
 		IStrategoTerm result = BuildManagers.build(request).val();
 		arg0.setCurrent(result);
 		} catch (Throwable t) {
