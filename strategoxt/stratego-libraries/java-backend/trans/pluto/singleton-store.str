@@ -1,9 +1,11 @@
 module pluto/singleton-store
 
+imports libstratego-lib
+
 strategies
 
 	init-pluto-singleton-store = 
-		prim("InitBuilderFactoryStore", PlutoSingletonStore|)
+		prim("InitBuilderFactoryStore", PlutoSingletonStore| <verbosity>)
 	
 	create-pluto-singleton(init-strategy | name) = 
 		<PlutoSingletonStore> name <+ {value: 
