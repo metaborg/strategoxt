@@ -169,7 +169,7 @@ strategies
 				end
 				
 			   }
-			);debug => (ast, collected-imports);
+			) => (ast, collected-imports);
 			log(|Notice(), ["Collected imports ", collected-imports]);
 			<map(Fst)> collected-imports => flags;
 			<filter(Snd;not(?()));make-set> collected-imports => rtree-files;

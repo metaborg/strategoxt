@@ -22,7 +22,7 @@ strategies
 	parse-stratego-input-for-module = {module-name, pack-include-path, output-folder, source-file: \
 		(module-name, pack-include-path, output-folder) -> (source-file, ParseStrategoInput(source-file, pack-include-path, output-folder))	
 		where
-			source-file := <fetch-elem({dir:\IncludeDir(dir) -> <path-add-extension(|"str");debug;where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\})> pack-include-path;
+			source-file := <fetch-elem({dir:\IncludeDir(dir) -> <path-add-extension(|"str");where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\})> pack-include-path;
 			<require-stamper(|<file-exists-stamper>)> source-file
 		\}
 	
