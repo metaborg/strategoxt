@@ -68,6 +68,7 @@ strategies
 			  			=> ParseStrategoOutput(parsed-module-name, ast);
 			  		if <not(eq)> (module-name, parsed-module-name) then
 			  			log(|Error(), ["Module name ", parsed-module-name, " does not match file name in ", source-file]);
+			  			<require> source-file; // Require the source file if the AST changed, when it changes this builder needs to be rebuild
 			  			fail
 			  		end;
 		  			log(|Notice(), 4)
