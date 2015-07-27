@@ -17,7 +17,7 @@ strategies
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	string-char-string-replace(|c1, c2) =
 		explode-string; 
-		map((?c1;!c2)<+![<id>]); 
+		map((?c1;<explode-string> c2)<+![<id>]); 
 		flatten-list;
 		implode-string
 
@@ -77,7 +77,13 @@ strategies
 		where(<if not(?()) then <set-config> ("-m", <id>) end> main )}
 		
 		
-	to-library-name = separate-compilation-modify-filename(if ?"char" + ?"term" + ?"interface" + ?"class" then !["_", <id>];concat-strings end ; jify)
+	to-library-name = separate-compilation-modify-filename(
+		if ?"char" + ?"term" + ?"interface" + ?"class" // TODO Add all java keywords here
+			then <conc-strings> ("_", <id>)
+			else 
+				string-char-string-replace(|'.',"$_dot_") // Need to remove . from the names because they conflict with java packages, dollars-for-captials never inserts a dollar before a _
+		end ; jify // Finally jify the rest
+		) 
 	to-java-compilation-folder:   modulename -> <to-library-name;jify; dollars-for-capitals> modulename
 	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify; dollars-for-capitals> modulename
 	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
