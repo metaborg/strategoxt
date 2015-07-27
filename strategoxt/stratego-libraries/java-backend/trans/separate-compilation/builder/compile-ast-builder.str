@@ -105,7 +105,7 @@ strategies
 			(id, try(add-default-lib-import), id, id, id, id)
 		end
 			
-		call-front-end(|pack-include-path) = {moduleName,merged-ast, fileName, files, spec:
+		call-front-end(|pack-include-path, other-module-names) = {moduleName,merged-ast, fileName, files, spec:
 			?(moduleName, merged-ast, _, fileName, _, _);
 			
 			log(|Notice(), ["Import transformation for ", moduleName]);
@@ -113,7 +113,7 @@ strategies
 			log(|Vomit(), ["Pre pack ",merged-ast]);
 			<pack-stratego(|pack-include-path)> IncludeAST(merged-ast,fileName) => (files, spec);
 			log(|Vomit(), ["After pack ", files, " " , spec]);
-			log(|Notice(), ["Calling Frontend for ", moduleName]);
+			log(|Notice(), ["Calling Frontend for ", moduleName, " with circular modules ", other-module-names]);
 			!spec;
 			tfc1(|"Stratego-Sugar-Cong", "pack");
          	strc-output-ast;
@@ -156,7 +156,7 @@ strategies
 		\}
 				 
 		
-	in {inputs, java-package, output-folder, pack-include-path, other-inputs, result-input, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files, main-module-name:
+	in {inputs, java-package, output-folder, pack-include-path, other-inputs, result-input, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files, main-module-name, other-module-name:
 		id => inputs;
 		log (|Notice(), 6);
 		where( {first-input:
@@ -173,6 +173,7 @@ strategies
 		log (|Notice(), 8);
 		// Circular modules will be merged, make the result module deterministic
 		determine-circular-result-module(Fst | main-module-name) => (other-inputs, result-input);
+		where(<map(Fst)> other-inputs => other-module-name);
 		log (|Notice(), 9);
 		combine-modules;
 		log (|Notice(), 10);
@@ -187,7 +188,7 @@ strategies
 			log (|Notice(), 12);
 			where(<set-config>("-la", <conc;make-set> (<get-config <+ ![]> "-la", new-libs)));
 			log (|Notice(), 13);
-			call-front-end(|pack-include-path);
+			call-front-end(|pack-include-path, other-module-name);
 			log (|Notice(), 14);
 			// TODO Generate rtree
 			log(|Notice(), ["Imported rtree files ", imported-rtree-files]);
