@@ -11,7 +11,8 @@ strategies
 		stamp-rtree = 
 			path-get-full-path;
 			ReadFromFile;
-			externals-to-signature
+			externals-to-signature;
+			checksum
 	
 	in
 		stamper(stamp-rtree | "RTreeStamper") 

@@ -17,6 +17,7 @@ imports separate-compilation/builder/compile-module-builder
 imports separate-compilation/builder/parse-stratego-builder
 imports separate-compilation/stamper/rtree
 imports separate-compilation/stamper/is-specification
+imports separate-compilation/stamper/checksum
 
 
 strategies

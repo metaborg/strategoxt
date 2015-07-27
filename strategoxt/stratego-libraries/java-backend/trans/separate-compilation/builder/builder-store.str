@@ -12,5 +12,6 @@ strategies
 		compile-module-builder-factory;
 		rtree-stamper;
 		file-exists-stamper;
-		is-parse-statrego-output-specification-stamper
+		is-parse-statrego-output-specification-stamper;
+		checksum-stamper
 		

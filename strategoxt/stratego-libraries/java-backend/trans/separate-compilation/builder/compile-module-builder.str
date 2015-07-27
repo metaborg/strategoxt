@@ -11,6 +11,8 @@ imports separate-compilation/builder/deps-path
 imports separate-compilation/builder/parse-stratego-builder
 imports separate-compilation/builder/compile-ast-builder
 
+imports separate-compilation/stamper/checksum
+
 signature
 	constructors
 		CompileModuleInput: ModuleName * PackIncludePath * JavaPackage * OutputFolder * MainModule  -> CompileModuleInput
@@ -64,7 +66,7 @@ strategies
 	   				log(|Notice(), 1);
 	   				<parse-stratego-input-for-module> (module-name, pack-include-path, output-folder) => (source-file, parse-input);
 	   				log(|Notice(), 3);
-	   				<require-build> BuildRequest(<parse-stratego-builder-factory>, parse-input)
+	   				<require-build-stamper(|<checksum-stamper>)> BuildRequest(<parse-stratego-builder-factory>, parse-input)
 			  			=> ParseStrategoOutput(parsed-module-name, ast);
 			  		if <not(eq)> (module-name, parsed-module-name) then
 			  			log(|Error(), ["Module name ", parsed-module-name, " does not match file name in ", source-file]);

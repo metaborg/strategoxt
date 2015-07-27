@@ -1,0 +1,10 @@
+module separate-compilation/stamper/checksum
+
+imports libstratego-lib
+
+imports pluto/stamper
+
+strategies
+	
+	checksum-stamper =
+		output-stamper(checksum | "ChecksumStamper") 
