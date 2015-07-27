@@ -36,7 +36,6 @@ public static final String NAME = "PlutoInterface_BuildManager_RequireInitially"
 		IStrategoTerm result = BuildManagers.build(request).val();
 		arg0.setCurrent(result);
 		} catch (Throwable t) {
-			t.printStackTrace();
 			return false;
 		} finally {
 			PlutoIContextManager.popContext();
