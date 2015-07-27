@@ -1,4 +1,4 @@
 [submodule "strategoxt/syntax/java-front"]
 	path = strategoxt/syntax/java-front
-url=https://github.com/lichtemo/java-front.git
-	branch = java-bootstrap
+	url = https://github.com/metaborg/java-front.git
+	branch = strsepcomp
