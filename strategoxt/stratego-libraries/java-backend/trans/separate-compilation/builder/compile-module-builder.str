@@ -1,0 +1,110 @@
+module separate-compilation/builder/compile-module-builder
+
+imports libstrc
+imports libstrategolib
+
+imports cleardep/fileutils
+imports pluto/-
+
+imports separate-compilation/booleans
+imports separate-compilation/builder/deps-path
+imports separate-compilation/builder/parse-stratego-builder
+imports separate-compilation/builder/compile-ast-builder
+
+imports separate-compilation/stamper/checksum
+
+signature
+	constructors
+		CompileModuleInput: ModuleName * PackIncludePath * JavaPackage * OutputFolder * MainModule  -> CompileModuleInput
+		CompileModuleOutput: RTreeFile -> CompileModuleOutput
+		
+
+strategies
+	
+	compile-module-input-module-name : CompileModuleInput(name, _, _, _, _) -> name
+	compile-module-input-pack-include-path : CompileModuleInput(_, path, _, _, _) -> path
+	compile-module-input-pack-java-package : CompileModuleInput(_, _, package, _, _) -> package
+	compile-module-input-pack-output-folder : CompileModuleInput(_, _, _, folder, _) -> folder
+	compile-module-input-main-module-name : CompileModuleInput(_, _, _, _, main-module) -> main-module
+			
+	compile-module-builder-factory = let
+	
+		description = {input: \
+			[input] -> <conc-strings>("Compile module ", <compile-module-input-module-name> input)
+			\}
+			<+ {inputs, module-names, joined-module-names:  \
+			inputs -> <conc-strings> ("Compile cyclic modules ", joined-module-names)
+			where
+				module-names := <map(compile-module-input-module-name)> inputs;
+				joined-module-names := <foldl({name, joined : \(name, joined) -> <conc-strings> (name, ", ", joined)\})> (module-names, "")
+			\}
+			
+		single-persistent-path = {input, output-folder, module-name: \
+			input -> <get-dep-path(|"compile", output-folder)> module-name
+			where
+				log(|Notice() , ["SinglePersistentPath for compile module", input]);
+				output-folder := <compile-module-input-pack-output-folder> input;
+				log(|Notice(), [output-folder]);
+				module-name := <compile-module-input-module-name> input;
+				log(|Notice(), [module-name])
+			\}
+			
+		build-all = log(|Vomit(), ["Build all ", <id>]); let
+			
+			find-input(|all-inputs) = {module-name: \
+				module-name -> <fetch-elem({input, name:\
+					input -> input
+					where 
+						name := <compile-module-input-module-name> input;
+						<eq> (name, module-name)
+					\})> all-inputs
+				\}
+			
+			parse-module = {module-name, parsed-module-name, pack-include-path, output-folder, source-file, ast, parse-input: \
+				 (module-name, pack-include-path, output-folder) -> (source-file, ast)
+	   			where
+	   				log(|Notice(), 1);
+	   				<parse-stratego-input-for-module> (module-name, pack-include-path, output-folder) => (source-file, parse-input);
+	   				log(|Notice(), 3);
+	   				<require-build-stamper(|<checksum-stamper>)> BuildRequest(<parse-stratego-builder-factory>, parse-input)
+			  			=> ParseStrategoOutput(parsed-module-name, ast);
+			  		if <not(eq)> (module-name, parsed-module-name) then
+			  			log(|Error(), ["Module name ", parsed-module-name, " does not match file name in ", source-file]);
+			  			<require> source-file; // Require the source file if the AST changed, when it changes this builder needs to be rebuild
+			  			fail
+			  		end;
+		  			log(|Notice(), 4)
+				\}
+		
+			translate-to-ast-input = {input, module-name, java-package, output-folder, main-module-name, pack-include-path, source-file, ast: \
+				input -> CompileASTInput(module-name, ast, source-file, java-package, output-folder, main-module-name, pack-include-path)
+	    		where 
+	    			module-name := <compile-module-input-module-name> input;
+	    			java-package := <compile-module-input-pack-java-package> input;
+	    			output-folder := <compile-module-input-pack-output-folder> input;
+	    			main-module-name := <compile-module-input-main-module-name> input;
+	    			pack-include-path := <compile-module-input-pack-include-path> input;
+	    			<parse-module> (module-name, pack-include-path, output-folder) => (source-file, ast)
+	    		\}
+	    	
+	    	translate-from-ast-output = {rtree-file:\
+	    			CompileASTOutput(rtree-file) -> CompileModuleOutput(rtree-file)
+	    		\}
+	    		
+		in {all-inputs:
+			?all-inputs;
+			log(|Notice(), ["Translate to ast"]);
+			map(translate-to-ast-input);
+			log(|Notice(), ["Start compiling"]);
+			compile-asts(find-input(|all-inputs));
+			log(|Notice(), ["Translate to output"]);
+			map(translate-from-ast-output)
+		  }
+		end
+	
+	in	build-cycle-at-once-builder-factory(
+		description,
+		single-persistent-path,
+		build-all | "CompileModuleBuilderFactory")
+	end
+		

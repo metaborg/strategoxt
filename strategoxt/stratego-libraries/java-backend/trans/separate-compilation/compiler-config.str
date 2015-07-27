@@ -1,0 +1,21 @@
+module separate-compilation/compiler-config
+
+imports
+
+strategies
+
+	// Scopes the dynamic rules used to store the compiler configuration
+	scope-compiler-config(f) =
+		{| InitialCompilerConfigList :
+			f
+			|}
+	
+	// Collects all compiler configuration and stores them in a dynamic rule
+	collect-config = 
+		  get-config-keys(id)
+		; map(
+			  !(<id>,<id>)
+			;(id,get-config)
+		) => options
+		; rules(InitialCompilerConfigList : _ -> options)
+	

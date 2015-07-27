@@ -1,0 +1,8 @@
+module pluto/buildrequest
+
+signature
+	constructors
+		
+		BuildRequest: Factory * Input -> BuildRequest
+		BuildAtOnceBuildRequest: Factory * Input -> BuildRequest
+		BuildAtOnceBuildRequest: Factory * [Input] -> BuildRequest

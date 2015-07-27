@@ -1,11 +1,14 @@
 /**
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module pack-sdf-options
+module lib/pack-sdf-options
 imports
   libstratego-lib
   libstratego-xtc
-  // strategoxt-xtc-tools
+  libstratego-sdf
+  lib/pack-sdf
+  lib/sdf/production/attributes
+  Sdf2
 
 /**
  * Options

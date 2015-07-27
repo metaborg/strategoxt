@@ -1,4 +1,4 @@
-module raise-annotations
+module stratego/strc/front/raise-annotations
 
 imports libstratego-lib 
 	Stratego-Sugar

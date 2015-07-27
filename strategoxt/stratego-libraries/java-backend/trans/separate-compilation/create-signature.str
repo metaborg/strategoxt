@@ -1,0 +1,99 @@
+module separate-compilation/create-signature
+
+imports libstratego-lib
+imports libstrc
+imports libstratego-xtc
+
+imports separate-compilation/utils
+imports cleardep/fileutils
+
+strategies
+	
+	
+			
+		
+
+	calculate-transitive-externals(remove-overlays|dep-rtree-files) = {local-externals, dep-externals, externals,file:
+		log(|Notice(), [300]);
+		defs-to-external-defs;
+		log(|Notice(), [301]);
+		unpack-specification => local-externals;
+		log(|Notice(), [302]);
+		<map(path-get-full-path;log(|Notice(), ["Include rtree file ", <id>]);ReadFromFile;unpack-specification)> dep-rtree-files => dep-externals;
+		log(|Notice(), [303]);
+		foldr(!local-externals, merge-rtrees);
+		log(|Notice(), [304]);
+		if remove-overlays
+			then \(cs,os,ss) -> (cs, [], ss)\
+		end;
+		log(|Notice(), [305]);
+		unify-and-sort-externals;
+		log(|Notice(), [306]);
+		pack-specification;
+		log(|Notice(), [307]);
+		export-externals(|".rtree") => externals-file;
+		!externals-file
+		 }
+	
+	
+	unpack-specification =
+		  ?Specification([Signature([Constructors(cs)]), Strategies(ss)])
+		; !(cs, [], ss)
+	unpack-specification =
+		  ?Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
+		; !(cs, os, ss)
+		
+	pack-specification =
+		  ?(cs, [], ss)
+		; !Specification([Signature([Constructors(cs)]), Strategies(ss)])
+	pack-specification =
+		  ?(cs, os, ss)
+		; !Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
+
+	merge-rtrees = {cs1, os2, ss1, cs2, os2, ss2:
+		  ?((cs1, os1, ss1), (cs2, os2, ss2))
+		; !(<conc> (cs1,cs2), <conc>(os1, os2), <conc> (ss1, ss2))
+		  }
+		
+		
+	unify-and-sort-externals =
+		  ?(cs, os, ss)
+		// The primitives sorts the constructors and signatures deterministically and removes duplicated
+		// My implementations in Stratego was so slow, that it increases the compilation time significantly
+		; !(<prim("Unify_and_sort_Constructors")> cs, <prim("Unify_and_sort_Overlays")> os, <prim("Unify_and_sort_Signatures")> ss)
+		
+
+	externals-to-signature =
+		  ?Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
+		; !Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(<filter-anno-cong;remove-var-decs>ss)])
+	externals-to-signature =
+		  ?Specification([Signature([Constructors(cs)]), Strategies(ss)])
+		; !Specification([Signature([Constructors(cs)]), Strategies(<filter-anno-cong;remove-var-decs>ss)])
+		   
+	filter-anno-cong =
+		filter(where(\ExtSDef(f, s, t) -> <not(RemoveSDef)>(f, <length> s, <length> t)\))
+		
+	RemoveSDef: ("DR_DUMMY",0,0) -> <id>
+	RemoveSDef: ("DR_UNDEFINE",1,0) -> <id>
+	RemoveSDef: ("Anno_Cong__", 2, 0) -> <id>
+		
+	remove-var-decs =
+		bottomup(\VarDec(s,x) -> VarDec("_", x)\<+id)
+		
+	  
+	  export-externals(|ext) =
+	      if <eq> (<get-config> "baseout", <get-config> "basein") then
+	        <get-config> "baseout"
+	        ; warn(|<concat-strings>["Could not export library signature: name for library same as name for base file"])
+	      else
+	        log-timed(
+	            write-to
+	          ; copy-to(strc-getoutfile(!ext) => file1)
+	          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
+			  ; !AbsolutePath(file1)
+	        | "Export of externals succeeded"
+	        , 1
+	        )
+	      end
+	    
+		

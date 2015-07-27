@@ -20,6 +20,8 @@
     <strategoxt-baseline-id>strategoxt-distrib-bootstrap1</strategoxt-baseline-id>
     <strategoxt-build-location>${basedir}/../../</strategoxt-build-location>
     <strategoxt-assembly-location>${basedir}/../assembly.xml</strategoxt-assembly-location>
+	<!-- need to enable forward declarations for the run of the spearate compiler, which itself was compiled by the global one -->
+	<strj-enable-forward-declarations>true</strj-enable-forward-declarations>
   </properties>
 
   <dependencies>

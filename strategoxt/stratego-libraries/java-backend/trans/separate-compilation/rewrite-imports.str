@@ -1,0 +1,181 @@
+module separate-compilation/rewrite-imports
+
+imports libstrategolib
+imports libstrc
+
+imports cleardep/fileutils
+
+imports pluto/builder
+imports pluto/buildrequest
+
+imports separate-compilation/utils
+imports separate-compilation/fileutils
+imports separate-compilation/std-lib-utils
+imports separate-compilation/booleans
+
+imports separate-compilation/builder/compile-module-builder
+imports separate-compilation/builder/parse-stratego-builder
+imports separate-compilation/stamper/rtree
+imports separate-compilation/stamper/is-specification
+imports separate-compilation/stamper/checksum
+
+
+strategies
+	
+	/*
+	 * Rewrites the imports of the given AST. During rewriting, the compilation of each imported module is required. The imports of these modules are adapted to point
+	 * to the generated rtree file of this module
+	 *
+	 * @param module-name : String , the name of the module to rewrite
+	 * @param main-module-name: String, the name of the module on which the compiler was invoked
+	 * @param circular-module-names: List[String], the names of all modules in the current cycle
+	 * @param circular-main-module: Option[(String, Path)] : Some((module-name, rtree-file)) if a dummy module for a circle is imported, then for the import to module-name the rtree-file is included without requiring a build
+	 * @param working-package: Path, the output Java package
+	 * @param workping-output: Path, the toplevel folder to place generated files to
+	 * @param pack-include-path: List[IncludeDir | IncludeXTC], the pack include path for finding source files
+	 *
+	 */
+	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, working-package, working-output, pack-include-path) = 
+		let
+			to-library-import = {name: \
+				Import(name) -> Import(<to-java-compilation-rel-file> name)
+				\}
+			
+			import-to-flag(|working-package)= {name: \
+				Import(name) -> 
+					<conc-strings>(working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name)
+				\}
+				
+			
+		
+					
+			require-imported-module(|imported-module-name-x) = {rtree-file, all-rtree-files, imported-module-name:
+				!imported-module-name-x => imported-module-name;
+				if <equal>(module-name, imported-module-name)
+					then	log(|Info(), ["Module imports itself ", module-name])
+					else
+						// Require to build the imported module, then the rtree file can be used
+						log(|Warning(), ["Require module ", imported-module-name , " to rewrite " , module-name]);
+						log(|Warning(), ["Cycles ", circular-module-names]);
+						<require-build> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(imported-module-name, pack-include-path, working-package, working-output, main-module-name)])
+							=> CompileModuleOutput(rtree-file);
+						log(|Notice(), ["Require rtree file ", rtree-file]);
+						<require-stamper(|<rtree-stamper>)> rtree-file;
+						log(|Notice(), ["Collect rtree file for ", module-name, ": ",  rtree-file]);
+						where (rules(RTreeFiles : imported-module-name -> rtree-file))
+						
+				end }
+				
+			require-circular-main-module() = {rtree-file, all-rtree-files, circular-module, circular-rtree-file:
+				!circular-main-module;
+				? Some((circular-module, circular-rtree-file)); // Only matches if a dummy module in the circle is created
+				<to-library-import> Import(circular-module);
+					where (rules(RTreeFiles :circular-module -> circular-rtree-file))	
+				}
+				
+			
+			
+			get-file-add-external-file-dependency = {import-name, file: \
+				import-name -> ()
+				where 
+					file := <separate-compilation-get-relative-file> import-name;
+					<require> file\}
+			
+			is-import-module= {ast, parse-input, module-name:
+				?Import(module-name);
+				<parse-stratego-input-for-module> (module-name,pack-include-path, working-output ) => (_, parse-input);
+				// Dont need to require the file explicitly, this is done by the following build request
+				// Only depend on whether the AST is a module or a specification (more precicly: a specification or any thing else)
+				<require-build-stamper(|<is-parse-statrego-output-specification-stamper>)> BuildRequest(<parse-stratego-builder-factory>, parse-input)
+			  			=> ParseStrategoOutput(_, ast);
+			  	<?Module(_,_)> ast
+			  	}
+			  			
+			
+			process-import-str =
+			{ term, name, module-name, circular-module: 
+				log(|Notice(), ["Process import str " , <id>]);
+				  ?(term, <has-extension(|"str")>)
+				; where(<{name: \Import(name) -> name\}> term => module-name)
+				; if <is-import-module> term
+					then  // regular module dependency
+					   log(|Notice(), ["Import to module ", term])
+					 ; if <elem> (module-name, circular-module-names) 
+						then 
+							require-circular-main-module // Only matches if a dummy module in the circle is created
+							 // Circular, do not transform
+						else 
+							require-imported-module(|module-name);
+							<to-library-import> term  // Transform term to library import
+				  	   end
+					else // Import contains not a module but a specification -> no module dependency because specification is not named
+					   log(|Notice(), ["Import to file but not module ", term])
+					 ; <get-file-add-external-file-dependency> module-name
+					 ; !term //Leave term untransformed because want to include str file
+				  end			
+			}
+				
+			process-import-rtree =
+			{ file, term :
+				  ?(term, file)
+				; where(<has-extension(|"rtree")> file)
+				; <require-stamper(|<rtree-stamper>)> AbsolutePath(file)
+				; !term
+				}
+				
+			process-import-default-lib = 
+			{ lib, term:
+				  ?(term, lib)
+  				; !term
+				; ?Import(<id>)
+  				; is-default-lib-rtree
+  				; !term
+  				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
+			}
+			
+				
+			
+				
+	
+		in {| File :  {ast, collected-imports, flags, rtree-files:
+		  log(|Vomit(), ["Rewrite ", <id>]);
+		 // where(rules(RTreeFiles : _ -> []));
+		  transform-imports-and-move-to-front(
+			{import, file:
+				  id => import
+				; if not(Import(is-default-lib-rtree))
+				   then 
+					  import-get-file => file
+				    ; rules(File: import -> file)
+			       end
+			},
+			  !(<id>, <id;try(File)>)
+			; (process-import-str + process-import-rtree + process-import-default-lib)
+			, {term, rtree-file, flag:
+			  	?term;
+			  	if try(File);has-extension(|"str")
+				then 
+					?Import(<id>);
+					RTreeFiles => rtree-file; // Only successful if import is a module
+					<import-to-flag(|working-package)> term => flag;
+					!(flag, rtree-file)
+				else 
+					 log(|Notice(), ["No str file import " , <id>]);
+					  ?Import(<id>)
+					; where(is-default-lib-rtree)
+					; log(|Notice(), ["Is dafult liv rtree"])
+					; remove-lib-prefix
+					; translate-default-library // do not want to collect rtrees, but libraries
+					; !(<id>, ())
+				end
+				
+			   }
+			) => (ast, collected-imports);
+			log(|Notice(), ["Collected imports ", collected-imports]);
+			<map(Fst)> collected-imports => flags;
+			<filter(Snd;not(?()));make-set> collected-imports => rtree-files;
+			!((ast, flags), rtree-files)
+		 }|}
+		end 
+		
+	 	

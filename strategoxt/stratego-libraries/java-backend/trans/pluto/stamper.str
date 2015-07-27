@@ -1,0 +1,28 @@
+module pluto/stamper
+
+imports cleardep/fileutils
+imports pluto/singleton-store
+imports pluto/builderfactory
+
+strategies
+	
+	stamper(stamp-strategy | name) = let
+	
+		wrapped-stamp-strategy = scope-builder(
+			!AbsolutePath(<id>);
+			stamp-strategy)
+	
+	in
+		create-pluto-singleton(
+			prim("PlutoInterface_Stamper_CreateStamper", wrapped-stamp-strategy | name)
+		 	| name)
+	end
+	
+	output-stamper(stamp-strategy | name) = let
+	
+	in
+		create-pluto-singleton(
+			prim("PlutoInterface_Stamper_CreateOutputStamper", scope-builder(stamp-strategy) | name)
+		 	| name)
+	end
+		

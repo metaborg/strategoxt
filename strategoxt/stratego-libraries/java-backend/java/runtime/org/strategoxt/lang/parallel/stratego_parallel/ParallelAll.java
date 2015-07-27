@@ -11,22 +11,26 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
+import org.strategoxt.lang.RegisteringStrategy;
 import org.strategoxt.lang.SRTS_all;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.Strategy;
+import org.strategoxt.lang.StrategyCollector;
+import org.strategoxt.lang.linking.OverridingStrategy;
 
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class ParallelAll extends SRTS_all {
+@OverridingStrategy
+public class ParallelAll extends RegisteringStrategy {
 
 	/**
 	 * Gets the active ParallelAll instance, or null.
 	 * Is set by {@link stratego_parallel#init(Context)}.
 	 */
-	public static ParallelAll instance;
+	protected static ParallelAll instance = new ParallelAll();
 	
 	private static final WeakHashMap<IStrategoTerm, Integer> termSizes =
 		new WeakHashMap<IStrategoTerm, Integer>();
@@ -46,6 +50,18 @@ public class ParallelAll extends SRTS_all {
 	
 	private volatile boolean allowUnordered;
 	
+	private Strategy proceed;
+	
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_all", instance);
+	}
+	
+	@Override
+	public void bindExecutors(StrategyCollector collectors) {
+		proceed = collectors.getStrategyExecutor("SRTS_all", this);
+	}
+	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		// TODO: The focus thread could actually start more jobs, given a priority job queue
@@ -64,7 +80,7 @@ public class ParallelAll extends SRTS_all {
 		} else {
 			// TODO: add array copying overhead for testing
 			current.getAllSubterms();
-			return super.invoke(context, current, s);
+			return proceed.invoke(context, current, s);
 		}
 	}
 	

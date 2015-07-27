@@ -6,6 +6,10 @@
  */
 module variable-access
 
+imports
+	libjava-front
+	libstrc
+
 rules
   
   to-java-vardecl :

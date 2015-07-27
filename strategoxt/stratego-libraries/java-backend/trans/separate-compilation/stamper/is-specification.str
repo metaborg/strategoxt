@@ -1,0 +1,20 @@
+module separate-compilation/stamper/is-specification
+
+imports cleardep/fileutils
+imports pluto/stamper
+imports pluto/buildmanager
+imports pluto/buildrequest
+imports separate-compilation/builder/parse-stratego-builder
+imports separate-compilation/booleans
+
+strategies
+	
+	is-parse-statrego-output-specification-stamper = let
+	
+		stamp = 
+			b-strategy-successful(?ParseStrategoOutput(NoModule(),_))
+		
+	in
+		output-stamper(stamp | "ParseStrategoOutputStamper")
+	end
+	

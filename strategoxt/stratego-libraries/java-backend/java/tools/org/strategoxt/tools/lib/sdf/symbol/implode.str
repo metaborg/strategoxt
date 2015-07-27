@@ -1,7 +1,10 @@
 /**
  * @todo FIXME: this should not be here, but in libstratego-rtg.
  */
-module sdf/symbol/implode
+module lib/sdf/symbol/implode
+
+imports libstratego-sdf
+
 strategies
 
   /**

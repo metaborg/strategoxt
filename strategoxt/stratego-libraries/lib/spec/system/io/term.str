@@ -7,6 +7,7 @@ imports
   system/io/dir
   system/io/file
   system/io/process
+  system/error
 
   term/string 
   term/integer

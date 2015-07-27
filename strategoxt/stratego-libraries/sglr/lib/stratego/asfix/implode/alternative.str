@@ -2,6 +2,9 @@
  * Implosion of AsFix alternatives.
  */
 module stratego/asfix/implode/alternative
+
+imports stratego/asfix/signature
+
 strategies
 
   ImplodeAlternative =

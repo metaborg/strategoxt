@@ -21,12 +21,15 @@ strategies
     dr-scope-all-verbose(
       dollars-for-capitals-top
     ; split-large-strategies
-    ; lift-definitions
+  //  ; lift-definitions
     ; canonicalize
     ; simplify1
     ; mark-bound-unbound-vars
     ; escaping-variables
     ; remove-closure-allocs
+
+	; \x -> <annotate-static-calls>(x, [])\
+	
     )
 
 rules
@@ -84,4 +87,35 @@ rules
     CallT(SVar(x), [], _) -> inline
     where
       <RemoveClosureAlloc> x{} => inline
+		  
 
+   // Mark strategy calls which needs to be bind statically and not be name for a strategy
+   // Collect local definitions
+   annotate-static-calls : 
+    ( Let(defs,s), current_defs) -> 
+			Let(<annotate-static-calls> (defs, new_defs), <annotate-static-calls> (s, new_defs))
+		where
+			new_defs := <conc>(current_defs, <map(annotate-def-to-sig)> defs)
+			
+   annotate-static-calls :
+     (CallT(SVar(x{a*}), t, s), current_defs) -> CallT(SVar(x'), <annotate-static-calls> (t, current_defs), <annotate-static-calls> (s, current_defs))
+     where
+	   newAnnos* := Cons("StaticBind",a*);
+	   x' := <if <need-bind-static>(<annotate-call-to-sig>CallT(SVar(x{a*}), t, s), current_defs) 
+	          then !x{newAnnos*} 
+			  else !x{a*} end>	
+			  
+   annotate-static-calls :
+     ( x, current_defs) -> <all(\y -> <annotate-static-calls> (y, current_defs)\)> x
+			  
+   // In the following cases this needs to be done are:
+   need-bind-static : (name, local-defs) -> <elem> (name, local-defs) // For local definitions
+   need-bind-static : (name, _) -> <elem> (name, ["_Id" , "_Fail"]) // For ID and FAIL
+   need-bind-static : (name, _) -> <elem> (name, <(get-config <+ ![]);map(\(name, _) -> name\;dollars-for-capitals)> "-D") // And for generated constant value stratgies (really?)
+
+   
+
+
+   annotate-def-to-sig:  SDefT(x,t*,s*,_) -> x{}
+   annotate-call-to-sig: CallT(SVar(x), t*, s*) -> x{}
+	  

@@ -9,7 +9,7 @@ module pack-sdf-ext
 imports
   libstratego-lib
   libstratego-sglr
-  pack-sdf
+  lib/pack-sdf
 
 rules
 

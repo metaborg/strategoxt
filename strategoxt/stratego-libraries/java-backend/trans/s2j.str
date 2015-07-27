@@ -24,6 +24,8 @@ imports
   backend-simplify
   s2j-options
   lib/dr-scoping
+  
+  separate-compilation/separate-compilation-options
 
 signature
   constructors 
@@ -58,7 +60,8 @@ strategies
 rules
     
   s2j = 
-      with(
+  {|IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
+	  with(
         s2j-init-options
       ; record-main-classname
       )
@@ -87,7 +90,7 @@ rules
           ![<id>]
         end
       | "Backend postprocessing succeeded", 1
-      )
+      ) |}
   
   record-main-classname =
     (<get-config> "-o" <+ strc-getoutfile(!""))
@@ -97,7 +100,7 @@ rules
   ; rules(
       MainClassName := <id>
     )
-  ; app-name := <!"-p"; get-config; string-tokenize('.'); last <+ MainClassName>
+  ; app-name := <!"-p"; get-config; dollars-for-capitals; string-tokenize('.'); last <+ MainClassName>
   ; rules(
       ConstantContainerClass := app-name
       ApplicationName        := app-name
@@ -116,14 +119,17 @@ rules
     |[ 
      ~package-dec?: pkgname
      
-     ~import-dec*:imports
+    
 
      import org.strategoxt.lang.*;
+	 import org.strategoxt.lang.linking.*;
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
      import java.lang.ref.WeakReference;
+	 
+//	 ~import-dec*:imports
          
      @SuppressWarnings("all")
      public class x_name {
@@ -136,7 +142,14 @@ rules
      ~*cnst-decls
      ~*cnstr-decls
      
-     public static Context init(Context context) {
+     public static Context init(Context context, boolean link) {
+        if (link) {
+           new LibraryInitializer().initialize(context);
+        }
+		return context;
+     }
+	 
+     public static Context initializeLibrary(Context context) {
        synchronized (x_name.class) {
          if (isIniting) return null;
          try {
@@ -147,7 +160,6 @@ rules
              initConstants(termFactory);
            }
            if (initedContext == null || initedContext.get() != context) {
-             ~*import-inits
              ~*def-inits
              context.registerComponent("~x_name'");
            }
@@ -161,7 +173,7 @@ rules
      }
      
      public static Context init() {
-       return init(new Context());
+       return init(new Context(), true);
      }
 
      ~*main
@@ -178,23 +190,22 @@ rules
        }
      ]|
 
+	 ~*libraryInitializer
      ~*constant-defs
      ~*function-defs
-     ~*lifted-defs
+     //~*lifted-defs
 
-     ~*register
      }
   ]|
   with 
       <list-loop(try(JavaTranslate))> ops
     ; <list-loop(try(JavaTranslate))> defs
     ; imports       := <java-imports>
-    ; import-inits  := <java-init-imports>
     ; x_name        := <MainClassName>
     ; x_name'       := <ApplicationName>
-    ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
+    ; pkgname       := <!package-dec? |[ package ~x:<get-config;dollars-for-capitals> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
-    ; register      := <java-interop-registerers> defs
+	; libraryInitializer := <java-library-initializer> defs
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
@@ -203,11 +214,15 @@ rules
   with
     rules(
       CurrentLiftedFrame := None()
+	  CollectedExecutors := []
+	   ExecutorNames := []
+	   LiftedDefs := []
+	   CollectedLiftedDefs := []
     )
   ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
-  ; lifted-defs   := <bagof-LiftedDef>
+  //; lifted-defs   := <bagof-LiftedDef>
   ; cnstr-decls   := <bagof-ConstructorDecl>
   ; cnstr-inits   := <bagof-ConstructorInit>
   ; def-inits     := <bagof-DefInit>
@@ -215,33 +230,26 @@ rules
   ; cnst-inits    := <bagof-ConstInit; concat; reverse>
   
   java-imports =
-    <get-config> "-la"
+    <get-config> "-la-init"
+  ; make-set
   ; map(java-import)
   <+
     ![]
   
-  java-init-imports =
-    <get-config> "-la"
-  ; map(java-init-import)
-  <+
-    ![]
+ 
   
   java-import :
     x -> TypeImportOnDemandDec(TypeName(Id(x')))
     with
       x' := <jify> x
   
-  java-init-import :
-    x -> |[ x'.Main.init(context); ]|
-    with
-      x' := <jify> x
-
   java-main-methods :
     _ ->
     class-body-dec* |[
-      public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
-        return null;
-      }
+    // Not possible for separate compilation with linking
+    //  public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
+    //    return null;
+    //  }
     ]|
     where
       <get-config> "--library"
@@ -254,27 +262,39 @@ rules
        Context context = init();
        context.setStandAlone(true);
        try {
-         IStrategoTerm result;
+         IStrategoTerm result = null;
          try {
-           result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+           result = context.invokeStrategyCLI(context.getStrategyCollector().getStrategyExecutor("~x_main"), "~x_name", args);
+           System.out.println("Completed normally with result " + result);
          } finally {
            context.getIOAgent().closeAllFiles();
+           System.out.println("All files closed");
          }
+         
          if (result == null) {
            System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
            context.printStackTrace();
            context.setStandAlone(false);
            System.exit(1); 
          } else {
-           System.out.println(result);
-           context.setStandAlone(false);
+           System.out.println("Successful Result: " + result);
+           try {
+      		 context.setStandAlone(false);
+           } catch ( Throwable tw) {
+           	tw.printStackTrace();
+           }
+           
            System.exit(0);
          }
        } catch (StrategoErrorExit exit) {
+       	 System.out.println("Stratego Error Exit: " + exit.getClass());
+       	 exit.printStackTrace();
          context.setStandAlone(false);
          System.err.println(exit.getLocalizedMessage());
          System.exit(exit.getValue());
        } catch (StrategoExit exit) {
+       	 System.out.println("StrategoExit: " + exit.getClass());
+       	 exit.printStackTrace();
          context.setStandAlone(false);
          System.exit(exit.getValue());
        }
@@ -286,85 +306,108 @@ rules
      
      public static IStrategoTerm mainNoExit(Context context, String... args) throws StrategoExit {
        try {
-         init(context);
-         return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+         init(context, true);
+         return context.invokeStrategyCLI(context.getStrategyCollector().getStrategyExecutor("~x_main"), "~x_name", args);
        } finally {
          context.getIOAgent().closeAllFiles();
        }
      }
-     
-     public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
-       return x_main.instance;
-     }
-    ]|
+   
+   // Not possible for separate compilation with linking
+   //  public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
+   //    return x_main.instance;
+   //  }
+    ]| 
     where
       <get-config> "-m" <+ not(<get-config> "--library")
     with
       x_name := <MainClassName>
     ; main   := <get-config <+ !"main"> "-m"
     ; x_main := <conc-strings> (<cify; jify; dollars-for-capitals> main, "_0_0")
-  
-  // TODO: do interop strategy additions in a fully on-demand fashion?
-  //       (need to adapt VarScope class to do so)
-  java-interop-registerers : 
+	
+  java-library-initializer :
     defs ->
     class-body-dec* |[
-      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-        new InteropRegisterer().registerLazy(context, compiledContext, InteropRegisterer.class.getClassLoader());
-      }
       
       // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
       @SuppressWarnings("unused")
-      public static class InteropRegisterer extends org.strategoxt.lang.InteropRegisterer {
-        @Override
-        public void register(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-          register(context, compiledContext, context.getVarScope());
-        }
-        
-        @Override
-        public void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader) {
-          registerLazy(context, compiledContext, classLoader, context.getVarScope());
-        }
-        
-        ~*<java-split-method>  |[
-          private void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
-            compiledContext.registerComponent("~x_name");
-            x_name.init(compiledContext);
-            bstm1*
-          }
-        ]|
-        
-        ~*<java-split-method>  |[
-          private void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader, org.spoofax.interpreter.core.VarScope varScope) {
-            compiledContext.registerComponent("~x_name");
-            x_name.init(compiledContext);
-            bstm2*
-          }
-        ]|
+      public static class LibraryInitializer extends org.strategoxt.lang.LibraryInitializer {
+       
+		  protected void initializeLibrary(Context context) {
+		  	x_name.initializeLibrary(context);
+		  }
+		
+		  protected java.util.List<RegisteringStrategy> getLibraryStrategies() {
+			return  java.util.Arrays.<RegisteringStrategy>asList( ~instances* );
+		  }
+		  
+		  ~dependent-library-initializer-getter
+		
       }
     ]|
     with
-      // HACK: non-lazy defs are used only to trick javac to compile everything atm
-      bstm1* := <filter(java-register-strategy)> defs
-    ; bstm2* := <filter(java-register-strategy-lazy)> defs
-    ; x_name := <ApplicationName>
+	  instances* := <java-get-strategy-instances> defs
+    ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
+	; x_name        := <MainClassName>
 
-  java-register-strategy :
-    SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x'", new InteropSDefT(x.instance, context)); ]|
-    with
-      x' := <undo-dollars-for-capitals> x
+  java-get-strategy-instances =
+     filter(java-library-instance-qualified)
 
-  java-register-strategy-lazy :
-    SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x'", new InteropSDefT(classLoader, "~y", context)); ]|
-    with
-      x' := <undo-dollars-for-capitals> x
-    with
-      y := <conc-strings> (<get-config> "-p", ".", x)
-    <+
-      y := <conc-strings> (<ApplicationName>, "$", x)
+  java-library-initializer-dependent-libraries =
+	  not(is-independent-java-compilation)
+	; java-dependent-library-initializer(java-import-to-library-initializer-ref) => dependentLibs*
+	; !class-body-dec* |[
+	  protected java.util.List<org.strategoxt.lang.LibraryInitializer> getDependentLibraryInitializer() {
+		return java.util.Arrays.<org.strategoxt.lang.LibraryInitializer>asList( ~dependentLibs* );
+		}
+	]|	
+		
+   java-library-initializer-dependent-libraries =
+	  is-independent-java-compilation
+	; java-dependent-library-initializer(java-import-to-library-initializer-string) => dependentLibs*
+	; ! class-body-dec* |[
+  	  protected java.util.List<String> getDependentLibraryInitializerClassNames() {
+  		return java.util.Arrays.<String>asList( ~dependentLibs* );
+  		}
+  	]|
+		
+  java-library-instance:
+    SDefT(x{a*},_,_,_) -> |[x.instance]|
+	  
+  java-library-instance:
+    AnnoDef(_,SDefT(x{a*},_,_,_))  -> <java-library-instance> SDefT(x, (), (), ())
 
+
+  java-library-instance-qualified:
+    SDefT(x{a*},_,_,_) -> |[x'.instance]|
+	where
+	  x' := <conc-strings> (<get-config;dollars-for-capitals> "-p", ".", x)
+	  
+  java-library-instance-qualified:
+    AnnoDef(_,SDefT(x{a*},_,_,_))  -> <java-library-instance-qualified> SDefT(x,(), (), ())
+
+
+
+  java-dependent-library-initializer(import-transform) =
+    <get-config> "-la"
+   ; map(import-transform)
+  <+
+    ![]
+	  
+  java-import-to-library-initializer-ref :
+    x -> |[ new x'.LibraryInitializer() ]|
+    with
+      x' := <jify> x
+	  
+  java-import-to-library-initializer-string :
+    x -> |[ "~x'" + ".LibraryInitializer"]|
+    with
+      x' := <jify> x
+	
+  java-initialize-instances:
+    SDefT(x{a*},_,_,_) -> |[x.instance]|
+
+ 
 rules
 
   translate-constant-definition : // TODO: check if constant strategy definition name not taken
@@ -433,9 +476,17 @@ rules
          bstm*
        }
     ]| 
+ 
   
   add-constant-factory-container(|x_main):
     AmbName(Id("termFactory")) -> expr |[ x_main.constantFactory ]|
+  
+	signature
+		constructors
+			CongruenceStrategy : StrategyAnno
+			DynamicRuleStrategy : StrategyAnno
+	
+			strategies
   
   translate-outer-definition =
      translate-outer-definition-plain
@@ -447,33 +498,137 @@ rules
   translate-outer-definition-plain :
     SDefT(x, s*, t*, s){a*} -> 
     type-dec |[
-       @SuppressWarnings("all")
-       public static class x extends Strategy {
-         public static x instance = new x();
+       
+       
+       mod_annotations*
+       public static class x extends RegisteringStrategy {
+		 static final x instance = new x();
+		 
+		 ~executor-decls*
+		 ~lifted-decls*
+		 
+		 public static Strategy getStrategy(Context context) {
+		 	return context.getStrategyCollector().getStrategyExecutor("~x'");
+		 }
+		 
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerStrategyImplementator("~x'", instance);
+		 }
+		 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+			~lifted-binds*
+		 }
+		 
          
          ~body
          ~invokedynamic*
        }
     ]|
-    with
-      body           := <translate-definition-body>
-    ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+	 with
+	  body            := <translate-definition-body>
+	; x'              := <undo-dollars-for-capitals> x
+	; executorNames   := <CollectedExecutors;make-set>
+    ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+	; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
+	; executor-inits* := <map(initialize-strategy-field)> executorNames
+	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+	; lifted-binds*   := <get-lifted-bindings>
+	; mod_annotations*:= [ anno |[@SuppressWarnings("all")]| | <filter(translate-sdef-anno-to-java-anno)> a*]
+	
+	//SingleElemAnno(TypeName("SuppressWarnings"), Lit(String("all")))
+	
+	translate-sdef-anno-to-java-anno : CongruenceStrategy() -> anno |[ @CongruenceStrategy ]|
+	translate-sdef-anno-to-java-anno : DynamicRuleStrategy() -> anno |[ @DynamicRuleStrategy ]|
+	
+	list-first : [x|xs] -> x
+	list-rest  : [x|xs] -> xs
+	 
+    executorNamesStack-Push = rules(ExecutorNames := Cons([],<ExecutorNames>)) 
+    executorNamesStack-Pop  = rules(CollectedExecutors := <ExecutorNames;list-first;foldr(![],union(\((x1,y1),(x2,y2)) -> <eq> (y1,y2)\ ),![<id>])>); rules(ExecutorNames := <ExecutorNames;list-rest> ) 
+    executorNamesStack-AddName = ?(_,_); where(rules(ExecutorNames := Cons(Cons( <id>, <ExecutorNames;list-first>) ,<ExecutorNames;list-rest>)))
+	
+	
+	liftedDefsStack-Push = rules(LiftedDefs := Cons([], <LiftedDefs>))
+	liftedDefsStack-Pop  =  
+	  let  head = LiftedDefs;list-first in
+	  let  rest = LiftedDefs;list-rest in
+	  (if  rest;?[] 
+	   then
+	       rules(CollectedLiftedDefs := <head>)
+		 ; rules(LiftedDefs := <rest> ) 
+	   else 
+	       rules(CollectedLiftedDefs := []) 
+		  ;rules(LiftedDefs := Cons(<conc>(<rest;list-first> , <head>), <rest;list-rest>))
+	  end)
+	  end end
+	
+	
+	liftedDefsStack-Add  = where ( rules(LiftedDefs := Cons(Cons(<id>, <LiftedDefs;list-first>), <LiftedDefs;list-rest>)))
+  
+    get-lifted-bindings =  CollectedLiftedDefs;map(\(instance,decl) -> instance\);filter(not(?[])); map(lifted-instance-to-bind-call)
+	
+	lifted-instance-to-bind-call:  instance -> |[~instance.bindExecutors(collector);]|
+  
+  strategy-call-to-java-field:
+  	(strategyName, fieldName) -> |[ private Strategy ~fieldNameId ;]|
+	with
+		fieldNameId := Id(fieldName)
+		
+  initialize-strategy-field:
+    (strategyName, fieldName) -> |[~field = collector.getStrategyExecutor("~name");]|
+	with
+	      field := Id(fieldName)
+		; name := strategyName
+  
+  strategy-call-to-reference-name:
+  	CallT(SVar(x), _, _) -> <name-to-reference-name> x
+  
+	
+   name-to-reference-name:
+   x -> referenceName
+   where
+       x' := <undo-dollars-for-capitals;jify> x
+     ; referenceName := <concat-strings> [x', "_Executor"]
+     ; <executorNamesStack-AddName> (x',referenceName)
+	
+  strategy-call-to-name:
+    CallT(SVar(x), _, _) -> x
 
   translate-outer-definition-override :
     AnnoDef([Override()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        @SuppressWarnings("all")
-       private static final class x' extends x {
+	   @OverridingStrategy
+       private static final class x extends RegisteringStrategy {
          // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
          // NOTE: this prevents multiple overrides of a strategy.
-         private static final x proceed = new x();
-         ~(body)
-         @Override public String getName() { return "~x"; }
+         private Strategy proceed;
+		 static final x instance = new x();
+		 
+		 ~executor-decls*
+		 ~lifted-decls*
+		 
+		 public static Strategy getStrategy(Context context) {
+		 	return context.getStrategyCollector().getStrategyExecutor("~x'");
+		 }
+	 
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerStrategyImplementator("~x'", instance);
+		 }
+	 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+			~lifted-binds*
+			proceed = collector.getStrategyExecutor("~x'", this);
+			
+		 }
+		 
+         ~body
+		 ~invokedynamic*
+         
        }
     ]|
-    with
-      x' := <conc-strings> (x, "_override")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       {| ProceedInvoke :
         e_s* := <translate-args> s*
@@ -482,46 +637,105 @@ rules
           ProceedInvoke := |[ proceed.invoke(context, term, e_s*, e_t*) ]|
         )
       ; body := <translate-definition-body> def
+      ; executorNames   := <CollectedExecutors;make-set>
+      ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+      ; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
+      ; executor-inits* := <map(initialize-strategy-field)> executorNames
+      ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+      ; lifted-binds*   := <get-lifted-bindings>
+	  ; x' := <undo-dollars-for-capitals> x
       |}
-
+	
   translate-outer-definition-extend :
     AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        @SuppressWarnings("all")
-       private static final class x' extends x {
-         private static final x proceed = x.instance;
-         ~(body)
-         @Override public String getName() { return "~x"; }
+	   @ExtendingStrategy
+       private static final class x extends RegisteringStrategy {
+         // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
+         // NOTE: this prevents multiple overrides of a strategy.
+         private Strategy proceed;
+		 static final x instance = new x();
+ 
+		 ~executor-decls*
+		 ~lifted-decls*
+ 
+		 public static Strategy getStrategy(Context context) {
+		 	return context.getStrategyCollector().getStrategyExecutor("~x'");
+		 }
+
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerStrategyImplementator("~x'", instance);
+		 }
+
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+			~lifted-binds*
+			proceed = collector.getStrategyExecutor("~x'", this);
+	
+		 }
+ 
+         ~body
+		 ~invokedynamic*
+       
        }
     ]|
-    with
-      x' := <conc-strings> (x, "_extension")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       {| ProceedInvoke :
         e_s* := <translate-args> s*
       ; e_t* := <translate-args> t*
-      ; def' := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Override()))
       ; rules(
           ProceedInvoke := |[ proceed.invoke(context, term, e_s*, e_t*) ]|
         )
+      ; def' := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Override()))
       ; body := <translate-definition-body> def'
+      ; executorNames   := <CollectedExecutors;make-set>
+      ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+      ; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
+      ; executor-inits* := <map(initialize-strategy-field)> executorNames
+      ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+      ; lifted-binds*   := <get-lifted-bindings>
+	  ; x' := <undo-dollars-for-capitals> x
       |}
-
+	
+	
   translate-outer-definition-internal :
     AnnoDef([Internal()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        @SuppressWarnings("all")
-       private static final class x extends Strategy {
+       private static final class x extends RegisteringStrategy {
          public static final x instance = new x();
+		 
+		 ~executor-refs*
+		 ~lifted-decls*
+		 
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerStrategyImplementator("~x'", instance);
+		 }
+		 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+			~lifted-binds*
+		 }
          
          ~body
          ~invokedynamic*
        }
     ]|
     with
-      body           := <translate-definition-body> def
-    ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+      body            := <translate-definition-body> def
+	; x'              := <undo-dollars-for-capitals> x
+	; executorNames   := <CollectedExecutors>
+    ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+	; executor-refs*  := <map(strategy-call-to-java-field)> executorNames
+	; executor-inits* := <map(initialize-strategy-field)> executorNames
+	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+	; lifted-binds*   := <get-lifted-bindings>
+//	; rules(LiftedDef := [])
+//	; rules(ExecutorNames := [])
+	
+	
+  	
 
   translate-outer-definition-conflict :
     AnnoDef(a*, SDefT(x, _, _, _)) -> ()
@@ -530,17 +744,28 @@ rules
 
   translate-inner-definition :
     SDefT(x, s*, t*, s) ->
-    type-dec |[
+    (initialize-field, type-dec |[
        @SuppressWarnings("all")
-       private static final class x extends Strategy {
+       private static final class x extends RegisteringStrategy {
          ~instance-field*
          ~lifted-tfield*
          ~lifted-sfield*
+		 
+		 ~executor-refs*
+		 ~lifted-decls*
+		 
+		 public void registerImplementators(StrategyCollector collector) {
+		 }
+		 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+			~lifted-binds*
+		 }
          
          ~body
          ~invokedynamic*
        }
-    ]|
+    ]|)
     with
       ?def
     ; lifted-tvar*   := <collect-lifted-tvars> def
@@ -550,17 +775,26 @@ rules
     ; lifted-args    := <conc> (lifted-svar*, lifted-tvar*)
     with
       if !lifted-tvar* => lifted-svar* => [] then
-        instance-field* := class-body-dec* |[ public static final x instance = new x(); ]|
+        instance-field* := class-body-dec* |[ public static final x instance = new x(); ]|;
+		initialize-field := |[x.instance]|
       else
-        instance-field* := []
+        instance-field* := [];
+		initialize-field := []
       end
     with
       {| CurrentLiftedFrame :
         rules(CurrentLiftedFrame := x{})
-      ; body           := <java-eliminate-stacktrace> <translate-definition-body>
-      ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+      ; body            := <java-eliminate-stacktrace> <translate-definition-body>
+      ; executorNames   := <CollectedExecutors>
+      ; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
+      ; executor-inits* := <map(initialize-strategy-field)> executorNames
+      ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+	  ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+	  ; lifted-binds*   := <get-lifted-bindings>
       |}
-  
+
+
+
   maybe-make-invoke-dynamic :
     (s*, t*) -> invokedynamic*
     with
@@ -587,7 +821,13 @@ rules
     ; e_s*      := <number(\(_,n) -> |[ sargs[~i:<write-to-string> n] ]|\)> s*
     ; e_t*      := <number(\(_,n) -> |[ targs[~i:<write-to-string> n] ]|\)> t*
   
-  translate-definition-body :
+  translate-definition-body  = 
+      where(executorNamesStack-Push;liftedDefsStack-Push);
+	  translate-definition-body-inner;
+	  where(executorNamesStack-Pop;liftedDefsStack-Pop)
+	  
+	  
+  translate-definition-body-inner:
     SDefT(x, s*, t*, s) ->
     |[ mod_override*
        public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
@@ -608,9 +848,10 @@ rules
        }
     ]|
     with
+     
       {| IsStrategyArg, java-CheckBuild, CurrentLiftedFrame, java-CheckBuild,
          IsLiftedTVar, IsLiftedSVar, LiftedTVars, LiftedSVars:
-        (s'*, [])          := <translate-params> s*
+       (s'*, [])          := <translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
       ; x'                 := <undo-dollars-for-capitals> x
       ; param*             := <conc> (s'*, t'*)   
@@ -619,7 +860,7 @@ rules
         else
           mod_override* := [ anno |[ @Override ]| ]
         end
-      ; bstm := <translate-strategy> s  
+      ; bstm := <translate-strategy> s 
       |}
     
   translate-outer-definition :
@@ -783,6 +1024,7 @@ strategies
     <+ translate-Escape
     <+ fatal-err(|"translate-strategy failed ")
        )
+	   
 
   translate-Let : 
     Let(defs, body) -> body'
@@ -790,7 +1032,8 @@ strategies
       {| InnerDefinition :
         !defs
       ; record-inner-definitions
-      ; list-loop(rules(LiftedDef :+= <translate-inner-definition>))
+      ; list-loop(translate-inner-definition;liftedDefsStack-Add)
+	  
       ; body' := <translate-strategy> body
       |}
 
@@ -833,18 +1076,20 @@ strategies
       if (term == null) 
         break Fail;
     ]|
+	
     with
       lifted-decls-wrap(
-        if <is-self-call> x then
-          e_instance := |[ this ]|
-        else
+        //if <is-self-call> x then
+        //  e_instance :=  Id(<strategy-call-to-reference-name>)
+        //else
           e_instance := <lifted-call-to-instance>
-        end
+       // end
       ; e_s* := <map(lifted-strategy-to-instance)> s*
       ; e_t* := <map(java-construct-term)> t*
       ,
         ?bstm_init*
       )
+	 
 
   translate-PrimT :
     CallDynamic(f, s*, t*) -> <fail>
@@ -891,13 +1136,13 @@ strategies
       // Lift definition and produce call
       with(
         !SDefT(<newname => x> "jlifted", [], [], <id>)
-      ; rules(DefInit :+= <translate-inner-definition>)
+      ; rules(DefInit :+= <translate-inner-definition; \(_, def) -> def\>)
       )
     ; <lifted-call-to-instance> CallT(SVar(x), [], [])
     end
   
   lifted-call-to-instance =
-    lifted-call-to-instance-self-call
+   ( lifted-call-to-instance-self-call
   <+
     lifted-call-to-instance-from-frame
   <+
@@ -905,15 +1150,19 @@ strategies
   <+
     lifted-call-to-instance-direct
   <+
-    lifted-call-to-instance-instance
+    lifted-call-to-instance-instance 
+ ) 
   
   lifted-call-to-instance-self-call :
-    CallT(SVar(x), _, _) -> expr |[ this ]|
+    CallT(SVar(x{a*}), _, _) ->  
+	<if <elem> ("StaticBind", a*) then !|[this]| else !ExprName(Id(<strategy-call-to-reference-name>))  end> 
+
     where
       <is-self-call> x
+	
 
   lifted-call-to-instance-from-frame :
-    CallT(SVar(x{a*}), _, _) -> expr |[ x ]|
+    CallT(SVar(x{a*}), _, _) ->  |[ x ]| //ExprName(Id(<strategy-call-to-reference-name>)) // //expr |[ context.getStrategyInstance(x) ]|
     where
       frame := <CurrentLiftedFrame>
     ; !a*
@@ -932,7 +1181,7 @@ strategies
       ; rules(
           CallTDecl: x -> x'
         )
-      ; init := bstm |[ x x' = new x(); ]|
+      ; init := bstm* |[ x x' = new x(); x'.bindExecutors(context.getStrategyCollector());]|
       ; rules(
           CallTDecls :+= init
         )
@@ -945,12 +1194,17 @@ strategies
       end
   
   lifted-call-to-instance-direct :
-    CallT(SVar(x{a*}), _, _) -> expr |[ x ]|
+    CallT(SVar(x{a*}), _, _) ->  |[ x ]| // ExprName(Id(<strategy-call-to-reference-name>)) //|[ x ]| // ExprName(Id(<strategy-call-to-reference-name>))
     where
       <IsStrategyArg> (<CurrentLiftedFrame>, x{})
 
   lifted-call-to-instance-instance :
-    CallT(SVar(x), _, _) -> expr |[ x.instance ]|
+    CallT(SVar(x{a*}), s, t) -> 
+    <if <elem> ("StaticBind", a*) then !|[x.instance]| else !ExprName(Id(<strategy-call-to-reference-name>))  end> 
+		
+		//or(<elem> ("StaticBind", a*),or(is-lifted-var(|x),is-closure-var(|x)))
+  
+  
   
   is-dynamic-signature(|s*, t*) =
     where(
@@ -1004,7 +1258,7 @@ strategies
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
-    ; pkgname    := <get-config <+ !""> "-p"
+    ; pkgname    := <(get-config;dollars-for-capitals) <+ !""> "-p"
     ; pkgpath    := <conc-strings> ("/", <string-replace(|".", "/")> pkgname, "/")
     with
       outputdir := <output-dirname>
@@ -1054,7 +1308,7 @@ strategies
   find-import-term-file :
     file -> file'
     with
-      pack-stratego-options-wrap(
+        pack-stratego-options-wrap(
         pack-include-path
       ; getfirst(pack-find-from-dir(|file)) => file'
       <+
@@ -1071,8 +1325,8 @@ strategies
     finally(
       with(
         include* := <get-config <+ ![]> "-I"
-      ; <set-config> ("-I", [])
-      ; <parse-options(pack-stratego-options, system-usage, id)> [<whoami>, include*, "-I", "."]
+      ; <set-config> ("-I", [IncludeDir(".") | include*])
+     // ; <parse-options(pack-stratego-options, system-usage, id)> [<whoami>, include*, "-I", "."]
       )
     ; s
     , <set-config> ("-I", include*)
@@ -1583,3 +1837,7 @@ strategies
     <map(java-MatchArg1 <+ java-MatchArg2)> 
        [ (hd, expr|[ ((IStrategoList) e).head() ]|)
        , (tl, expr|[ ((IStrategoList) e).tail() ]|) ] => match-args
+	   
+signature
+constructors
+LocalStrategies: List(TypeDecl) -> Local

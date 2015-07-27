@@ -1,4 +1,8 @@
 module stratego/gpp/Util
+
+imports libstratego-xtc
+imports Box
+
 strategies
 
   gpp-topdown-fputs(|stream) =

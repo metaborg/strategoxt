@@ -1,4 +1,4 @@
-module bind-laws
+module stratego/strc/opt/bind-laws
 imports Stratego stratego/strc/match/automaton
 strategies
 rules

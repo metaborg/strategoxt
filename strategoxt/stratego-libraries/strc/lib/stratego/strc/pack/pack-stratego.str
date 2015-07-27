@@ -7,13 +7,18 @@
  * Pack-stratego calls an external process (parse-mod) for parsing
  * individual modules. 
  */
-module pack-stratego
+module stratego/strc/pack/pack-stratego
 
 imports 
   libstratego-xtc 
   libstratego-rtg
   Stratego 
   stratego/strc/pack/pack-stratego-options
+  stratego/strc/front/report-ambs
+  stratego/strc/strc/format-check
+  stratego/strc/parse/parse-stratego
+  stratego/strc/front/frontend
+  stratego/strc/opt/optimizer
 
 strategies
 
@@ -50,16 +55,16 @@ strategies
     , pack-process-options
     ; pack-report-options
     ; pack-stratego(|<pack-include-path>) => (files, spec)
-    ; <pack-maybe-create-depfile> files
+  //  ; <pack-maybe-create-depfile> files
     ; <write-to> spec
     )
 
   pack-stratego(|mkpt) =
-      \ FILE(s) -> IncludePathName(s) \
+     ( \ FILE(s) -> IncludePathName(s) \ <+ ?IncludeAST(_,_))
     ; !(<id>, mkpt, [])
     ; graph-nodes-undef(
         { file:
-          pack-stratego-parse-stratego => (file,_)
+         pack-stratego-parse-stratego => (file,_)
         ; rules( FileDependencies :+= file )
         ; if <get-config> "--dump-aterms" then
             where({fn, trm: 
@@ -70,7 +75,7 @@ strategies
                 })
           end
         }
-      , pack-get-stratego-imports 
+      , pack-get-stratego-imports
         ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
       )
@@ -116,6 +121,8 @@ strategies
 
 strategies
 
+  pack-stratego-parse-stratego= ? (IncludeAST(term,file),_) ;!(file, term)
+
   /**
    * Include from a fixed location
    */
@@ -146,7 +153,8 @@ strategies
    * Include from some location in the include path
    */
   pack-stratego-parse-stratego =
-      ?(IncludeFromPath(<id>), includes)
+    ?(IncludeFromPath(<id>), includes)
+	  
     ; if has-extension(|"str") then
         remove-extension
       end
@@ -167,6 +175,7 @@ strategies
       )> includes
     ; (id, report-ambs)
     ; pack-fc(|"Stratego-Sugar-Cong")
+	
 
   pack-fc(|format) =
     where(
@@ -196,7 +205,7 @@ strategies
 
   pack-include-pathname :
     file -> (file, tree)
-      where has-extension(|"rtree")
+      where  has-extension(|"rtree")
           ; pack-log-include
           ; <ReadFromFile> file => tree
 

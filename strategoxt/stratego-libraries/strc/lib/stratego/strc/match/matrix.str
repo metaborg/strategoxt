@@ -1,7 +1,8 @@
-module matrix
+module stratego/strc/match/matrix
 
 imports Stratego 
 	stratego/strc/match/automaton
+	stratego/strc/lib/stratlib
 
 signature
   /* subsorts Matrix < Strat */

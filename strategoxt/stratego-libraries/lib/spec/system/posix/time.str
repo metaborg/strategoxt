@@ -1,4 +1,15 @@
 module system/posix/time
+
+imports
+	
+	term/integer
+	term/common
+	
+	util/config/common
+	util/config/options
+	
+	system/io/term
+
 strategies
 
   /* The times() function stores the current process times in a quadruple 

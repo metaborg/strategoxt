@@ -1,0 +1,41 @@
+module pluto/builder
+
+imports cleardep/fileutils
+imports pluto/builderfactory
+
+// DONT RENAME THIS MODULE, THE ANT SCRIPT CHECKS WHETHER JAVA FILES FOR THIS MODULE ARE CREATED
+// DO DETERMINE WHETHER THE COMPILER WAS COMPILED BY THE SEPARATE COMPILATION COMPILER
+strategies
+	
+	require = 
+		log (|Vomit(), ["Require ", <id>]);
+		path-get-full-path;
+		prim("PlutoInterface_Builder_Require", |<Builder>)
+	
+	require-stamper(|stamper) =
+		log (|Vomit(), ["Require ", <id>]);
+		path-get-full-path;
+		prim("PlutoInterface_Builder_RequireStamper", |<Builder>, stamper)
+		  
+	require-build = scope-builder(
+		log (|Vomit(), ["Require Build", <id>]);	
+		log(|Notice(), ["Call require build primitive"]);
+		prim("PlutoInterface_Builder_RequireBuild", |<Builder>);
+		log(|Vomit(), ["Successful with " , <id>]))
+		
+	require-build-stamper(|stamper) = scope-builder(
+		log (|Vomit(), ["Require Build", <id>]);	
+		log(|Notice(), ["Call require build primitive"]);
+		prim("PlutoInterface_Builder_RequireBuildStamper", |<Builder>, stamper);
+		log(|Vomit(), ["Successful with " , <id>]))
+		
+	provide-for(|input) = 
+		log(|Vomit(), ["Provide for ", <id>]);
+		path-get-full-path;
+		prim("PlutoInterface_Builder_ProvideFor", |<Builder>, input);
+		log(|Vomit(), ["Succesfull provided for ", input])
+		
+	builder-report-message(|message) = 
+		where (prim("PlutoInterface_Builder_ReportMessage", |<Builder>, message))
+		
+		

@@ -9,7 +9,7 @@ TODO
 
 */
 
-module effects-analysis
+module stratego/strc/opt/effects-analysis
 imports libstratego-lib Stratego-Core
 signature
   constructors

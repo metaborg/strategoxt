@@ -31,6 +31,8 @@
 	<property name="install-prefix" location="${install-prefix-out}" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt" />
 	<property name="subdists-install-prefix" location="sub-dist" />
+	
+	<property name="strj-enable-forward-declarations" value="false"/>
 
 	<target name="all" depends="explain, build" />
 
@@ -74,6 +76,7 @@
 			<property name="base-strategoxt" value="${base-strategoxt}" />
 			<property name="repository.syntax" location="${subdists-install-prefix}" />
 			<property name="repository.libraries" location="${subdists-install-prefix}" />
+			<property name="strj-enable-forward-declarations" value="${strj-enable-forward-declarations}"/>
 			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="all" />
 		</subant>

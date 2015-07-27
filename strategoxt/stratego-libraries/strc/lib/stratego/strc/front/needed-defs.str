@@ -3,7 +3,7 @@
  * join the bodies of operators with multiple definitions.
  */
 
-module needed-defs
+module stratego/strc/front/needed-defs
 imports Stratego 
 	stratego/strc/front/DefaultStrat 
 	stratego/strc/front/desugar 
@@ -147,9 +147,13 @@ strategies
    */
 
   joindefs = 
+  	partition(?ExtSDef(_,_,_) + ?ExtSDefInl(_,_,_,_));
+	?(externals, internals);
+	!internals;
     joinannodefs(JoinDefs1 <+ JoinDefs2)
-  <+
-    JoinDefsExt
+	
+//  <+
+//  JoinDefsExt
   
   joinannodefs(s) =
     if filter(?AnnoDef(<id>, _)); concat; not([]); make-set => annos then
@@ -197,11 +201,11 @@ rules
   JoinDefsExt =
     fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
     ; fetch(?SDefT(f,_,_,_))
-    ; <debug(!"error: redefining external definition: ")> f
-    ; giving-up
+  //  ; <debug(!"error: redefining external definition: ")> f
+   // ; giving-up
 
   choices = 
-    foldr(!Fail(), !Choice(<Fst>,<Snd>))
+    foldr(!Fail(), !Choice(<Snd>,<Fst>))
 
 rules
 

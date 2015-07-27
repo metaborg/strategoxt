@@ -1,7 +1,12 @@
 /**
  * Utils for properties of SDF productions
  */
-module sdf/production/utils
+module lib/sdf/production/utils
+
+imports libstratego-sdf
+imports libstratego-rtg
+imports lib/sdf/production/attributes
+
 strategies
 
   /**

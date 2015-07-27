@@ -1,0 +1,18 @@
+module separate-compilation/booleans
+
+signature
+	constructors
+		True:  Boolean
+		False: Boolean
+	
+		
+strategies
+	
+	b-or: (True(), _) -> True()
+	b-or: (_, True()) -> True()
+	b-or: _ -> False()
+	
+	b-true = ? True()
+	
+	b-strategy-successful(s) = 
+		if s then !True() else !False() end

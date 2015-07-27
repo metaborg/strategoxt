@@ -6,7 +6,7 @@
  *
  * @author Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module sdf-ensugar
+module lib/sdf-ensugar
 imports libstratego-lib libstratego-aterm libstratego-sglr
 strategies
 

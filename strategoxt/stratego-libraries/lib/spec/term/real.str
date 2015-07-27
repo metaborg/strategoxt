@@ -9,6 +9,10 @@
  * @author Karl Trygve Kalleberg <karltk@strategoxt.org> - documentation
  */
 module term/real
+
+imports
+	collection/tuple/cons
+
 strategies
 
   /** Predicate to check if the current term is a real number.

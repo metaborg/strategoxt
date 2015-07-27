@@ -1,0 +1,19 @@
+module separate-compilation/stamper/rtree
+
+imports cleardep/fileutils
+imports pluto/stamper
+imports separate-compilation/create-signature
+
+strategies
+	
+	rtree-stamper = let
+	
+		stamp-rtree = 
+			path-get-full-path;
+			ReadFromFile;
+			externals-to-signature;
+			checksum
+	
+	in
+		stamper(stamp-rtree | "RTreeStamper") 
+	end

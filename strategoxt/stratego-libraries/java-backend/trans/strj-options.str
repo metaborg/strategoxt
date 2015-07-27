@@ -14,6 +14,8 @@ imports
   s2j
   strj-version
   strj
+  separate-compilation/separate-compilation-options
+  separate-compilation/std-lib-utils
 
 strategies
 
@@ -21,10 +23,10 @@ strategies
     <set-config> ("VERSION", <strc-version-number>)
   ; <set-config> ("--verbose", 1)
   ; <set-config> ("--statistics", 1)
-  ; <set-config> ("-O", 2)
+  ; <set-config> ("-O", 0)
   ; <set-config> ("-I", [])
   ; <set-config> ("--no-concrete-syntax-externals", 1)
-  ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib"])
+  ; <post-extend-config> ("-la", [<translate-default-library>"stratego-lib"])
  
   strj-parse-options =
     with(
@@ -81,7 +83,8 @@ strategies
   <+ ArgOption(fail, fail, !"")
   <+
     s2j-library-options
-
+  <+
+    separate-compilation-options
   <+ ArgOption(fail, fail, !"")
   <+ ArgOption(fail, fail, !"Configuration of the Stratego compiler:")
   <+ ArgOption(fail, fail, !"")

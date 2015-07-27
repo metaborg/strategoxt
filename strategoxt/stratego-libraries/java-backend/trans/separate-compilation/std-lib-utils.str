@@ -1,0 +1,42 @@
+module separate-compilation/std-lib-utils
+
+
+
+strategies
+	
+	// Returns the rtree file for a default library import like libstrategolib
+		is-default-lib-rtree =
+			  ?"libstratego-lib" + ?"libstrategolib" + ?"libstratego-xtc"
+			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
+			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
+			+ ?"libstratego-parallel" + ?"libstrc"
+			
+		remove-lib-prefix: "libstrc" -> "stratego-strc"
+		remove-lib-prefix: "libstrategolib" -> "stratego-lib"
+		remove-lib-prefix = try(
+			  explode-string
+			; ?['l', 'i', 'b' | libname]
+			; !libname
+			; implode-string
+			)
+	
+	  
+  // For compatibility, allow a number of built-in library names
+  // Translates the -la flag for these libraries to correct ones
+  translate-default-library =
+	switch id
+	case "stratego-aterm" + "stratego-gpp" + "stratego-rtg" + "stratego-sdf" + "stratego-sglr" + "stratego-tool-doc":
+		<conc-strings> ("org.strategoxt.", <explode-string;map(if ?'-' then !'_' else id end);implode-string>)
+	case "stratego-strc" + "strc":
+		!"org.strategoxt.strc"
+	case "java-front":
+		!"org.strategoxt.javafront"
+	case "stratego-lib":
+		!"org.strategoxt.stratego_lib_posix_xsi"
+	case "stratego-xtc":
+		!"org.strategoxt.stratego_xtc_posix_xsi"
+	case "stratego-parallel":
+		<conc-strings> ("org.strategoxt.lang.parallel.", <id>)
+	otherwise:
+		fail
+	end

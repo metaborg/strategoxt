@@ -2,6 +2,8 @@ module system/posix/process-abstractions
 imports 
   system/posix/process
   system/posix/signal
+  system/posix/file
+  
   util/log
 
 /**

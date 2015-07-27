@@ -11,6 +11,10 @@
  * should be some derived production for regular expressions.
  */
 module stratego/asfix/implode/constructor
+
+imports stratego/asfix/signature
+imports stratego/asfix/implode/lexical
+
 strategies
 
   ReplCons(impl) =

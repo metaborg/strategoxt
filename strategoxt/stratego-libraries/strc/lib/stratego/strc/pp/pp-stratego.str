@@ -1,9 +1,12 @@
-module pp-stratego
+module stratego/strc/pp/pp-stratego
 
 imports 
   libstratego-lib
   libstratego-xtc 
+  libstratego-gpp
   stratego/strc/pp/stratego-parenthesize
+  stratego/strc/front/stratego-ensugar
+  stratego/strc/pp/stratego2abox
 
 signature
   constructors

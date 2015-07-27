@@ -2,6 +2,15 @@
  * Main interface to the GPP library.
  */
 module stratego/gpp/Main
+
+imports stratego/gpp/BoxToText
+imports stratego/gpp/PpTableIO
+imports stratego/gpp/AstToBox
+imports libstratego-xtc
+imports libstratego-lib
+imports libstratego-sglr
+imports pp-table
+
 strategies
 
   /**

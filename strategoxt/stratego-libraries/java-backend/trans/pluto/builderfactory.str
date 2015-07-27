@@ -1,0 +1,41 @@
+module pluto/builderfactory
+
+imports libstrategolib
+imports cleardep/fileutils
+imports pluto/singleton-store
+
+strategies
+	
+	scope-builder(s) = {builder:
+			where(builder:= <Builder <+ !()>);
+			s;
+			where(if <not(eq)> (builder, ()) then rules(Builder: _ -> builder) end )
+		}
+	
+	// The dynamic rule Builder is used by require/provide etc to refer to the running builder
+	scope-builder-and-build(build-strategy) = 
+		// For some reasons, scoping Builder does not work, do it manually
+		scope-builder(
+		{|Builder: {builder, input, output: 
+			log(|Vomit(), ["Scope builder ", <id>]);
+			?(builder, input);
+			rules(Builder : _ -> builder);
+			log(|Vomit(), ["Call builder ", <id>]);
+			<build-strategy> input => output;
+			!output
+		}|})
+	
+	builder-factory(description-strategy, persistent-path-strategy, build-strategy | factory-name) =
+		
+		let 
+			
+			flat-persistent-path = 
+	    		persistent-path-strategy;
+	    		path-get-full-path
+	    in
+			
+		create-pluto-singleton(
+			  prim("PlutoInterface_MakeBuilderFactory", description-strategy, flat-persistent-path, scope-builder-and-build(build-strategy) | factory-name)
+			| factory-name)
+	    end
+	    

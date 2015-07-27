@@ -7,7 +7,7 @@
  * form. 
  */
 
-module normalize-spec
+module stratego/strc/front/normalize-spec
 imports libstratego-lib Stratego-Sugar 
 	stratego/strc/front/desugar 
 strategies

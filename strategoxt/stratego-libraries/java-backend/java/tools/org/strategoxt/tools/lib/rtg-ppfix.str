@@ -1,7 +1,7 @@
 /**
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */ 
-module rtg-ppfix
+module lib/rtg-ppfix
 imports
   libstratego-lib
   libstratego-rtg

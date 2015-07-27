@@ -1,4 +1,4 @@
-module test114a
+module test114
 
 imports
   libstratego-lib

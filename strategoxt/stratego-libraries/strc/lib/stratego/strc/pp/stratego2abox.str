@@ -1,4 +1,4 @@
-module stratego2abox
+module stratego/strc/pp/stratego2abox
 imports 
   libstratego-lib
   Stratego-Sugar

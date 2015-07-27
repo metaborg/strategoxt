@@ -1,0 +1,79 @@
+module separate-compilation/builder/parse-stratego-builder
+
+imports libstrategolib
+imports libstrc
+imports cleardep/fileutils
+imports pluto/builder
+imports pluto/builderfactory
+imports separate-compilation/utils
+imports separate-compilation/fileutils
+
+imports separate-compilation/builder/deps-path
+imports separate-compilation/stamper/file-exists
+
+signature
+	constructors
+		ParseStrategoInput : Path * IncludePath * OutputFolder -> ParseStrategoInput
+		ParseStrategoOutput : ModuleName * AST -> ParseStrategoOutput
+		NoModule : NoModule
+		
+strategies
+	
+	parse-stratego-input-for-module = {module-name, pack-include-path, output-folder, source-file: \
+		(module-name, pack-include-path, output-folder) -> (source-file, ParseStrategoInput(source-file, pack-include-path, output-folder))	
+		where
+			source-file := <fetch-elem({dir:\IncludeDir(dir) -> <path-add-extension(|"str");where(path-exists)> RelativePath(AbsolutePath(dir), module-name)\})> pack-include-path;
+			<require-stamper(|<file-exists-stamper>)> source-file
+		\}
+	
+	parse-stratego-builder-factory = let
+	
+		description = {file: \
+			ParseStrategoInput(RelativePath(_,file), _, _) -> <conc-strings> ("Parse ", file)
+			\} <+ {file: \
+			ParseStrategoInput(file, _, _) -> <conc-strings> ("Parse ", <path-get-full-path> file)
+			\}
+			
+		persistent-path = {file, include-path, output-folder, relative-path: \
+			ParseStrategoInput(file, include-path, output-folder) -> <get-dep-path(|"parse", output-folder)> relative-path
+			where
+				<fetch-elem({dir: \IncludeDir(dir) -> <path-relativize(|AbsolutePath(dir))> file\})> include-path => RelativePath(_, relative-path)
+			\} <+{output-folder: \
+			ParseStrategoInput(_, _, output-folder) -> <get-dep-path(|"parse-abs", output-folder)> "init"
+			\}
+			
+		build = let
+			extract-module-name = {name: \Module(name,_) -> name\}
+		in {file, pack-include-path, ast, module-name, file-path, meta-file: 
+			log(|Notice(), "A");
+			?ParseStrategoInput(file, pack-include-path,_);
+			log(|Notice(), "B");
+			<require> file;
+			<path-replace-extension(|"meta")> file => meta-file;
+			<require> meta-file; // Require meta file whether it exists or not -> when the file is added or deleted, reparsing is required, too
+			log(|Notice(), "C");
+			<path-get-full-path> file => file-path;
+			log(|Notice(), "D");
+			!(IncludePathName(file-path),pack-include-path);
+			log(|Notice(), "E");
+			(separate-compilation-parse-file 
+			<+ (log(|Error(), ["File not found: ", <id>]); fail)) => (_, ast);
+			log(|Notice(), "F");
+			<extract-module-name <+ !NoModule()> ast => module-name; // NoModule if no module but a specification term
+			log(|Notice(), "G");
+			!ParseStrategoOutput(module-name, ast)
+     	} end 
+	
+	in
+		builder-factory(
+			description,
+			persistent-path,
+			build | "ParseStrategoBuilderFactory"
+		)
+	end
+	
+	
+			
+	
+	
+	

@@ -1,4 +1,4 @@
-module worker-wrapper
+module stratego/strc/opt/worker-wrapper
 imports Stratego stratego/strc/lib/stratlib
 strategies
 

@@ -1,5 +1,10 @@
-module defs-to-external-defs
-imports libstratego-lib Stratego
+module stratego/strc/opt/defs-to-external-defs
+
+imports
+	libstratego-lib
+	Stratego
+	stratego/strc/lib/stratlib
+
 strategies
 
   dted-options =
@@ -9,10 +14,17 @@ strategies
   
 strategies // extract external definitions
 
+//With overlays
   defs-to-external-defs =
     Specification(
-      [Signature([Constructors(filter-exported-constructors)]), 
+      [Signature([Constructors(filter-exported-constructors)]), id,
        Strategies(filter-exported-strategies)])
+
+//Without
+   defs-to-external-defs =
+     Specification(
+       [Signature([Constructors(filter-exported-constructors)]),
+        Strategies(filter-exported-strategies)])
 
 
 strategies // exported strategies

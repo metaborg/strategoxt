@@ -1,5 +1,9 @@
-module strc-options
-imports stratego/strc/front/stratego-warnings-options
+module stratego/strc/strc/strc-options
+
+imports
+	stratego/strc/front/stratego-warnings-options
+	libstratego-xtc
+	stratego/strc/pack/pack-stratego
 
 signature
   constructors

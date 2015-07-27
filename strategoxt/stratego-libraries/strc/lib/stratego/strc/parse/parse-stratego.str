@@ -1,9 +1,11 @@
-module parse-stratego
+module stratego/strc/parse/parse-stratego
 imports
   libstratego-xtc
   Stratego
   libstratego-lib
   libstratego-sglr
+  stratego/strc/parse/meta-explode
+  stratego/strc/front/desugar
   
 /**
  * Structure of meta files.

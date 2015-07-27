@@ -1,0 +1,64 @@
+module separate-compilation/separate-compilation-options
+
+imports libstratego-lib
+
+strategies
+	separate-compilation-options =
+		 ArgOption(
+			  "--library-path"
+			, process-library-path; !()
+			, !"--library-path l=p     Sets the path for the rtree file for the library l to p"
+		)
+		+ Option (
+			  "--independent-java-compilation"
+			, <set-config> ("--independent-java-compilation", ()); !()
+			, !"--independent-java-compilation    Allows the generated Java code to be compiled without required libraries in classpath (moreover, each strategy can be compiled independent)"
+		)
+		+ Option(
+			  "--generate-stdlib-import"
+			, <set-config> ("--generate-stdlib-import", ());log(|Info(), "Imports to stdlib will be generated"); !()
+			, !"--generate-stdlib-import          Generates an import to the standard-library for each module"
+		)
+		+ Option(
+			  "--remove-overlays-from-externals"
+			, <set-config> ("--remove-overlays-from-externals", ());log(|Info(), "Overlays will be removed from externals for modules, for which the compiler is called.");!()
+			, !"--remove-overlays-from-externals  Removes externals from modules externals, for backward compatability."
+		)
+		+ Option(
+			  "--global-compilation"
+			, <set-config> ("--global-compilation",());!()
+			, !"--global-compilation              All modules will be merged and compiled as a single module"
+		)
+		
+		
+	process-library-path = 
+		  implode-string
+		; split-at(|'=')
+		; tmap(explode-string)
+		; ?(lib-name, <id>)
+		; try(unquote(?'"'))
+		; ?rtree-path
+		; !"--library-path"
+		; (get-config <+ ![])
+		; !("--library-path" , [(lib-name, rtree-path)|<id>])
+		; set-config
+		; !rtree-path
+		; validate-library-path(|lib-name)
+		
+	validate-library-path(|lib-name) =
+		if has-extension(|"rtree"); file-exists
+			then log(|Info(), ["Set library path for ", lib-name, " to ", <id>])
+			else log(|Error(), ["Invalid path for library ", lib-name , ": ", <id>]); fail
+		end
+	
+	is-independent-java-compilation =
+		  where(<get-config> "--independent-java-compilation")
+		  
+	is-generate-stdlib-import =
+		  where(<get-config> "--generate-stdlib-import")
+	
+	is-remove-overlays-from-externals =
+		  where(<get-config> "--remove-overlays-from-externals")
+		  
+    is-global-compilation =
+		  where(<get-config> "--global-compilation")

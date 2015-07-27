@@ -1,0 +1,143 @@
+module separate-compilation/fileutils
+
+imports libstratego-xtc
+imports libstrc
+imports cleardep/fileutils
+
+strategies
+		separate-compilation-get-file : name->
+			FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
+		separate-compilation-get-relative-file : name->
+			<pack-include-path;fetch-elem(
+				\IncludeDir(dir) -> 
+					<where(<concat-strings; file-exists> [dir,"/", name, ".str"])>
+						 RelativePath(AbsolutePath(dir), <concat-strings> [name, ".str"])\)>
+		
+		
+		
+		separate-compilation-modify-filename(s) =
+			  string-tokenize(|['/'])
+			; map(s)
+			; !(<id>, "")
+			; foldl({a,b:
+				  ?(a,b)
+				; if !b; ?"" 
+					then !a
+					else ![b,"/",a];concat-strings
+				  end}
+			  )
+			
+		separate-compilation-replace-file = 
+			let
+				cut-until-slash = explode-string;reverse;drop-until(?'/');reverse;implode-string
+				in \(filePath, newName) -> <conc-strings> (<cut-until-slash> filePath, newName)\ end
+			
+
+			    pack-include-from-dir-exists(|mod) :
+			      IncludeDir(dir) ->  <concat-strings; file-exists> [dir,"/", mod, ".str"]
+			  
+				  pack-include-from-xtc-exists(|mod) :
+				    IncludeXTC() -> <conc-strings; xtc-find-loc> (mod, ".str")
+
+
+	file-get-module-file(|module-name, file-extensions) =
+		  ?IncludeDir(dir)
+		; !file-extensions
+		; fetch-elem(
+			{file-extension:
+				  ?file-extension
+				; !RelativePath(AbsolutePath(dir), <concat-strings>[ module-name, file-extension])
+				; where(path-exists)
+			})	
+		
+	xtc-get-module-file(|module-name, file-extensions) =
+		  ?IncludeXTC()
+		; !file-extensions
+		; fetch-elem(
+			{file-extension:
+				  ?file-extension
+				; ![module-name, file-extension]
+				; concat-strings
+				; xtc-find-loc
+			})	
+		
+		
+	get-module-file(|module-name, file-extensions) =
+		file-get-module-file(|module-name, file-extensions)
+		<+ xtc-get-module-file(|module-name, file-extensions)
+		
+	is-module-available-get-relative-file =
+		  ?(IncludeFromPath(<id>), includes)
+		; if has-extension(|"str") then
+			remove-extension
+		  end
+		; ?module-name
+		; !includes
+		; fetch(get-module-file(|module-name, [".str", ".rtree"]); ?file)
+		; !file
+		  
+	is-module-available-get-file = 
+		is-module-available-get-relative-file
+		; path-get-full-path
+		
+		
+	
+	  separate-compilation-check-file = 
+	     let pack-qualify-pathname =
+	             where(explode-string => cs)
+	           ; if <pack-is-qualified> cs then
+	               id
+	             else
+	               <implode-string> ['.', '/' | cs]
+	             end
+ 
+	          pack-is-qualified =
+	            ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
+
+	      in ?(IncludePathName(<pack-qualify-pathname>), _)
+	       ; if file-exists then
+	            pack-include-pathname
+	            ; (id,report-ambs)
+	              // (id, xtc-transform(!"report-ambs")) // EV
+	            ; pack-fc(|"Stratego-Sugar-Cong")
+	          else
+			  fail
+	          end
+	     end
+	
+	    separate-compilation-parse-file =
+	       ?(IncludeFromPath(<id>), includes)
+	      ; if has-extension(|"str") then
+	          remove-extension
+	        end
+	      ;  ?mod
+	      ;  <fetch-elem(
+	             pack-include-from-dir(|mod)
+	             <+ pack-include-from-xtc(|mod)
+	           )
+	         > includes
+	      ; (id, report-ambs)
+	      ; pack-fc(|"Stratego-Sugar-Cong")
+	  
+		  separate-compilation-parse-file = 
+	      let pack-qualify-pathname =
+	              where(explode-string => cs)
+	            ; if <pack-is-qualified> cs then
+	                id
+	              else
+	                <implode-string> ['.', '/' | cs]
+	              end
+  
+	           pack-is-qualified =
+	             ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
+
+	       in ?(IncludePathName(<pack-qualify-pathname>), _)
+	        ; if file-exists then
+	            pack-include-pathname
+	            ; (id,report-ambs)
+	              // (id, xtc-transform(!"report-ambs")) // EV
+	            ; pack-fc(|"Stratego-Sugar-Cong")
+	          else
+			  fail
+	          end
+	      end

@@ -2,15 +2,30 @@
  * An xtc-less implementation of the compiler front-end.
  */
 
-module frontend
+module stratego/strc/front/frontend
 
 imports
   stratego/strc/strc/format-check
+  stratego/strc/model/model
+  stratego/strc/opt/defs-to-external-defs
+  stratego/strc/front/add-main
+  stratego/strc/front/check-constructors
+  stratego/strc/front/expand-overlays
+  stratego/strc/front/call-graph
+  stratego/strc/front/raise-annotations
+  stratego/strc/front/use-def
+  stratego/strc/front/rules-to-sdefs
+  stratego/strc/front/desugar-list-matching
+  stratego/strc/front/needed-defs
+  stratego/strc/opt/define-congruences
+  stratego/strc/front/repair-types
+  stratego/strc/front/introduce-congdefs
+  
 
 strategies
 
-  frontend = 
-    m-transform-no-overlays(id
+  frontend = {| HoArg, RenameVar, CallSignature, SameSigExtDef:
+    m-transform(id
 
       // add some definitions and constructors
 
@@ -74,6 +89,13 @@ strategies
         ))
 
       ; m-lift-dynamic-rules-from-spec
+	  
+	  // Need to desguar generated rules for dynamic rules, too
+      ; m-transform-local-defs(map(id
+          ; m-repair-types
+          ; pre-desugar-without-once		
+          ; raise-annotations
+        ))
 
       ; check-calls
 
@@ -100,8 +122,8 @@ strategies
 
       ; m-transform-external-defs(id
           ; if ?[_,_|_] then
-              warn(|"multiple external definitions with same signature")
-	        ; [rules(SameSigExtDef :+= <id>) | ![]]
+          //    warn(|"multiple external definitions with same signature")
+	         [rules(SameSigExtDef :+= <id>) | ![]]
             end
           ; [RenameSDef
              ; desugar-DefaultVarDec
@@ -118,7 +140,7 @@ strategies
               
       ; if-lib(remove-unused-external-defs, remove-unused-defs)
     )
-    ; tfc1(|"Stratego-Core", "fe-cong")
+    ; tfc1(|"Stratego-Core", "fe-cong") |}
 
 strategies
 

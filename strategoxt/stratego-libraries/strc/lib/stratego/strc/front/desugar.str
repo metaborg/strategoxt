@@ -6,6 +6,10 @@
 
 module stratego/strc/front/desugar
 
+imports
+	stratego/strc/front/variables-to-constructors
+	stratego/strc/front/lift-dynamic-rules
+
 imports 
   Stratego-Sugar
   stratego/strc/lib/stratlib
@@ -49,6 +53,12 @@ strategies // Desugaring Strategies
         ; try(DesugarOnce)
       , try(DefLRule <+ DefScopeDefault)
     )
+    pre-desugar-without-once =
+      downup(
+          repeat(Desugar <+ VarToConst <+ DefDynRuleScope)
+          
+        , try(DefLRule <+ DefScopeDefault)
+      )
 
   stratego-desugar =
     topdown(repeat(Desugar))
@@ -663,12 +673,12 @@ rules // variable declarations
     topdown(try(DesugarDefaultVarDec))
 
   DesugarDefaultVarDec :
-    SDefT(f, s1, t1, s) -> SDefT(f, s2, t2, s)
+    SDefT(f, s1, t1, s){a*} -> SDefT(f, s2, t2, s){a*}
     where <map(try(MkFunType))> s1 => s2
         ; <map(try(MkConstType))> t1 => t2
 
   DesugarDefaultVarDec :
-    ExtSDef(f, s1, t1) -> ExtSDef(f, s2, t2)
+    ExtSDef(f, s1, t1){a*} -> ExtSDef(f, s2, t2){a*}
     where <map(try(MkFunType))> s1 => s2
         ; <map(try(MkConstType))> t1 => t2
 

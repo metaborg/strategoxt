@@ -1,4 +1,4 @@
-module switch-semantics-test
+module test85
 imports libstratego-lib
 strategies
 

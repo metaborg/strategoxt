@@ -4,8 +4,22 @@
  * @todo: refactor to use source model
  */
 
-module optimizer
-imports Stratego stratego/strc/opt/stratego-laws libstratego-lib
+module stratego/strc/opt/optimizer
+
+imports
+	Stratego
+	stratego/strc/opt/stratego-laws
+	libstratego-lib
+	stratego/strc/opt/fusion
+	stratego/strc/opt/inlining
+	stratego/strc/front/add-main
+	stratego/strc/opt/dead-def-elim
+	stratego/strc/opt/opt-lib
+	stratego/strc/match/compile-match
+	stratego/strc/opt/bound-unbound-vars
+	stratego/strc/opt/worker-wrapper
+	stratego/strc/opt/simplify1
+	stratego/strc/match/desugar-case
 
 strategies
 

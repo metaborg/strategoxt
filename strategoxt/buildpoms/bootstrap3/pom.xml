@@ -20,6 +20,7 @@
     <strategoxt-baseline-id>strategoxt-distrib-bootstrap2</strategoxt-baseline-id>
     <strategoxt-build-location>${basedir}/../../</strategoxt-build-location>
     <strategoxt-assembly-location>${basedir}/../assembly.xml</strategoxt-assembly-location>
+	<strj-enable-forward-declarations>false</strj-enable-forward-declarations>
   </properties>
 
   <dependencies>

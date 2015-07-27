@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -45,6 +47,7 @@
 
 	<target name="build-stratego-strj">
 		<mkdir dir="${bin.stratego}/org/strategoxt/strj" />
+
 		<strj input="trans/strj.str" output="${bin.stratego}/org/strategoxt/strj/Main.java" package="org.strategoxt.strj">
 			<strjargs>
 				<arg value="-la" />
@@ -76,9 +79,59 @@
 			</str-deps>
 		</strj>
 	</target>
+	
+	<macrodef name="java-backend-strj-lib-temp">
+		<attribute name="input"/>
+		<attribute name="output"/>
+		<attribute name="package"/>
+		<element name="libargs"/>
+		<element name="deps" optional="true"/>
+		<sequential>
+			<strj-lib input="@{input}" output="@{output}" package="@{package}">
+				<strjlibargs>
+					<libargs/>
+				</strjlibargs>
+				<str-deps>
+					<deps/>
+				</str-deps>
+			</strj-lib>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="java-backend-strj-lib">
+		<attribute name="input"/>
+		<attribute name="output"/>
+		<attribute name="package"/>
+		<element name="strjlibargs"/>
+		<element name="str-deps" optional="true"/>
+		<sequential>
+			<if-separate-compilation>
+				<separate>
+					<java-backend-strj-lib-temp input="@{input}" output="${bin.stratego}/org/strategoxt/" package="org.strategoxt">
+						<libargs>
+							<strjlibargs/>
+						</libargs>
+						<deps>
+							<str-deps/>
+						</deps>
+					</java-backend-strj-lib-temp>
+				</separate>
+				<global>
+					<java-backend-strj-lib-temp input="@{input}" output="@{output}" package="@{package}">
+						<libargs>
+							<strjlibargs/>
+						</libargs>
+						<deps>
+							<str-deps/>
+						</deps>
+					</java-backend-strj-lib-temp>
+				</global>
+			</if-separate-compilation>
+		</sequential>
+	</macrodef>
 
 	<target name="build-stratego-tools">
-		<strj-lib input="java/tools/org/strategoxt/tools/tools.str" output="${bin.stratego}/org/strategoxt/tools/Main.java" package="org.strategoxt.tools">
+		<java-backend-strj-lib input="java/tools/org/strategoxt/tools/tools.str" output="${bin.stratego}/org/strategoxt/tools/Main.java" package="org.strategoxt.tools">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -127,14 +180,24 @@
 				<srcfiles dir="${dep.sdf-front}" includes="**/*" />
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
-		</strj-lib>
-		<copy file="java/tools/org/strategoxt/tools/libtools.ctree" todir="${bin}" />
-		<copy file="java/tools/org/strategoxt/tools/libtools.rtree" todir="${bin}" />
+		</java-backend-strj-lib>
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin.stratego}/org/strategoxt/tools/tools.rtree" tofile="${bin}/libtools.rtree" />
+			</separate>
+			<global>
+				<copy file="java/tools/org/strategoxt/tools/libtools.ctree" todir="${bin}" />
+				<copy file="java/tools/org/strategoxt/tools/libtools.rtree" todir="${bin}" />
+			</global>
+		</if-separate-compilation>
+		
 	</target>
+	
+	
 
 	<target name="build-stratego-java-compat">
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/jsglr-parser-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java" package="org.strategoxt.lang.compat.override.jsglr_parser_compat">
+		<java-backend-strj-lib input="java/runtime/org/strategoxt/lang/compat/override/jsglr-parser-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java" package="org.strategoxt.lang.compat.override.jsglr_parser_compat">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -145,60 +208,60 @@
 				<arg value="-la" />
 				<arg value="stratego-gpp" />
 			</strjlibargs>
-		</strj-lib>
+		</java-backend-strj-lib>
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/performance_tweaks" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/performance-tweaks.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/performance_tweaks/Main.java" package="org.strategoxt.lang.compat.override.performance_tweaks">
+		<java-backend-strj-lib input="java/runtime/org/strategoxt/lang/compat/override/performance-tweaks.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/performance_tweaks/Main.java" package="org.strategoxt.lang.compat.override.performance_tweaks">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 			</strjlibargs>
-		</strj-lib>
+		</java-backend-strj-lib>
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance/Main.java" package="org.strategoxt.lang.compat.override.gpp_performance">
+		<java-backend-strj-lib input="java/runtime/org/strategoxt/lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance/Main.java" package="org.strategoxt.lang.compat.override.gpp_performance">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 				<arg value="-la" />
 				<arg value="stratego-gpp" />
 			</strjlibargs>
-		</strj-lib>
+		</java-backend-strj-lib>
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/xtc_compat" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/xtc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/xtc_compat/Main.java" package="org.strategoxt.lang.compat.override.xtc_compat">
+		<java-backend-strj-lib input="java/runtime/org/strategoxt/lang/compat/override/xtc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/xtc_compat/Main.java" package="org.strategoxt.lang.compat.override.xtc_compat">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 				<arg value="-la" />
 				<arg value="stratego-xtc" />
 			</strjlibargs>
-		</strj-lib>
+		</java-backend-strj-lib>
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/native_calls_compat" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/native-calls-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/native_calls_compat/Main.java" package="org.strategoxt.lang.compat.override.native_calls_compat">
+		<java-backend-strj-lib input="java/runtime/org/strategoxt/lang/compat/override/native-calls-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/native_calls_compat/Main.java" package="org.strategoxt.lang.compat.override.native_calls_compat">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 				<arg value="-la" />
 				<arg value="stratego-xtc" />
 			</strjlibargs>
-		</strj-lib>
+		</java-backend-strj-lib>
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/java_integration" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/java-integration.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/java_integration/Main.java" package="org.strategoxt.lang.compat.override.java_integration">
+		<java-backend-strj-lib input="java/runtime/org/strategoxt/lang/compat/override/java-integration.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/java_integration/Main.java" package="org.strategoxt.lang.compat.override.java_integration">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 				<arg value="-la" />
 				<arg value="stratego-xtc" />
 			</strjlibargs>
-		</strj-lib>
+		</java-backend-strj-lib>
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel" />
@@ -206,7 +269,7 @@
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/strc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/Main.java" package="org.strategoxt.lang.compat.override.strc_compat">
+		<java-backend-strj-lib input="java/runtime/org/strategoxt/lang/compat/override/strc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/Main.java" package="org.strategoxt.lang.compat.override.strc_compat">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -255,32 +318,40 @@
 				<srcfiles dir="${dep.libstrc}" includes="**/*" />
 				<srcfiles dir="${dep.java-front}" includes="**/*" />
 			</str-deps>
-		</strj-lib>
+		</java-backend-strj-lib>
 	</target>
 
 
-	<path id="build.classpath">
-		<pathelement location="java/runtime" />
-		<pathelement location="${bin.java}" />
-		<pathelement location="${bin.stratego}" />
-		<pathelement location="java/spoofax-libs.jar" />
-		<pathelement location="${dep.libstrc}/libstrc.jar" />
-		<pathelement location="${dep.libstratego-aterm}/libstratego-aterm.jar" />
-		<pathelement location="${dep.libstratego-sdf}/libstratego-sdf.jar" />
-		<pathelement location="${dep.libstratego-sglr}/libstratego-sglr.jar" />
-		<pathelement location="${dep.libstratego-rtg}/libstratego-rtg.jar" />
-		<pathelement location="${dep.libstratego-gpp}/libstratego-gpp.jar" />
-		<pathelement location="${dep.libstratego-lib}/libstratego-lib.jar" />
-		<pathelement location="${dep.libstratego-xtc}/libstratego-xtc.jar" />
-		<pathelement location="${dep.libstratego-tool-doc}/libstratego-tool-doc.jar" />
-		<pathelement location="${dep.java-front}/java_front.jar" />
-	</path>
+	<target name="set-build-classpath">
+		<if-separate-compilation-property property="strj.runtime-path" separate="java/runtime" global="java/runtime-old"/>
+		<path id="build.classpath">
+			<!-- <pathelement path="${java.class.path}" /> -->
+			<pathelement location="${strj.runtime-path}" />
+			<pathelement location="java/pluto-interface" />
+			<pathelement location="${bin.java}" />
+			<pathelement location="${bin.stratego}" />
+			<pathelement location="java/spoofax-libs.jar" />
+			<pathelement location="java/pluto.jar" /> <!-- is copied to this location by the build-parent pom -->
+			<pathelement location="${dep.libstrc}/libstrc.jar" />
+			<pathelement location="${dep.libstratego-aterm}/libstratego-aterm.jar" />
+			<pathelement location="${dep.libstratego-sdf}/libstratego-sdf.jar" />
+			<pathelement location="${dep.libstratego-sglr}/libstratego-sglr.jar" />
+			<pathelement location="${dep.libstratego-rtg}/libstratego-rtg.jar" />
+			<pathelement location="${dep.libstratego-gpp}/libstratego-gpp.jar" />
+			<pathelement location="${dep.libstratego-lib}/libstratego-lib.jar" />
+			<pathelement location="${dep.libstratego-xtc}/libstratego-xtc.jar" />
+			<pathelement location="${dep.libstratego-tool-doc}/libstratego-tool-doc.jar" />
+			<pathelement location="${dep.java-front}/java_front.jar" />
+		</path>
+	</target>
 
-	<target name="build-java" depends="build-stratego">
+	<target name="build-java" depends="build-stratego, set-build-classpath">
 		<mkdir dir="${bin.java}" />
 		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
-		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
+		<javac srcdir="${strj.runtime-path}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/commandline" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
+		<javac srcdir="java/pluto-interface" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
+		
 	</target>
 
 	<target name="jar" depends="build-java">
@@ -288,6 +359,7 @@
 			<fileset dir="${bin.java}" includes="**/*.class" />
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
+			<zipgroupfileset dir="java" includes="pluto.jar" />
 		</jar>
 	</target>
 
@@ -303,6 +375,7 @@
 		<delete dir="${src-gen}" />
 		<delete dir="${install-location}" />
 		<delete file="java/strategoxt.jar" />
+		<delete file="java/pluto.jar" />
 		<delete>
 			<fileset dir="java" includes="**/*.ctree*, **/*.rtree" />
 		</delete>

@@ -4,6 +4,7 @@ import static org.strategoxt.lang.Term.NO_STRATEGIES;
 import static org.strategoxt.lang.Term.NO_TERMS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.interpreter.util.IAsyncCancellable;
 import org.spoofax.terms.TermFactory;
+import org.strategoxt.lang.LibraryInitializer.InitializerSetEntry;
+import org.strategoxt.lang.compat.CompatLibraryInitializer;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
 
@@ -57,6 +60,8 @@ public class Context extends StackTracer implements IAsyncCancellable {
     private transient AbstractPrimitive lastPrimitive1, lastPrimitive2;
 
 	private transient volatile boolean asyncCancelled;
+	
+	private StrategyCollector strategyCollector;
 
     public Context() {
     	this(new TermFactory());
@@ -120,7 +125,19 @@ public class Context extends StackTracer implements IAsyncCancellable {
         op.setIOAgent(ioAgent);
         super.setIOAgent(ioAgent);
     }
+    
+    public void setStrategyCollector(StrategyCollector strategyCollector) {
+		this.strategyCollector = strategyCollector;
+		this.strategyCollector.addLibraryInitializers(Arrays.asList(
+				new InitializerSetEntry(new CompatLibraryInitializer()),
+				new InitializerSetEntry(new SRTS_LibraryInitializer()),
+				new InitializerSetEntry(new SRTS_EXT_LibraryInitializer())));
+	}
 
+    public StrategyCollector getStrategyCollector() {
+		return strategyCollector;
+	}
+    
 	/**
 	 * Registers a new class loader used for dynamical class loading
 	 * (using {@link SSL_EXT_java_call}).
@@ -172,12 +189,22 @@ public class Context extends StackTracer implements IAsyncCancellable {
     		throws StrategoExit, StrategoException {
 
     	IStrategoList input = toCLITerm(appName, args);
-
+    	System.out.println("Invoke CLI");
     	// Launch with a clean operand stack when launched from SSL_java_call, Ant, etc.
     	if (new Exception().getStackTrace().length > 20) {
-    		return new StackSaver(strategy).invokeStackFriendly(this, input, NO_STRATEGIES, NO_TERMS);
+    		try {
+    		return  new StackSaver(strategy).invokeStackFriendly(this, input, NO_STRATEGIES, NO_TERMS);
+    		} catch (Exception e) {
+    		this.printStackTrace();
+    		throw e;
+    		}
     	} else {
+    		try {
     		return strategy.invoke(this, input);
+    		} catch (Exception e) {
+        		this.printStackTrace();
+        		throw e;
+        		}
     	}
     }
 
@@ -189,10 +216,14 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
 	public IStrategoTerm invokeStrategy(String strategy, IStrategoTerm input)
 			throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
+		Strategy collectedStrategy = getStrategyCollector().getStrategyExecutor(org.spoofax.interpreter.core.Interpreter.cify(strategy) + "_0_0");
+		if (collectedStrategy != null) {
+			return collectedStrategy.invoke(this, input);
+		}
 
 		SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
     	if (caller == null) caller = new SSL_EXT_java_call();
-    	return caller.call(this, strategy, input, false);
+    	return caller.call(this, strategy, input, true);
 	}
 
 	private IStrategoList toCLITerm(String appName, String... args) {
@@ -273,12 +304,4 @@ public class Context extends StackTracer implements IAsyncCancellable {
 		getIOAgent().closeAllFiles();
 		throw new CancellationException("Stratego interpreter cancelled");
 	}
-	
-    public Object contextObject() {
-        return interopContext.contextObject();
-    }
-
-    public void setContextObject(Object context) {
-        interopContext.setContextObject(context);
-    }
 }

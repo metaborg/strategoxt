@@ -9,6 +9,8 @@ imports
   stratego/gpp/PpTableIO
   stratego/gpp/Instantiate
   stratego/gpp/Util
+  pp-table
+  libstratego-sglr
 
 strategies
 

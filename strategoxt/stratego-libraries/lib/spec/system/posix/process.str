@@ -9,6 +9,7 @@ imports
   system/io/dir 
   system/io/char 
   system/io/term 
+  system/error
 
 strategies
 

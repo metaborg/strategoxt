@@ -17,6 +17,8 @@ imports
   strj-options
   s2j
   lib/dr-scoping
+  separate-compilation
+  separate-compilation/create-signature
 
 strategies
 
@@ -42,6 +44,14 @@ strategies
   ; log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
   ; <exit> 1
   
+  
+  strj-back-end =
+  	  try(mark-always-needed(|<get-config> "-m", 0, 0))
+	; strc-output-frontend
+	; s2j
+	; with(clean-output-dir)
+	; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
+  
   strj =
     if FILE(get-extension => "ctree") then
       xtc-ensure-file
@@ -55,16 +65,8 @@ strategies
     else
       dr-scope-all-verbose(
         with(<set-config> ("JAVA_PLATFORM", ()))
-      ; strc-front-end
-      )
-    end
-  ; try(mark-always-needed(|<get-config> "-m", 0, 0))
-  ; strc-optimize
-  ; strc-export-external-defs
-  ; strc-output-frontend
-  ; s2j
-  ; with(clean-output-dir)
-  ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
+      ; strc-front-end1(strj-back-end))
+  end
   
   clean-output-dir =
     if <get-config> "--clean" then
@@ -100,22 +102,18 @@ strategies
     ast -> name
     with
       name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
-      // UNDONE. VladVergu. FastPretty printing only available in C, no more C backend.
-    // ; if FastPrettyPrinting then
-    //     if-c-platform(
-    //       <parenthesize-Java5; pp-java-native> ast
-    //     ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
-    //     )
-    //   else
         ;  file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
         ; box  := <pp-java5-to-abox> ast
         ; <box2text-stream(|80, file)> box
         ; <fclose> file
+		//; where(!comp-units;map({comp-unit:
+		//	  ?comp-unit
+		// TODO Store java files
+		//	; add-generated-file(|comp-unit, AbsolutePath(name))
+	//		}))
       // end
     <+
       output-java-error
-       
-   external pp-java-native(|)
 
    // TODO: Override .dep file location
    
@@ -127,22 +125,22 @@ strategies
      )
      -> x_name'
      with
-       x_name' := <conc-strings> (<output-dirname>, "/", x_name, ".java")
+       x_name' := <conc-strings> (<output-dirname>, x_name, ".java")
    
    output-dirname =
-     OutputDirName
-   <+
-     <get-config> "-o"
+  //   (OutputDirName;where(<debug> "Cache");debug)
+ //  <+
+    <get-config> "-o"
    ; if has-extension(|"java") + has-extension(|"ctree") then
        dirname
      end
    ; try(file-exists <+ mkdir <+ fatal-err(|"Output directory does not exist"))
    ; rules(OutputDirName := <id>)
-   <+
+/*   <+
      strc-getoutfile(!"")
    ; dirname
    ; try(file-exists <+ mkdir)
-   ; rules(OutputDirName := <id>)
+   ; rules(OutputDirName := <id>)*/
 
    // Using XTC for debugging:
    // using something like rtg-format-check(true, true|<java-rtg>) is more expensive atm,

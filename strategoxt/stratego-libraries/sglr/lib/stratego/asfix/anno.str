@@ -1,5 +1,8 @@
 module stratego/asfix/anno
-imports libstratego-lib
+imports 
+	libstratego-lib
+	stratego/asfix/signature
+
 signature
   constructors
     Location: FirstLine * FirstColumn * LastLine * LastColumn -> Location

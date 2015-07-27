@@ -9,6 +9,9 @@ module java-postprocess
 
 imports
   libjava-front
+  strj-options
+  s2j
+  
 
 overlays
 
@@ -138,7 +141,7 @@ strategies
   + SingleElemAnno(id, id)
     
   java-add-alias-classes =
-    try(java-add-alias-class(!"Main"))
+    try(java-add-alias-class(!"__$Main"))
   ; try(java-add-alias-class(ApplicationName))
 
   java-add-alias-class(alias) :

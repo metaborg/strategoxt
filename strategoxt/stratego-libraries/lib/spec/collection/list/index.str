@@ -10,6 +10,8 @@
 module collection/list/index
 imports 
   collection/list/cons 
+  collection/tuple/cons
+  collection/list/common
   strategy/traversal/simple
 
 strategies

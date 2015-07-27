@@ -1,5 +1,6 @@
 module stratego/aterm/PrettyPrintRules
 imports
+  libstratego-lib
   libstratego-gpp
 
 strategies

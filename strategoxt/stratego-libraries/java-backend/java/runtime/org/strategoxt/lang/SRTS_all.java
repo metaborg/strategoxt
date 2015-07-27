@@ -10,9 +10,14 @@ import org.spoofax.interpreter.terms.IStrategoTuple;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SRTS_all extends Strategy {
-	public static SRTS_all instance = new SRTS_all();
+public class SRTS_all extends RegisteringStrategy {
+	private static SRTS_all instance = new SRTS_all();
 
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_all", instance);
+	}
+	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		int termType = current.getTermType();

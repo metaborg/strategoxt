@@ -5,6 +5,8 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<taskdef file="../../separate-compilation.xml" />
 
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
@@ -27,7 +29,9 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_sglr" />
-		<strj-lib input="lib/stratego-sglr.str" output="${bin.stratego}/org/strategoxt/stratego_sglr/Main.java" package="org.strategoxt.stratego_sglr">
+		<if-separate-compilation-property property="sglr.output" separate="org/strategoxt/" global="org/strategoxt/stratego_sglr/Main.java"/>
+		<if-separate-compilation-property property="sglr.package" separate="org.strategoxt" global="org.strategoxt.stratego_sglr"/>
+		<strj-lib input="lib/stratego-sglr.str" output="${bin.stratego}/${sglr.output}" package="${sglr.package}">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -45,8 +49,16 @@
 				<srcfiles dir="${dep.sdf-front}" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstratego-sglr.ctree" todir="${bin}" />
-		<copy file="lib/libstratego-sglr.rtree" todir="${bin}" />
+		<if-separate-compilation>
+			<separate>
+				<copy file="${bin.stratego}/org/strategoxt/stratego_sglr/stratego_sglr.rtree" tofile="${bin}/libstratego-sglr.rtree" />
+			</separate>
+			<global>
+				<copy file="lib/libstratego-sglr.ctree" todir="${bin}" />
+				<copy file="lib/libstratego-sglr.rtree" todir="${bin}" />
+			</global>
+		</if-separate-compilation>
+		
 	</target>
 
 	<path id="build.classpath">

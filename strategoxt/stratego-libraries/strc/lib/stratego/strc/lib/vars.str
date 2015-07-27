@@ -1,4 +1,4 @@
-module vars
+module stratego/strc/lib/vars
 imports stratlib libstratego-lib
 strategies
 

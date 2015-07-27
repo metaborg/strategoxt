@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.VarScope;
-import org.spoofax.interpreter.library.interpreter.InterpreterLibrary;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.spoofax.interpreter.library.jsglr.origin.OriginLibrary;
 import org.spoofax.interpreter.library.xml.XMLLibrary;
@@ -14,6 +13,7 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropSDefT;
 import org.strategoxt.lang.SRTS_EXT_eq_ignore_annos_0_1;
 import org.strategoxt.lang.SRTS_EXT_newint_0_0;
+import org.strategoxt.strj.pluto_interface.PlutoLibrary;
 
 /**
  * Handles per-context library compatibility components.
@@ -50,7 +50,6 @@ public class CompatManager {
 		// More standard registries, kind of
         context.addOperatorRegistry(new OriginLibrary());
         context.addOperatorRegistry(new XMLLibrary());
-        context.addOperatorRegistry(new InterpreterLibrary());
 	}
 
 	public void registerComponent(String component) {
@@ -65,12 +64,12 @@ public class CompatManager {
 	 * associated with a Stratego library.
 	 */
 	private void activateComponent(String component) {
-		if ("stratego_lib".equals(component)) {
+		if ("stratego_lib_posix_xsi".equals(component) || "stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
-			report_failure_compat_1_0.init();
-			ReadFromFile_cached_0_0.init();
 		} else if ("stratego_sglr".equals(component)) {
 			context.addOperatorRegistry(new JSGLRLibrary());
+		} else if ("strj".equals(component)) {
+			context.addOperatorRegistry(new PlutoLibrary());
 		}
 	}
 }

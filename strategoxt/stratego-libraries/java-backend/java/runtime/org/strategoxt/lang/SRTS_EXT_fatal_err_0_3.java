@@ -5,18 +5,22 @@ import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.strategoxt.stratego_lib.concat_strings_0_0;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SRTS_EXT_fatal_err_0_3 extends Strategy {
-	public static SRTS_EXT_fatal_err_0_3 instance = new SRTS_EXT_fatal_err_0_3();
+public class SRTS_EXT_fatal_err_0_3 extends RegisteringStrategy {
+	private static SRTS_EXT_fatal_err_0_3 instance = new SRTS_EXT_fatal_err_0_3();
+	
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_EXT_fatal_err_0_3", instance);
+	}
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm message, IStrategoTerm term, IStrategoTerm trace) {
 		if (message.getTermType() == LIST)
-			message = concat_strings_0_0.instance.invoke(context, message);
+			message = context.getStrategyCollector().getStrategyExecutor("concat_strings_0_0").invoke(context, message);
 		if (message == null || message.getTermType() != STRING)
 			return null;
 		

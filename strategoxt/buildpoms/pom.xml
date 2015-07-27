@@ -8,6 +8,7 @@
   <artifactId>strategoxt-distrib-parent</artifactId>
   <version>1.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  
 
   <parent>
     <groupId>org.metaborg</groupId>
@@ -29,7 +30,21 @@
     <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
     <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
     <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
+	<strj-enable-forward-declarations>false</strj-enable-forward-declarations>
   </properties>
+  
+  <repositories>
+  		<repository>
+  			<id>pluto-build</id>
+  			<url>https://raw.githubusercontent.com/pluto-build/pluto-build.github.io/master/mvnrepository/</url>
+  			<releases>
+  				<enabled>false</enabled>
+  			</releases>
+  			<snapshots>
+  				<enabled>true</enabled>
+  			</snapshots>
+  		</repository>
+  	</repositories>
 
   <profiles>
     <profile>
@@ -80,18 +95,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <artifactItems>
-            <artifactItem>
-              <groupId>org.metaborg</groupId>
-              <artifactId>${strategoxt-baseline-id}</artifactId>
-              <version>${strategoxt-baseline-version}</version>
-              <type>tar</type>
-              <classifier>bin</classifier>
-              <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
-            </artifactItem>
-          </artifactItems>
-        </configuration>
         <executions>
           <execution>
             <id>strategoxt-unpack-baseline-build</id>
@@ -99,6 +102,18 @@
             <goals>
               <goal>unpack</goal>
             </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>${strategoxt-baseline-id}</artifactId>
+                  <version>${strategoxt-baseline-version}</version>
+                  <type>tar</type>
+                  <classifier>bin</classifier>
+                  <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
           </execution>
           <execution>
             <id>strategoxt-unpack-baseline-clean</id>
@@ -106,9 +121,42 @@
             <goals>
               <goal>unpack</goal>
             </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>${strategoxt-baseline-id}</artifactId>
+                  <version>${strategoxt-baseline-version}</version>
+                  <type>tar</type>
+                  <classifier>bin</classifier>
+                  <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-pluto-jar-build</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+	        <configuration>
+             <artifactItems>
+              <artifactItem>
+                <groupId>build.pluto</groupId>
+                <artifactId>pluto-shaded</artifactId>
+                <version>1.4.0-SNAPSHOT</version>
+                <type>jar</type>
+                <outputDirectory>${strategoxt-build-location}/stratego-libraries/java-backend/java</outputDirectory>
+                <destFileName>pluto.jar</destFileName>
+                <overWrite>true</overWrite>
+              </artifactItem>
+             </artifactItems>
+            </configuration>
           </execution>
         </executions>
       </plugin>
+	  
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -116,8 +164,8 @@
         <dependencies>
           <dependency>
             <groupId>org.metaborg</groupId>
-            <artifactId>strategoxt-jar</artifactId>
-            <version>0.1</version>
+            <artifactId>${strategoxt-baseline-id}</artifactId>
+            <version>${strategoxt-baseline-version}</version>
             <type>jar</type>
             <scope>system</scope>
             <systemPath>${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar</systemPath>
@@ -132,6 +180,9 @@
             <phase>clean</phase>
             <configuration>
               <target>
+				<property 
+					name ="basedir"
+					value="${basedir}"/>
                 <property
                   name="baseline"
                   value="${strategoxt-baseline-location}" />
@@ -150,6 +201,9 @@
                 <property
                   name="bin"
                   value="${strategoxt-bin-location}" />
+				  <property
+					  name="strj-enable-forward-declarations"
+					  value="${strj-enable-forward-declarations}" />
 
                 <ant
                   antfile="build.xml"
@@ -187,6 +241,9 @@
                 <property
                   name="bin"
                   value="${strategoxt-bin-location}" />
+				  <property
+					  name="strj-enable-forward-declarations"
+					  value="${strj-enable-forward-declarations}" />
 
                 <ant
                   antfile="build.xml"

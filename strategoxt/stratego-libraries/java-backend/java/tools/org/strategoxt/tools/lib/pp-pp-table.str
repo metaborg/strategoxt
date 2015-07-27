@@ -1,4 +1,4 @@
-module pp-pp-table
+module lib/pp-pp-table
 imports 
   libstratego-lib
   libstratego-xtc

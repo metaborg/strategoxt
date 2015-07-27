@@ -3,10 +3,15 @@
  *
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module core-rtg2sig 
+module lib/core-rtg2sig 
 imports
   lib/stratego-rtg
   libstratego-lib
+  libstratego-rtg
+  libstratego-gpp
+  libstratego-sdf
+  Sdf2
+  Stratego
 
 strategies
 

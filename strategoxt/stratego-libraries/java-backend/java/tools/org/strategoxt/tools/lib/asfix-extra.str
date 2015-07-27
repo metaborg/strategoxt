@@ -1,4 +1,4 @@
-module asfix-extra
+module lib/asfix-extra
 signature
   constructors
 

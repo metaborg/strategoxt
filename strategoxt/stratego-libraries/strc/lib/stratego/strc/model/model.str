@@ -1,6 +1,8 @@
 module stratego/strc/model/model
 
-imports Stratego-Sugar
+imports
+	Stratego-Sugar
+	stratego/strc/front/desugar
 
 signature
   constructors

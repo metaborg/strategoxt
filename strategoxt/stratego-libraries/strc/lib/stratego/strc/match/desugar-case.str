@@ -1,4 +1,4 @@
-module desugar-case
+module stratego/strc/match/desugar-case
 imports stratego/strc/match/automaton 
 	libstratego-lib 
 	stratego/strc/opt/stratego-laws 

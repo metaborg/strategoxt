@@ -4,13 +4,17 @@
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.17
  */
-module gen-sdf-mix
+module lib/gen-sdf-mix
 imports
   Sdf2
   libstratego-lib
   libstratego-xtc
-  sdf/grammar/utils
-  native-transform
+  libstratego-sdf
+  lib/sdf/grammar/utils
+  lib/native-transform
+  lib/sdf-options
+  lib/sdf-desugar
+  lib/gen-renamed-sdf-module
 
 strategies
 

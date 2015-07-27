@@ -3,7 +3,7 @@
  * path to their defining frames, and annotate their declarations as
  * escaping when applicable.
  */
-module escaping-variables
+module stratego/strc/c/escaping-variables
 imports
   libstratego-lib
   Stratego-Core
@@ -22,9 +22,9 @@ strategies
   mark-escaping-variables =
     {| CurrentFrame, FrameOf, Escapes, Closure
      : init-current-frame
-     ; alltd(declare-frame-of)
+     ; where(alltd(declare-frame-of))
      ; where(runtime-defs; alltd(declare-frame-of))
-     ; alltd({?|[ f( a1* | a2* ) = s ]|}; ev)
+     ; alltd(where({?|[ f( a1* | a2* ) = s ]|}); ev)
      |}
 
   runtime-defs = !|[
@@ -67,7 +67,7 @@ strategies
 	   ; <map(SDefT(try(Closure; try(Escapes)),id,id,id))> def2* => def3*
            |}
 
-  ev-sdef :
+  ev-sdef = preserve-annos(\
     |[ f(a1*|a2*) = s ]| -> |[ f(a3*|a4*) = s' ]|
     where {| CurrentFrame, Escapes, FrameOf, Closure
            : rules( CurrentFrame :+ _ -> f{} )
@@ -77,6 +77,7 @@ strategies
            ; <map(try(escaping-arg))> a1* => a3*
 	   ; <map(try(escaping-arg))> a2* => a4*
            |}
+	\)
 
   ev-scope : 
     |[ {x1* : s1} ]| -> |[ {x2* : s2} ]|

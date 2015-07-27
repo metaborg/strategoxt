@@ -1,4 +1,4 @@
-module canonicalize
+module stratego/strc/opt/canonicalize
 imports Stratego-Core libstratego-lib C stratego/strc/opt/stratego-laws
 
 rules

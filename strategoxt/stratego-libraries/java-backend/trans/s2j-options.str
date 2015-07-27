@@ -9,6 +9,7 @@ module s2j-options
 
 imports
   libstrc
+  separate-compilation/std-lib-utils
   s2j
 
 rules
@@ -30,7 +31,7 @@ rules
     , if is-substring(!"/") + is-substring(!"\\") then
         warn(|"Ignoring library import: must be a Java package name")
       else
-        <post-extend-config> ("-la", [<translate-default-library>]); !()
+        <post-extend-config> ("-la", [<translate-library>]); !()
       end
     , !"-la <name>         Include library in package <name>"
     )
@@ -45,10 +46,35 @@ rules
       <post-extend-config> ("-D", [<parse-define-option>]); !()
     , fail // undocumented/deprecated
     )
+  + Option(
+      "--no-default-lib"
+      ,  log(|Warning(), "Dont link against default library")
+        ;<set-config> ("-la", 
+         	 <get-config
+         	;remove-all(
+         	 	  id => lib
+         	 	; <translate-default-library>"stratego-lib" => defaultlib
+         	 	; !lib
+         	 	; ?defaultlib
+         	 	)> "-la"); !()
+      , !"--no-default-lib   Default library is not added to imports.")
+  + Option(
+      "--strategy-forward-declaration"
+	  , <set-config> ("--strategy-forward-declaration", ());!()
+	  , !"--strategy-forward-declaration   Unknown strategies are assumed as declared.")
+  + Option(
+      "--constructor-forward-declaration"
+	  , <set-config> ("--constructor-forward-declaration", ());!()
+	  , !"--constructor-forward-declaration   Unknown constructors are assumed as declared.")
+  + Option("--slack",
+		where(<set-config> ("--slack", ())); !(),
+		!"--slack              Continue when module is not found")
+	  
+	 
   s2j-general-options =
     ArgOption(
       "-I" + "--Include"
-    , where(<post-extend-config>("-I", ["-I", <id>]))
+    , where(<post-extend-config>("-I", [IncludeDir(<id>)]))
     ; !()
     , !"-I d | --Include d Include modules from directory d"
     )
@@ -71,7 +97,8 @@ rules
     )
   + ArgOption(
       "-O"
-    , <set-config>("-O", <string-to-int; strc-set-opt-level>);
+    , <set-config>("-O", 0); //<string-to-int; strc-set-opt-level>);
+      log(|Warning(), "Setting Optimization not supported for separate compilation");
       rules(ManuallySetOptimization: _)
     , !"-O n               Optimization level (0 = no optimization)"
     )
@@ -87,25 +114,15 @@ rules
     )
   
   // For compatibility, allow a number of built-in library names
-  translate-default-library =
-    switch id
-      case "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" +
-           "stratego-gpp" + "strc" + "stratego-tool-doc" + "stratego-sdf" + "java-front":
-        <conc-strings> ("org.strategoxt.", <id>)
-
-      case "stratego-parallel":
-        <conc-strings> ("org.strategoxt.lang.parallel.", <id>)
-      
-      otherwise:
-        jify
-    end
+  translate-library =
+	translate-default-library <+jify
   
   // For compatibility, ignore all built-in library paths
   // (e.g., -la /home/.../java-front.la)
-  translate-default-library-path =
+  translate-library-path =
     base-filename;
     remove-extension;
-    translate-default-library
+    translate-library
  
   parse-define-option =
     risky(

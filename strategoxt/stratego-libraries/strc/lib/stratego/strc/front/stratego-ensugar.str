@@ -5,7 +5,7 @@
  * stratego-desugar, but just those that are known to cause
  * problems when pretty-printing Stratego programs.
  */
-module stratego-ensugar
+module stratego/strc/front/stratego-ensugar
 imports Stratego-Amb libstratego-lib
 
 strategies

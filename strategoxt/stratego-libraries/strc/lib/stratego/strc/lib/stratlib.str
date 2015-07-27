@@ -7,7 +7,7 @@
  * @author Eelco Visser
  */
 
-module stratlib
+module stratego/strc/lib/stratlib
 imports libstratego-lib Stratego-Sugar
 
 strategies
@@ -182,7 +182,9 @@ strategies
     rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin, spaste)
 
   svars-arity = 
-    free-vars2(\CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
+    free-vars2(   \CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\ 
+	            //+ \Call(SVar(f), as1) -> [(f, (<length> as1,0))]\
+                //+ \CallNoArgs(SVar(f)) -> [(f, (0,0))]\
               ,Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9
               ,sboundin
               ,{f:?((f,_),f)})

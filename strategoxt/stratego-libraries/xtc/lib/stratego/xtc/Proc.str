@@ -22,6 +22,8 @@
 module stratego/xtc/Proc
 imports
   stratego/xtc/Register
+  stratego/xtc/posix-xsi/Proc
+  stratego/xtc/c99/Proc
 
 signature
   constructors

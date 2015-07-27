@@ -39,7 +39,6 @@ public class stratego_parallel {
 		// TODO: Override (not supplement) the context with the ParallelCollectionLibrary
 		
 		ParallelAll.instance = new ParallelAll();
-		SRTS_all.instance = ParallelAll.instance;
 		
 		// TODO: print intro message only for --verbose 2
 		System.err.println("[ libstratego-parallel ] using "

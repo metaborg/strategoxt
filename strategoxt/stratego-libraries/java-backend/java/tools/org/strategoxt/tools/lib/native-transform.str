@@ -1,4 +1,4 @@
-module native-transform
+module lib/native-transform
 imports
   libstratego-lib
   libstratego-xtc

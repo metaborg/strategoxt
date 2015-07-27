@@ -3,7 +3,7 @@
  *
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-module java-integration
+module lang/compat/override/java-integration
 
 imports
   libstratego-lib
@@ -28,6 +28,10 @@ strategies
     SRTS-EXT-fatal-err(|<try(concat-strings)>, ())
   
   override report-failure(|message, term) = SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
+  
+  external ReadFromFile-cached(|)
+  
+  external report-failure-compat(s|)
   
   
   /**

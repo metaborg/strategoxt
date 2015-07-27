@@ -1,0 +1,118 @@
+module separate-compilation/utils
+
+imports libstrc
+imports libstratego-lib
+
+imports cleardep/fileutils
+
+imports separate-compilation/fileutils
+imports separate-compilation/compiler-config
+imports separate-compilation/booleans
+
+imports backend-simplify
+imports s2j
+
+strategies
+
+	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
+	string-char-string-replace(|c1, c2) =
+		explode-string; 
+		map((?c1;<explode-string> c2)<+![<id>]); 
+		flatten-list;
+		implode-string
+
+	transform-imports-and-move-to-front (import-predicate, import-transform, collect-transform) =
+		  ?Module(name, content)
+		; !content
+		; partition(\Imports(x)-> x\) => (import-terms, other-content)
+		; !(import-terms, [])
+		; foldl({imp, all-imp:
+			  ?(imp, all-imp)
+			; !imp
+			; mapconcat(pack-expand-import)
+			; !(<id>, all-imp)
+			; conc
+			}
+		  ) => all-imports
+		; map(\x -> Import(x)\)
+		; partition(where(import-predicate)) => (filtered-imports, other-imports)
+		; <filter(import-transform)> filtered-imports => transformed-imports
+		; <filter(collect-transform)> filtered-imports => collected-imports
+		; !(transformed-imports, other-imports)
+		; conc
+		; !(Module(name, [Imports(<id>) | other-content]), collected-imports)
+
+		
+	import-get-file = 
+		  \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
+		; is-module-available-get-file
+	
+	import-get-relative-file = 
+		 \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
+		; is-module-available-get-relative-file
+		
+	import-is-file =
+		  import-get-file
+		; has-extension(|"str")
+		
+	save-and-set-options(s|generate-main, working-package,working-output,filename, modulename, circular-units) = 
+	{libs, input, output, package, islib, baseout, main:
+		where(libs := <get-config <+ ![]> "-la");
+		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
+		where(main := <get-config <+ !()> "-m");
+		where(	<set-config> ("-i",filename));
+		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;jify;string-char-replace(|'/','.');string-char-replace(|'-','_')> modulename]));
+		where(	<set-config> ("-o", <to-java-compilation-abs-path(|working-output); (mkdirs <+ err(|"Creating dir failed"))> modulename));
+		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(|working-output)> modulename));
+		where(  <set-config> ("--library" ,""));
+		if and(<b-true> generate-main, InitialCompilerConfigList;not(fetch-elem(?("--library",_))))
+			then where(<set-config> ("-m", <get-config <+ !"main"> "-m"))
+		else
+			where(	<rm-config> "-m")
+		end;
+		s;
+		
+		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout));
+		where(<set-config> ("-la", libs));
+		where(<if not(?()) then <set-config> ("-m", <id>) end> main )}
+		
+		
+	to-library-name = separate-compilation-modify-filename(
+		if ?"char" + ?"term" + ?"interface" + ?"class" // TODO Add all java keywords here
+			then <conc-strings> ("_", <id>)
+			else 
+				string-char-string-replace(|'.',"$_dot_") // Need to remove . from the names because they conflict with java packages, dollars-for-captials never inserts a dollar before a _
+		end ; jify // Finally jify the rest
+		) 
+	to-java-compilation-folder:   modulename -> <to-library-name;jify; dollars-for-capitals> modulename
+	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify; dollars-for-capitals> modulename
+	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
+	to-java-compilation-abs-path (| working-output):modulename -> <concat-strings> [<path-get-full-path>working-output, <to-java-compilation-folder> modulename, "/"]
+	to-java-compilation-abs-file (| working-output) =
+		  id => modulename 
+		; to-java-compilation-filename
+		; string-path-append(|<to-java-compilation-abs-path(|working-output)> modulename)
+
+	
+	mkdirs = 
+		   file-exists 
+		<+ mkdir
+		<+   where(	  explode-string
+					;reverse
+					;drop(|1)
+					;drop-until(?'/')
+					;drop(|1)
+					;reverse
+					;implode-string
+					;mkdirs)
+		   ; mkdir
+
+   output-dirname =
+  //   (OutputDirName;where(<debug> "Cache");debug)
+ //  <+
+    <get-config> "-o"
+   ; if has-extension(|"java") + has-extension(|"ctree") then
+       dirname
+     end
+   ; try(file-exists <+ mkdir <+ fatal-err(|"Output directory does not exist"))
+   ; rules(OutputDirName := <id>)

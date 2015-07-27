@@ -1,4 +1,4 @@
-module const-prop
+module stratego/strc/opt/const-prop
 imports Stratego-Amb stratego/strc/lib/stratlib Stratego-MetaTransition
 strategies
 

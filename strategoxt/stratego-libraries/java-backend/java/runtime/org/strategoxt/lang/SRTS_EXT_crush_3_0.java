@@ -7,8 +7,13 @@ import org.spoofax.interpreter.terms.ITermFactory;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SRTS_EXT_crush_3_0 extends Strategy {
-	public static SRTS_EXT_crush_3_0 instance = new SRTS_EXT_crush_3_0();
+public class SRTS_EXT_crush_3_0 extends RegisteringStrategy {
+	private static SRTS_EXT_crush_3_0 instance = new SRTS_EXT_crush_3_0();
+	
+	@Override
+	public void registerImplementators(StrategyCollector collector) {
+		collector.registerStrategyImplementator("SRTS_EXT_crush_3_0", instance);
+	}
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current,

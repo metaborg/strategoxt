@@ -1,0 +1,107 @@
+module separate-compilation
+
+imports cleardep/fileutils
+imports separate-compilation/utils
+imports separate-compilation/separate-compilation-options
+imports separate-compilation/fileutils
+imports separate-compilation/create-signature
+imports separate-compilation/compiler-config
+imports separate-compilation/std-lib-utils
+imports s2j-options
+imports libstrc
+
+imports pluto/log-integration
+imports pluto/buildmanager
+imports pluto/buildrequest
+imports separate-compilation/builder/-
+imports separate-compilation/booleans
+
+signature
+	constructors
+		IncludeAST: Term * String -> Include
+
+strategies
+
+    /*strc-front-end =
+        log-timed(
+          strc-get-infile
+  		;strc-pack-stratego-trm
+  		; tfc1(|"Stratego-Sugar-Cong", "pack")
+    		; strc-output-ast
+        	; frontend
+        | "Front-end succeeded"
+        , 1
+        )*/
+	  
+	strc-front-end1(back-end) =
+	{|  :
+		
+		  log-timed(
+			  strc-get-infile
+			; log(|Info(), ["Calling separate front end ", <id>])
+			; separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config <+ !"./"> "-o")
+			| "Front-end succeeded", 1)
+	|}
+	
+  	strc-front-end2 = 
+      //  strc-get-infile
+      //  ; strc-pack-stratego-trm
+  		tfc1(|"Stratego-Sugar-Cong", "pack")
+        ; strc-output-ast
+  	  	; frontend
+		; strc-optimize
+		
+
+	separate-compilation-front-end(back-end|working-package,working-output)= let
+		remove-module-from-path(|absolute-path) = {module-name:
+			? module-name;
+			log(|Notice(), ["Reolve include path " , module-name, " " , absolute-path]);
+			<path-get-full-path> absolute-path => full-path;
+			<explode-string> full-path => path-chars;
+			<explode-string> module-name => name-chars;
+			<length> path-chars => num-path-chars;
+			<length> name-chars => num-name-chars;
+			<subti> (num-path-chars, num-name-chars) => num-chars;
+			<take(|num-chars)> path-chars => removed-chars;
+			<drop(|num-chars)> path-chars => module-chars;
+			((<equal(|module-name)> (<implode-string;debug> module-chars) ) <+ (log(|Error(), "Main module does not match file name"); fail));
+			<implode-string> removed-chars
+			}
+			
+		remove-java-file (|output-folder) =
+			if <debug;has-extension(|"java")> output-folder  
+				then !output-folder; log(|Notice(), ["Ignoring java file in output ", <id>]);
+					dirname;
+					string-ensure-trailing-slash;
+					!AbsolutePath(<id>)
+				else !AbsolutePath(<string-ensure-trailing-slash>output-folder)
+			end
+			
+	in
+		scope-compiler-config(
+		  where(collect-config);
+		where(fileName := <\FILE(s) -> s\>) ;
+		where(init-builders);
+		
+		remove-java-file(|working-output) => output-folder;
+		log(|Notice(), ["Output folder ", output-folder]);
+		
+		// Parse file and derive include paths from it
+		// Sadly it is not possible to share that parse result with compiling (as long as the input is an AbsolutePath/RelativePath term)
+		!AbsolutePath(fileName) => absolute-file;
+		<require-initially;debug> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(absolute-file, <pack-include-path>, output-folder))
+				  	=> ParseStrategoOutput(module-name, _);
+				  	
+		<remove-module-from-path(|absolute-file)> (<conc-strings;debug> (module-name, ".str")) => main-dir;
+		
+		// But the output directory in the search path to find generated rtrees
+		 where({i , is:
+			  <get-config <+ ![]> "-I" => include-dirs
+			; <set-config> ("-I", <make-set>[IncludeDir(main-dir), IncludeDir(<?AbsolutePath(<id>)> output-folder) |include-dirs])
+		});
+		<pack-include-path> () => pack-include-path;
+		log(|Notice(), ["New include path ", pack-include-path]);
+		
+		
+		<require-initially> BuildAtOnceBuildRequest(<compile-module-builder-factory>, [CompileModuleInput(module-name, pack-include-path, working-package, output-folder, module-name)]) 
+	)end

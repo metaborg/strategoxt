@@ -1,7 +1,13 @@
-module lift-dynamic-rules
-imports libstratego-lib Stratego-Sugar
+module stratego/strc/front/lift-dynamic-rules
 
+imports
+	libstratego-lib
+	Stratego-Sugar
 	stratego/strc/lib/stratlib
+	stratego/strc/front/strategy-annos
+	stratego/strc/model/model
+	stratego/strc/opt/stratego-laws
+	
 
 strategies
 
@@ -111,9 +117,14 @@ strategies
            ; get-rules => rdefs
            |}
 
+  // Used to add a new dynamic rule startegy, the startegy is annoted to be an dynamic rule strategy and only defined once
   add-def(|def) =
-    rules( LiftedRules :+ () -> def )
+    rules( LiftedRules :+ () -> def{DynamicRuleStrategy()} )
 
+  // Used to add a new dynamic rule strategy without annotating it. Used for DYNAMIC__CALLS, because this strategy is defined multiple times		
+  add-def-no-anno(|def) =
+    rules( LiftedRules :+ () -> def)
+  
   get-rules = 
     <bagof-LiftedRules> ()
 
@@ -756,7 +767,7 @@ strategies
                   ; dr-undefine-rule(|~str:f, DR_UNDEFINE(dep))
                 )
           ]|)
-        ; add-def(||[ DYNAMIC_CALLS = f2(|"", "") ]|)
+        ; add-def-no-anno(||[ DYNAMIC_CALLS = f2(|"", "") ]|)
         // ; add-def(||[ dr-new(|scope, dep) = ?~str:f; f2(|scope, dep) ]|)
         // note: problem with crossing module boundaries (see issue STR-346)
       )
@@ -805,7 +816,7 @@ strategies
                    })
                )
             ]|)
-        ; add-def(||[ DYNAMIC_CALLS = f3(|"") ]|)
+        ; add-def-no-anno(||[ DYNAMIC_CALLS = f3(|"") ]|)
         // ; add-def(||[ dr-undefine(|dep) = ?~str:f; f3(|dep) ]|)
         // note: problem with crossing module boundaries (see issue STR-346)
       )
@@ -815,7 +826,7 @@ strategies
     if is-new(|f, "undefine", "dummy") then
       where(_undefine(|f) => f3)
       ; add-def(||[ f3(|dep) = fail ]|)
-      ; add-def(||[ DYNAMIC_CALLS = f3(|"") ]|)
+      ; add-def-no-anno(||[ DYNAMIC_CALLS = f3(|"") ]|)
     end
     
 strategies

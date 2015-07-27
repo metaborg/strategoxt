@@ -1,4 +1,4 @@
-module C-simplify
+module stratego/strc/c/C-simplify
 imports C
 strategies
 
