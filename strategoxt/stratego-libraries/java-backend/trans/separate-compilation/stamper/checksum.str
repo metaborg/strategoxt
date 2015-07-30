@@ -7,4 +7,4 @@ imports pluto/stamper
 strategies
 	
 	checksum-stamper =
-		output-stamper(checksum | "ChecksumStamper") 
+		output-stamper(write-to-string | "ChecksumStamper") 

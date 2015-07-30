@@ -12,7 +12,7 @@ strategies
 			path-get-full-path;
 			ReadFromFile;
 			externals-to-signature;
-			checksum
+			write-to-string
 	
 	in
 		stamper(stamp-rtree | "RTreeStamper") 
