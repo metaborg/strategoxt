@@ -395,7 +395,7 @@
 			<if>
 				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
 				<then>
-					<echo message="@{input} -> @{output} is up-to-date" />
+					<echo level="info" message="@{input} -> @{output} is up-to-date" />
 				</then>
 				<else>
 					<log message="@{input} -> @{output}" />
@@ -421,7 +421,7 @@
 			<if>
 				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
 				<then>
-					<echo message="@{output} is up-to-date" />
+					<echo level="info" message="@{output} is up-to-date" />
 				</then>
 				<else>
 					<log message="@{input} -> @{output}" />
@@ -434,10 +434,10 @@
 	<macrodef name="log">
 		<attribute name="message" />
 		<sequential>
-			<echo message="========================================================================================" />
-			<echo message="@{message}" />
-			<echo message="========================================================================================" />
-			<echo message="" />
+			<echo level="info" message="========================================================================================" />
+			<echo level="info" message="@{message}" />
+			<echo level="info" message="========================================================================================" />
+			<echo level="info" message="" />
 		</sequential>
 	</macrodef>
 
