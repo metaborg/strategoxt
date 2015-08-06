@@ -31,7 +31,7 @@
   <dependencies>
     <dependency>
       <groupId>org.metaborg</groupId>
-      <artifactId>strategoxt-jar-prebuild</artifactId>
+      <artifactId>strategoxt-jar</artifactId>
       <version>${metaborg-version}</version>
     </dependency>
   </dependencies>
