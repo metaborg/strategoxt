@@ -42,7 +42,8 @@ strategies
      where
        proceed => result // prefer local (-I) definition
      <+
-       result := ("", <import-term(libjava-front.rtree)>)
+       result := ("", <import-term(libjava-front.rtree)>);
+       <pack-log-include> "libjava-front"
    
    extend xtc-find =
      ?"StrategoRenamed.sdf" // no warning
