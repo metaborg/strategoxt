@@ -23,12 +23,8 @@ public class StrategoUtils {
 			context.setCurrent(arg);
 			boolean success = strategy.evaluate(context);
 			if (!success) {
-				String[] trace =context.getStackTracer().getTrace();
-				String traceFormatted = "";
-				for (String s : trace)
-					traceFormatted += s + "\n";
 				throw new InterpreterException(
-						caller.getName() + ": Could not evaluate " + strategyName + " successfully. Current " + context.current() + "\n" + traceFormatted );
+						caller.getName() + ": Could not evaluate " + strategyName + " successfully. Current " + context.current() + "\n"  );
 			}
 			IStrategoTerm result = context.current();
 			return result;
