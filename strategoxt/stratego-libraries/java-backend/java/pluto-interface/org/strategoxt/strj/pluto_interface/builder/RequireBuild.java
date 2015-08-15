@@ -21,7 +21,6 @@ import build.pluto.builder.BuildCycleException;
 import build.pluto.builder.BuildRequest;
 import build.pluto.builder.Builder;
 import build.pluto.output.Out;
-import build.pluto.shaded.org.sugarj.common.Log;
 
 /**
  * Wraps {@link Builder#require(java.io.File)}. 0 strategy arguments, 1 term
@@ -54,8 +53,6 @@ public class RequireBuild extends AbstractPrimitive {
 				return false;
 			}
 			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request);
-			Log.out.flush();
-			Log.err.flush();
 			if (result == null) {
 				System.out.println("RESULT IST NULL for " + request.factory + " with " + request.input);
 			}

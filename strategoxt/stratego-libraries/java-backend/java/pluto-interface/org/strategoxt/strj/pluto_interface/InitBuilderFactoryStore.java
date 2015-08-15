@@ -7,7 +7,7 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
 
-import build.pluto.shaded.org.sugarj.common.Log;
+import org.sugarj.common.Log;
 
 public class InitBuilderFactoryStore extends AbstractPrimitive {
 

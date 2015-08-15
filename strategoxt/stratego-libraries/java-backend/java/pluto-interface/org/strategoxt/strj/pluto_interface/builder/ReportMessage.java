@@ -10,7 +10,7 @@ import org.strategoxt.strj.pluto_interface.PlutoIContextManager;
 import org.strategoxt.strj.pluto_interface.PublicBuilder;
 import org.strategoxt.strj.pluto_interface.util.ObjectWrapperTerm;
 
-import build.pluto.shaded.org.sugarj.common.Log;
+import org.sugarj.common.Log;
 
 public class ReportMessage extends AbstractPrimitive {
 
