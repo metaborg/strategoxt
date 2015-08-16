@@ -76,10 +76,22 @@ strategies
 		where(<set-config> ("-la", libs));
 		where(<if not(?()) then <set-config> ("-m", <id>) end> main )}
 		
+	is-java-keyword = ?"abstract" + ?"continue" +	?"for" +?"new" + ?"switch"+
+				?"assert" +	?"default" + ?"goto" + ?"package" + ?"synchronized" +
+				?"boolean" + ?"do" + ?"if" + ?"private" + ?"this" +
+				?"break" + ?"double" + ?"implements" + ?"protected" + ?"throw" + 
+				?"byte" + ?"else" + ?"import" + ?"public" + ?"throws" + 
+				?"case" + ?"enum" + ?"instanceof" + ?"return" + ?"transient" + 
+				?"catch" + ?"extends" + ?"int" + ?"short" + ?"try" + 
+				?"char" + ?"final" + ?"interface" + ?"static" + ?"void" + 
+				?"class" + ?"finally" + ?"long" + ?"strictfp" + ?"volatile" + 
+				?"const" + ?"float" + ?"native" + ?"super" + ?"while"
+				// taken from https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html
 		
+	
 	to-library-name = separate-compilation-modify-filename(
-		if ?"char" + ?"term" + ?"interface" + ?"class" // TODO Add all java keywords here
-			then <conc-strings> ("_", <id>)
+		if is-java-keyword 
+			then <conc-strings> ("$_", <id>)
 			else 
 				string-char-string-replace(|'.',"$_dot_") // Need to remove . from the names because they conflict with java packages, dollars-for-captials never inserts a dollar before a _
 		end ; jify // Finally jify the rest
