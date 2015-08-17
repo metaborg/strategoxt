@@ -90,7 +90,7 @@ strategies
 		
 	
 	to-library-name = separate-compilation-modify-filename(
-		if is-java-keyword 
+		if ?"term" + is-java-keyword //term collapses with local variable names
 			then <conc-strings> ("$_", <id>)
 			else 
 				string-char-string-replace(|'.',"$_dot_") // Need to remove . from the names because they conflict with java packages, dollars-for-captials never inserts a dollar before a _
