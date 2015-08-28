@@ -59,6 +59,7 @@
 										<exclude>org/slf4j/**/*</exclude>
 										<exclude>org/metaborg/**/*</exclude>
 										<exclude>org/spoofax/**/*</exclude>
+										<exclude>org/qos/**/*</exclude>
 										<exclude>org/strategoxt/*.class</exclude>
 										<exclude>org/strategoxt/lang/*.class</exclude>
 										<exclude>org/strategoxt/lang/compat/*.class</exclude>
