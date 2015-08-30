@@ -38,6 +38,7 @@ strategies
 		; partition(where(import-predicate)) => (filtered-imports, other-imports)
 		; <partition(import-transform)> filtered-imports => (transformed-imports, not-transformed-imports)
 		; <filter(collect-transform)> filtered-imports => collected-imports
+		; debug(|Notice(), ["Not transformed imports ", not-transformed-imports])
 		; <conc> (transformed-imports, not-transformed-imports, other-imports)
 		; !(Module(name, [Imports(<id>) | other-content]), collected-imports)
 
