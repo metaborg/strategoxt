@@ -163,7 +163,7 @@ strategies
 					 log(|Notice(), ["No str file import " , <id>]);
 					  ?Import(<id>)
 					; where(is-default-lib-rtree)
-					; log(|Notice(), ["Is dafult liv rtree"])
+					; log(|Notice(), ["Is dafult lib rtree"])
 					; remove-lib-prefix
 					; translate-default-library // do not want to collect rtrees, but libraries
 					; !(<id>, ())

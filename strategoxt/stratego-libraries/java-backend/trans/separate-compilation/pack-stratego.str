@@ -1,0 +1,42 @@
+module separate-compilation/pack-stratego
+
+imports libstrategolib
+imports libstrc
+
+
+strategies
+	
+	/**
+	 * Modified Version of pack-stratego for separate compilation: Not found module are handled in other way
+	 does not support --dump-aterms options anymore
+	 */
+	separate-compilation-pack-stratego(|mkpt) = 
+     ( \ FILE(s) -> IncludePathName(s) \ <+ ?IncludeAST(_,_))
+    ; where (if <get-config> "--dump-aterms" then log(|Warning(), "--dump-aterms options not supported anymore!") end)
+    ; !(<id>, mkpt, [])
+    ; graph-nodes-undef(
+        { file:
+         pack-stratego-parse-stratego => (file,_)
+        }
+      , pack-get-stratego-imports
+        ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
+      , \ (n,x,xs) -> [x|xs] \
+      )
+    ; (uniq,id)
+    ; if ?(_, []) then
+       Fst
+       ; unzip
+       ; (id, pack-flatten-stratego)
+      else
+        if not(<get-config>"--slack") then
+          Snd 
+          ; map({text : pack-report-module-not-found => text;
+            		rules(MissingModules :+= text)})
+          ; fail
+        else 
+          Fst
+        ; unzip
+        ; (id, pack-flatten-stratego)
+        end
+      end
+      

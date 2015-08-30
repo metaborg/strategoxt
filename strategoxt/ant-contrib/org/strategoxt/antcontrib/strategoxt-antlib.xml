@@ -280,7 +280,6 @@
 						<arg value="--verbose"/>
 						<arg value="2"/>
 						<arg value="--clean"/>
-						<arg value="--slack"/>
 						<arg value="${strj.strategy-forward-declaration}" />
 						<arg value="${strj.constructor-forward-declaration}" />
 						<arg value="--no-default-lib" /> <!-- No default lib: do not compile against the old stdlib provided with the used compiler -->
