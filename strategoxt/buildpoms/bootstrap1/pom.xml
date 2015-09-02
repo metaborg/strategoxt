@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>strategoxt-distrib-parent</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <relativePath>../</relativePath>
   </parent>
 
