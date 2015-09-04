@@ -10,9 +10,9 @@
   
   <parent>
     <groupId>org.metaborg</groupId>
-    <artifactId>org.metaborg.maven.parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.5.0-SNAPSHOT</version>
-    <relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
+    <relativePath>../../../../releng/parent</relativePath>
   </parent>
 
   <properties>
