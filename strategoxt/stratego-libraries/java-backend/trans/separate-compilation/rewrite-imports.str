@@ -72,6 +72,7 @@ strategies
 							=> CompileModuleOutput(rtree-file, libraries-file);
 						log(|Notice(), ["Require rtree file ", rtree-file]);
 						<require-stamper(|<rtree-stamper>)> rtree-file;
+						<require> libraries-file;
 						log(|Notice(), ["Collect rtree file for ", module-name, ": ",  rtree-file]);
 						where (rules(RTreeFiles : imported-module-name -> rtree-file));
 						where (rules(LibrariesFiles : imported-module-name -> libraries-file))

@@ -130,6 +130,7 @@ strategies
 						|dep-rtree-files
 				) => rtree-file;
 			<provide-for(|<input-for-module> module-name)> rtree-file;
+			log(|Notice(), ["Generated rtree-file " , rtree-file]);
 			!rtree-file
 			}
 			
@@ -158,8 +159,10 @@ strategies
 		\}
 		
 		create-libraries-file(|module-name) = {lib-file :
-			export-externals(|"lib") => lib-file;
+			log(|Notice(), ["Creating library-file " , <id>]);
+			export-externals(|".libs") => lib-file;
 			<provide-for(|<input-for-module> module-name)> lib-file;
+			log(|Notice(), ["Created library file " , lib-file]);
 			!lib-file
 		}
 			
@@ -203,7 +206,6 @@ strategies
 			log(|Notice(), ["Imported rtree files ", imported-rtree-files]);
 			where(<create-rtree-file(|moduleName,  generate-main, imported-rtree-files)> <id> => rtree-file);
 			where(<create-libraries-file(|module-name)> imported-libraries) => libraries-file;
-			log(|Notice(), ["Generated rtree-file " , rtree-file]);
 			log(|Notice(), ["Calling Backend for ", moduleName]);
 			call-back-end;
 			log (|Notice(), 15) 
