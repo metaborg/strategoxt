@@ -190,9 +190,9 @@ strategies
 			<map(Fst)> collected-imports => flags;
 			<mapconcat(Snd)> collected-imports => imported-stuff;
 			log(|Notice(), ["Imported Stuff ", imported-stuff]);
-			<filter(\RTreeFile(file) -> file\);make-set> imported-stuff => rtree-files;
-			<filter(\DefaultLibrary(lib) -> lib\);make-set> imported-stuff => libraries;
-			!((ast, flags), rtree-files, libraries)
+			<filter({file: \RTreeFile(file) -> file\ });debug;make-set;debug> imported-stuff => rtree-files;
+			<filter({lib: \DefaultLibrary(lib) -> lib\ });debug;make-set;debug> imported-stuff => libraries;
+			<debug> ((ast, flags), rtree-files, libraries)
 		 }|}
 		end 
 		
