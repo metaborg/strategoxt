@@ -16,7 +16,7 @@ imports separate-compilation/stamper/checksum
 signature
 	constructors
 		CompileModuleInput: ModuleName * PackIncludePath * JavaPackage * OutputFolder * MainModule  -> CompileModuleInput
-		CompileModuleOutput: RTreeFile -> CompileModuleOutput
+		CompileModuleOutput: RTreeFile * LibrariesFile -> CompileModuleOutput
 		
 
 strategies
@@ -87,8 +87,8 @@ strategies
 	    			<parse-module> (module-name, pack-include-path, output-folder) => (source-file, ast)
 	    		\}
 	    	
-	    	translate-from-ast-output = {rtree-file:\
-	    			CompileASTOutput(rtree-file) -> CompileModuleOutput(rtree-file)
+	    	translate-from-ast-output = {rtree-file, libraries-file:\
+	    			CompileASTOutput(rtree-file, libraries-file) -> CompileModuleOutput(rtree-file, libraries-file)
 	    		\}
 	    		
 		in {all-inputs:

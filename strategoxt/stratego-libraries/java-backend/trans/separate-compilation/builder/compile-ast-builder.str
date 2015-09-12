@@ -24,7 +24,7 @@ signature
 	constructors
 		
 		CompileASTInput: ModuleName * AST * Path * JavaPackage * OutputFolder * MainModule * PackIncludePath -> CompileASTInput
-		CompileASTOutput: RTreeFile -> CompileASTOutput
+		CompileASTOutput: RTreeFile * Libraries -> CompileASTOutput
 		
 		
 strategies
@@ -79,16 +79,17 @@ strategies
 		combine-modules = {:
 			log(|Vomit(), ["Combine modules ", <id>]);
 			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
-			foldl({imports, content, libs, main-module-name, rtree-files: \
-				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-main-module-name, new-rtree-files), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-main-module-name, merged-rtree-files) ) ->
-				(moduleName, Module(merged-name, [imports | content]), libs, fileName, main-module-name, rtree-files)
+			foldl({imports, content, libs, main-module-name, rtree-files, libraries: \
+				( (_, Module(_, [Imports(new-imports)| new-content]), new-libs, _, new-main-module-name, new-rtree-files, new-libraries), (moduleName, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName, merged-main-module-name, merged-rtree-files, merged-libraries) ) ->
+				(moduleName, Module(merged-name, [imports | content]), libs, fileName, main-module-name, rtree-files, libraries)
 				where
 					imports := Imports(<conc;make-set> (new-imports, merged-imports));
 					content := <conc> (new-content, merged-content);
 					libs := <conc> (new-libs, merged-libs);
 					main-module-name := merged-main-module-name;
 					<eq> (new-main-module-name, merged-main-module-name);
-					rtree-files := <conc>(new-rtree-files, merged-rtree-files)
+					rtree-files := <conc;make-set>(new-rtree-files, merged-rtree-files);
+					libraries := <conc;make-set> (new-libraries, merged-libraries)
 			\});
 			log(|Vomit(), ["Result ", <id>])
 			}
@@ -103,7 +104,7 @@ strategies
 				) <+ fatal-err(|["Unable to add default lib import to ", <id>])) 
 				}
 		in
-			(id, try(add-default-lib-import), id, id, id, id)
+			(id, try(add-default-lib-import), id, id, id, id, id)
 		end
 			
 		call-front-end(|pack-include-path, other-module-names) = {moduleName,merged-ast, fileName, files, spec:
@@ -155,9 +156,16 @@ strategies
 					![<id>];
 					compile-asts(input-for-module|circular-module-names, Some((result-module-name,circular-rtree-file))))> dummy-inputs
 		\}
+		
+		create-libraries-file(|module-name) = {lib-file :
+			export-externals(|"lib") => lib-file;
+			<provide-for(|<input-for-module> module-name)> lib-file;
+			!lib-file
+		}
+			
 				 
 		
-	in {inputs, java-package, output-folder, pack-include-path, other-inputs, result-input, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files, main-module-name, other-module-name:
+	in {inputs, java-package, output-folder, pack-include-path, other-inputs, result-input, result, input, moduleName, merged-ast, new-libs, fileName, libs, generate-main, rtree-file, imported-rtree-files, libraries-file, imported-libraries, main-module-name, other-module-name:
 		id => inputs;
 		log (|Notice(), 6);
 		where( {first-input:
@@ -180,7 +188,7 @@ strategies
 		log (|Notice(), 10);
 		add-std-lib-import-if-required;
 		log (|Notice(), 11);
-		?(moduleName, merged-ast, new-libs, fileName, main-module-name, imported-rtree-files);
+		?(moduleName, merged-ast, new-libs, fileName, main-module-name, imported-rtree-files, imported-libraries);
 		where (generate-main := <b-strategy-successful(fetch-elem(equal(|main-module-name)))> circular-module-names );
 		log(|Notice(), ["Generate main ", generate-main]);
 		log(|Notice(), ["Merged libaries for ", moduleName , ": ", new-libs]);
@@ -194,6 +202,7 @@ strategies
 			// TODO Generate rtree
 			log(|Notice(), ["Imported rtree files ", imported-rtree-files]);
 			where(<create-rtree-file(|moduleName,  generate-main, imported-rtree-files)> <id> => rtree-file);
+			where(<create-libraries-file(|module-name)> imported-libraries) => libraries-file;
 			log(|Notice(), ["Generated rtree-file " , rtree-file]);
 			log(|Notice(), ["Calling Backend for ", moduleName]);
 			call-back-end;
@@ -205,7 +214,7 @@ strategies
 		log (|Vomit(), ["Output for " , result-input, " is " , rtree-file]);
 		where( {result-module-name:
 			result-module-name := <Fst> result-input;
-			rules(Output: result-module-name -> CompileASTOutput(rtree-file))})
+			rules(Output: result-module-name -> CompileASTOutput(rtree-file, libraries-file))})
 	} end
 	
 	in {inputs: {|Output: 
