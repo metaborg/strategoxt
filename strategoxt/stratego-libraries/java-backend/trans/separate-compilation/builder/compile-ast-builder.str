@@ -108,7 +108,7 @@ strategies
 		end
 			
 		call-front-end(|pack-include-path, other-module-names) = {moduleName,merged-ast, fileName, files, spec:
-			?(moduleName, merged-ast, _, fileName, _, _);
+			?(moduleName, merged-ast, _, fileName, _, _, _);
 			
 			log(|Notice(), ["Import transformation for ", moduleName]);
 			log(|Notice(), ["Use libraries:   " , <get-config> "-la"]);
