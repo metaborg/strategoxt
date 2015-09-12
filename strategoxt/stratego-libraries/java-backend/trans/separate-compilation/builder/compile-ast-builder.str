@@ -62,8 +62,8 @@ strategies
 				end })
 			}
 				
-		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files, main-module-name: \
-			input -> (module-name, transformed-ast, new-libs, path, main-module-name, imported-rtree-files)
+		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files, main-module-name imported-libraries: \
+			input -> (module-name, transformed-ast, new-libs, path, main-module-name, imported-rtree-files, imported-libraries)
 			where
 				module-name := <get-module-name> input;
 				log(|Notice(), ["Rewrite imports for ", module-name]);
@@ -73,7 +73,7 @@ strategies
 				output-folder := <get-output-folder> input;
 				main-module-name := <get-main-module-name> input;
 				pack-include-path := <get-pack-include-path> input;
-				<separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, java-package, output-folder, pack-include-path)> ast => ((transformed-ast, new-libs), imported-rtree-files)
+				<separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, java-package, output-folder, pack-include-path)> ast => ((transformed-ast, new-libs), imported-rtree-files, imported-libraries)
 			\}
 			
 		combine-modules = {:
