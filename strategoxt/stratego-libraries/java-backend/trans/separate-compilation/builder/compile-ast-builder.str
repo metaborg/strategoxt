@@ -62,7 +62,7 @@ strategies
 				end })
 			}
 				
-		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files, main-module-name imported-libraries: \
+		rewrite-imports(|circular-module-names) = {module-name, ast, path, java-package, output-folder, generate-main, pack-include-path, transformed-ast, new-libs,  imported-rtree-files, main-module-name, imported-libraries: \
 			input -> (module-name, transformed-ast, new-libs, path, main-module-name, imported-rtree-files, imported-libraries)
 			where
 				module-name := <get-module-name> input;
