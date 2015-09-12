@@ -11,6 +11,7 @@ import org.strategoxt.strj.pluto_interface.PlutoIContextManager;
 import build.pluto.builder.BuildManager;
 import build.pluto.builder.BuildManagers;
 import build.pluto.builder.BuildRequest;
+import build.pluto.util.LogReporting;
 import build.pluto.output.Out;
 
 public class RequireInitially extends AbstractPrimitive {
@@ -32,6 +33,7 @@ public static final String NAME = "PlutoInterface_BuildManager_RequireInitially"
 		System.out.println("Factory: " + request.factory);
 		System.out.println("Input: " + request.input);
 		System.out.flush();
+		LogReporting.NO_STACK_TRACES = true;
 		BuildManager.ASSERT_SERIALIZABLE = false;
 		IStrategoTerm result = BuildManagers.build(request).val();
 		arg0.setCurrent(result);
