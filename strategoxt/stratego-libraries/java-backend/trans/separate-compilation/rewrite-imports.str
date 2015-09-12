@@ -113,8 +113,8 @@ strategies
 				}
 				
 			process-import-default-lib = 
-			{ lib, term:
-				  ?(term, lib)
+			{term:
+				  ?(term, _)
   				; !term
 				; ?Import(<id>)
   				; is-default-lib-rtree
@@ -178,10 +178,9 @@ strategies
 				else 
 					 log(|Notice(), ["No str file import " , <id>]);
 					  ?Import(library)
-					; where(is-default-lib-rtree)
+					; where(<is-default-lib-rtree> library)
 					; log(|Notice(), ["Is dafult lib rtree"])
-					; remove-lib-prefix
-					; translate-default-library // do not want to collect rtrees, but libraries
+					; <remove-lib-prefix; translate-default-library> library // do not want to collect rtrees, but libraries
 					; !(<id>, [DefaultLibrary(library)])
 				end
 				
