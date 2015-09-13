@@ -144,12 +144,7 @@ strategies
 							 // Circular, do not transform
 						else 
 							require-imported-module(|module-name);
-							log(|Notice(), ["Get library file for: ", module-name]);
-							or-exit(<LibrariesFiles> module-name    | 1);
-							log(|Notice(), ["Load module name: ", <id>]);
-							or-exit(load-libraries-file             | 4);
-							log(|Notice(), ["Content ", <id>]);
-							or-exit(map(!Import(<id>)) | 5) => additional-libraries;
+							<LibrariesFiles; load-libraries-file; map(!Import(<id>))> module-name => additional-libraries;
 							![<to-library-import> term | additional-libraries]  // Transform term to library import
 				  	   end
 					else // Import contains not a module but a specification -> no module dependency because specification is not named
@@ -187,12 +182,12 @@ strategies
 					<import-to-flag(|working-package)> term => flag;
 					!(flag, [RTreeFile(rtree-file) | <or-exit(load-libraries-file; map(!DefaultLibrary(<id>))|3)> libraries-file])
 				else 
-					 log(|Notice(), ["No str file import " , <id>]);
+					 log(|Notice(), ["No str file import " , <id>]);or-exit(
 					  ?Import(library)
 					; where(<is-default-lib-rtree> library)
 					; log(|Notice(), ["Is default lib rtree"])
 					; <remove-lib-prefix; translate-default-library> library // do not want to collect rtrees, but libraries
-					; !(<id>, [DefaultLibrary(library)])
+					; !(<id>, [DefaultLibrary(library)]) |5)
 				end
 				
 			   }
