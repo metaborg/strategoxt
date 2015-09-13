@@ -1,0 +1,19 @@
+module separate-compilation/stamper/libraries
+
+imports cleardep/fileutils
+imports pluto/stamper
+
+strategies
+	
+	libraries-stamper = let
+	
+		stamp-rtree = 
+			path-get-full-path;
+			ReadFromFile;
+			make-set;
+			sort-list(string-sort-desc);
+			write-to-string
+	
+	in
+		stamper(stamp-rtree | "LibrariesStamper") 
+	end

@@ -18,6 +18,7 @@ imports separate-compilation/builder/parse-stratego-builder
 imports separate-compilation/stamper/rtree
 imports separate-compilation/stamper/is-specification
 imports separate-compilation/stamper/checksum
+imports separate-compilation/stamper/libraries
 
 signature
 
@@ -72,7 +73,8 @@ strategies
 							=> CompileModuleOutput(rtree-file, libraries-file);
 						log(|Notice(), ["Require rtree file ", rtree-file]);
 						<require-stamper(|<rtree-stamper>)> rtree-file;
-						<require> libraries-file;
+						log(|Notice(), ["Require libraries file ", libraries-file]);
+						<require-stamper(|<libraries-stamper>)> libraries-file;
 						log(|Notice(), ["Collect rtree file for ", module-name, ": ",  rtree-file]);
 						where (rules(RTreeFiles : imported-module-name -> rtree-file));
 						where (rules(LibrariesFiles : imported-module-name -> libraries-file))
@@ -212,7 +214,7 @@ strategies
 		; map(\x -> Import(x)\)
 		; log(|Notice(), ["All imports before rewrite : ", <id>])
 		; partition(where(import-predicate)) => (filtered-imports, other-imports)
-		; <filter(import-transform); flatten-list> filtered-imports => transformed-imports
+		; <filter(import-transform); debug; flatten-list; debug> filtered-imports => transformed-imports
 		; <filter(collect-transform)> filtered-imports => collected-imports
 		; <conc> (transformed-imports, other-imports)
 		; log(|Notice(), ["All imports after rewrite ", <id>])
