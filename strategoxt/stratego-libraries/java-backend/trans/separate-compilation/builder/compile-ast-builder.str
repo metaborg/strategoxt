@@ -156,7 +156,7 @@ strategies
 			\}
 		
 		create-dummy-modules(|java-package, output-folder, pack-include-path, circular-rtree-file) = {dummy-inputs, other-modules, result-module-name, main-module-name: \
-			 (other-modules, (result-module-name, _,_,_,main-module-name,_)) -> ()
+			 (other-modules, (result-module-name, _,_,_,main-module-name,_,_)) -> ()
 			where
 				log(|Notice(), 120);
 				dummy-inputs := <map(generate-dummy-module-input(|result-module-name, main-module-name, java-package, output-folder, pack-include-path))> other-modules;
