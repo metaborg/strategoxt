@@ -206,8 +206,7 @@ strategies
 			// TODO Generate rtree
 			log(|Notice(), ["Imported rtree files ", imported-rtree-files]);
 			where(<create-rtree-file(|moduleName,  generate-main, imported-rtree-files)> <id> => rtree-file);
-			where(<create-libraries-file(|moduleName)> imported-libraries) => libraries-file;
-			log(|Notice(), ["Libraries file is ", libraries-file]);
+			where(<create-libraries-file(|moduleName)> imported-libraries => libraries-file);
 			log(|Notice(), ["Calling Backend for ", moduleName]);
 			call-back-end;
 			log (|Notice(), 15) 
@@ -215,7 +214,7 @@ strategies
 		log (|Notice(), 16);
 		where(<create-dummy-modules(|java-package, output-folder, pack-include-path,rtree-file)> (other-inputs, result-input));
 		log (|Notice(), 17);
-		log (|Notice(), ["Output for " , result-input, " is " , CompileASTOutput(rtree-file, libraries-file)]);
+		log (|Vomit(), ["Output for " , result-input, " is " , CompileASTOutput(rtree-file, libraries-file)]);
 		where( {result-module-name:
 			result-module-name := <Fst> result-input;
 			rules(Output: result-module-name -> CompileASTOutput(rtree-file, libraries-file))})
