@@ -144,7 +144,7 @@ strategies
 							 // Circular, do not transform
 						else 
 							require-imported-module(|module-name);
-							<or-exit(<LibrariesFiles> module-name; log(|Debug(), ["Load module name: ", <id>]); or-exit(load-libraries-file|4); log(|Debug(), ["Content ", <id>]); map(process-import-default-lib)|1)> module-name => additional-libraries;
+							<or-exit(log(|Debug(), ["Get library file for: ", module-name]); <LibrariesFiles> module-name; log(|Debug(), ["Load module name: ", <id>]); or-exit(load-libraries-file|4); log(|Debug(), ["Content ", <id>]); map(process-import-default-lib)|1)> module-name => additional-libraries;
 							![<to-library-import> term | additional-libraries]  // Transform term to library import
 				  	   end
 					else // Import contains not a module but a specification -> no module dependency because specification is not named
