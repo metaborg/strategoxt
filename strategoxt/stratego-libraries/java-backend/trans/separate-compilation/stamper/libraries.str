@@ -11,7 +11,7 @@ strategies
 			path-get-full-path;
 			ReadFromFile;
 			make-set;
-			sort-list(string-sort-desc);
+			string-sort-desc;
 			write-to-string
 	
 	in
