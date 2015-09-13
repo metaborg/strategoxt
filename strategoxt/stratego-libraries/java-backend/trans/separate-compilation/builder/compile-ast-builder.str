@@ -151,7 +151,7 @@ strategies
 				
 			
 		generate-dummy-module-input(|result-module-name, main-module-name, java-package, output-folder, pack-include-path) = {module-name, file-name: \
-			(module-name, _, _, file-name, _, _) ->
+			(module-name, _, _, file-name, _, _, _) ->
 					CompileASTInput(module-name, Module(module-name, [Imports([Import(result-module-name)])]), file-name, java-package, output-folder, main-module-name, pack-include-path) 
 			\}
 		
