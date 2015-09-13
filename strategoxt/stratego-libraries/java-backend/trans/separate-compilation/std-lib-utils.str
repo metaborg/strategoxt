@@ -9,7 +9,7 @@ strategies
 			  ?"libstratego-lib" + ?"libstrategolib" + ?"libstratego-xtc"
 			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
 			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
-			+ ?"libstratego-parallel" + ?"libstrc"
+			+ ?"libstratego-parallel" + ?"libstrc" + ?"libstratego-lib-posix-xsi"
 			
 		remove-lib-prefix: "libstrc" -> "stratego-strc"
 		remove-lib-prefix: "libstrategolib" -> "stratego-lib"
@@ -31,7 +31,7 @@ strategies
 		!"org.strategoxt.strc"
 	case "java-front":
 		!"org.strategoxt.javafront"
-	case "stratego-lib":
+	case "stratego-lib" + "libstratego-lib-posix-xsi":
 		!"org.strategoxt.stratego_lib_posix_xsi"
 	case "stratego-xtc":
 		!"org.strategoxt.stratego_xtc_posix_xsi"
