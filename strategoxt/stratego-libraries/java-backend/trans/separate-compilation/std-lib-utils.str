@@ -4,7 +4,6 @@ module separate-compilation/std-lib-utils
 
 strategies
 	
-	// Returns the rtree file for a default library import like libstrategolib
 		is-default-lib-rtree =
 			  ?"libstratego-lib" + ?"libstrategolib" + ?"libstratego-xtc"
 			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
@@ -31,7 +30,7 @@ strategies
 		!"org.strategoxt.strc"
 	case "java-front":
 		!"org.strategoxt.javafront"
-	case "stratego-lib" + "libstratego-lib-posix-xsi":
+	case "stratego-lib" + "stratego-lib-posix-xsi":
 		!"org.strategoxt.stratego_lib_posix_xsi"
 	case "stratego-xtc":
 		!"org.strategoxt.stratego_xtc_posix_xsi"
