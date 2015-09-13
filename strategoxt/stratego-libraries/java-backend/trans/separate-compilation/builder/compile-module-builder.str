@@ -98,7 +98,7 @@ strategies
 			log(|Notice(), ["Start compiling"]);
 			compile-asts(find-input(|all-inputs));
 			log(|Notice(), ["Translate to output"]);
-			map(translate-from-ast-output)
+			map(translate-from-ast-output); debug
 		  }
 		end
 	
