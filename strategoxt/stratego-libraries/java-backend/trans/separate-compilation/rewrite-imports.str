@@ -45,9 +45,6 @@ strategies
 	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, working-package, working-output, pack-include-path) = 
 		let
 			
-			  				
-			or-exit(s|num) = s <+ <xtc-exit> num
-			
 			load-libraries-file =
 				path-get-full-path;
 				ReadFromFile
@@ -178,23 +175,22 @@ strategies
 				then 
 					?Import(mod);
 					<RTreeFiles> mod => rtree-file; // Only successful if import is a module
-					or-exit(<LibrariesFiles> mod => libraries-file|2);
 					<import-to-flag(|working-package)> term => flag;
-					!(flag, [RTreeFile(rtree-file) | <or-exit(load-libraries-file; map(!DefaultLibrary(<id>))|3)> libraries-file])
+					!(flag, RTreeFile(rtree-file))
 				else 
-					 log(|Notice(), ["No str file import " , <id>]);or-exit(
-					  ?Import(library)
+					 log(|Notice(), ["No str file import " , <id>])
+					;  ?Import(library)
 					; where(<is-default-lib-rtree> library)
 					; log(|Notice(), ["Is default lib rtree"])
-					; <remove-lib-prefix; translate-default-library> library // do not want to collect rtrees, but libraries
-					; !(<id>, [DefaultLibrary(library)]) |5)
+					;  <remove-lib-prefix; translate-default-library> library // do not want to collect rtrees, but libraries
+					; !(<id>, DefaultLibrary(library))
 				end
 				
 			   }
 			) => (ast, collected-imports);
 			log(|Notice(), ["Collected imports ", collected-imports]);
 			<map(Fst)> collected-imports => flags;
-			<mapconcat(Snd)> collected-imports => imported-stuff;
+			<map(Snd)> collected-imports => imported-stuff;
 			<filter({file: \RTreeFile(file) -> file\ });make-set> imported-stuff => rtree-files;
 			<filter({lib: \DefaultLibrary(lib) -> lib\ });make-set> imported-stuff => libraries;
 			!((ast, flags), rtree-files, libraries)
