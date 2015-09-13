@@ -112,7 +112,7 @@ strategies
 			
 			log(|Notice(), ["Import transformation for ", moduleName]);
 			log(|Notice(), ["Use libraries:   " , <get-config> "-la"]);
-			log(|Notice(), ["Pre pack ",merged-ast]);
+			log(|Vomit(), ["Pre pack ",merged-ast]);
 			<separate-compilation-pack-stratego(|pack-include-path)> IncludeAST(merged-ast,fileName) => (files, spec);
 			log(|Vomit(), ["After pack ", files, " " , spec]);
 			log(|Notice(), ["Calling Frontend for ", moduleName, " with circular modules ", other-module-names]);

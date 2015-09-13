@@ -2,6 +2,7 @@ module separate-compilation/rewrite-imports
 
 imports libstrategolib
 imports libstrc
+imports libstratego-xtc
 
 imports cleardep/fileutils
 
@@ -44,6 +45,8 @@ strategies
 	separate-compilation-rewrite-imports(|module-name, main-module-name, circular-module-names, circular-main-module, working-package, working-output, pack-include-path) = 
 		let
 			
+			  				
+			or-exit(s) = s <+ <xtc-exit> 1
 			
 			load-libraries-file =
 				path-get-full-path;
@@ -126,6 +129,7 @@ strategies
 			}
 			  			
 			
+			
 			process-import-str =
 			{ term, name, module-name, circular-module, additional-libraries: 
 				log(|Notice(), ["Process import str " , <id>]);
@@ -140,7 +144,7 @@ strategies
 							 // Circular, do not transform
 						else 
 							require-imported-module(|module-name);
-							<LibrariesFiles; load-libraries-file; map(process-import-default-lib)> module-name => additional-libraries;
+							<or-exit(LibrariesFiles; load-libraries-file; map(process-import-default-lib))> module-name => additional-libraries;
 							![<to-library-import> term | additional-libraries]  // Transform term to library import
 				  	   end
 					else // Import contains not a module but a specification -> no module dependency because specification is not named
@@ -151,7 +155,6 @@ strategies
 			}
 				
 		
-				
 			
 				
 	
@@ -175,14 +178,14 @@ strategies
 				then 
 					?Import(<id>);
 					RTreeFiles => rtree-file; // Only successful if import is a module
-					LibrariesFiles => libraries-file;
+					or-exit(LibrariesFiles => libraries-file);
 					<import-to-flag(|working-package)> term => flag;
-					!(flag, [RTreeFile(rtree-file) | <load-libraries-file; map(!DefaultLibrary(<id>))> libraries-file])
+					!(flag, [RTreeFile(rtree-file) | <or-exit(load-libraries-file; map(!DefaultLibrary(<id>)))> libraries-file])
 				else 
 					 log(|Notice(), ["No str file import " , <id>]);
 					  ?Import(library)
 					; where(<is-default-lib-rtree> library)
-					; log(|Notice(), ["Is dafult lib rtree"])
+					; log(|Notice(), ["Is default lib rtree"])
 					; <remove-lib-prefix; translate-default-library> library // do not want to collect rtrees, but libraries
 					; !(<id>, [DefaultLibrary(library)])
 				end
@@ -212,11 +215,8 @@ strategies
 			}
 		  ) => all-imports
 		; map(\x -> Import(x)\)
-		; log(|Notice(), ["All imports before rewrite : ", <id>])
 		; partition(where(import-predicate)) => (filtered-imports, other-imports)
-		; <filter(import-transform); debug; flatten-list; debug> filtered-imports => transformed-imports
+		; <filter(import-transform); flatten-list> filtered-imports => transformed-imports
 		; <filter(collect-transform)> filtered-imports => collected-imports
 		; <conc> (transformed-imports, other-imports)
-		; log(|Notice(), ["All imports after rewrite ", <id>])
 		; !(Module(name, [Imports(<id>) | other-content]), collected-imports)
-		; log(|Notice(), ["AST after rewrite: ", <id>]) 
