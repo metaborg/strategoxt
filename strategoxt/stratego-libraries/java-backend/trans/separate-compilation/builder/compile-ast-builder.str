@@ -134,6 +134,15 @@ strategies
 			!rtree-file
 			}
 			
+		create-libraries-file(|module-name) = {lib-file :
+			log(|Notice(), ["Creating library-file with libraries " , <id>]);
+			export-externals(|".libs") => lib-file;
+			debug;
+			<provide-for(|<input-for-module> module-name)> lib-file;
+			log(|Notice(), ["Created library file " , lib-file]);
+			!lib-file
+		}
+			
 		call-back-end = {ops, defs:
 			// Remove Overlays for Backend, they are only important for externals
 			\Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\;
@@ -157,14 +166,6 @@ strategies
 					![<id>];
 					compile-asts(input-for-module|circular-module-names, Some((result-module-name,circular-rtree-file))))> dummy-inputs
 		\}
-		
-		create-libraries-file(|module-name) = {lib-file :
-			log(|Notice(), ["Creating library-file with libraries " , <id>]);
-			export-externals(|".libs") => lib-file;
-			<provide-for(|<input-for-module> module-name)> lib-file;
-			log(|Notice(), ["Created library file " , lib-file]);
-			!lib-file
-		}
 			
 				 
 		
@@ -205,7 +206,7 @@ strategies
 			// TODO Generate rtree
 			log(|Notice(), ["Imported rtree files ", imported-rtree-files]);
 			where(<create-rtree-file(|moduleName,  generate-main, imported-rtree-files)> <id> => rtree-file);
-			where(<create-libraries-file(|module-name)> imported-libraries) => libraries-file;
+			where(<create-libraries-file(|moduleName)> imported-libraries) => libraries-file;
 			log(|Notice(), ["Calling Backend for ", moduleName]);
 			call-back-end;
 			log (|Notice(), 15) 
