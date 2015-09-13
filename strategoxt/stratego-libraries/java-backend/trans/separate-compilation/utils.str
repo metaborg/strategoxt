@@ -21,26 +21,6 @@ strategies
 		flatten-list;
 		implode-string
 
-	transform-imports-and-move-to-front (import-predicate, import-transform, collect-transform) =
-		  ?Module(name, content)
-		; !content
-		; partition(\Imports(x)-> x\) => (import-terms, other-content)
-		; !(import-terms, [])
-		; foldl({imp, all-imp:
-			  ?(imp, all-imp)
-			; !imp
-			; mapconcat(pack-expand-import)
-			; !(<id>, all-imp)
-			; conc
-			}
-		  ) => all-imports
-		; map(\x -> Import(x)\)
-		; partition(where(import-predicate)) => (filtered-imports, other-imports)
-		; <filter(import-transform); flatten-list> filtered-imports => transformed-imports
-		; <filter(collect-transform)> filtered-imports => collected-imports
-		; <conc> (transformed-imports, other-imports)
-		; !(Module(name, [Imports(<id>) | other-content]), collected-imports)
-
 		
 	import-get-file = 
 		  \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
