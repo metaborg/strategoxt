@@ -28,7 +28,7 @@
 
     <strategoxt-baseline-location>${project.build.directory}/baseline</strategoxt-baseline-location>
     <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
-    <strategoxt-dist-location>/Volumes/DataSSD/Developer/Java/EclipseWorkspaces/HiwiSE/strategoxt/strategoxt/buildpoms/bootstrap3/target/dist</strategoxt-dist-location>
+    <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
     <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
 	<strj-enable-forward-declarations>false</strj-enable-forward-declarations>
   </properties>
