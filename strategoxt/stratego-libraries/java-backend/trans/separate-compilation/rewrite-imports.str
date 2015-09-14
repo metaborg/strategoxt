@@ -84,21 +84,12 @@ strategies
 						
 				end }
 				
-			or-exit(s|num) = s <+ <xtc-exit> num
-				
 			require-circular-main-module() = {rtree-file, all-rtree-files, circular-module, circular-rtree-file, circular-library-file:
-				!circular-main-module;
-				log(|Notice(), ["Require circular main module : " , <id>]);
-				? NoDummyModule() <+ or-exit(
-					!circular-main-module;
-					log(|Notice(), ["Try match : ", <id>]);
-					? DummyModule(circular-module, circular-rtree-file, circular-library-file); // Only matches if a dummy module in the circle is created
-					log(|Notice(), "Transform import");
-					<to-library-import;debug> Import(circular-module);
-					log(|Notice(), ["Collect rtree file for circular main mod ", circular-module, ": ",  circular-rtree-file]);
-					where (rules(RTreeFiles :circular-module -> circular-rtree-file));	
-					log(|Notice(), ["Collect library file for circular main mod ", circular-module, ": ", circular-library-file]);
-					where (rules(LibrariesFiles :circular-module -> circular-library-file))	 | 2)
+				log(|Notice(), ["Require circular main module : " , circular-main-module]);
+				<? DummyModule(circular-module, circular-rtree-file, circular-library-file)> circular-main-module; // Only matches if a dummy module in the circle is created
+				where (rules(RTreeFiles :circular-module -> circular-rtree-file));
+				where (rules(LibrariesFiles :circular-module -> circular-library-file));
+				<to-library-import> Import(circular-module)
 				}
 				
 			
@@ -227,4 +218,5 @@ strategies
 		; <filter(import-transform); flatten-list> filtered-imports => transformed-imports
 		; <filter(collect-transform)> filtered-imports => collected-imports
 		; <conc> (transformed-imports, other-imports)
+		; log(|Notice(), ["All imports for ", name , ": ", <id>])
 		; !(Module(name, [Imports(<id>) | other-content]), collected-imports)
