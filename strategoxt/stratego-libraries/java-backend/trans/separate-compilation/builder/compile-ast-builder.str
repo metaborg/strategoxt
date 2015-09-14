@@ -164,7 +164,7 @@ strategies
 				<map(
 					log(|Notice(), ["Compiling circular dummy module for ", <get-module-name>]);
 					![<id>];
-					compile-asts(input-for-module|circular-module-names, Some((result-module-name, circular-rtree-file, circular-libraries-file))))> dummy-inputs
+					compile-asts(input-for-module|circular-module-names, DummyModule(result-module-name, circular-rtree-file, circular-libraries-file)))> dummy-inputs
 		\}
 			
 				 
@@ -222,7 +222,7 @@ strategies
 	
 	in {inputs: {|Output: 
 		?inputs;
-		<compile-asts(input-for-module|<map(get-module-name)> inputs, None())> inputs;
+		<compile-asts(input-for-module|<map(get-module-name)> inputs, NoDummyModule())> inputs;
 		log (|Notice(), 18);
 		<map(get-module-name;Output)> inputs;
 		log (|Notice(), 19)
