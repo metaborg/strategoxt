@@ -186,7 +186,7 @@ strategies
 					<RTreeFiles> mod => rtree-file; // Only successful if import is a module
 					<LibrariesFiles;load-libraries-file> mod => libraries;
 					<import-to-flag(|working-package)> term => flag;
-					!(flag, [RTreeFile(rtree-file) | <map(!DefaultLibrary(<id>))> libraries)
+					!(flag, [RTreeFile(rtree-file) | <map(!DefaultLibrary(<id>))> libraries])
 				else 
 					 log(|Notice(), ["No str file import " , <id>])
 					;  ?Import(library)
