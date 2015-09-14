@@ -89,8 +89,10 @@ strategies
 			require-circular-main-module() = {rtree-file, all-rtree-files, circular-module, circular-rtree-file, circular-library-file:
 				!circular-main-module;
 				log(|Notice(), ["Require circular main module : " , <id>]);
-				? NoDummyModule() <+ or-exit(debug;
-				? DummyModule(circular-module, circular-rtree-file, circular-library-file); // Only matches if a dummy module in the circle is created
+				? NoDummyModule() <+ or-exit(
+					!circular-main-module;
+					log(|Notice(), ["Try match : ", <id>]);
+					? DummyModule(circular-module, circular-rtree-file, circular-library-file); // Only matches if a dummy module in the circle is created
 					log(|Notice(), "Transform import");
 					<to-library-import;debug> Import(circular-module);
 					log(|Notice(), ["Collect rtree file for circular main mod ", circular-module, ": ",  circular-rtree-file]);
