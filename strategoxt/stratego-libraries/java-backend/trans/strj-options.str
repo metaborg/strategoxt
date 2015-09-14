@@ -95,8 +95,8 @@ strategies
     )
   <+
     Option("-F",           
-      where(<set-config>("-F",())); !(),
-      !"-F                 Produce core after front-end"
+      where(<set-config>("-F",())); log(|Warning(), "-F option will be ignored for separate compilation"); !(),
+      !"-F                 Produce core after front-end (ignored for separate compilation)"
     )
   <+ 
     Option("--prefer-str",
