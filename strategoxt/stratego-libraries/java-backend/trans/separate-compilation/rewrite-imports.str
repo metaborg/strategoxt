@@ -129,8 +129,11 @@ strategies
 			}
 			  			
 			libraries-for-module =
+				log(|Notice(), ["Find libraries for module " , <id>]);
 				LibrariesFiles;
+				log(|Notice(), ["Load file " , <id>]);
 				load-libraries-file;
+				log(|Notice(), ["Got " , <id>]);
 				map(!Import(<id>))
 			
 			process-import-str =
@@ -144,7 +147,8 @@ strategies
 					 ; if <elem> (module-name, circular-module-names) 
 						then 
 							require-circular-main-module => circular-module; // Only matches if a dummy module in the circle is created
-							![<to-library-import> Import(circular-module) | <libraries-for-module> circular-module]
+							![<to-library-import> Import(circular-module) | <libraries-for-module> circular-module];
+							log(|Notice(), ["Include for circular: " , <id>])
 						else 
 							require-imported-module(|module-name);
 							![<to-library-import> term | <libraries-for-module> module-name]  // Transform term to library import
@@ -174,28 +178,29 @@ strategies
 			},
 			  !(<id>, <id;try(File)>)
 			; (process-import-str + process-import-rtree + process-import-default-lib)
-			, {term, rtree-file, flag, library, libraries-file, mod:
+			, {term, rtree-file, flag, library, libraries-file, mod, libraries:
 			  	?term;
 			  	if try(File);has-extension(|"str")
 				then 
 					?Import(mod);
 					<RTreeFiles> mod => rtree-file; // Only successful if import is a module
+					<LibrariesFiles;load-libraries-file> mod => libraries;
 					<import-to-flag(|working-package)> term => flag;
-					!(flag, RTreeFile(rtree-file))
+					!(flag, [RTreeFile(rtree-file) | <map(!DefaultLibrary(<id>))> libraries)
 				else 
 					 log(|Notice(), ["No str file import " , <id>])
 					;  ?Import(library)
 					; where(<is-default-lib-rtree> library)
 					; log(|Notice(), ["Is default lib rtree"])
 					;  <remove-lib-prefix; translate-default-library> library // do not want to collect rtrees, but libraries
-					; !(<id>, DefaultLibrary(library))
+					; !(<id>, [DefaultLibrary(library)])
 				end
 				
 			   }
 			) => (ast, collected-imports);
 			log(|Notice(), ["Collected imports ", collected-imports]);
 			<map(Fst)> collected-imports => flags;
-			<map(Snd)> collected-imports => imported-stuff;
+			<mapconcat(Snd)> collected-imports => imported-stuff;
 			<filter({file: \RTreeFile(file) -> file\ });make-set> imported-stuff => rtree-files;
 			<filter({lib: \DefaultLibrary(lib) -> lib\ });make-set> imported-stuff => libraries;
 			!((ast, flags), rtree-files, libraries)
