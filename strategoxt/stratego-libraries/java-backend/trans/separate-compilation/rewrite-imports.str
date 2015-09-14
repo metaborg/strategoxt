@@ -89,7 +89,7 @@ strategies
 				<? DummyModule(circular-module, circular-rtree-file, circular-library-file)> circular-main-module; // Only matches if a dummy module in the circle is created
 				where (rules(RTreeFiles :circular-module -> circular-rtree-file));
 				where (rules(LibrariesFiles :circular-module -> circular-library-file));
-				<to-library-import> Import(circular-module)
+				!circular-module
 				}
 				
 			
@@ -128,7 +128,10 @@ strategies
   				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
 			}
 			  			
-			
+			libraries-for-module =
+				LibrariesFiles;
+				load-libraries-file;
+				map(!Import(<id>))
 			
 			process-import-str =
 			{ term, name, module-name, circular-module, additional-libraries: 
@@ -140,12 +143,11 @@ strategies
 					   log(|Notice(), ["Import to module ", term])
 					 ; if <elem> (module-name, circular-module-names) 
 						then 
-							require-circular-main-module // Only matches if a dummy module in the circle is created
-							 // Circular, do not transform
+							require-circular-main-module => circular-module; // Only matches if a dummy module in the circle is created
+							![<to-library-import> Import(circular-module) | <libraries-for-module> circular-module]
 						else 
 							require-imported-module(|module-name);
-							<LibrariesFiles; load-libraries-file; map(!Import(<id>))> module-name => additional-libraries;
-							![<to-library-import> term | additional-libraries]  // Transform term to library import
+							![<to-library-import> term | <libraries-for-module> module-name]  // Transform term to library import
 				  	   end
 					else // Import contains not a module but a specification -> no module dependency because specification is not named
 					   log(|Notice(), ["Import to file but not module ", term])
