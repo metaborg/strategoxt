@@ -39,7 +39,7 @@ strategies
 	 * @param module-name : String , the name of the module to rewrite
 	 * @param main-module-name: String, the name of the module on which the compiler was invoked
 	 * @param circular-module-names: List[String], the names of all modules in the current cycle
-	 * @param circular-main-module: Option[(String, Path)] : Some((module-name, rtree-file)) if a dummy module for a circle is imported, then for the import to module-name the rtree-file is included without requiring a build
+	 * @param circular-main-module: MaybeDummyModule :  if a dummy module for a circle is imported, then for the import to module-name the rtree-file is included without requiring a build
 	 * @param working-package: Path, the output Java package
 	 * @param workping-output: Path, the toplevel folder to place generated files to
 	 * @param pack-include-path: List[IncludeDir | IncludeXTC], the pack include path for finding source files
@@ -88,6 +88,7 @@ strategies
 				
 			require-circular-main-module() = {rtree-file, all-rtree-files, circular-module, circular-rtree-file, circular-library-file:
 				!circular-main-module;
+				log(|Notice(), ["Require circular main module : " , <id>]);
 				? None() <+ or-exit(debug;
 				? DummyModule(circular-module, circular-rtree-file, circular-library-file); // Only matches if a dummy module in the circle is created
 				<to-library-import> Import(circular-module);
