@@ -81,12 +81,15 @@ strategies
 						
 				end }
 				
+			or-exit(s|num) = s <+ <xtc-exit> num
+				
 			require-circular-main-module() = {rtree-file, all-rtree-files, circular-module, circular-rtree-file, circular-library-file:
 				!circular-main-module;
+				? None() <+ or-exit(debug;
 				? Some((circular-module, circular-rtree-file, circular-library-file)); // Only matches if a dummy module in the circle is created
 				<to-library-import> Import(circular-module);
 					where (rules(RTreeFiles :circular-module -> circular-rtree-file));	
-					where (rules(LibrariesFiles :circular-module -> circular-library-file))	
+					where (rules(LibrariesFiles :circular-module -> circular-library-file))	 | 2)
 				}
 				
 			
