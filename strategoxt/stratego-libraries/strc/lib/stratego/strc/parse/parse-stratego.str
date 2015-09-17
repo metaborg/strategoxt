@@ -224,7 +224,7 @@ strategies
           ; ast := <ReadFromFile> cache-path
         <+
             ast := <parse> path
-          ; <WriteToBinaryFile> (cache-path, ast)
+          ; <WriteToBinaryFile <+ log(|Warning(), <concat-strings>["Unable to cache parse result to ", cache-path])> (cache-path, ast)
         )
       else
         ast := <parse>
