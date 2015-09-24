@@ -33,6 +33,8 @@
 		
 		<if-separate-compilation-property property="gpp.output" separate="org/strategoxt/" global="org/strategoxt/stratego_gpp/Main.java"/>
 		<if-separate-compilation-property property="gpp.package" separate="org.strategoxt" global="org.strategoxt.stratego_gpp"/>
+		<if-separate-compilation-property property="gpp.independent-java-compilation" separate="--independent-java-compilation" global="--clean"/>
+		
 		<strj-lib input="lib/stratego-gpp.str" output="${bin.stratego}/${gpp.output}" package="${gpp.package}">
 			<strjlibargs>
 				<arg value="-la" />
@@ -45,6 +47,7 @@
 				<arg value="${dep.gpp}" />
 				<arg value="-I" />
 				<arg value="${dep.gpp}/sdf" />
+				<arg value="${gpp.independent-java-compilation}"/>
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />

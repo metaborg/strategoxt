@@ -37,6 +37,7 @@
 						<arg value="org.strategoxt.lang.compat.override.performance_tweaks" />
 						<arg value="-la" />
 						<arg value="org.strategoxt.lang.compat.override.native_calls_compat" />
+						<arg value="--independent-java-compilation"/>
 					</strjlibargs>
 					<str-deps>
 						<srcfiles dir="spec" includes="**/*.str" />

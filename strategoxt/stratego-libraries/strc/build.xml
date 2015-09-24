@@ -60,6 +60,7 @@
 						<arg value="${dep.gpp}/sdf" />
 						<arg value="-O" />
 						<arg value="2" />
+						<arg value"--independent-java-compilation"/>
 					</strjlibargs>
 					<str-deps>
 						<srcfiles dir="lib" includes="**/*.str" />

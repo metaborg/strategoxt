@@ -31,6 +31,7 @@
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_aterm" />
 		<if-separate-compilation-property property="aterm.package" separate="org.strategoxt" global="org.strategoxt.stratego_aterm"/>
+		<if-separate-compilation-property property="aterm.independent-java-compilation" separate="--independent-java-compilation" global="--clean"/>
 		<if-separate-compilation-property property="aterm.output" separate="org/strategoxt/" global="org/strategoxt/stratego_aterm/Main.java"/>
 		<strj-lib input="lib/stratego-aterm.str" output="${bin.stratego}/${aterm.output}" package="${aterm.package}">
 			<strjlibargs>
@@ -44,6 +45,7 @@
 				<arg value="${dep.aterm-front}" />
 				<arg value="-I" />
 				<arg value="${dep.gpp}/sdf" />
+				<arg value="${aterm.independent-java-compilation}"/>
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />

@@ -43,6 +43,7 @@
 						<arg value="org.strategoxt.lang.compat.stratego_rtg_compat" /> -->
 						<arg value="-I" />
 						<arg value="${dep.stratego-regular}/sdf" />
+						<arg value="--independent-java-compilation"/>
 					</strjlibargs>
 					<str-deps>
 						<srcfiles dir="lib" includes="**/*.str" />

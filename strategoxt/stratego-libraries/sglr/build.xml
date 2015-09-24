@@ -31,6 +31,9 @@
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_sglr" />
 		<if-separate-compilation-property property="sglr.output" separate="org/strategoxt/" global="org/strategoxt/stratego_sglr/Main.java"/>
 		<if-separate-compilation-property property="sglr.package" separate="org.strategoxt" global="org.strategoxt.stratego_sglr"/>
+		<if-separate-compilation-property property="sglr.independent-java-compilation" separate="--independent-java-compilation" global="--clean"/>
+		
+		
 		<strj-lib input="lib/stratego-sglr.str" output="${bin.stratego}/${sglr.output}" package="${sglr.package}">
 			<strjlibargs>
 				<arg value="-la" />
@@ -43,6 +46,7 @@
 				<arg value="${dep.sdf-front}" />
 				<arg value="-O" />
 				<arg value="2" />
+				<arg value="${sglr.independent-java-compilation}"/>
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />

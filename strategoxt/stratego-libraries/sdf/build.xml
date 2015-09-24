@@ -31,6 +31,8 @@
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_sdf" />
 		<if-separate-compilation-property property="sdf.output" separate="org/strategoxt/" global="org/strategoxt/stratego_sdf/Main.java"/>
 		<if-separate-compilation-property property="sdf.package" separate="org.strategoxt" global="org.strategoxt.stratego_sdf"/>
+		<if-separate-compilation-property property="sdf.independent-java-compilation" separate="--independent-java-compilation" global="--clean"/>
+		
 		<strj-lib input="lib/stratego-sdf.str" output="${bin.stratego}/${sdf.output}" package="${sdf.package}">
 			<strjlibargs>
 				<arg value="-la" />
@@ -45,6 +47,7 @@
 				<arg value="${dep.sdf-front}" />
 				<arg value="-I" />
 				<arg value="${dep.sdf-front}/sdf" />
+				<arg value="${sdf.independent-java-compilation}"/>
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />

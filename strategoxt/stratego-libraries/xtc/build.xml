@@ -30,6 +30,8 @@
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_xtc" />
 		<if-separate-compilation-property property="xtc.output" separate="org/strategoxt/" global="org/strategoxt/stratego_xtc/Main.java"/>
 		<if-separate-compilation-property property="xtc.package" separate="org.strategoxt" global="org.strategoxt.stratego_xtc"/>
+		<if-separate-compilation-property property="xtc.independent-java-compilation" separate="--independent-java-compilation" global="--clean"/>
+		
 		
 		<strj-lib input="lib/stratego-xtc-posix-xsi.str" output="${bin.stratego}/${xtc.output}" package="${xtc.package}">
 			<strjlibargs>
@@ -43,6 +45,7 @@
 				<arg value="PACKAGE_NAME_TERM=&quot;&lt;package name>&quot;" />
 				<arg value="-I" />
 				<arg value="${dep.libstratego-lib}" />
+				<arg value="${xtc.independent-java-compilation}"/>
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />
