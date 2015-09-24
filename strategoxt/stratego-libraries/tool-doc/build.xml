@@ -56,7 +56,7 @@
 				<arg value="SRTS_package_version_0_0=&quot;&lt;SRTS-package-version>&quot;" />
 				<arg value="-I" />
 				<arg value="${dep.gpp}/sdf" />
-				<arg value="tool-doc.independent-java-compilation"/>
+				<arg value="${tool-doc.independent-java-compilation}"/>
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />
