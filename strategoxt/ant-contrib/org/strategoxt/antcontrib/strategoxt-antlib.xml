@@ -319,8 +319,7 @@
 					<strj	input="@{input}"
 							output="@{output}"
 							package="@{package}"
-							generate-stdlib-import="@{generate-stdlib-import}"
-							independent-java-compilation="@{independent-java-compilation}">
+							generate-stdlib-import="@{generate-stdlib-import}">
 						<strjargs>
 							<arg value="--library" />
 							<strjlibargs />
