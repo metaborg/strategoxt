@@ -153,7 +153,7 @@ public abstract class LibraryInitializer {
 		for (String initializerClassName : uninstantiatedInitializers) {
 			try {
 				@SuppressWarnings("unchecked")
-				Class<LibraryInitializer> initializerClass = (Class<LibraryInitializer>) Class.forName(initializerClassName);
+				Class<LibraryInitializer> initializerClass = (Class<LibraryInitializer>) this.getClass().getClassLoader().loadClass(initializerClassName);
 				LibraryInitializer initializer = initializerClass.newInstance();
 				allInitializers.add(initializer);
 			} catch(ClassCastException e) {
