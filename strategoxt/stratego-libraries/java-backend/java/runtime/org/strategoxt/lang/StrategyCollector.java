@@ -93,7 +93,7 @@ public class StrategyCollector {
 	
 	public Strategy getStrategyExecutor(String name, Strategy requester) {
 		final Map<Strategy, Strategy> executorMap = this.specialExecutors.get(name);
-		if (specialExecutors == null) {
+		if (executorMap == null) {
 			System.out.println("Warning: A strategy with name " + name + " requests a special executor but no available.");
 			return getStrategyExecutor(name);
 		}
