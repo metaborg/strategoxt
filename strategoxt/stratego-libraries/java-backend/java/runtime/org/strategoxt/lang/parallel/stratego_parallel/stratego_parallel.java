@@ -38,7 +38,8 @@ public class stratego_parallel {
 		
 		// TODO: Override (not supplement) the context with the ParallelCollectionLibrary
 		
-		ParallelAll.instance = new ParallelAll();
+		//I think not necessary? Will be done once, is already done in ParallelAll?
+		//ParallelAll.instance = new ParallelAll();
 		
 		// TODO: print intro message only for --verbose 2
 		System.err.println("[ libstratego-parallel ] using "
