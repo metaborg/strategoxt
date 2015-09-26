@@ -13,6 +13,10 @@ import org.strategoxt.lang.Strategy;
 
 public class StrategyExecutorBuilder {
 
+	public static boolean hasAnnotation(Object o, Class<? extends Annotation> a) {
+		return o.getClass().getAnnotation(a) != null;
+	}
+	
 	private Map<Strategy, Strategy> specialExecutors;
 
 	public Strategy buildExecutor(String strategyName, List<Strategy> strategies) {
@@ -81,7 +85,7 @@ public class StrategyExecutorBuilder {
 		List<Strategy> cleanedStrategies = new ArrayList<Strategy>();
 		boolean contained = false;
 		for (Strategy s : strategies) {
-			if (s.getClass().getAnnotation(annotationClass) != null) {
+			if (hasAnnotation(s, annotationClass)) {
 				if (!contained) {
 					contained = true;
 					cleanedStrategies.add(s);
@@ -97,7 +101,7 @@ public class StrategyExecutorBuilder {
 	private List<Strategy> getAllStrategies(List<Strategy> strategies, Class<? extends Annotation> annotationClass) {
 		List<Strategy> result = new ArrayList<Strategy>();
 		for (Strategy strategy : strategies) {
-			if (strategy.getClass().getAnnotation(annotationClass) != null) {
+			if (hasAnnotation(strategy, annotationClass)) {
 				result.add(strategy);
 			}
 		}
@@ -122,11 +126,11 @@ public class StrategyExecutorBuilder {
 	}
 
 	private static boolean isOverriding(Strategy strategy) {
-		return strategy.getClass().getAnnotation(OverridingStrategy.class) != null;
+		return hasAnnotation(strategy, OverridingStrategy.class);
 	}
 
 	private static boolean isExtending(Strategy strategy) {
-		return strategy.getClass().getAnnotation(ExtendingStrategy.class) != null;
+		return hasAnnotation(strategy, ExtendingStrategy.class);
 	}
 
 }
