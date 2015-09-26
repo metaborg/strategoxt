@@ -14,15 +14,15 @@ import org.strategoxt.lang.Strategy;
 public class StrategyExecutorBuilder {
 
 	public static boolean hasAnnotation(Object o, Class<? extends Annotation> a) {
-		return o.getClass().getAnnotation(a) != null;
+		//return o.getClass().getAnnotation(a) != null;
 		// Try class name based comparation for eclipse
-//		String searchedName = a.getClass().getName();
-//		for (Annotation anno : o.getClass().getAnnotations()) {
-//			if (anno.getClass().getName().equals(searchedName)) {
-//				return true;
-//			}
-//		}
-//		return false;
+		String searchedName = a.getName();
+		for (Annotation anno : o.getClass().getAnnotations()) {
+			if (anno.getClass().getName().equals(searchedName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private Map<Strategy, Strategy> specialExecutors;
