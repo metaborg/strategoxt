@@ -106,7 +106,7 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 				context = new Context();
 			}
 			context = initContext(context, className);
-			System.out.println("Context created!");
+			System.out.println("Context created!: " + context);
 			if (context == null)
 				return null;
 		}
@@ -274,7 +274,8 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			result.append('.');
 			result.append(parts[i]);
 		}
-		result.append(parts[parts.length-1]);
+		result.append('.');
+		result.append(parts[parts.length-2]);
 
 		return result.toString();
 	}
