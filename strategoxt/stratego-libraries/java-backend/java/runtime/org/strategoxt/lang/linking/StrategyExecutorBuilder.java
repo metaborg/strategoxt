@@ -18,7 +18,7 @@ public class StrategyExecutorBuilder {
 		// Try class name based comparation for eclipse
 		String searchedName = a.getName();
 		for (Annotation anno : o.getClass().getAnnotations()) {
-			if (anno.getClass().getName().equals(searchedName)) {
+			if (anno.annotationType().getName().equals(searchedName)) {
 				return true;
 			}
 		}
