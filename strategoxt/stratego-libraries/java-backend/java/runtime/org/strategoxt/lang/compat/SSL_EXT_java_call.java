@@ -80,15 +80,25 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 	}
 
 	public IStrategoTerm call(Context parentContext, String className, IStrategoTerm arg, boolean sameContext) {
+		System.out.println("=== SSL_EXT_java_call ===");
+		System.out.println("Class: " + className);
+		System.out.println("Arg: " + arg);
+		System.out.println("SameContext: " + sameContext);
+		
+		System.out.println("Get Strategy ...");
 		Strategy strategy = getStrategy(parentContext, className);
 		if (strategy == null)
 			return null;
+		
+		System.out.println("Got Strategy!");
 
 		Context context;
 		String oldWorkingDir = null;
 		if (sameContext) {
+			System.out.println("Run in same context.");
 			context = parentContext;
 		} else {
+			System.out.println("Create context ...");
 			if (parentContext != null) {
 				oldWorkingDir = parentContext.getIOAgent().getWorkingDir();
 				context = new Context(parentContext.getFactory(), parentContext.getIOAgent());
@@ -96,12 +106,13 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 				context = new Context();
 			}
 			context = initContext(context, className);
+			System.out.println("Context created!");
 			if (context == null)
 				return null;
 		}
 
 		try {
-			System.out.println("Call with " + arg);
+			System.out.println("Call strategy with " + arg);
 			IStrategoTerm result = strategy.invoke(context, arg);
 			if (result == null) {
 				return null;
@@ -127,16 +138,20 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		try {
 			Method method = initCache.get(className);
 			if (method == null) {
+				System.out.println("Lookup context init method...");
 				String libraryName = toLibraryName(className);
+				System.out.println("Use library Name: " + libraryName);
 				Class<?> library;
 				try {
 					library = findClass(libraryName);
 				} catch (ClassNotFoundException e) {
 					library = findClass(toStrategoName(libraryName));
 				}
+				System.out.println("Got class: " + library);
 				method = library.getMethod("init", Context.class);
 				initCache.put(className, method);
 			}
+			System.out.println("Invoke init context ...");
 			return (Context) method.invoke(null, context);
 		} catch (ClassNotFoundException e) {
 			return null;
@@ -255,11 +270,11 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		String[] parts = className.split("\\.");
 
 		result.append(parts[0]);
-		for (int i = 1, max = parts.length - 1; i < max; i++) {
+		for (int i = 1, max = parts.length - 2; i < max; i++) {
 			result.append('.');
 			result.append(parts[i]);
 		}
-		result.append(".Main");
+		result.append(parts[parts.length-1]);
 
 		return result.toString();
 	}
