@@ -236,7 +236,9 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 	}
 
 	private static Class<?> findClass(String className) throws ClassNotFoundException {
+		System.out.println("Find class: " +className);
 		try {
+			
 			return Class.forName(className, true, SSL_EXT_java_call.class.getClassLoader());
 		} catch (ClassNotFoundException e) {
 			synchronized (asyncClassLoaders) {
@@ -270,12 +272,12 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		String[] parts = className.split("\\.");
 
 		result.append(parts[0]);
-		for (int i = 1, max = parts.length - 2; i < max; i++) {
+		for (int i = 1, max = parts.length - 1; i < max; i++) { // Skip the strategy name
 			result.append('.');
 			result.append(parts[i]);
 		}
 		result.append('.');
-		result.append(parts[parts.length-2]);
+		result.append(parts[parts.length-2]); // Repeat the last part of the module name
 
 		return result.toString();
 	}
