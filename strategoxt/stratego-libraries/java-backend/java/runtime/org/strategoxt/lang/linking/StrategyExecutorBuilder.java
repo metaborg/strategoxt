@@ -122,7 +122,7 @@ public class StrategyExecutorBuilder {
 		Iterator<Strategy> iterator = strategies.iterator();
 		while (iterator.hasNext()) {
 			Strategy strategy = iterator.next();
-			if (isOverriding(strategy) || isExtending(strategy)) {
+			if (isOverwriting(strategy) || isExtending(strategy)) {
 				if (special == null) {
 					special = new ArrayList<Strategy>();
 				}
@@ -133,11 +133,11 @@ public class StrategyExecutorBuilder {
 		return special;
 	}
 
-	private static boolean isOverriding(Strategy strategy) {
+	public static boolean isOverwriting(Strategy strategy) {
 		return hasAnnotation(strategy, OverridingStrategy.class);
 	}
 
-	private static boolean isExtending(Strategy strategy) {
+	public static boolean isExtending(Strategy strategy) {
 		return hasAnnotation(strategy, ExtendingStrategy.class);
 	}
 

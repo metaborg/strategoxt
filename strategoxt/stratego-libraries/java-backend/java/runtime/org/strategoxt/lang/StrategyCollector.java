@@ -92,6 +92,9 @@ public class StrategyCollector {
 	}
 	
 	public Strategy getStrategyExecutor(String name, Strategy requester) {
+		if (! (StrategyExecutorBuilder.isExtending(requester) || StrategyExecutorBuilder.isOverwriting(requester))) {
+			throw new AssertionError("Only an extending or overwriting strategy is allows to request a specific (proceed) implementator");
+		}
 		final Map<Strategy, Strategy> executorMap = this.specialExecutors.get(name);
 		if (executorMap == null) {
 			System.out.println("Warning: A strategy with name " + name + " requests a special executor but no available.");
