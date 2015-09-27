@@ -148,18 +148,23 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 					library = findClass(toStrategoName(libraryName));
 				}
 				System.out.println("Got class: " + library);
-				method = library.getMethod("init", Context.class);
+				method = library.getMethod("init", Context.class, boolean.class);
+				System.out.println("Got init method: " + method);
 				initCache.put(className, method);
 			}
 			System.out.println("Invoke init context ...");
-			return (Context) method.invoke(null, context);
+			return (Context) method.invoke(null, context, true);
 		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 			return null;
 		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 			return null;
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 			return null;
 		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
 			return null;
 		} catch (ClassCastException e) {
 			e.printStackTrace();
