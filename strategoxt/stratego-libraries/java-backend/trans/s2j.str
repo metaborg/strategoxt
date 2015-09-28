@@ -372,7 +372,7 @@ rules
   	]|
 
   java-library-instance-qualified:
-    SDefT(x{a*},_,_,_) -> |[new x'.instance]|
+    SDefT(x{a*},_,_,_) -> |[x'.instance]|
 	where
 	  x' := <conc-strings> (<get-config;dollars-for-capitals> "-p", ".", x)
 	  
