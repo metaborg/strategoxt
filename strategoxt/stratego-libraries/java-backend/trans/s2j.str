@@ -370,16 +370,9 @@ rules
   		return java.util.Arrays.<String>asList( ~dependentLibs* );
   		}
   	]|
-		
-  java-library-instance:
-    SDefT(x{a*},_,_,_) -> |[x.instance]|
-	  
-  java-library-instance:
-    AnnoDef(_,SDefT(x{a*},_,_,_))  -> <java-library-instance> SDefT(x, (), (), ())
-
 
   java-library-instance-qualified:
-    SDefT(x{a*},_,_,_) -> |[new x'()]|
+    SDefT(x{a*},_,_,_) -> |[new x'.instance]|
 	where
 	  x' := <conc-strings> (<get-config;dollars-for-capitals> "-p", ".", x)
 	  
@@ -404,8 +397,6 @@ rules
     with
       x' := <jify> x
 	
-  java-initialize-instances:
-    SDefT(x{a*},_,_,_) -> |[x.instance]|
 
  
 rules
