@@ -379,7 +379,7 @@ rules
 
 
   java-library-instance-qualified:
-    SDefT(x{a*},_,_,_) -> |[x'.instance]|
+    SDefT(x{a*},_,_,_) -> |[new x'()]|
 	where
 	  x' := <conc-strings> (<get-config;dollars-for-capitals> "-p", ".", x)
 	  
@@ -512,7 +512,7 @@ rules
 		 }
 		 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerStrategyImplementator("~x'", instance);
+		 	collector.registerStrategyImplementator("~x'", this);
 		 }
 		 
 		 public void bindExecutors(StrategyCollector collector) {
@@ -614,7 +614,7 @@ rules
 		 }
 	 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerStrategyImplementator("~x'", instance);
+		 	collector.registerStrategyImplementator("~x'", this);
 		 }
 	 
 		 public void bindExecutors(StrategyCollector collector) {
@@ -665,7 +665,7 @@ rules
 		 }
 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerStrategyImplementator("~x'", instance);
+		 	collector.registerStrategyImplementator("~x'", this);
 		 }
 
 		 public void bindExecutors(StrategyCollector collector) {
@@ -710,7 +710,7 @@ rules
 		 ~lifted-decls*
 		 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerStrategyImplementator("~x'", instance);
+		 	collector.registerStrategyImplementator("~x'", this);
 		 }
 		 
 		 public void bindExecutors(StrategyCollector collector) {
