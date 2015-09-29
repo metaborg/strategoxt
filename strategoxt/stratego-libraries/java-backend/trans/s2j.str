@@ -1165,8 +1165,8 @@ strategies
   
   lifted-call-to-instance-self-call :
     CallT(SVar(x{a*}), _, _) ->  
-	<if <elem> ("StaticBind", a*) then !|[this]| else !ExprName(Id(<strategy-call-to-reference-name>))  end> 
-
+	<if <elem> (StaticLiftedStartegy(), a*) then !|[this]| else !ExprName(Id(<strategy-call-to-reference-name>))  end> 
+ 
     where
       <is-self-call> x
 	
@@ -1208,14 +1208,23 @@ strategies
     where
       <IsStrategyArg> (<CurrentLiftedFrame>, x{})
 
+	// Access the member instance field for lifted strategies
   lifted-call-to-instance-instance :
     CallT(SVar(x{a*}), s, t) -> 
-    <if <elem> ("StaticBind", a*) then ! ExprName(Id(instancename)) else !ExprName(Id(<strategy-call-to-reference-name>))  end> 
-    	where instancename:= <conc-strings> (x, "_instance")
-		
-		//or(<elem> ("StaticBind", a*),or(is-lifted-var(|x),is-closure-var(|x)))
-  
-  
+    	<if <elem> (StaticLiftedStartegy(), a*) 
+    		then ! ExprName(Id(instancename)) 
+    		else !ExprName(Id(<strategy-call-to-reference-name>)) 
+    	end> 
+    where instancename:= <conc-strings> (x, "_instance")
+	
+	// Or the static instance field for _Id / _Fail and command line generated DStrategies  (is that correct?)
+  lifted-call-to-instance-instance :
+    CallT(SVar(x{a*}), s, t) -> 
+    	<if <elem> (StaticIdFail(), a*) + <elem> (StaticDCommandLineStartegy(), a*) 
+    		then ! |[x.instance]|
+    		else ! ExprName(Id(<strategy-call-to-reference-name>)) 
+    	end> 
+    
   
   is-dynamic-signature(|s*, t*) =
     where(
