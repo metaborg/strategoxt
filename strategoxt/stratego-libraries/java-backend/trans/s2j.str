@@ -552,7 +552,7 @@ rules
 	  			<string-ends-with(|"_instance")> instancename;
 	  			tname_classname := Id(<string-as-chars(reverse;drop(|9);reverse)> instancename);
 	  			instanceid := Id(instancename);
-	  			instancefield :=  |[private tname_classname ~instanceid;]|;
+	  			instancefield :=  |[private tname_classname ~instanceid = new tname_classname();]|;
 	  			log(|Notice(), ["INIT FIELD ", instancefield])
 	lifted-def-instance-to-java-field:
 		[] -> ()
@@ -758,7 +758,7 @@ rules
     SDefT(x, s*, t*, s) ->
     (initialize-field, type-dec |[
        @SuppressWarnings("all")
-       private static final class x extends RegisteringStrategy {
+       private final class x extends RegisteringStrategy {
          ~lifted-tfield*
          ~lifted-sfield*
 		 
