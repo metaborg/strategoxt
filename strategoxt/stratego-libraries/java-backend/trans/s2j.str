@@ -524,13 +524,8 @@ rules
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
 	; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
-	; log(|Notice(), ["Collected ", <CollectedLiftedDefs>])
-	; lifted-decls*   := <CollectedLiftedDefs;map(debug;Snd;debug)>
-	; log(|Notice(), ["Lifted decls"])
-	; <debug> lifted-decls*
-	; lifted-decls-instances* := <CollectedLiftedDefs; map(debug;Fst;debug;lifted-def-instance-to-java-field;debug);debug; filter(not(?()))>
-    ; log(|Notice(), ["Lifted decls instances"])
-    ; <debug> lifted-decls-instances*
+	; lifted-decls*   := <CollectedLiftedDefs;map(Snd)>
+	; lifted-decls-instances* := <CollectedLiftedDefs; map(Fst;lifted-def-instance-to-java-field); filter(not(?()))>
 	; lifted-binds*   := <get-lifted-bindings>
 	; mod_annotations*:= [ anno |[@SuppressWarnings("all")]| | <filter(translate-sdef-anno-to-java-anno)> a*]
 	
