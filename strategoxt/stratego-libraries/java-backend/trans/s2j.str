@@ -718,6 +718,7 @@ rules
          public static final x instance = new x();
 		 
 		 ~executor-refs*
+		 ~lifted-decls-instances*
 		 ~lifted-decls*
 		 
 		 public void registerImplementators(StrategyCollector collector) {
@@ -740,8 +741,9 @@ rules
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
 	; executor-refs*  := <map(strategy-call-to-java-field)> executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
-	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
-	; lifted-binds*   := <get-lifted-bindings>
+	; lifted-decls*   := <CollectedLiftedDefs;map(Snd)>
+	; lifted-decls-instances* := <CollectedLiftedDefs; map(Fst;lifted-def-instance-to-java-field); filter(not(?()))>
+    ; lifted-binds*   := <get-lifted-bindings>
 //	; rules(LiftedDef := [])
 //	; rules(ExecutorNames := [])
 	
@@ -762,6 +764,7 @@ rules
          ~lifted-sfield*
 		 
 		 ~executor-refs*
+		 ~lifted-decls-instances*
 		 ~lifted-decls*
 		 
 		 public void registerImplementators(StrategyCollector collector) {
@@ -798,7 +801,8 @@ rules
       ; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
       ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
-	  ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+	  ; lifted-decls*   := <CollectedLiftedDefs;map(Snd)>
+	  ; lifted-decls-instances* := <CollectedLiftedDefs; map(Fst;lifted-def-instance-to-java-field); filter(not(?()))>
 	  ; lifted-binds*   := <get-lifted-bindings>
       |}
 
