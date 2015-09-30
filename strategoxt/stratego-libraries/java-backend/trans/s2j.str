@@ -614,6 +614,7 @@ rules
 		 static final x instance = new x();
 		 
 		 ~executor-decls*
+		 ~lifted-decls-instances*
 		 ~lifted-decls*
 		 
 		 public static Strategy getStrategy(Context context) {
@@ -648,8 +649,9 @@ rules
       ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
       ; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
-      ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
-      ; lifted-binds*   := <get-lifted-bindings>
+      ; lifted-decls*   := <CollectedLiftedDefs;map(Snd)>
+	  ; lifted-decls-instances* := <CollectedLiftedDefs; map(Fst;lifted-def-instance-to-java-field); filter(not(?()))>
+	  ; lifted-binds*   := <get-lifted-bindings>
 	  ; x' := <undo-dollars-for-capitals> x
       |}
 	
@@ -665,6 +667,7 @@ rules
 		 static final x instance = new x();
  
 		 ~executor-decls*
+		 ~lifted-decls-instances*
 		 ~lifted-decls*
  
 		 public static Strategy getStrategy(Context context) {
@@ -700,7 +703,8 @@ rules
       ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
       ; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
-      ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+      ; lifted-decls*   := <CollectedLiftedDefs;map(Snd)>
+	  ; lifted-decls-instances* := <CollectedLiftedDefs; map(Fst;lifted-def-instance-to-java-field); filter(not(?()))>
       ; lifted-binds*   := <get-lifted-bindings>
 	  ; x' := <undo-dollars-for-capitals> x
       |}
