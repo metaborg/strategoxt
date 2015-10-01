@@ -27,7 +27,7 @@ public class StrategyExecutorBuilder {
 	
 	private Map<Strategy, Strategy> specialExecutors;
 
-	public Strategy buildExecutor(String strategyName, List<Strategy> strategies) {
+	public Strategy buildExecutor(String strategyName, List<? extends Strategy> strategies) {
 		List<Strategy> cleaned = removeDuplicatedStrategies(strategies, CongruenceStrategy.class);
 		cleaned = removeDuplicatedStrategies(cleaned, DynamicRuleStrategy.class);
 
@@ -89,7 +89,7 @@ public class StrategyExecutorBuilder {
 		}
 	}
 
-	private <A extends Annotation> List<Strategy> removeDuplicatedStrategies(List<Strategy> strategies, Class<A> annotationClass) {
+	private <A extends Annotation> List<Strategy> removeDuplicatedStrategies(List<? extends Strategy> strategies, Class<A> annotationClass) {
 		List<Strategy> cleanedStrategies = new ArrayList<Strategy>();
 		boolean contained = false;
 		for (Strategy s : strategies) {

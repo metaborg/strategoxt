@@ -1,11 +1,11 @@
 package org.strategoxt.lang;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,7 +16,7 @@ import org.strategoxt.lang.linking.StrategyExecutorBuilder;
 
 public class StrategyCollector {
 
-	private Map<String, List<Strategy>> strategyImplementators;
+	private Map<String, List<RegisteringStrategy>> strategyImplementators;
 	
 	private Map<String, Strategy> strategyExecutors;
 	
@@ -25,7 +25,7 @@ public class StrategyCollector {
 	private Set<InitializerSetEntry> allInitializers;
 
 	public StrategyCollector() {
-		this.strategyImplementators = new HashMap<String, List<Strategy>>();
+		this.strategyImplementators = new HashMap<String, List<RegisteringStrategy>>();
 		//this.specialImplementators = new HashMap<String,Map<String, Strategy>>();
 		
 		this.strategyExecutors = new HashMap<String, Strategy>();
@@ -52,13 +52,18 @@ public class StrategyCollector {
 	
 	public void bindExecutors() {
 		RuntimeException lastE = null;
-		for (InitializerSetEntry initializer : allInitializers) {
-			try {
-			initializer.initializer.bindExecutors(this);
-			}catch (RuntimeException e) {
-				System.err.println(e.getMessage());
-				lastE = e;
+		for (List<RegisteringStrategy> strategiesForName : strategyImplementators.values()) {
+			for (RegisteringStrategy strategy : strategiesForName) {
+				try {
+				strategy.bindExecutors(this);
+				}catch (RuntimeException e) {
+					System.err.println(e.getMessage());
+					lastE = e;
+				}
 			}
+		}
+		for (InitializerSetEntry initializer : allInitializers) {
+			initializer.initializer.bindExecutors(this);
 		}
 		if(lastE != null) {
 			throw lastE;
@@ -73,10 +78,10 @@ public class StrategyCollector {
 		return this.strategyExecutors.entrySet();
 	}
 
-	public void registerStrategyImplementator(String name, Strategy implementator) {
-		List<Strategy> implementators = this.strategyImplementators.get(name);
+	public void registerStrategyImplementator(String name, RegisteringStrategy implementator) {
+		List<RegisteringStrategy> implementators = this.strategyImplementators.get(name);
 		if (implementators == null) {
-			implementators = new LinkedList<Strategy>();
+			implementators = new ArrayList<RegisteringStrategy>(2);
 			this.strategyImplementators.put(name, implementators);
 		}
 		implementators.add(implementator);
@@ -104,6 +109,12 @@ public class StrategyCollector {
 		if (specialExecutor == null) {
 			System.out.println("Warning: A strategy with name " + name + " requests a special executor but no available for request " + requester +".");
 			System.out.println("Executor map is:" +executorMap);
+			System.out.println("Query for: " + requester.getClass().getName()+ "(" + requester.hashCode() +")");
+			for (Strategy s : executorMap.keySet()) {
+				Strategy v = executorMap.get(s);
+				System.out.println(s.getClass().getName() + "("+s.hashCode() + ") -> " +
+						v.getClass().getName() + "("+v.hashCode()  + ")");
+			}
 			return getStrategyExecutor(name);
 		}
 		return specialExecutor;
@@ -112,9 +123,9 @@ public class StrategyCollector {
 
 	public void createExecutors() {
 		StrategyExecutorBuilder builder = new StrategyExecutorBuilder();
-		for (Entry<String, List<Strategy>> strategy : this.strategyImplementators.entrySet()) {
+		for (Entry<String, List<RegisteringStrategy>> strategy : this.strategyImplementators.entrySet()) {
 			final String name = strategy.getKey();
-			final List<Strategy> implementators = strategy.getValue();
+			final List<RegisteringStrategy> implementators = strategy.getValue();
 			final Strategy executor = builder.buildExecutor(name, implementators);
 			this.strategyExecutors.put(name, executor);
 			if (builder.hasSpecialExecutors()) {

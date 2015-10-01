@@ -372,7 +372,7 @@ rules
   	]|
 
   java-library-instance-qualified:
-    SDefT(x{a*},_,_,_) -> |[x'.instance]|
+    SDefT(x{a*},_,_,_) -> |[new x'()]|
 	where
 	  x' := <conc-strings> (<get-config;dollars-for-capitals> "-p", ".", x)
 	  
@@ -542,7 +542,7 @@ rules
     executorNamesStack-AddName = ?(_,_); where(rules(ExecutorNames := Cons(Cons( <id>, <ExecutorNames;list-first>) ,<ExecutorNames;list-rest>)))
 	
 	lifted-def-instance-to-java-field:
-		ExprName(Id(instancename)) -> <debug> instancefield
+		ExprName(Id(instancename)) ->  instancefield
 	  		where
 	  			<string-ends-with(|"_instance")> instancename;
 	  			tname_classname := Id(<string-as-chars(reverse;drop(|9);reverse)> instancename);

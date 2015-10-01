@@ -128,9 +128,9 @@ public abstract class LibraryInitializer {
 	}
 
 	protected final void bindExecutors(final StrategyCollector collector) {
-		for (RegisteringStrategy s : this.getLibraryStrategies()) {
-			s.bindExecutors(collector);
-		}
+	//	for (RegisteringStrategy s : this.getLibraryStrategies()) {
+	//		s.bindExecutors(collector);
+	//	}
 		this.isInitialized = true;
 	}
 
