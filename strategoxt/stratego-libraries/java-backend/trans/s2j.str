@@ -346,7 +346,8 @@ rules
       }
     ]|
     with
-	  instances* := <java-get-strategy-instances> defs
+      constant-defs := <map(make-constant-definition)> <get-config <+ ![]> "-D"
+	; instances* := <java-get-strategy-instances> <conc> (defs, constant-defs)
     ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
 	; x_name        := <MainClassName>
 
@@ -400,12 +401,18 @@ rules
 
  
 rules
+	
+  make-constant-definition:
+  	(name, value) -> SDefT(name', [], [], Build(value))
+  	with
+  		name'  := <dollars-for-capitals> name
+  			
+  		
 
   translate-constant-definition : // TODO: check if constant strategy definition name not taken
     (name, value) -> def'
     with
-      name'  := <dollars-for-capitals> name
-    ; def    := SDefT(name', [], [], Build(value))
+      def    := <make-constant-definition> (name, value)
     ; def'   := <translate-outer-definition> def
   
   translate-outer-definition-top =
