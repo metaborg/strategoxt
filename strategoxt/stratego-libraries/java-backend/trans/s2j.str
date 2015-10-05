@@ -493,7 +493,7 @@ rules
        
        mod_annotations*
        public static class x extends RegisteringStrategy {
-		 static final x instance = new x();
+		// static final x instance = new x();
 		 
 		 ~executor-decls*
 		 ~lifted-decls-instances*
@@ -611,7 +611,7 @@ rules
          // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
          // NOTE: this prevents multiple overrides of a strategy.
          private Strategy proceed;
-		 static final x instance = new x();
+		// static final x instance = new x();
 		 
 		 ~executor-decls*
 		 ~lifted-decls-instances*
@@ -664,7 +664,7 @@ rules
          // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
          // NOTE: this prevents multiple overrides of a strategy.
          private Strategy proceed;
-		 static final x instance = new x();
+		// static final x instance = new x();
  
 		 ~executor-decls*
 		 ~lifted-decls-instances*
@@ -715,7 +715,7 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        private static final class x extends RegisteringStrategy {
-         public static final x instance = new x();
+         //public static final x instance = new x();
 		 
 		 ~executor-refs*
 		 ~lifted-decls-instances*
