@@ -1217,11 +1217,11 @@ strategies
     	<fetch(?StaticLiftedStrategy())> a* ;
     	instancename:= <conc-strings> (x, "_instance")
 	
-	// Or the static instance field for _Id / _Fail and command line generated DStrategies  (is that correct?)
+	// Or the static instance field for _Id / _Fail
   lifted-call-to-instance-instance :
     CallT(SVar(x{a*}), _, _) -> |[x.instance]|
     where
-    	<fetch(?StaticIdFail() + ?StaticDCommandLineStrategy())> a*
+    	<fetch(?StaticIdFail())> a*
   
     // Otherwise use the executor field
   lifted-call-to-instance-instance :
