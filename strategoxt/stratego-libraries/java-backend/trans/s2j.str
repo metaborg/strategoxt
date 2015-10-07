@@ -511,18 +511,10 @@ rules
 		 }
 		 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	if ("~x'".equals("xtc_transform_file_2_0")) {
-		 		System.out.println("REGISTER IMPLEMENTATORS FOR xtc_transform_file_2_0: " + System.identityHashCode(this));
-		 	}
 		 	collector.registerStrategyImplementator("~x'", this);
 		 }
 		 
 		 public void bindExecutors(StrategyCollector collector) {
-		 	if ("~x'".equals("xtc_transform_file_2_0")) {
-		 		System.out.println("BIND EXECUTORS FOR xtc_transform_file_2_0: " + System.identityHashCode(this));
-		 		Strategy s = collector.getStrategyExecutor("xtc_command_1_0");
-		 		System.out.println("xtc_command_1_0 = " + s);
-		 	}
 		 	~executor-inits*
 			~lifted-binds*
 		 }
