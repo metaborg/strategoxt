@@ -53,13 +53,7 @@ public abstract class LibraryInitializer {
 	public final void initialize(Context context) {
 		StrategyCollector c = new StrategyCollector();
 		context.setStrategyCollector(c);
-		List<LibraryInitializer> globalInitializers = GlobalLibraries.getGlobalLibraryInitializers();
-		if (globalInitializers.isEmpty()) {
-			this.initialize(c, context);
-		} else {
-			globalInitializers.add(this);
-			buildInitializer(globalInitializers).initialize(c, context);
-		}
+		this.initialize(c, context);
 	}
 
 	public final void registerInterop(final IContext context, final Context compiledContext, final VarScope varScope) {
@@ -122,6 +116,9 @@ public abstract class LibraryInitializer {
 		final Set<InitializerSetEntry> dependentInitializer = new HashSet<>();
 
 		this.collectDependentInitializer(dependentInitializer);
+		for (LibraryInitializer global : GlobalLibraries.getGlobalLibraryInitializers()) {
+			dependentInitializer.add(new InitializerSetEntry(global));
+		}
 		collector.addLibraryInitializers(dependentInitializer);
 		collector.collectImplementators();
 		collector.initializeLibraries(context);
