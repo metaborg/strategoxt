@@ -249,6 +249,7 @@
 			<local name="strj.constructor-forward-declaration"/>
 			<local name="strj.separate-compiled"/>
 			<local name="strj.main-strategy"/>
+			<local name="strj.main-class"/>
 	
 			<condition property="strj.strategy-forward-declaration" value="--strategy-forward-declaration" else="--clean">
 				<istrue value="${strj-enable-forward-declarations}"/>
@@ -262,12 +263,16 @@
 				<isset property="strj.separate-compiled"/>
 			</condition>
 			
+			<condition property="str.main-class" value="org.strategoxt.strj.strj.strj" else="org.strategoxt.strj.Main">
+				<isset property="strj.separate-compiled"/>
+			</condition>
+			
 			<echo>Enable Forward Declarations: ${strj-enable-forward-declarations}</echo>
 			
 			<uptodate-mio input="@{input}" output="@{output}" type="strj" force="true">
 				<action>
-					<java classname="run" failonerror="true">
-						<arg value="${strj.main-strategy}"/>
+					<java classname="@{str.main-class}" failonerror="true">
+						<!-- <arg value="${strj.main-strategy}"/> -->
 						<arg value="-i" />
 						<arg value="${@{input}.abs}" />
 						<arg value="-o" />
