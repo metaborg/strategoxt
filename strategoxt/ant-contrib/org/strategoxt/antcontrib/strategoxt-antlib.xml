@@ -263,7 +263,7 @@
 				<isset property="strj.separate-compiled"/>
 			</condition>
 			
-			<condition property="str.main-class" value="org.strategoxt.strj.strj.strj" else="org.strategoxt.strj.Main">
+			<condition property="strj.main-class" value="org.strategoxt.strj.strj.strj" else="org.strategoxt.strj.Main">
 				<isset property="strj.separate-compiled"/>
 			</condition>
 			
