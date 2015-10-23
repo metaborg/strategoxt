@@ -271,7 +271,7 @@
 			
 			<uptodate-mio input="@{input}" output="@{output}" type="strj" force="true">
 				<action>
-					<java classname="@{str.main-class}" failonerror="true">
+					<java classname="@{strj.main-class}" failonerror="true">
 						<!-- <arg value="${strj.main-strategy}"/> -->
 						<arg value="-i" />
 						<arg value="${@{input}.abs}" />
