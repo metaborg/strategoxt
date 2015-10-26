@@ -31,7 +31,7 @@ public class JavaInteropRegisterer extends InteropRegisterer {
 
 	@Override
 	public void register(IContext context, Context compiledContext) {
-		initializer.registerInterop(context, compiledContext);
+		initializer.registerInterop(context, compiledContext, context.getVarScope());
 	}
 	
 	@Override
