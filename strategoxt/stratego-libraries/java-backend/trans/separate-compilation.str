@@ -64,12 +64,12 @@ strategies
 			<subti> (num-path-chars, num-name-chars) => num-chars;
 			<take(|num-chars)> path-chars => removed-chars;
 			<drop(|num-chars)> path-chars => module-chars;
-			((<equal(|module-name)> (<implode-string;debug> module-chars) ) <+ (log(|Error(), "Main module does not match file name"); fail));
+			((<equal(|module-name)> (<implode-string> module-chars) ) <+ (log(|Error(), "Main module does not match file name"); fail));
 			<implode-string> removed-chars
 			}
 			
 		remove-java-file (|output-folder) =
-			if <debug;has-extension(|"java")> output-folder  
+			if <has-extension(|"java")> output-folder  
 				then !output-folder; log(|Notice(), ["Ignoring java file in output ", <id>]);
 					dirname;
 					string-ensure-trailing-slash;
@@ -89,10 +89,10 @@ strategies
 		// Parse file and derive include paths from it
 		// Sadly it is not possible to share that parse result with compiling (as long as the input is an AbsolutePath/RelativePath term)
 		!AbsolutePath(fileName) => absolute-file;
-		<require-initially;debug> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(absolute-file, <pack-include-path>, output-folder))
+		<require-initially> BuildRequest(<parse-stratego-builder-factory>, ParseStrategoInput(absolute-file, <pack-include-path>, output-folder))
 				  	=> ParseStrategoOutput(module-name, _);
 				  	
-		<remove-module-from-path(|absolute-file)> (<conc-strings;debug> (module-name, ".str")) => main-dir;
+		<remove-module-from-path(|absolute-file)> (<conc-strings> (module-name, ".str")) => main-dir;
 		
 		// But the output directory in the search path to find generated rtrees
 		 where({i , is:

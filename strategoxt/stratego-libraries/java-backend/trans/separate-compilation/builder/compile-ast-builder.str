@@ -137,7 +137,6 @@ strategies
 		create-libraries-file(|module-name) = {lib-file :
 			log(|Notice(), ["Creating library-file with libraries " , <id>]);
 			export-externals(|".libs") => lib-file;
-			debug;
 			<provide-for(|<input-for-module> module-name)> lib-file;
 			log(|Notice(), ["Created library file " , lib-file]);
 			!lib-file
