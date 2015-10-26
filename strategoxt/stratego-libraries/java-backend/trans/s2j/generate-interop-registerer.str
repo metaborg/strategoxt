@@ -1,0 +1,21 @@
+module s2j/generate-interop-registerer
+
+imports libstratego-lib
+imports libjava-front
+
+strategies
+	
+	generate-java-interop-registerer :
+    defs ->
+    class-body-dec* |[
+      
+      // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
+      @SuppressWarnings("unused")
+      public static class InteropRegisterer extends org.strategoxt.lang.JavaInteropRegisterer {
+       
+		 public InteropRegisterer() {
+		 	super(new LibraryInitializer());
+		 }
+		
+      }
+    ]|

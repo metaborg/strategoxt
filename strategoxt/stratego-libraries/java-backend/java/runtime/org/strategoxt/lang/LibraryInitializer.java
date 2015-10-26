@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import java.util.Set;
 
 import org.spoofax.interpreter.core.IContext;
@@ -13,8 +14,11 @@ import org.spoofax.interpreter.core.VarScope;
 
 public abstract class LibraryInitializer {
 
-	private boolean isInitialized = false;
+	
 
+	private static final Pattern BINARY_STRATEGY_NAME =
+			Pattern.compile("[A-Za-z_$]+_[0-9]+_[0-9+]");
+	
 	private static LibraryInitializer buildInitializer(final LibraryInitializer... initializers) {
 		return buildInitializer(Arrays.asList(initializers));
 	}
@@ -59,7 +63,14 @@ public abstract class LibraryInitializer {
 	public final void registerInterop(final IContext context, final Context compiledContext, final VarScope varScope) {
 		this.initialize(compiledContext);
 		for (Entry<String, Strategy> strategy : compiledContext.getStrategyCollector().getAvailableStrategies()) {
-			varScope.addSVar(strategy.getKey(), new InteropSDefT(strategy.getValue(), context));
+			String className = strategy.getValue().getClass().getSimpleName();
+			String givenName = strategy.getKey();
+			if (!BINARY_STRATEGY_NAME.matcher(className).matches())
+				throw new IllegalArgumentException("Strategy class must encode number of strategy and term arguments in name (e.g. foo_0_0): " + className);
+			if (!BINARY_STRATEGY_NAME.matcher(givenName).matches())
+				throw new IllegalArgumentException("Strategy name must encode number of strategy and term arguments in name (e.g. foo_0_0): " + givenName);
+			
+			varScope.addSVar(givenName, new InteropSDefT(strategy.getValue(), context));
 
 		}
 	}
@@ -98,6 +109,8 @@ public abstract class LibraryInitializer {
 		}
 
 	}
+	
+	private boolean isInitialized = false;
 
 	private final void collectDependentInitializer(final Set<InitializerSetEntry> collector) {
 		collector.add(new InitializerSetEntry(this));
@@ -140,6 +153,7 @@ public abstract class LibraryInitializer {
 		this.isInitialized = true;
 	}
 
+	
 	protected abstract List<RegisteringStrategy> getLibraryStrategies();
 
 	protected abstract void initializeLibrary(Context context);

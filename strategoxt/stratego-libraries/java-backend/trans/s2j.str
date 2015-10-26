@@ -25,6 +25,7 @@ imports
   s2j-options
   lib/dr-scoping
   
+  s2j/generate-interop-registerer
   separate-compilation/separate-compilation-options
 
 signature
@@ -206,6 +207,7 @@ rules
     ; pkgname       := <!package-dec? |[ package ~x:<get-config;dollars-for-capitals> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
 	; libraryInitializer := <java-library-initializer> defs
+	; interop-registerer := <generate-java-interop-registerer>
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
@@ -329,7 +331,9 @@ rules
     defs ->
     class-body-dec* |[
       
-      // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
+      // Library Initializer knows which strategies are in the library and on which other libraries
+      // the library depends.
+      // Note that each module is compiled to a libary
       @SuppressWarnings("unused")
       public static class LibraryInitializer extends org.strategoxt.lang.LibraryInitializer {
        
