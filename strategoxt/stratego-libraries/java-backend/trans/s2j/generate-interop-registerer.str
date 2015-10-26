@@ -5,8 +5,8 @@ imports libjava-front
 
 strategies
 	
-	generate-java-interop-registerer :
-    defs ->
+	generate-java-interop-registerer(need-interop-registerer) :
+    	_ ->
     class-body-dec* |[
       
       // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
@@ -18,4 +18,8 @@ strategies
 		 }
 		
       }
-    ]|
+    ]| where
+    	need-interop-registerer
+    	
+   	generate-java-interop-registerer(need-interop-registerer) :
+   		 _ -> class-body-dec* |[ ]|

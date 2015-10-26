@@ -45,9 +45,9 @@ strategies
   ; <exit> 1
   
   
-  strj-back-end =
+  strj-back-end(need-interop-registerer) =
   	  try(mark-always-needed(|<get-config> "-m", 0, 0))
-	; s2j
+	; s2j(need-interop-registerer)
 	; with(clean-output-dir)
 	; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
   

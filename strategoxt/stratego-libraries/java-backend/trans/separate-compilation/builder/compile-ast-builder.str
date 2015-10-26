@@ -143,10 +143,10 @@ strategies
 			!lib-file
 		}
 			
-		call-back-end = {ops, defs:
+		call-back-end(|generate-main) = {ops, defs:
 			// Remove Overlays for Backend, they are only important for externals
 			\Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\;
-			strj-back-end
+			strj-back-end(<b-true> generate-main)
 			}
 				
 			
@@ -208,7 +208,7 @@ strategies
 			where(<create-rtree-file(|moduleName,  generate-main, imported-rtree-files)> <id> => rtree-file);
 			where(<create-libraries-file(|moduleName)> imported-libraries => libraries-file);
 			log(|Notice(), ["Calling Backend for ", moduleName]);
-			call-back-end;
+			call-back-end(|generate-main);
 			log (|Notice(), 15) 
 		|generate-main, java-package, output-folder, fileName, moduleName, circular-module-names);
 		log (|Notice(), 16);

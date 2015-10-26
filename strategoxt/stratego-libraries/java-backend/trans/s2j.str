@@ -60,7 +60,7 @@ strategies
  
 rules
     
-  s2j = 
+  s2j(need-interop-registerer) = 
   {|IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
 	  with(
         s2j-init-options
@@ -71,7 +71,7 @@ rules
       | "Backend preprocessing succeeded", 1
       )
     ; log-timed(
-        dr-scope-all-verbose(java-compile-spec)
+        dr-scope-all-verbose(java-compile-spec(need-interop-registerer))
       ; java-simplify
       | "Backend transformation succeeded", 1
       )
@@ -115,7 +115,7 @@ rules
   <+
     Cify(x)
   
-  java-compile-spec :
+  java-compile-spec(need-interop-registerer) :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
     |[ 
      ~package-dec?: pkgname
@@ -207,7 +207,7 @@ rules
     ; pkgname       := <!package-dec? |[ package ~x:<get-config;dollars-for-capitals> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
 	; libraryInitializer := <java-library-initializer> defs
-	; interop-registerer := <generate-java-interop-registerer>
+	; interop-registerer := <generate-java-interop-registerer(need-interop-registerer)>
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
