@@ -15,9 +15,8 @@ import org.spoofax.interpreter.core.VarScope;
 public abstract class LibraryInitializer {
 
 	
-
 	private static final Pattern BINARY_STRATEGY_NAME =
-			Pattern.compile("[A-Za-z_$]+_[0-9]+_[0-9+]");
+			Pattern.compile("[A-Za-z_$][A-Za-z_$0-9'\\-]*_[0-9]+_[0-9+]");
 	
 	private static LibraryInitializer buildInitializer(final LibraryInitializer... initializers) {
 		return buildInitializer(Arrays.asList(initializers));
@@ -65,8 +64,10 @@ public abstract class LibraryInitializer {
 		for (Entry<String, Strategy> strategy : compiledContext.getStrategyCollector().getAvailableStrategies()) {
 			String className = strategy.getValue().getClass().getSimpleName();
 			String givenName = strategy.getKey();
+			// Separate compilation does not require the class names to match, even though generated java code does.
 			if (!BINARY_STRATEGY_NAME.matcher(className).matches())
-				throw new IllegalArgumentException("Strategy number of strategy and term arguments in name (e.g. foo_0_0): " + className +" in package " + strategy.getValue().getClass().getPackage().getName());
+				System.err.println("WARNING: Strategy class name of strategy and term arguments in name (e.g. foo_0_0): " + className +" in package " + strategy.getValue().getClass().getPackage().getName());
+			// But for the names, we really need it
 			if (!BINARY_STRATEGY_NAME.matcher(givenName).matches())
 				throw new IllegalArgumentException("Strategy name must encode number of strategy and term arguments in name (e.g. foo_0_0): " + givenName);
 			
