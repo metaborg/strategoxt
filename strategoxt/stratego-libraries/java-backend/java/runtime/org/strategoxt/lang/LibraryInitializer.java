@@ -66,9 +66,9 @@ public abstract class LibraryInitializer {
 			String className = strategy.getValue().getClass().getSimpleName();
 			String givenName = strategy.getKey();
 			if (!BINARY_STRATEGY_NAME.matcher(className).matches())
-				throw new IllegalArgumentException("Strategy class must encode number of strategy and term arguments in name (e.g. foo_0_0): " + className);
+				throw new IllegalArgumentException("Strategy \""+ className +"\" class must encode number of strategy and term arguments in name (e.g. foo_0_0): " + className);
 			if (!BINARY_STRATEGY_NAME.matcher(givenName).matches())
-				throw new IllegalArgumentException("Strategy name must encode number of strategy and term arguments in name (e.g. foo_0_0): " + givenName);
+				throw new IllegalArgumentException("Strategy \""+ givenName +"\" name must encode number of strategy and term arguments in name (e.g. foo_0_0): " + givenName);
 			
 			varScope.addSVar(givenName, new InteropSDefT(strategy.getValue(), context));
 
