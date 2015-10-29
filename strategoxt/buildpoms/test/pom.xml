@@ -115,6 +115,7 @@
                   inheritRefs="true"
                 >
                   <target name="test-compiler" />
+                  <target name="test-library" />
                 </ant>
               </target>
             </configuration>
