@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<project name="lib-test" default="test-all">
+	<!-- Import Stratego/XT Ant contributions -->
+	<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="strj-sut" value="../../buildpoms/build/target/bin/strategoxt.jar" />
+	<property name="dep.libstratego-lib" location="../lib/spec" />
+	<property name="dep.libsslcompat-lib" location="../lib/ssl-compat" />
+
+	<target name="test-all" depends="test-library" />
+
+	<target name="test-library" depends="test-libtest1" />
+
+	<target name="test-libtest1">
+		<local name="test-dir" />
+		<local name="test-gen" />
+		<local name="test-gen-bin" />
+		<property name="test-dir" location="tests/" />
+		<property name="test-gen" location="${test-dir}/test-gen" />
+		<property name="test-gen-bin" location="${test-gen}" />
+		<for param="test-source">
+			<path>
+				<fileset dir="${test-dir}" includes="*-test.str" />
+			</path>
+			<sequential>
+				<log message="Testing @{test-source}" />
+				<mkdir dir="${test-gen}" />
+				<mkdir dir="${test-gen}/org/test" />
+				<mkdir dir="${test-gen-bin}" />
+				<trycatch property="failure">
+					<try>
+						<local name="testbasename"/>
+						<local name="main-strategy" />
+						<basename property="testbasename" file="@{test-source}" suffix=".str"/>
+						<property name="main-strategy" value="main-${testbasename}" />
+						<!-- do the test -->
+						<strj-workingdir input="@{test-source}" strj="${strj-sut}" output="${test-gen}/org/test/Main.java" package="org.test" workdir="${test-dir}">
+							<strjargs>
+								<arg value="-la" />
+								<arg value="stratego-lib" />
+								<arg value="-I" />
+								<arg value="${dep.libstratego-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.libsslcompat-lib}" />
+								<arg value="-m" />
+								<arg value="${main-strategy}" />
+							</strjargs>
+						</strj-workingdir>
+						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
+						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
+							<jvmarg value="-Xss16m" />
+							<jvmarg value="-Xmx1024m" />
+						</java>
+					</try>
+
+					<catch>
+						<fail message="Library test @{test-source}: ${failure}" />
+					</catch>
+
+					<finally>
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" />
+					</finally>
+				</trycatch>
+			</sequential>
+		</for>
+	</target>
+
+
+</project>

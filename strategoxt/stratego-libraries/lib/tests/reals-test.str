@@ -28,12 +28,13 @@ strategies
   real-to-string-test =
     apply-and-show(!"real-to-string-test", real-to-string, !12345678901234567.0)
   ; apply-and-show(!"real-to-string-test", real-to-string(|2), !12345678901234567.0)
-    //apply-and-show(!"real-to-string-test", real-to-string, !1.5e20);
+  //apply-and-show(!"real-to-string-test", real-to-string, !1.5e20);
     //apply-and-show(!"real-to-string-test", real-to-string, !-1.5e-20)
 
   string-to-real-test =
     apply-and-show(!"string-to-real-test", string-to-real, !"12345678901234567");
-    apply-and-show(!"string-to-real-test", string-to-real, !"1.2345678901234567e307")
+    apply-and-show(!"string-to-real-test", string-to-real, !"1.2345678901234567e307");
+    apply-and-fail(!"string-to-real-malformed-test", string-to-real, !"thisisnotanumber")
 
   real-test =
     apply-test(!"real-test pos", real, !1, !1.0);

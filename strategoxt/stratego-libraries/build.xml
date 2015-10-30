@@ -148,4 +148,15 @@
 		</subant>
 	</target>
 
+	<target name="test-library">
+		<subant inheritall="false">
+			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<property name="dep.libstratego-lib" location="lib/spec" />
+			<property name="dep.libsslcompat-lib" location="lib/ssl-compat" />
+			<fileset dir="lib" includes="build.test.xml" />
+			<target name="test-library" />
+		</subant>
+	</target>
+
 </project>
