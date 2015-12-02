@@ -193,7 +193,7 @@ strategies
 		log (|Notice(), 11);
 		?(moduleName, merged-ast, new-libs, fileName, main-module-name, imported-rtree-files, imported-libraries);
 		where (generate-main := <b-strategy-successful(fetch-elem(equal(|main-module-name)))> circular-module-names );
-		log(|Notice(), ["Generate main ", generate-main]);
+		log(|Notice(), ["Generate main ", generate-main, " main-module ", main-module-name , " in " , circular-module-names]);
 		log(|Notice(), ["Merged libaries for ", moduleName , ": ", new-libs]);
 		log (|Notice(), 115);
 		save-and-set-options(
