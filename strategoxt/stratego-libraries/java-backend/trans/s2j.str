@@ -192,6 +192,7 @@ rules
      ]|
 
 	 ~*libraryInitializer
+	 ~*interop-registerer
      ~*constant-defs
      ~*function-defs
      //~*lifted-defs

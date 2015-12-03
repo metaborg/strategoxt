@@ -19,7 +19,10 @@ strategies
 		
       }
     ]| where
-    	need-interop-registerer
+    	need-interop-registerer;
+    	log(|Notice(), ["Generate InteropRegisterer"])
     	
    	generate-java-interop-registerer(need-interop-registerer) :
    		 _ -> class-body-dec* |[ ]|
+   	   where
+   	   	log(|Notice(), ["Generate no InteropRegisterer"])
