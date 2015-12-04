@@ -16,7 +16,7 @@ public abstract class LibraryInitializer {
 
 	
 	private static final Pattern BINARY_STRATEGY_NAME =
-			Pattern.compile("[A-Za-z_$0-9'\\-]*_[0-9]+_[0-9+]");
+			Pattern.compile("[A-Za-z_$0-9'\\-]*_[0-9]+_[0-9]+");
 	
 	private static LibraryInitializer buildInitializer(final LibraryInitializer... initializers) {
 		return buildInitializer(Arrays.asList(initializers));
