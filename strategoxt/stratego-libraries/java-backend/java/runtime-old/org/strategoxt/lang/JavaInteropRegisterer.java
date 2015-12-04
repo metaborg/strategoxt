@@ -22,6 +22,10 @@ public class JavaInteropRegisterer extends InteropRegisterer {
 	
 	private final Strategy[] strategies;
 	
+	public JavaInteropRegisterer(LibraryInitializer initializer) {
+		throw new AssertionException("Constructor only available for bootstrapping");
+	}
+	
 	public JavaInteropRegisterer(Strategy... strategies) {
 		if (strategies == null)
 			throw new IllegalArgumentException("strategies");
