@@ -137,6 +137,10 @@ public class Context extends StackTracer implements IAsyncCancellable {
     	}
     	//TODO ELse case should ensure that given collector is empty, but better refactor more
 	}
+    
+    public void setStrategyCollectorInternal(StrategyCollector strategyCollector) {
+    	this.strategyCollector = strategyCollector;
+	}
 
     public StrategyCollector getStrategyCollector() {
 		return strategyCollector;
