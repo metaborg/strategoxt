@@ -39,6 +39,7 @@ public class StrategyCollector {
 	}
 
 	public void collectImplementators() {
+		this.strategyImplementators = new HashMap<>();
 		for (InitializerSetEntry initializer : allInitializers) {
 			initializer.initializer.registerImplementators(this);
 		}
@@ -122,6 +123,9 @@ public class StrategyCollector {
 	
 
 	public void createExecutors() {
+		System.out.println("Create executors:" + this.strategyImplementators.size() + " " + this);
+		this.strategyExecutors = new HashMap<String, Strategy>();
+		this.specialExecutors = new HashMap<String, Map<Strategy,Strategy>>();
 		StrategyExecutorBuilder builder = new StrategyExecutorBuilder();
 		for (Entry<String, List<RegisteringStrategy>> strategy : this.strategyImplementators.entrySet()) {
 			final String name = strategy.getKey();

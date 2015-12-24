@@ -56,7 +56,7 @@ public abstract class LibraryInitializer {
 	public final void initialize(Context context) {
 		StrategyCollector c = new StrategyCollector();
 		context.setStrategyCollector(c);
-		this.initialize(c, context);
+		this.initializeInternal(context);
 	}
 
 	public final void registerInterop(final IContext context, final Context compiledContext, final VarScope varScope) {
@@ -126,10 +126,11 @@ public abstract class LibraryInitializer {
 		}
 	}
 
-	private final void initialize(final StrategyCollector collector, final Context context) {
+	private final void initializeInternal(final Context context) {
 		if (this.isInitialized) {
 			return;
 		}
+		StrategyCollector collector = context.getStrategyCollector();
 		final Set<InitializerSetEntry> dependentInitializer = new HashSet<>();
 
 		this.collectDependentInitializer(dependentInitializer);

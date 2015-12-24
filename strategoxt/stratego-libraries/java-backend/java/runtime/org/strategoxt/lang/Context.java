@@ -75,6 +75,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
     	this.factory = factory;
     	this.operatorRegistryMap = new HashMap<String, IOperatorRegistry>();
     	this.operatorRegistries = new ArrayList<IOperatorRegistry>();
+    	
 
         addOperatorRegistry(new SSLLibrary());
         addOperatorRegistry(new JFFLibrary(factory));
@@ -127,11 +128,14 @@ public class Context extends StackTracer implements IAsyncCancellable {
     }
     
     public void setStrategyCollector(StrategyCollector strategyCollector) {
-		this.strategyCollector = strategyCollector;
-		this.strategyCollector.addLibraryInitializers(Arrays.asList(
+    	if (this.strategyCollector == null) {
+    		this.strategyCollector = strategyCollector;
+    		this.strategyCollector.addLibraryInitializers(Arrays.asList(
 				new InitializerSetEntry(new CompatLibraryInitializer()),
 				new InitializerSetEntry(new SRTS_LibraryInitializer()),
 				new InitializerSetEntry(new SRTS_EXT_LibraryInitializer())));
+    	}
+    	//TODO ELse case should ensure that given collector is empty, but better refactor more
 	}
 
     public StrategyCollector getStrategyCollector() {
