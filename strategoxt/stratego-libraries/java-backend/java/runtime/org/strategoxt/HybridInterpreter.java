@@ -148,20 +148,32 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	 *                       	but can be reused from the old instance.
 	 */
 	public HybridInterpreter(HybridInterpreter interpreter, String... reuseRegistries) {
-		this(interpreter.getFactory(), ((org.spoofax.interpreter.core.Context) interpreter.getContext()).getProgramFactory());
+		super(interpreter.getFactory(), ((org.spoofax.interpreter.core.Context) interpreter.getContext()).getProgramFactory());
+		recordingFactory = new ConstructorRecordingTermFactory(interpreter.getFactory());
+
+		compiledContext = new HybridCompiledContext(interpreter.getFactory());
 		Set<String> reusable = asSet(reuseRegistries);
 
-		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));
 		interpreter.init();
+		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));
+		compiledContext.setStrategyCollectorInternal(interpreter.compiledContext.getStrategyCollector());
+		
 		for (IOperatorRegistry registry : interpreter.getCompiledContext().getOperatorRegistries()) {
 			IOperatorRegistry existing = getContext().getOperatorRegistry(registry.getOperatorRegistryName());
 			if (existing == null || reusable.contains(registry.getOperatorRegistryName()))
 				addOperatorRegistry(registry);
 		}
+		
+		System.out.println(" === Copy interpreter " + interpreter + " to " +  this + " === ");
 		registeredLibraries = interpreter.registeredLibraries;
 		loadedJars = interpreter.loadedJars;
 		setIOAgent(interpreter.getIOAgent());
 		setCurrent(interpreter.current());
+		
+		try {
+		System.out.println(interpreter.getCompiledContext().getStrategyCollector().getStrategyExecutor("strategy analysis_analyze_builtin_partition_1_2"));
+		System.out.println(this.getCompiledContext().getStrategyCollector().getStrategyExecutor("strategy analysis_analyze_builtin_partition_1_2"));
+		} catch (Exception e) {}
 	}
 
 	public static void main(String... args) {
@@ -483,6 +495,12 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 		try {
 			if (!loadedJars) init();
+			if (this.compiledContext == null) {
+				throw new RuntimeException("Context is null");
+			}
+			if (this.compiledContext.getStrategyCollector() == null) {
+				throw new RuntimeException("Strategy Collector is null");
+			}
 			return super.invoke(name);
 		} catch (StrategoErrorExit e) {
 			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
