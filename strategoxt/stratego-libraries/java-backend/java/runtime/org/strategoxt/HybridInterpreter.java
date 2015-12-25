@@ -348,6 +348,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	public void loadJars(ClassLoader parentClassLoader, URL... jars)
 			throws SecurityException, NoInteropRegistererJarException, IncompatibleJarException, IOException {
 
+		
 		URLClassLoader classLoader = new URLClassLoader(jars, parentClassLoader);
 		boolean foundRegisterer = false;
 		loadedJars = true;
