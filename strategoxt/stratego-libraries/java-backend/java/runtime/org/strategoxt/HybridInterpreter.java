@@ -164,16 +164,10 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 				addOperatorRegistry(registry);
 		}
 		
-		System.out.println(" === Copy interpreter " + interpreter + " to " +  this + " === ");
 		registeredLibraries = interpreter.registeredLibraries;
 		loadedJars = interpreter.loadedJars;
 		setIOAgent(interpreter.getIOAgent());
 		setCurrent(interpreter.current());
-		
-		try {
-		System.out.println(interpreter.getCompiledContext().getStrategyCollector().getStrategyExecutor("strategy analysis_analyze_builtin_partition_1_2"));
-		System.out.println(this.getCompiledContext().getStrategyCollector().getStrategyExecutor("strategy analysis_analyze_builtin_partition_1_2"));
-		} catch (Exception e) {}
 	}
 
 	public static void main(String... args) {
