@@ -1,0 +1,17 @@
+module foo
+imports libstrategolib
+strategies
+
+  main = 
+    foo / Fred \ bar
+
+  main = 
+    foo / ~"Fred" \ bar
+
+  foo =
+      rules(Fred : 1 -> 2)
+    ; rules(Fred : 2 -> 3)
+
+  bar =
+      rules(Fred : 1 -> 2)
+    ; rules(Fred : 3 -> 3)

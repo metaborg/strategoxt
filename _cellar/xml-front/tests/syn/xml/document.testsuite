@@ -1,0 +1,55 @@
+testsuite XML Documents
+topsort Document
+
+test simple xhtml, just elements
+  file Document/test2.xml succeeds
+
+test simple xhtml with attribute
+  file Document/test1.xml succeeds
+
+test simple author
+  file Document/author.xml succeeds
+test simple xhtml with namespace
+  file Document/test3.xml succeeds
+
+test default namespace in document
+  file Document/test3b.xml succeeds
+
+test set default namespace to none
+  file Document/test3c.xml succeeds
+
+test many prefixes and default namespace
+  file Document/test3d.xml succeeds
+
+test xhtml with gt entity and comment
+  file Document/test4.xml succeeds
+
+test xml decl and comments in prologue
+  file Document/test5.xml succeeds
+
+test rss of tweakers.net
+  file Document/rss.xml succeeds
+
+test rss xslt
+  file Document/rss.xsl succeeds
+
+test turbotracker of tweakers.net
+  file Document/turbotracker.xml succeeds
+
+test bookmarks
+  file Document/bookmarks.xml succeeds
+
+test bookmarks to xhtml
+  file Document/bookmarks.xsl succeeds
+
+test soap envelope
+  file Document/soap1.xml succeeds
+
+test soap envelope
+  file Document/soap2.xml succeeds
+
+test soap envelope
+  file Document/soap3.xml succeeds
+
+test all kinds of character references
+  file Document/char-refs.xml succeeds

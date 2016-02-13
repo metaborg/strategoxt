@@ -1,0 +1,5 @@
+if x * (y + 10) = 34 then
+  x := x / (y - 1);
+else 
+  x := x * (y / 3);
+end

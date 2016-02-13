@@ -1,0 +1,13 @@
+module match_2
+
+imports
+  libstratego-lib
+
+signature constructors
+  Foo : Term
+  Bar : Term
+
+rules
+
+  main-match_2 = !1; (?Foo() <+ ?Bar() <+ ?1)
+  

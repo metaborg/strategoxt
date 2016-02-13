@@ -1,0 +1,198 @@
+module Stratego-Sugar-in-Stratego
+imports Stratego-Sugar StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
+
+exports
+
+  context-free syntax
+
+              "|[" Module "]|" -> StrategoTerm {cons("ToTerm"),prefer}
+    "Module"  "|[" Module "]|" -> StrategoTerm {cons("ToTerm")}
+
+              "|[" Decl   "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Sdecl  "]|" -> StrategoTerm {cons("ToTerm")}
+
+              "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
+    "Constr"  "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
+
+              "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Type"    "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "Decl"    "|[" Decl  "]|" -> StrategoTerm {cons("ToTerm")}
+    "Decl*"   "|[" Decl* "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "Sort"    "|[" Sort   "]|" -> StrategoTerm {cons("ToTerm")}
+
+              "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Term"    "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "PreTerm" "|[" PreTerm   "]|" -> StrategoTerm {cons("ToTerm")}
+
+              "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
+    "Def"     "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
+    "Def*"    "|[" Def* "]|" -> StrategoTerm {cons("ToTerm")}
+
+             "|[" Rule      "]|" -> StrategoTerm {cons("ToTerm")}
+    "Rule"   "|[" Rule      "]|" -> StrategoTerm {cons("ToTerm")}
+             "|[" StratRule "]|" -> StrategoTerm {cons("ToTerm")}
+
+               "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
+    "Strat"    "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
+    "Strategy" "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "O"        "|[" Overlay  "]|" -> StrategoTerm {cons("ToTerm")}
+    "Overlay"  "|[" Overlay  "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "Typedid"  "|[" Typedid         "]|" -> StrategoTerm {cons("ToTerm")}
+    "Typedid*" "|[" { Typedid ","}* "]|" -> StrategoTerm {cons("ToTerm")}
+    
+%%               "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
+
+    Strategy "~{" {StrategoTerm ","}* "}" -> Strategy {cons("WithAnno")}
+    Term     "~{" {StrategoTerm ","}* "}" -> Term     {cons("WithAnno")}
+    Id       "~{" {StrategoTerm ","}* "}" -> Id       {cons("WithAnno"),prefer}
+
+  context-free priorities
+    Id       "~{" {StrategoTerm ","}* "}" -> Id       {cons("WithAnno"),prefer}
+  > Strategy "~{" {StrategoTerm ","}*"}" -> Strategy {cons("WithAnno")}
+  > StrategyAngle Term 		   -> Strategy {cons("BA")}
+
+  context-free syntax
+
+    %% From Term
+
+    "~"         StrategoTerm -> ModName          {cons("FromTerm")}
+    "~*"        StrategoTerm -> {Term ","}+      {cons("FromTerm")}
+
+    "~"         StrategoTerm -> Term             {cons("FromTerm")}
+    "~term:"    StrategoTerm -> Term             {cons("FromTerm")}
+    %%"~term*:"   StrategoTerm -> {Term ","}*      {cons("FromTerm")}
+    "~term*:"   StrategoTerm -> {Term ","}+      {cons("FromTerm")}
+    "~"         StrategoTerm -> {ID   ","}+      {cons("FromTerm")}
+
+    "~"         StrategoTerm -> Strategy         {cons("FromTerm")}
+    "~strat:"   StrategoTerm -> Strategy         {cons("FromTerm")}
+    "~*"        StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
+    "~strat*:"  StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
+
+    "~srt:"     StrategoTerm -> Sort {cons("FromTerm")}
+    "~srtvar:"  StrategoTerm -> LCID {cons("FromTerm")}
+    "~srtid:"   StrategoTerm -> UCID {cons("FromTerm")}
+
+    "~id:"    StrategoTerm -> Id        {cons("FromTerm")}
+    "~int:"   StrategoTerm -> Int       {cons("FromTerm")}
+    "~str:"   StrategoTerm -> String    {cons("FromTerm")}
+
+    "~"   StrategoTerm -> Def       {cons("FromTerm")}
+    "~*"  StrategoTerm -> Def+      {cons("FromTerm")}
+
+    "~*"  StrategoTerm -> Opdecl+      {cons("FromTerm")}
+    "~*"  StrategoTerm -> {Type "*"}+  {cons("FromTerm")}
+
+    "~*"          StrategoTerm -> {Typedid ","}+  {cons("FromTerm")}
+    "~typed-id*:" StrategoTerm -> {Typedid ","}+   {cons("FromTerm")}
+
+  context-free syntax 
+
+    %% Hacks
+
+    "<" StrategoStrategy ">" -> StrategoStrategyAngle {bracket}
+    "(" StrategoStrategy ")" -> StrategoStrategy {bracket,prefer}
+
+  variables
+    [xyzfglc][0-9\']*       -> Id       {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {Id ","}* {prefer}
+    "xs"[0-9\']*            -> {Id ","}* {prefer}
+
+    [xyzfglc] "_" [A-Za-z0-9\'\-\_]+     -> Id {prefer}
+    [xyzfglc] "_" [A-Za-z0-9\'\-\_]+ "*" -> Id* {prefer}
+    
+    [xyzfgl][0-9\']*  "*"   -> {ID ","}* {prefer}
+
+    "lid"[0-9\']*	  -> LId {prefer}
+
+    "pt"[0-9\']*           -> PreTerm     {prefer}
+
+    "t"[0-9\']*           -> Term     {prefer}
+    "t"[0-9\']*   "*"     -> {Term ","}*     {prefer}
+    "ts"[0-9\']*          -> {Term ","}*     {prefer}
+  
+    "t" "_" [A-Za-z0-9\'\-\_]+     -> Term {prefer}
+    "t" "_" [A-Za-z0-9\'\-\_]+ "*" -> {Term ","}* {prefer}
+
+    "str"[0-9\']*         -> String {prefer}
+
+    "s"[0-9\']*           -> Strategy {prefer}
+    "ss"[0-9\']*          -> {Strategy ","}* {prefer}
+    "s"[0-9\']*   "*"     -> {Strategy ","}* {prefer}
+        
+    "s" "_" [A-Za-z0-9\'\-\_]+     -> Strategy {prefer}
+    "s" "_" [A-Za-z0-9\'\-\_]+ "*" -> {Strategy ","}* {prefer}
+
+    "r"[0-9\']*           -> Rule {prefer}
+
+    "rd"[0-9\']*          -> RuleDef {prefer}
+    "rd"[0-9\']*  "*"     -> RuleDef* {prefer}
+
+    "a"[0-9\']*           -> Typedid        {prefer}
+    "a"[0-9\']*   "*"     -> {Typedid ","}+ {prefer}
+    "as"[0-9\']*          -> {Typedid ","}+ {prefer} 
+
+    "a" "_" [A-Za-z0-9\'\-\_]+     -> Typedid {prefer}
+    "a" "_" [A-Za-z0-9\'\-\_]+ "*" -> {Typedid ","}+ {prefer}
+    
+    "tp"[0-9\']*          -> Type 
+    "tp"[0-9\']*  "*"     -> {Type "*"}+  
+
+    "srt" [0-9\']*        -> Sort         {prefer}
+    "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
+    "srt" [xyz] [0-9\']*  -> UCID         {prefer}
+
+    "M"   [0-9\']*        -> ModName {prefer}
+
+    "def" [0-9\']*        -> Def
+    "def" [0-9\']* "*"    -> Def*
+    "sdecl" [0-9\']*      -> Sdecl
+    "sdecl" [0-9\']* "*"  -> Sdecl*
+    "ol" [0-9\']*         -> Overlay
+    "ol" [0-9\']* "*"     -> Overlay*
+    
+    "cond" [0-9\']* "*"   -> RuleCond+
+
+  variables
+    "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
+    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}
+
+    "dr" [0-9\']*         -> DynRuleId {prefer}
+
+    "drd"[0-9\']*         -> DynRuleDef {prefer}
+    "drd"[0-9\']*  "*"    -> DynRuleDef+ {prefer}
+
+  lexical syntax
+    "pt"[0-9\']*          -> Id  {reject}
+    "xs"[0-9\']*          -> Id  {reject}
+    "lid"[0-9\']*	  -> Id  {reject}
+
+    [t][0-9\']*           -> Id  {reject}
+    "ts"[0-9\']*          -> Id  {reject}  
+  
+    "t" "_" [A-Za-z0-9\'\-\_]+     -> Id {reject}
+    "t" "_" [A-Za-z0-9\'\-\_]+ "*" -> Id {reject}
+
+    [s][0-9\']*           -> Id  {reject}
+    "ss"[0-9\']*          -> Id  {reject}
+
+    [r][0-9\']*           -> Id  {reject}
+ 
+    "a"[0-9\']*           -> Id  {reject}
+    "as"[0-9\']*          -> Id  {reject} 
+    
+    "cond" [0-9\']* "*"   -> Id  {reject}
+
+  lexical syntax
+    StrategoShortCom 	-> LAYOUT {prefer}
+    StrategoLongCom 	-> LAYOUT {prefer}
+    StrategoVeryLongCom -> LAYOUT {prefer}
+    StrategoWs 		-> LAYOUT {prefer}

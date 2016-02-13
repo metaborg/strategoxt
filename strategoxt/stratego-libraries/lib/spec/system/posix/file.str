@@ -1,0 +1,261 @@
+module system/posix/file
+imports
+  system/posix/error
+  term/string
+
+/**
+ * Standard file descriptors
+ */
+strategies 
+
+  // Standard input, equal to <fileno> stdin
+  STDIN_FILENO =
+    prim("SSL_STDIN_FILENO")
+    
+  // Standard output, equal to <fileno> stdout
+  STDOUT_FILENO =
+    prim("SSL_STDOUT_FILENO")
+    
+  // Standard error output, equal to <fileno> stderr
+  STDERR_FILENO =
+    prim("SSL_STDERR_FILENO")
+
+/**
+ * Terminal I/O
+ */
+strategies
+
+  /**
+   * Succeeds if file descriptor refers to a terminal device.
+   */
+  isatty =
+    ?filedes; prim("SSL_isatty", filedes) => 1
+
+/**
+ * These  functions  return  information  about the specified
+ * file.  You do not need any access rights to  the  file  to
+ * get  this  information  but  you need search rights to all
+ * directories named in the path leading to the file.
+ */
+strategies
+
+  /**
+   * Returns the modification time of a file in sections since
+   * epoch.
+   *
+   * @type String -> Int 
+   */
+  modification-time =
+    ?file; prim("SSL_modification_time", file)
+
+/**
+ * File operations
+ */
+strategies
+
+ /**
+  * link-file creats a hard link from file 'new' to file 'old'.
+  */
+  link-file =
+    ?(old, new); prim("SSL_link", old, new)
+
+/**
+ * Directories
+ */
+strategies
+
+ /**
+  * Given a path to a directory, returns a list of files in that directory, 
+  * including the self (.) and parent pointers (..).
+  *
+  * @type String -> List(String)
+  */
+  readdir = 
+    ?dir; prim("SSL_readdir", dir)
+
+  /**
+   * Returns the current working directory.
+   */
+  getcwd =
+    prim("SSL_getcwd")
+
+  /**
+   * Change current working directory.
+   *
+   * @type String -> String
+   */
+  chdir =
+    ?pathname; prim("SSL_chdir", pathname) => 0
+
+  /**
+   * Create directory
+   *
+   * @type String -> Int
+   */
+  mkdir(|mode) =
+    where(
+      ?pathname; prim("SSL_mkdir", pathname, mode) => 0
+    )
+
+  mkdir =
+    mkdir(|[Read(), Write(), Execute()])
+
+  /**
+   * Remove empty directory
+   *
+   * @type String -> Int
+   */
+  rmdir =
+    ?pathname; prim("SSL_rmdir", pathname) => 0
+
+/**
+ * Primitive file operations
+ */
+strategies
+
+  /**
+   * Opening a file
+   */
+   
+  // create a file and return a file descriptor
+  creat =
+    ?pathname; prim("SSL_creat", pathname)
+
+  // open a file and return a file descriptor
+  open =
+    ?pathname; prim("SSL_open", pathname)
+
+  /**
+   * Closing a file
+   *
+   * Deallocates a file descriptor   
+   */
+  close =
+    ?fd; prim("SSL_close", fd)
+    
+  /**
+   * Duplicating a file descriptor
+   */
+  dup =
+    ?fd; prim("SSL_dup", fd)
+
+  dup2 =
+    ?(fd1, fd2); prim("SSL_dup2", fd1, fd2)
+
+  /**
+   * checks the accessibility of the specified file wrt to the
+   * specified permissions. Fails if the access is not allowed,
+   * returns the path otherwise.
+   *
+   * @type (String, List(AccessPermission)) -> String
+   *
+   * @inc access
+   */
+  access =
+    ?(path, permissions); prim("SSL_access", path, permissions)
+
+signature
+  constructors
+    F_OK: AccessPermission
+    R_OK: AccessPermission
+    W_OK: AccessPermission
+    X_OK: AccessPermission
+    
+/**
+ * Connecting high and low level file operations
+ */    
+strategies 
+ 
+  /**
+   * The fdopen function associates a stream with the existing file 
+   * descriptor, fd.
+   * 
+   * The mode of the stream ("r", "r+", "w", "w+",  "a", "a+") must be 
+   * compatible with the mode of the file descriptor.  The file position 
+   *
+   * @type (FileDescr, String) -> Stream
+   */
+  fdopen = 
+    ?(fd, mode); prim("SSL_fdopen", fd, mode); !Stream(<id>)
+
+  /**
+   * The function fileno examines the argument stream and returns its 
+   * integer descriptor
+   *
+   * @type Stream -> FileDescr
+   * @inc fileno
+   */
+  fileno = 
+    ?Stream(stream); prim("SSL_fileno", stream)
+
+  /**
+   * Mode of a file
+   * @type String -> FileMode
+   */
+  filemode =
+    ?pathname; prim("SSL_filemode", pathname); ?(<id>, 0)
+
+  /**
+   * @type File -> FileMode
+   */
+  isreg =
+    ?mode; prim("SSL_S_ISREG", mode)
+    
+  /**
+   * Succeeds when applied to a File which is a directory.
+   *
+   * Idiom: <file-exists ; filemode ; isdir> "/etc"
+   *
+   * @type File -> FileMode
+   */
+  isdir =
+    ?mode; prim("SSL_S_ISDIR", mode)
+
+  /**
+   * @type File -> FileMode
+   */
+  ischr =
+    ?mode; prim("SSL_S_ISCHR", mode)
+
+  /**
+   * @type File -> FileMode
+   */
+  isblk =
+    ?mode; prim("SSL_S_ISBLK", mode)
+
+  /**
+   * @type File -> FileMode
+   */
+  isfifo =
+    ?mode; prim("SSL_S_ISFIFO", mode)
+
+  /**
+   * @type File -> FileMode
+   */
+  islnk =
+    ?mode; prim("SSL_S_ISLNK", mode) 
+
+  /**
+   * @type File -> FileMode
+   */
+  issock =
+    ?mode; prim("SSL_S_ISSOCK", mode) 
+
+/**
+ * Pipes (and FIFOs)
+ */
+strategies
+ 
+  /**
+   * Pipe creates a pair Pipe(fd1, fd2) of file descriptors, pointing
+   * to a pipe inode, and places them in the array pointed to by filedes.
+   * fd1 is for reading, fd2 is for writing.
+   *
+   * @type _ -> Pipe
+   */
+  pipe =
+    prim("SSL_pipe")
+    
+signature
+  constructors
+    Pipe       : Int * Int -> Pipe

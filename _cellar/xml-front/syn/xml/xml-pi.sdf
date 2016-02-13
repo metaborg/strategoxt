@@ -1,0 +1,13 @@
+module xml-pi
+imports xml-names
+
+exports
+  context-free syntax
+    "<?" PITarget PIChars "?>" -> PI {cons("PI")}
+
+  lexical syntax
+    NCName -> PITarget
+    [Xx][Mm][Ll] -> PITarget {reject}
+
+    ( ~[\?\>] | ( [\?] ~[\>] ) )* -> PIChars
+

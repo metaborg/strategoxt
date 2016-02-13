@@ -1,0 +1,17 @@
+module C-Lexical
+hiddens
+  sorts Asterisk Comment
+
+exports
+  lexical syntax
+    [\ \t\n\12]                     -> LAYOUT
+    "/*" ( ~[\*] | Asterisk )* "*/" -> Comment
+    Comment                         -> LAYOUT
+    [\*]                            -> Asterisk
+    "//" ~[\n]* [\n]                -> Comment
+
+  lexical restrictions
+    Asterisk -/- [\/]
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]

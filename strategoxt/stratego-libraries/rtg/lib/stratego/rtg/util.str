@@ -1,0 +1,71 @@
+module stratego/rtg/util
+imports
+  stratego/rtg/signature
+
+strategies
+
+  /**
+   * Returns the right hand sides of productions of the specified non terminal.
+   *
+   * @type RTG -> List(ProdRuleRHS)
+   */
+  rtg-productions-of(|nt : NonTerm) =
+    ?RTG(_, ProdRules(<id>))
+    ; filter(?ProdRule(nt, <id>))
+    ; concat
+
+  /**
+   * @type RTG -> List(Nonterm)
+   */
+  rtg-start-nonterms =
+    ?RTG(Start(<id>), ProdRules(<id>))
+
+strategies
+
+  /**
+   * Rewrites an rtg to one rhs in a prodrule.
+   *
+   * @type RTG -> RTG 
+   */
+  rtg-ungroup-productions =
+    RTG(id, ProdRules(rtg-ungroup-productions))
+
+  /**
+   * Rewrites an list of prodrules to one rhs in a prodrule.
+   *
+   * @type List(ProdRule) -> List(ProdRule)
+   */
+  rtg-ungroup-productions =
+      map(\ ProdRule(nt, rhss) -> <map(!ProdRule(nt, [<id>]))> rhss \)
+    ; concat
+
+strategies
+
+  /**
+   * @type  RTG -> RTG
+   */
+  rtg-group-productions =
+    RTG(id, ProdRules(rtg-group-by-nonterm))
+
+  /**
+   * @type  List(ProdRule) -> List(ProdRule)
+   */
+  rtg-group-by-nonterm =
+    rtg-group-by(
+      \ ProdRule(nt, _) -> nt \ // key producer
+    , \ ProdRule(_, rhss) -> rhss \ // reducer to vales
+    , \ (nt, rhsss) -> ProdRule(nt, <concat> rhsss) \ // builder
+    )
+
+strategies
+
+  rtg-group-by(k, r, build) = 
+      ?items
+    ; map(k)
+    ; make-set
+    ; map(rtg-build-group-by-pairs(k, r, build, !items))
+
+  rtg-build-group-by-pairs(k, r, build, items) = 
+      ?key
+    ; where(<items; filter(where(k; ?key)); map(r)> () => values)
+    ; <build> (key, values)

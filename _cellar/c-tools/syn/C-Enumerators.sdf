@@ -1,0 +1,12 @@
+module C-Enumerators
+exports
+  context-free syntax
+    "enum" IdOrTypedefName? "{" {Enumerator ","}+ "}" -> EnumSpecifier {cons("Enum")}
+    "enum" IdOrTypedefName                            -> EnumSpecifier {cons("EnumId")}
+
+  context-free syntax
+    IdOrTypedefName EnumeratorValue? -> Enumerator {cons("Enumerator")}
+
+  context-free syntax
+    "=" ConstantExp -> EnumeratorValue {cons("EnumVal")}
+

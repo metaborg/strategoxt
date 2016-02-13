@@ -1,0 +1,14 @@
+/**
+ * Test for STR-485: Formal parameters of external definitions are not renamed
+ */
+
+module test105
+
+imports collection/list/cons
+
+strategies
+
+  main-test105 =
+    dbg(|"test108: ")
+
+  external dbg(|t)

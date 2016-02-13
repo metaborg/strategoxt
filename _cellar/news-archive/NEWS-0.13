@@ -1,0 +1,438 @@
+StrategoXT 0.13 -- released January ?, 2005
+
+---------++!! Summary of Changes
+
+StrategoXT 0.13, which represents over 3 months of development,
+features updates of the Stratego compiler, the Stratego language, and
+many transformation tools. Highlights include a new language feature
+for dependent dynamic rules, several bug-fixes and usability
+improvements of the Stratego compiler, improved reporting of parse
+errors in sglri (and the Stratego compiler), more useful error reports
+in sdf2rtg, and much more!
+
+%TOC%
+
+---------++ Stratego Language
+
+---------+++ Dependent Dynamic Rules
+
+Dynamic rules are undefined when a new rule with the same left-hand
+side is defined. For example, consider the following fragment of a
+constant propagation transformation:
+
+<verbatim>
+  prop-const-assign =
+    ? |[ x := e ]|
+    ; if <is-value> e
+      then rules( PropConst.x :  |[ x ]| -> |[ e ]| )
+      else rules( PropConst.x :- |[ x ]| )
+      end
+</verbatim>
+
+When encountering an assignment a new dynamic rule rewriting |[ x ]|
+to |[ e ]| is defined when e is a value. If e is not a value the
+dynamic rule is undefined (for x). These definitions undefine any
+previous PropConst rules with |[ x ]| as left-hand side. This works
+for constant propagation since e is a constant value, not affected by
+subsequent assignments.
+
+This approach is not sufficient in the case where the right-hand side
+of the rule contains object variables, or where the left-hand side is
+a more complex pattern (as in the case of common-subexpression
+elimination) including object variables. Consistently undefining such
+dynamic rules requires keeping track of the dependencies of a dynamic
+rule on certain terms (e.g., object variables). This can be expressed
+with 0.12 dynamic rules, but at the cost of quite some code.
+
+To capture this recurring pattern, Stratego 0.13 introduces
+*dependent* dynamic rules, which list all the terms on which a rule
+depends. For example, the following fragment defines the essential
+part of a copy propagation transformation:
+
+<verbatim>
+  copy-prop-assign =
+    ? |[ x := y ]|
+    ; where( <kill-CopyProp> x )
+    ; where( <not(eq)>(x,y) )
+    ; where( innermost-scope-CopyProp => z )
+    ; rules( CopyProp.z : |[ x ]| -> |[ y ]| depends on [(x,x), (y,y)] )
+</verbatim>
+
+The =depends on= clause declares all dependencies of the =CopyProp= rule
+and the invocation of =kill-CopyProp= undefines all previously defined
+rules depending on =x=, even those with =x= in the right-hand side.
+
+Dependent dynamic rules are a generative extension of basic dynamic rules
+as described in 
+
+   M. Bravenboer, A. van Dam, K. Olmos, and E. Visser. Program
+   Transformation with Scoped Dynamic Rewrite Rules. Conditionally accepted
+   for the special issue on program transformation of Fundamenta
+   Informaticae, 2005.
+
+An account of the dependent dynamic rule extension is given in
+
+   K. Olmos and E. Visser. Composing Source-to-Source Data-Flow
+   Transformations with Rewriting Strategies and Dependent Dynamic
+   Rewrite Rules. In R. Bodik, editor, 14th International Conference
+   on Compiler Construction (CC'05). Springer-Verlag, April 2005.
+
+and the extended technical report.
+
+    (Eelco Visser)
+
+---------++ Stratego Compiler
+
+---------+++ Compilation of Pattern-Matching in Dynamic Rules
+
+Pattern matching in dynamic rules is implemented by replacing
+non-context (that is, rule application specific) variables in the
+left-hand side of the rule by dummy terms. This dummy term used to be
+the empty list, which caused some problems if the pattern already
+contains empty lists. The dynamic rule dummy term is now =DR_DUMMY()=,
+which solves these issues.
+
+Note that two rules that have the same left-hand side pattern, except
+for an empty list in the first and a non-context variable in the
+second, now also have a different key. If you want them to have the
+same key, then you can for example move the =[]= pattern to the
+=where= condition of the dynamic rule.
+
+    (Martin Bravenboer)
+
+---------+++ Redefinition of External Strategies
+
+In program that use separate compilation, redefinition of external
+strategies was not always detected in the previous release. If a
+redefined strategy was only invoked from the code that was separately
+compiled, then the redefinition was not noticed by the compiler. This
+has now been fixed. This fix might break existing code that use
+separate compilation, but it only breaks code if something was already
+wrong.
+
+    (Martin Bravenboer)
+
+---------+++ Disable SGLR Heuristic Filters from Meta File
+
+By default, SGLR applies some heuristic filters for removing
+ambiguities in parse trees. Using these heuristic filters are
+discouraged, since these disambiguations are not explicitly defined in
+a syntax definition. The heuristic filters can now be disabled per
+Stratego module by including the term =HeuristicFilters(Off)= in the
+=.meta= file for that module. This is particularly useful if you are
+using a lot of concrete object syntax or if you are implementing an
+object language embedding in Stratego. Disabling the heuristic filters
+makes ambiguities and non-ambiguities in this mixture of languages
+less surprising. See the next subsection for an example.
+
+    (Martin Bravenboer)
+
+---------+++ Improved Reporting of Ambiguities
+
+If you are using concrete object syntax in Stratego, then you might
+encounter ambiguities in your Stratego program, in particular if you
+disable the heuristic filters of SGLR. Ambiguities in the Stratego code
+(not in the object code) caused the compiler to fail in a horrible way
+during C compilation. This has now been fixed by detecting these
+ambiguities and reporting them in a more user-friendly way.
+
+For example, consider this Stratego program
+<verbatim>
+module foo
+imports Stratego list-cons tuple-cons
+strategies
+
+  main =
+    !|[ Foo ]|
+</verbatim>
+
+and its =.meta= file:
+<verbatim>
+Meta([
+  Syntax("StrategoStratego")
+, HeuristicFilters(Off())
+])
+</verbatim>
+
+The generated =|[ Foo ]|= construct is highly ambiguous, which is now
+reported as:
+<verbatim>
+martin@logistico:~/tmp/str> strc -i foo.str
+compiling foo.str
+error: ambiguity in the definition of main. Alternatives:
+    - Op("CallNoArgs",[Op("SVar",[Str("Foo")])])
+    - Op("Var",[Str("Foo")])
+    - Op("ConstType",[Op("SortNoArgs",[Str("Foo")])])
+</verbatim>
+
+This list shows that =|[ Foo ]|= can be a strategy call, a term
+variable, or a type. The ambiguity report uses abstract syntax for
+Stratego, which might be improved to concrete syntax or a better
+explanation in the future. The problem with a report in concrete
+syntax is that the syntax for these case is usually identical, so it
+should be combined with abstract syntax and/or syntactical types
+(e.g. this fragment can be a strategy, term, or type).
+
+    (Martin Bravenboer)
+
+---------+++ Cons and Nil: Special Constructor Names
+
+=Cons/2= (=Cons= with two argument terms) and =Nil/0= are reserved
+constructor names in Stratego, used for the representation of
+lists. The compiler handled these constructors names somewhat sloppy
+in previous releases, resulting in compilation errors for programs
+that use =Cons= and =Nil= constructor names with a different
+arity. This has now been fixed, hence only =Cons/2= and =Nil/0= are
+reserved constructor names from now.
+
+    (Martin Bravenboer)
+
+---------++ Stratego Library
+
+----------+++ Changes in Separate compilation
+
+In the previous version of StrategoXT, the separately compiled
+=liblib= library imported the SSL as well as the XTC library. The
+=liblib= library has now been split into =libstrategolib= (the SSL)
+and =libxtclib= (XTC). The module =liblib= is still available and
+imports the libraries above. Thus, no existing Stratego programs
+should be affected.
+
+    (Eelco Visser)
+
+---------+++ Obsolete Strategy: iowrap
+
+The strategy =iowrap= is obsolete. Many releases ago it was replaced
+by =io-wrap=, which is easier to use, thanks to the storage of
+command-line option values in the global =config= table. Developers
+that still use =iowrap= will now get a warning. Please update your
+code, since obsolete strategies might be removed in the future.
+
+    (Rob Vermaas)
+
+---------+++ New Module: Logging
+
+A small library for logging has been added to the Stratego Standard
+Library (it used to be part of the =stratego-regular= package). The
+=log= strategy in the =logging= module combines several features:
+
+   * The =log= strategy does not change the current term. Thus, it is
+     easy to insert anywhere in your code. Optionally, it takes a
+     term argument that will be logged as well. Thus, you can easily
+     log a different term then the current term.
+
+   * The =log= strategies print to the stream specified by the
+     =log-stream= entry in the =config= table, or by default to
+     =stderr=. This makes logging to different files easier from
+     within a Stratego program.
+
+   * The =log= strategies take a =severity= argument, which is used to
+     determine whether the message should be logged at all, based on
+     the verbosity level specified on the command-line.
+
+   * The log message will include the name of the program that
+     produced the message, and the severity of the message.
+
+    (Niels Janssen and Martin Bravenboer)
+
+---------+++ New Strategy: =call= with Optional Redirection
+
+The SSL now includes a strategy that makes the redirections of file
+descriptors from method calls much easier. This new =call= strategy
+takes three term arguments, which are optional (=Some= or =None=) file
+descriptors for the =stdin=, =stdout=, and =stderr= of the new
+process. This strategy makes it easier to write to result of a program
+invocation to some file, without knowing all the nasty low-level
+functions of processes and IO.
+
+    (Martin Bravenboer)
+
+---------+++ Bug Fixes: Pipe module
+
+The strategies =stdin-from-pipe= and =stdout-to-pipe= didn't work
+correctly when the pipe argument was =stdin= (0) or =stdout=
+(1). Since =stdin= and =stdout= were explicitly closed, the connection
+with the pipe was lost. Using =dup2= instead of =dup= solves the
+problem because there is no need to close file
+descriptors. =write-term-to-text-pipe= uses =WriteToTextFile= but the
+=outfile= argument is a stream. Replacing =WriteToTextFile= by
+=fprint= solved the problem.
+
+    (Merijn de Jonge)
+
+---------++ StrategoXT Deployment and Build System
+
+---------+++ Separate Package for StrategoXT Utils
+
+Tools that are not essential to most Stratego users are now in a
+separate package, =strategoxt-utils=. This package consists of the
+ex-StrategoXT packages =aterm-tools=, =dot-tools=, =graph-tools=,
+=stratego-util= and =stratego-tools=. Obviously, the installation of
+this package is optional and most users will only need if you want to
+visualize ATerms with the Dot language and Graphviz.
+
+More concrete, the following tools are part of strategoxt-utils:
+=GraphXML2dot=, =pp-dot=, =sdf-wf=, =term-to-dot=, =tohtml-sdf=,
+=graph-term2GraphXML=, =GraphXML-analysis=, =pp-stratego-latex-alltt=,
+=sdf-doc=, =sdf-wf=, =tohtml=, =GraphXML2dot=, =ismap2usemap=,
+=sdf2sg=, =sdf-imports=, and =term-to-adot=. The Emacs mode for
+Stratego is now part of StrategoXT Utils.
+
+In future releases, more non-essential utils might be moved to the
+strategoxt-utils package.
+
+    (Rob Vermaas)
+
+---------+++ AutoXT
+
+All the Autoconf macros of AutoXT now use the =XT_= prefix. Using such
+a prefix is adviced by the Autoconf guidelines and makes it easier to
+detect errors (e.g. missing macro definitions). =USE_XT_PACKAGES= has
+now been replaced by =XT_USE_XT_PACKAGES=. The old macro is still
+available as an =autoupdate= alias. You can run =autoupdate= to
+upgrade your =configure.ac= files. =DETECT_SVN_REVISION= is now
+defined as an autoupdate alias as well (Use =XT_SVN_REVISION=).
+
+    (Akim Demaille and Martin Bravenboer)
+
+---------+++ AC_CONFIG_AUX_DIR
+
+The subpackages of StrategoXT now share a single directory for
+auxiliary files used by autoconf, automake and libtool (such as
+=ltmain.sh=, =config.guess=). The =configure.ac= files in StrategoXT
+define an =AC_CONFIG_AUX_DIR= to achieve this.
+
+    (Akim Demaille and Martin Bravenboer)
+
+---------++ StrategoXT Transformation Tools
+
+---------+++ sglri
+
+The program =sglri=, which combines =sglr= and =implode-asfix=, now
+supports error reporting with a quote of the code from the input
+source file.
+
+For example, consider this module:
+<verbatim>
+module foo
+strategies
+  main = Foo
+  Foo =
+   1 -> 2
+</verbatim>
+
+The error report of sglri is now:
+
+<verbatim>
+martin@logistico:~/tmp> sglri -p Stratego.tbl -i foo.str
+foo.str: character '>' unexpected at line 8, column 7
+  Foo =
+   1 -> 2
+      ^
+</verbatim>
+The Stratego compiler now uses sglri, so it will report syntax errors
+in this way as well.
+
+Another new feature of =sglri= is an option to disable the heuristic
+filters of =sglr= by passing =--no-heuristic-filters=. You don't have
+to know all the details of heuristic filters to use this
+option. Disabling heuristic filters is strongly encouraged.
+
+    (Rob Vermaas and Martin Bravenboer)
+
+---------+++ aterm2xml and xml2aterm
+
+The =--explicit= and =--very-explicit= mode of these ATerm and XML
+interoperability tools now use the XML namespace =http://aterm.org=
+for XML elements that represent ATerm structures and types, such as
+=list=, =tuple=, =int=, =string=, =anno= etc. In the explicit mode,
+this avoids conflicts with 'real' ATerms of the same name. The tools
+use the namespace prefix 'at'.
+
+Furthermore, all modes now preserve all ATerm annotations by
+representing them as nested =anno= elements in the XML namespace
+=http://aterm.org=.
+
+The =xml2aterm= tool nog longer needs an explicity argument, since it
+is no longer ambiguous whether the XML input is implicit, explicit or
+very explicit.
+
+    (Martin Bravenboer)
+
+---------+++ pp-aterm
+
+The =pp-aterm= tool, which is used for printing an ATerm in a more
+clear and structured layout, now accepts an =--max-depth= flag. This
+is useful if you are only interested in the outer structure of an
+ATerm and the ATerm is very large.
+
+    (Rob Vermaas)
+
+---------+++ sdf2rtg
+
+The =sdf2rtg= tool, which is used to produce RTGs (and indirectly
+Stratego Signatures) from SDF syntax definitions, now reports errors
+in concrete syntax and gives some hints about possible solutions of
+the problem.
+
+Example:
+<verbatim>
+definition
+module Main
+exports
+  context-free start-symbols Exp
+  sorts Exp IntConst
+  context-free syntax
+    Exp "+" Exp -> Exp
+    IntConst -> Exp
+
+  lexical syntax
+    [0-9]+ -> IntConst
+</verbatim>
+
+<verbatim>
+martin@logistico:~/tmp> sdf2rtg -i Foo.def
+No constructor name specified in production:
+   <Exp-CF> <LAYOUT?-CF> "+" <LAYOUT?-CF> <Exp-CF> -> <Exp-CF>
+Resolution: please add a cons attribute to this production.
+</verbatim>
+
+    (Martin Bravenboer)
+
+---------++!! Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease013Issues
+
+---------++!! Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease013
+
+---------++!! Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++!! Contributions
+
+Developments, beta tests, and bug fixes were carried out by
+
+   * Martin Bravenboer
+   * Akim Demaille
+   * Niels Janssen
+   * Merijn de Jonge
+   * Karl Trygve Kalleberg
+   * Rob van der Leek
+   * Rob Vermaas
+   * Eelco Visser
+
+Thanks!

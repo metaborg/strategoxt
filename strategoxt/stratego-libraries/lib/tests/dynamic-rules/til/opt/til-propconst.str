@@ -1,0 +1,112 @@
+module til-propconst
+imports til-opt-lib
+
+strategies
+
+  io-til-propconst =
+    io-wrap(propconst)
+
+  propconst =
+    PropConst
+    <+ propconst-declaration
+    <+ propconst-assign
+    <+ propconst-block
+    <+ propconst-if-then
+    <+ propconst-if-then-else
+    <+ propconst-while
+    <+ propconst-labeled-while
+    <+ propconst-for
+    <+ propconst-labeled-stm
+    <+ propconst-break
+    <+ propconst-break-label
+    <+ propconst-continue
+    <+ propconst-continue-label
+    <+ propconst-throw
+    <+ propconst-try-catch
+    <+ propconst-try-catch-finally
+    <+ all(propconst); try(EvalExp)
+
+  propconst-block =
+    Block({| PropConst : map(propconst) |})
+
+  propconst-declaration =
+    (?Declaration(x) <+ ?DeclarationTyped(x, t))
+    ; rules( PropConst+x :- Var(x) )
+
+  propconst-assign =
+    Assign(?x, propconst => e)
+    ; if <is-value> e then
+        rules( PropConst.x : Var(x) -> e )
+      else
+        rules( PropConst.x :- Var(x) )
+      end
+
+  propconst-if-then =
+    IfThen(propconst, id)
+    ; (EvalIf; propconst
+       <+ IfThen(id, {| PropConst: map(propconst) |}) /PropConst\ id)
+
+  propconst-if-then-else =
+    IfElse(propconst, id, id)
+    ; (EvalIf; propconst
+       <+ IfElse(id, {| PropConst: map(propconst) |}, id) /PropConst\
+          IfElse(id, id, {| PropConst: map(propconst) |}))
+
+  propconst-while =
+    ?While(_, _)
+    ; (/PropConst\* While(propconst, {| PropConst: map(propconst) |}))
+
+  propconst-labeled-while =
+    Labeled(?label,
+      dr-fix-and-intersect(While(propconst, {| PropConst: map(propconst) |}) | ["PropConst"], label)
+    )
+
+  propconst-for =
+    For(?x, propconst, propconst, id)
+    ; rules( PropConst.x :- Var(x) )
+    ; (/PropConst\* For(id, id, id, {| PropConst: map(propconst) |}))
+
+  propconst-labeled-stm =
+    Labeled(?label,
+      dr-label-intersect(propconst | ["PropConst"], label)
+    )
+
+  propconst-break =
+    ?Break(None)
+    ; break-PropConst
+
+  propconst-break-label =
+    ?Break(Some(label))
+    ; break-to-label-PropConst(|label)
+
+  propconst-continue =
+    ?Continue(None)
+    ; continue-PropConst
+
+  propconst-continue-label =
+    ?Continue(Some(label))
+    ; continue-to-label-PropConst(|label)
+
+  propconst-try-catch =
+    ?Try(tblock, cclauses)
+    ; dr-init-exception-block(fail | <get-catch-tags>cclauses, ["PropConst"])
+    ; <propconst>tblock => tblock'
+    ; <map(dr-complete-catch-intersect(propconst | ["PropConst"]))>cclauses => cclauses'
+    ; dr-complete-exception-block-intersect(|["PropConst"])
+    ; !Try(tblock', cclauses')
+
+  propconst-try-catch-finally =
+    ?Try(tblock, cclauses, fblock)
+    ; dr-init-exception-block(id | <get-catch-tags>cclauses, ["PropConst"])
+    ; <propconst>tblock => tblock'
+    ; <map(dr-complete-catch-intersect(propconst | ["PropConst"]))>cclauses => cclauses'
+    ; <dr-complete-finally-intersect(propconst | ["PropConst"])>fblock => fblock'
+    ; dr-complete-exception-block-intersect(|["PropConst"])
+    ; !Try(tblock', cclauses', fblock')
+
+  get-catch-tags =
+    map(?Catch(_, <id>, _))
+
+  propconst-throw =
+    ?Throw(TypeName(t))
+    ; throw-PropConst(eq | t)

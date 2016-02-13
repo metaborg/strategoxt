@@ -1,0 +1,37 @@
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:xsd="http://www.w3.org/1999/XMLSchema" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:a2="http://schemas.microsoft.com/urt/NS/System.Runtime.Remoting" xmlns:a1="http://schemas.microsoft.com/urt/NS/System" xmlns:i7="http://Schemas.microsoft.com/urt/NSAssem/JJM.GDOS.Groupware.Domain.IGroupwareCenter/Groupware.Domain">
+
+<SOAP-ENV:Header>
+
+<__CallContext href="#ref-3" root="1"/>
+
+<a1:LogicalCallContext id="ref-3">
+
+<__RemotingData href="#ref-4"/>
+
+<__SecurityData href="#ref-5"/>
+
+</a1:LogicalCallContext>
+
+<a2:CallContextRemotingData id="ref-4">
+
+<_logicalCallID id="ref-6">c9f3a9e8-82eb-4ec6-b116-d8c76f7c6199_8</_logicalCallID>
+
+</a2:CallContextRemotingData>
+
+<a1:CallContextSecurityData id="ref-5">
+
+</a1:CallContextSecurityData>
+
+</SOAP-ENV:Header>
+
+<SOAP-ENV:Body>
+
+<i7:remove_OnlineUserResponse id="ref-1">
+
+</i7:remove_OnlineUserResponse>
+
+</SOAP-ENV:Body>
+
+</SOAP-ENV:Envelope>
+
+

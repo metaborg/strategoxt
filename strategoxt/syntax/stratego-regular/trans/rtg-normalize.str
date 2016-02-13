@@ -1,0 +1,19 @@
+/**
+ * Normalizes an RTG to TATA's normalized regular tree grammar.
+ *
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ */
+module rtg-normalize
+imports
+  libstratego-lib
+  libstratego-rtg
+
+strategies
+
+  main-rtg-normalize =
+    io-stream-wrap(
+      ?(<id>, fout)
+      ; parse-rtg-stream
+      ; rtg-normalize
+      ; <write-to-stream> (fout, <id>)
+    )

@@ -1,0 +1,29 @@
+module rtg
+imports rg-term rg-nonterm rg-identifier rg-layout
+hiddens
+  context-free start-symbols RTG ProdRule TreeFN AnnoTreeFN NonTerm
+
+exports
+  sorts RTG Start ProdRule ProdRules AnnoTreeFN TreeFN Labelled 
+  context-free syntax
+
+    "regular" "tree" "grammar" Start ProdRules -> RTG {cons("RTG")}
+    "start" NonTerm+ -> Start {cons("Start")}
+    "productions" ProdRule+ -> ProdRules {cons("ProdRules")}
+
+    NonTerm "->" {AnnoTreeFN "|"}+ -> ProdRule {cons("ProdRule")}
+
+    TreeFN -> AnnoTreeFN
+    TreeFN Labelled+ -> AnnoTreeFN {cons("Annotated")}
+
+    Term "(" {AnnoTreeFN ","}* ")" -> TreeFN {cons("Appl")}
+    NonTerm -> TreeFN {cons("Ref")}
+
+    "." Term AnnoTreeFN -> Labelled {cons("Labelled")}
+
+  %%%
+   %% Special non-terminals used for tracing purposes
+   %%%
+  context-free syntax
+    "{" {NonTerm ","}+ "}" -> NonTerm {cons("Set")}
+    "<<" TreeFN ">>"       -> NonTerm {cons("Generated")}

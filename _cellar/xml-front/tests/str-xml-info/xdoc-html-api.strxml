@@ -1,0 +1,328 @@
+/**
+ * Module containing strategies for API indices generation.
+ */
+module xdoc-html-api
+  xmlns="http://www.w3.org/1999/xhtml"
+
+imports lib
+
+overlays
+  abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+strategies 
+
+  gen-stats = 
+    ?(title,s)
+    ; !%>
+        <table width="100%" border="1">
+          <tr><th colspan="2" align="left" class="api">~title</th></tr>
+          <% <map(\ (k,v) -> %><tr><td class="api" width="120">~k</td><td class="api">~v</td></tr><% \)>s :: content* %>
+        </table>    
+      <%
+
+  gen-api-main =
+    !%>
+      <% get-gendoc-description %>
+      <br />
+      <br />
+      <table width="100%" border="1">
+        <% gen-api-packages-tr :: content* %>
+      </table>
+      <br />
+      <br />
+      <% <gen-stats>(<get-gendoc-title>,[ ("Number of packages",<packages ; length ; int-to-string>)
+                                        , ("Number of modules",<modules ; length ; int-to-string>)
+                                        , ("Number of strategies",<modules ; map(try(module-to-definitions)) ; flatten-list ; length ; int-to-string>)
+                                        , ("Lines of code",<( modules ; filter(module-to-loc) ; sum ) <+ !"---">)
+                                        ]) 
+      %>
+      <br />
+      <br />
+    <% 
+    ; <make-html>("Overview","",<make-menu>("","index_api.html"),<id>) => ahtml
+    ; <gen-html-output>(<new-concat-strings>[<get-config;Hd>"-H","index_api.html"],ahtml)
+    
+  gen-api-packages-tr =
+    <make-index(id,title-to-th,package-to-tr-short)>([<new-concat-strings>[<get-gendoc-title>," packages"]],<packages;map(Fst);string-sort>)
+
+  package-to-tr-short =
+    ?pack
+    ; <new-concat-strings>[pack,"_api.html"] => link
+    ; !%>
+        <tr>
+          <td class="api" width="120"><a href=~link>~pack</a></td>
+          <td class="api"> <% (<get-short-package-summary>pack ; not("") ) <+ !%><i>n/a</i><% %></td>
+        </tr>
+       <%
+
+  get-short-package-summary = fail
+
+  gen-api-package =
+    ?(pack,dir)
+    ; <new-concat-strings>[pack,".html"] => browselink
+    ; !%>
+      <pre class="api">
+	      <% <get-readme-content>dir %>
+      </pre>
+      <br />
+      <br />
+      <% <gen-stats>("Statistics", [ ("Number of modules",<package-to-modules; length ; int-to-string>pack )
+                                   , ("Number of strategies",<package-to-modules ; map(try(module-to-definitions)) ; flatten-list ; length ; int-to-string>pack)
+                                   , ("Lines of code",<(package-to-modules ; filter(module-to-loc) ; sum ) <+ !"---">pack)
+                                   ]) 
+      %>
+      <br />
+      <br />
+      <table width="100%" border="1">
+        <% <gen-api-modules-tr>pack :: content* %>
+      </table>
+      <br />
+      <br />
+    <%
+    ; <make-html>(<new-concat-strings>["Overview of package ",pack],"",<make-menu>("",browselink),<id>) => ahtml
+    ; <gen-html-output>(<new-concat-strings>[<get-config;Hd>"-H",pack,"_api.html"],ahtml)      
+
+  gen-api-modules-tr =
+    <make-index(id,title-to-th,module-to-tr-short2)>(["Modules"],<package-to-modules;string-sort>)
+
+  title-to-th =
+    !%>
+       <tr><th colspan="2" align="left" class="api">~<Fst></th></tr>
+       <% Snd :: content* %>
+     <%
+
+  module-to-tr-short2 = 
+    ?mod
+    ; <new-concat-strings>[mod,"/",mod,"_api.html"] => link
+    ; !%><tr><td class="api"><a href=~link>~mod</a></td><td class="api"> <% (<get-short-module-summary>mod ; not("") ) <+ !%><i>n/a</i><% %></td></tr><%
+ 
+  gen-api-module =
+    ?mod
+    ; <new-concat-strings>["../",mod,"/",mod,".html"] => browselink
+    ; !%>
+      <% (<module-to-summary;nl2br>mod ; not(?"") ) <+ !%><i>No description available of the module.</i><% %> 
+      <br />
+      <br />
+      <% <gen-graph>("Import relations","",<concat-strings>[mod,".import"])  %>
+      <br />
+      <br />
+      <% <gen-stats>("Statistics", [ ("Number of strategies",<(module-to-definitions <+ ![]) ; length>mod)
+                                   , ("Lines of code",<module-to-loc  <+ !"---">mod)
+                                   ]) 
+      %>
+      <br />
+      <br />
+      <table width="100%" border="1">
+        ~<gen-api-strategies-sum-tr>mod
+      </table>
+      <br />
+      <br />
+      <table width="100%" border="1">
+        ~<gen-api-strategies-det-tr>mod
+      </table>
+      <br />
+      <br />
+      
+    <% 
+    ; <make-html>(<new-concat-strings>["Overview of module ",mod],"../",<make-menu>("../",browselink),<id>) => ahtml
+    ; <gen-html-output>(<new-concat-strings>[<get-config;Hd>"-H",mod,"/",mod,"_api.html"],ahtml)          
+
+  gen-api-strategies-sum-tr =
+    <make-index(id,title-to-th,strategy-to-tr-short)>(["Strategy summary"],<(module-to-definitions <+ ![] ) ;sort-tuples>)
+
+  gen-api-strategies-det-tr =
+    <make-index(id,title-to-th,strategy-to-tr-long)>(["Strategy details"],<(module-to-definitions <+ ![] ) ;sort-tuples>)
+
+
+  strategy-to-tr-short =
+    ?(n,np,nn,_,_,_)
+    ; <new-concat-strings>["#",nn] => link
+    ; !%>
+         <tr>
+           <td class="api" width="120">
+             <a href=~link>~n</a>
+           </td>
+           <td class="api">
+             <% (<get-short-definition-summary>nn ; not(?"") ) <+ !%><i>n/a</i><% %>
+           </td>
+         </tr>
+       <%
+
+  strategy-to-tr-long =
+    ?(n,np,nn,_,_,_)
+    ; <definition-to-module>nn => mod 
+    ; <new-concat-strings>["../",mod,"/",mod,".html#",nn] => link
+    ; !%>
+        <tr>
+          <td class="api" align="right" width="60">ATerm</td>
+          <td class="str"><a name=~nn></a>~n &nbsp;&nbsp; [ <a href=~link>code</a> ]</td>
+        </tr>
+        <tr>
+          <td class="api" colspan="2">
+            <br />
+            <% (<definition-to-summary;concat-strings;nl2br>nn ; not(?"") ) <+ !%><i>No description available of the definition.</i><br /><% %>
+            <br />
+            <br />
+            <table>
+              <tr>
+                <td class="api" width="70"><b>Nr params</b></td>
+                <td class="api">
+                  <% !np %>
+                </td>
+              </tr>
+              <% <gen-api-strategies-field-tr<+![]>nn %>
+            </table>
+            <br />
+          </td>
+        </tr>	
+      <%
+    
+  gen-api-strategies-field-tr =
+    ?nn
+    ; definition-to-fields
+    ; map(\
+        (k,v) -> %>
+                  <tr>
+                    <td class="api" width="70"><b>~k</b></td>
+                    <td class="api">
+                      ~<lines2html>v
+                    </td>
+                  </tr>
+                 <%
+      \)
+
+  lines2html =
+    map(\ s -> [s,"\n"] \)
+    ; flatten-list
+    ; concat-strings
+    ; html-string
+    ; nl2br
+
+  imp(s) =
+    ?mod
+    ; ( s
+      ; string-sort
+      ; map({link: \ s -> %> <a href=~link>~s</a>&nbsp;<% 
+                     where 
+                       <new-concat-strings>["../",s,"/",s,"_api.html"] => link
+                      \}) 
+      ; flatten-list
+      ) <+ !"&nbsp;"
+
+  make-menu =
+    ?(or,code)
+    ; <new-concat-strings>[or,"index_api.html"] => overview
+    ; <new-concat-strings>[or,"index_module.html"] => mindex
+    ; <new-concat-strings>[or,"index_strategy.html"] => sindex
+    ;!%>
+        <div class="menu">[ <a href=~overview>Overview</a> | <a href=~mindex>Module index</a> | <a href=~sindex>Strategy index</a> | <a href=~code>Browse code</a> ]</div>    
+      <%
+      
+  make-html = 
+    ?(title,or,menu,content) 
+    ; <new-concat-strings>[or,"style.css"] => style
+    ; <new-concat-strings>[or,"fixed.js"] => jslink
+    ; !%>
+       <html>
+      
+      <head>
+        <title>API reference</title>
+        <link rel="stylesheet" type="text/css" href=~style />
+        <script type="text/javascript" src=~jslink></script>
+      </head>
+      
+      <body> 
+      
+      ~menu
+      <br />
+      <br />
+      
+      <h1><% !title :: cdata %></h1>
+      <br />
+      <table width="100%" border="1">
+      	<% !content  :: content* %>
+      </table>
+
+      <br />
+      <br />
+      
+      </body>
+      
+      </html>
+    <%
+  
+  gen-api-index-module =
+    <make-index(compare-alphabet,cat-char-to-trs,module-to-tr-short)>(<explode-string>abc,<modules>) => content
+    ; <make-html>("Module index (api)","",<make-menu>("","index_api.html"),content) => ahtml 
+    ; <gen-html-output>(<new-concat-strings>[<get-config;Hd>"-H","index_module.html"],ahtml)
+
+  cat-char-to-trs =
+    !%>
+       ~<Fst ; char-to-tr>
+       <tr><td class="api">~<Snd></td></tr>
+     <%
+
+  char-to-tr =
+    !%>
+       <tr>
+         <th align="left" class="api"><% ![<id>] ; implode-string %></th>
+       </tr>
+     <%    
+
+  module-to-tr-short = 
+    ?mod
+    ; <new-concat-strings>[mod,"/",mod,"_api.html"] => link
+    ; !%><a href=~link>~mod</a> - <% (<get-short-module-summary>mod ; not("") ) <+ !%><i>n/a</i><% %><br /><%
+    
+  compare-alphabet =
+    ?(n,name)
+    ; <add>(n,32) => nn
+    ; <explode-string>name
+    ; ( ?[n | _] <+ ?[ nn | _] ) 
+
+  gen-api-index-strategy =
+    !%>
+      <table width="100%" border="1">
+      	<% gen-api-index-strategy-tr %>
+      </table>
+      <br />
+      <br />
+    <% 
+    ; <make-html>("Strategy index","",<make-menu>("","index_code.html"),<id>) => ahtml 
+    ; <gen-html-output>(<new-concat-strings>[<get-config;Hd>"-H","index_strategy.html"],ahtml)         
+    
+    
+  gen-api-index-strategy-tr =
+    modules
+    ; filter(module-to-definitions)
+    ; flatten-list
+    ; sort-tuples => mods
+    ; <explode-string>abc
+    ; filter({nn,md: \ n -> %>
+                  <tr>
+                    <th align="left" class="api"><% <implode-string>[n] %></th>
+		    <td class="api" width="20" align="right"><% <length>md %></td>
+                  </tr>
+                  <% <gen-api-index-strategy-tr2>md %>
+		 <% where <add>(n,32) => nn ; <filter(\ s -> s where Fst ; explode-string ; (?[n | _] <+ ?[ nn | _]) \)>mods => md ; not(?[]) \ })
+     
+      
+  gen-api-index-strategy-tr2 =
+    !%>
+           <tr>
+             <td class="api" colspan="2">
+               <% (?[] ; !"&nbsp;" ) 
+	          <+ map({mod,link,n,np,nn:
+		       where( 
+		         ?(n,np,nn,_,_,_)
+		         ; <definition-to-module>nn => mod
+			 ; <new-concat-strings>[mod,"/",mod,"_api.html#",nn] => link
+		       )
+		       ; !%><a href=~link>~n</a><% <?0>np ; !"" <+ <new-concat-strings>["(",<int-to-string>np," params)"] %> - <% (<get-short-definition-summary>nn ; not("") ) <+ !%><i>n/a</i><% %><br /><%
+		     }) 
+	       %>
+	       <br />
+             </td>
+           </tr>
+     <%
+    

@@ -1,0 +1,186 @@
+/**
+ * Format check a term against a DFTA
+ *
+ * @author Martin Bravenboer
+ */
+module stratego/rtg/dfta-format-check
+imports
+  stratego/rtg/dfta-accept
+  libstratego-lib
+
+strategies
+
+  /**
+   * Checks that the current term has the format of the given DFTA.
+   *
+   * Fails if the current term has an incorrect format.
+   * Does not report errors.
+   *
+   * @param DFTA
+   * @type a -> a
+   */
+  dfta-format-check(|dfta) =
+    dfta-format-check(false, true | dfta)
+  
+  /**
+   * Checks that the current term has the format of the given DFTA.
+   *
+   * @param Report errors (true/false)
+   * @param Fail if incorrect format (true/false)
+   * @param DFTA
+   * @type a -> a
+   */
+  dfta-format-check(report-errors, fail-on-error | dfta) =
+    where(
+        if report-errors then 
+            dfta-accept(dftafc-report-failure | dfta)
+          ; dftafc-report-start(|dfta)
+        else
+          dfta-accept(id | dfta)
+        end
+      ; if fail-on-error then
+          dftafc-error-start(|dfta)
+        end
+    )
+
+/**
+ * Reporting
+ */
+strategies
+
+  /**
+   * Fails if the state is not one of the allowed start states.
+   *
+   * @param DFTA
+   * @type State -> State
+   */    
+  dftafc-error-start(|dfta) =
+    ?state
+    ; where(
+        DFTA(starts, _) := dfta
+      ; <fetch(?state)> starts
+      )
+
+  /**
+   * Report an error if the final state is not a start state.
+   *
+   * @param DFTA
+   * @type State -> State
+   */
+  dftafc-report-start(|dfta) =
+    ?state
+    ; where(
+        DFTA(starts, _) := dfta
+      ; if Failure() := state then
+          !1  // already reported
+        else
+          if <fetch(?state)> starts then
+            if-verbose2(
+              <dftafc-state-to-string; debug(!"info: term typed as ")> state
+            )
+            ; !0
+          else
+            <fprintnl> (<stderr-stream>,
+              ["error: term typed as ", <dftafc-state-to-string> state, 
+               " but expected ", <dftafc-states-to-string> starts])
+            ; !1
+          end
+        end
+      ; <set-config> ("--exit-code", <id>)
+      )
+
+  /**
+   * Report the failure of format checking a term.
+   *
+   * @param the checked term.
+   * @type State -> State
+   */
+  dftafc-report-failure(|t) =
+    ?Appl(_, arg-states)
+    ; where(
+        if not(<fetch(?Failure())> arg-states) then
+          <fprintnl> (<stderr-stream>, ["error: cannot type ", <write-to-string> t])
+          ; if not([] := arg-states) then
+              <fprintnl> (<stderr-stream>, ["    inferred types of subterms: "])
+              ; args := <dftafc-get-arguments> t
+              ; <zip> (args, arg-states)
+              ; map({arg,state:
+                  ?(arg, state)
+                  ; <fprintnl> (<stderr-stream>, [
+                        "    typed "
+                      , <write-to-string> arg
+                      , " as "
+                      , <dftafc-state-to-string> state
+                      ])
+                })
+          end
+        end
+      )
+
+  dftafc-get-arguments =
+    ( ?[x | xs]
+    < ![x, xs]
+    + ?[]
+    < ![]
+    + is-int
+    < ![]
+    + is-string
+    < ![]
+    + get-appl-arguments
+    )
+
+/**
+ * Pretty-printing for error reporting.
+ */
+rules
+
+  dftafc-state-to-string =
+    ?Set(<dftafc-states-to-string>) <+ rtg-to-string
+
+  dftafc-states-to-string =
+    map(dftafc-state-to-string); separate-by(!", "); concat-strings
+
+  rtg-to-string :
+    Nonterm(s) -> s
+
+  rtg-to-string :
+    Set(args) -> <concat-strings> [
+        "{"
+      , <map(rtg-to-string); separate-by(!", "); concat-strings> args
+      , "}"
+      ]
+
+  rtg-to-string :
+    Generated(t) -> <rtg-to-string> t
+
+  rtg-to-string :
+    Appl(t, args) -> <concat-strings> [
+        <rtg-to-string> t
+      , "("
+      , <map(rtg-to-string); separate-by(!", "); concat-strings> args
+      , ")"
+      ]
+
+  rtg-to-string :
+    Ref(nt) -> <rtg-to-string> nt
+
+  rtg-to-string :
+    Term(s) -> s
+
+  rtg-to-string :
+    ConcTerm() -> "<conc>"
+
+  rtg-to-string :
+    SomeTerm() -> "<some>"
+
+  rtg-to-string :
+    NoneTerm() -> "<none>"
+
+  rtg-to-string :
+    StringTerm() -> "<string>"
+
+  rtg-to-string :
+    IntTerm() -> "<int>"
+
+  rtg-to-string :
+    TupleTerm(x) -> <conc-strings> ("<(", <int-to-string> x, ")>")

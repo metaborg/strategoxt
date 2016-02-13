@@ -1,0 +1,20 @@
+/**
+ * Invasively extends libstratego-sdf to support an extended
+ * version of the SDF syntax definition formalism.
+ */
+module pack-sdf-ext-compat
+
+imports
+  libstratego-lib
+  libstratego-sdf
+  libstratego-sglr
+
+rules
+
+  override get-sdf-parse-table =
+    MemoExtSDFParseTable
+  <+
+    import-term(SDF-Ext.tbl);
+    open-parse-table;
+    rules(MemoExtSDFParseTable := <id>)
+

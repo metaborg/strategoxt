@@ -1,0 +1,119 @@
+module til-varunion
+imports til-opt-lib
+
+strategies
+
+  io-til-varunion =
+    io-wrap(varunion)
+
+  varunion =
+    apply-VarUnion
+    <+ varunion-declaration
+    <+ varunion-assign
+    <+ varunion-block
+    <+ varunion-if-then
+    <+ varunion-if-then-else
+    <+ varunion-while
+    <+ varunion-labeled-while
+    <+ varunion-for
+    <+ varunion-labeled-stm
+    <+ varunion-break
+    <+ varunion-break-label
+    <+ varunion-continue
+    <+ varunion-continue-label
+    <+ varunion-throw
+    <+ varunion-try-catch
+    <+ varunion-try-catch-finally
+    <+ all(varunion); try(EvalExp)
+
+  apply-VarUnion :
+    Var(x) -> x'
+    where <bagof-VarUnion>Var(x) => [v|vs]
+        ; (<?[]>vs
+           < !v
+           + !FunCall(<conc-strings>("select", x), [v|vs])) => x'
+
+  varunion-block =
+    Block({| VarUnion : map(varunion) |})
+
+  varunion-declaration =
+    (?Declaration(x) <+ ?DeclarationTyped(x, t))
+    ; rules( VarUnion+x :- Var(x) )
+
+  varunion-assign =
+    Assign(?x, varunion => e)
+    ; if <is-value> e then
+        rules( VarUnion.x : Var(x) -> e )
+      else
+        rules( VarUnion.x :- Var(x) )
+      end
+
+  varunion-if-then =
+    IfThen(varunion, id)
+    ; (EvalIf; varunion
+       <+ IfThen(id, {| VarUnion: map(varunion) |}) \VarUnion/ id)
+
+  varunion-if-then-else =
+    IfElse(varunion, id, id)
+    ; (EvalIf; varunion
+       <+ IfElse(id, {| VarUnion: map(varunion) |}, id) \VarUnion/
+          IfElse(id, id, {| VarUnion: map(varunion) |}))
+
+  varunion-while =
+    ?While(_, _)
+    ; (\VarUnion/* While(varunion, {| VarUnion: map(varunion) |}))
+
+  varunion-labeled-while =
+    Labeled(?label,
+      dr-fix-and-union(While(varunion, {| VarUnion: map(varunion) |}) | ["VarUnion"], label)
+    )
+
+  varunion-for =
+    For(?x, varunion, varunion, id)
+    ; rules( VarUnion.x :- Var(x) )
+    ; (\VarUnion/* For(id, id, id, {| VarUnion: map(varunion) |}))
+
+  varunion-labeled-stm =
+    Labeled(?label,
+      dr-label-union(varunion | ["VarUnion"], label)
+    )
+
+  varunion-break =
+    ?Break(None)
+    ; break-VarUnion
+
+  varunion-break-label =
+    ?Break(Some(label))
+    ; break-to-label-VarUnion(|label)
+
+  varunion-continue =
+    ?Continue(None)
+    ; continue-VarUnion
+
+  varunion-continue-label =
+    ?Continue(Some(label))
+    ; continue-to-label-VarUnion(|label)
+
+  varunion-try-catch =
+    ?Try(tblock, cclauses)
+    ; dr-init-exception-block(fail | <get-catch-tags>cclauses, ["VarUnion"])
+    ; <varunion>tblock => tblock'
+    ; <map(dr-complete-catch-union(varunion | ["VarUnion"]))>cclauses => cclauses'
+    ; dr-complete-exception-block-union(|["VarUnion"])
+    ; !Try(tblock', cclauses')
+
+  varunion-try-catch-finally =
+    ?Try(tblock, cclauses, fblock)
+    ; dr-init-exception-block(id | <get-catch-tags>cclauses, ["VarUnion"])
+    ; <varunion>tblock => tblock'
+    ; <map(dr-complete-catch-union(varunion | ["VarUnion"]))>cclauses => cclauses'
+    ; <dr-complete-finally-union(varunion | ["VarUnion"])>fblock => fblock'
+    ; dr-complete-exception-block-union(|["VarUnion"])
+    ; !Try(tblock', cclauses', fblock')
+
+  get-catch-tags =
+    map(?Catch(_, <id>, _))
+
+  varunion-throw =
+    ?Throw(TypeName(t))
+    ; throw-VarUnion(eq | t)

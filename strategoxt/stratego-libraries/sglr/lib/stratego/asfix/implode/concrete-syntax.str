@@ -1,0 +1,67 @@
+/**
+ * Implosion of concrete syntax.
+ */
+module stratego/asfix/implode/concrete-syntax
+imports
+  stratego/concrete-syntax/markers
+
+strategies
+    
+  skip-concrete(impl) =
+    ?appl(prod, args)
+    ; <get-cons> prod => c
+    ; <strsglr-is-quote-cons> c
+    ; where(<remove-all(is-ignorable-syntax)> args => [ap])
+    ; !c#([ap])
+    ; rec skip(
+        alltd(
+           appl(prod(one(varsym(id)), id, id), id)
+           ; impl
+
+        <+ appl(where(get-cons; strsglr-is-antiquote-cons), id)
+           ; impl
+
+        <+ annotation(impl, skip)
+        )
+      )
+
+  /**
+   * @todo Reuse existing strategies to get the constructor.
+   */
+  annotation(impl, skip) =
+    ?appl(prod, <id>)
+    ; where(<get-cons> prod => "WithAnno")
+    ; filter(not(is-ignorable-syntax); not(appl(prod(id, oncetd(lex(id)), id), id)))
+    ; ?[x|xs] 
+    ; !"WithAnno"#([<skip> x| <impl> xs])
+
+/**
+ * Yielding of quotes. Should be applied after implosion.
+ */
+strategies
+
+  yield-asfix-quotes =
+    alltd(strsglr-quote-cong(asfix-yield-quote))
+
+  asfix-yield-quote =
+    let yield(|chars) =
+            asfix-yield-acc(yield | chars)
+          + asfix-yield-quote-acc(yield | chars)
+
+     in appl(!prod([], "yield", no-attrs()), yield(|[]))
+      + strsglr-metavar-cong(id)
+      + strsglr-antiquote-cong(yield-asfix-quotes)
+    end
+    
+  asfix-yield-quote-acc(rec : b * c -> d | acc) :
+    amb([x | _]) -> acc'
+    where
+      acc' := <rec(|acc)> x
+
+  asfix-yield-quote-acc(rec : b * c -> d | acc) =
+    strsglr-metavar-cong(id)
+    ; ![<id> | acc]
+
+  asfix-yield-quote-acc(rec : b * c -> d | acc) =
+    strsglr-antiquote-cong(yield-asfix-quotes)
+    ; ![<id> | acc]

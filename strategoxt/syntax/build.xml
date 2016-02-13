@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.StrategoXT.syntax" default="all">
+	<!-- Import Stratego/XT Ant contributions -->
+	<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml"/>
+	
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+
+	<target name="all" depends="build-install" />
+
+	<target name="build-install">
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<fileset dir="aterm-front" includes="build.xml" />
+			<target name="build" />
+			<target name="install" />
+		</subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.box" location="${baseline}/share/strategoxt/gpp" />
+			<fileset dir="stratego-front" includes="build.xml" />
+			<target name="build" />
+			<target name="install" />
+		</subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
+			<fileset dir="gpp" includes="build.xml" />
+			<target name="build" />
+			<target name="install" />
+		</subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
+			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
+			<fileset dir="sdf-front" includes="build.xml" />
+			<target name="build" />
+			<target name="install" />
+		</subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
+			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
+			<fileset dir="stratego-regular" includes="build.xml" />
+			<target name="build" />
+			<target name="install" />
+		</subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
+			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
+			<property name="dep.rtg" location="${install-prefix}/share/strategoxt/rtg" />
+			<fileset dir="java-front" includes="build.xml" />
+			<target name="build" />
+			<target name="install" />
+		</subant>
+	</target>
+
+	<target name="clean">
+		<subant target="clean" inheritall="false">
+			<fileset dir="." includes="*/build.xml" />
+		</subant>
+	</target>
+
+</project>

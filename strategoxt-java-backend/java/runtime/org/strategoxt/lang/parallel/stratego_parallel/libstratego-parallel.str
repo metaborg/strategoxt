@@ -1,8 +1,0 @@
-module libstratego-parallel
-
-strategies
-
-  external parallel-ordered(s|)
-  
-  external parallel-unordered(s|)
-

@@ -1,0 +1,171 @@
+module EmbeddedStratego[E1 E2]
+imports Stratego
+exports
+  context-free syntax
+
+              "|[" Module "]|" -> E1 {cons("ToTerm"),prefer}
+    "Module"  "|[" Module "]|" -> E1 {cons("ToTerm")}
+
+              "|[" Decl   "]|" -> E1 {cons("ToTerm")}
+              "|[" Sdecl  "]|" -> E1 {cons("ToTerm")}
+
+              "|[" Opdecl "]|" -> E1 {cons("ToTerm")}
+    "Constr"  "|[" Opdecl "]|" -> E1 {cons("ToTerm")}
+
+              "|[" Type   "]|" -> E1 {cons("ToTerm")}
+    "Type"    "|[" Type   "]|" -> E1 {cons("ToTerm")}
+
+    "Sort"    "|[" Sort   "]|" -> E1 {cons("ToTerm")}
+
+              "|[" Term   "]|" -> E1 {cons("ToTerm")}
+    "Term"    "|[" Term   "]|" -> E1 {cons("ToTerm")}
+
+              "|[" Def    "]|" -> E1 {cons("ToTerm")}
+    "Def"     "|[" Def    "]|" -> E1 {cons("ToTerm")}
+
+             "|[" Rule      "]|" -> E1 {cons("ToTerm")}
+    "Rule"   "|[" Rule      "]|" -> E1 {cons("ToTerm")}
+             "|[" StratRule "]|" -> E1 {cons("ToTerm")}
+
+               "|[" Strategy "]|" -> E1 {cons("ToTerm")}
+    "Strat"    "|[" Strategy "]|" -> E1 {cons("ToTerm")}
+    "Strategy" "|[" Strategy "]|" -> E1 {cons("ToTerm")}
+
+    "O"        "|[" Overlay  "]|" -> E1 {cons("ToTerm")}
+    "Overlay"  "|[" Overlay  "]|" -> E1 {cons("ToTerm")}
+
+    "Typedid"    "|[" Typedid    "]|" -> E1 {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef "]|" -> E1 {cons("ToTerm")}
+
+  context-free syntax
+    "~"         E2 -> ModName          {cons("FromTerm")}
+
+    "~"         E2 -> Term             {cons("FromTerm")}
+    "~term:"    E2 -> Term             {cons("FromTerm")}
+    %%"~term*:" E2 -> {Term ","}*      {cons("FromTerm")}
+    "~term*:"   E2 -> {Term ","}+      {cons("FromTerm")}
+    "~"         E2 -> {ID   ","}+      {cons("FromTerm")}
+
+    "~"         E2 -> Strategy         {cons("FromTerm")}
+    "~strat:"   E2 -> Strategy         {cons("FromTerm")}
+    "~*"        E2 -> {Strategy ","}+  {cons("FromTerm")}
+    "~strat*:"  E2 -> {Strategy ","}+  {cons("FromTerm")}
+
+    "~srt:"     E2 -> Sort {cons("FromTerm")}
+    "~srtvar:"  E2 -> LCID {cons("FromTerm")}
+    "~srtid:"   E2 -> UCID {cons("FromTerm")}
+
+    "~id:"    E2 -> Id     {cons("FromTerm")}
+    "~int:"   E2 -> Int    {cons("FromTerm")}
+    "~str:"   E2 -> String {cons("FromTerm")}
+
+    Id "/" Id -> Id {cons("ManglePrefix")}
+    Id "\\" Id -> Id {cons("MangleSuffix")}
+
+    "~"   E2 -> Def       {cons("FromTerm")}
+    "~*"  E2 -> Def+      {cons("FromTerm")}
+
+    "~*"  E2 -> Opdecl+      {cons("FromTerm")}
+    "~*"  E2 -> {Type "*"}+  {cons("FromTerm")}
+
+    "~*"          E2 -> {Typedid ","}+   {cons("FromTerm")}
+    "~typed-id*:" E2 -> {Typedid ","}+   {cons("FromTerm")}
+
+  %%%
+   %% Hacks
+   %%
+   %% Why are these hacks nessary? What do they do?
+   %%%
+  context-free syntax 
+    "<" Strategy ">" -> StrategyAngle {bracket}
+    "(" Strategy ")" -> Strategy      {bracket,prefer}
+
+%%%
+ %% Identifiers
+ %%%
+
+  variables
+    [xyzfglc][0-9\']*       -> Id       {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {Id ","}+ {prefer}
+    "xs"[0-9\']*            -> {Id ","}+ {prefer,obsolete}
+
+    [xyzfgl][0-9\']*  "*"   -> {ID ","}+ {prefer}
+
+%%%
+ %% Terms
+ %%%
+
+  variables
+    TermMetaVar     -> Term        {prefer}
+    TermListMetaVar -> {Term ","}+ {prefer}
+    TermListMetaVar -> {Term ","}+ {prefer,obsolete}
+
+  lexical syntax
+    [t][0-9\']*      -> TermMetaVar
+    "t:"Id           -> TermMetaVar
+    [t][0-9\']*  "*" -> TermListMetaVar
+    "ts"[0-9\']*     -> TermListMetaVar
+
+    TermMetaVar      -> MetaVar
+    TermListMetaVar  -> MetaVar
+
+%%%
+ %% Cleanup
+ %%%
+
+  variables
+    "str"[0-9\']* -> String
+
+  lexical syntax
+    "str"[0-9\']* -> Id {reject}
+
+  variables
+    "s"[0-9\']*           -> Strategy {prefer}
+    "ss"[0-9\']*          -> {Strategy ","}+ {prefer,obsolete}
+    "s"[0-9\']*   "*"     -> {Strategy ","}+ {prefer}
+
+    [r][0-9\']*           -> Rule {prefer}
+
+    "rd"[0-9\']*          -> RuleDef {prefer}
+    "rd"[0-9\']*  "*"     -> RuleDef* {prefer}
+
+    "a"[0-9\']*           -> Typedid        {prefer}
+    "a"[0-9\']*   "*"     -> {Typedid ","}+ {prefer}
+    "as"[0-9\']*          -> {Typedid ","}+ {prefer,obsolete}
+
+    "tp"[0-9\']*          -> Type 
+    "tp"[0-9\']*  "*"     -> {Type "*"}+  
+
+    "srt" [0-9\']*        -> Sort         {prefer}
+    "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
+    "srt" [xyz] [0-9\']*  -> UCID         {prefer}
+
+    "M"   [0-9\']*        -> ModName {prefer}
+
+    "sc" [0-9\']*         -> SwitchCase {prefer}
+    "sc" [0-9\']* "*"     -> SwitchCase* {prefer}
+
+  variables
+    "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
+    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}+ {prefer}
+
+    "dr" [0-9\']*         -> DynRuleId {prefer}
+
+    "drd"[0-9\']*         -> DynRuleDef {prefer}
+    "drd"[0-9\']*  "*"    -> DynRuleDef+ {prefer}
+
+%%%
+ %%
+ %% Disambiguation
+ %%%
+
+  lexical syntax
+    MetaVar -> Id  {reject}
+    MetaVar -> LId {reject}
+
+    "xs"[0-9\']*    -> Id  {reject}
+    [s][0-9\']*     -> Id  {reject}
+    "ss"[0-9\']*    -> Id  {reject}
+    [r][0-9\']*     -> Id  {reject}
+     "a"[0-9\']*    -> Id  {reject}
+    "as"[0-9\']*    -> Id  {reject} 

@@ -1,0 +1,20 @@
+/**
+ * (STR-685) meta-explode does not support PreTerm anti-quotations
+ *
+ * If an anti-quotation is defined as a PreTerm, then
+ * this example fails. The problem is that a meta-explode
+ * assumes that FromTerm has a Term as an argument. Often,
+ * this indeed accidentally the case, since most non-constant
+ * PreTerms are also Terms. However, if constant terms
+ * are anti-quoted, then compilation will fail.
+ *
+ * This test checks two different things:
+ * - if StrategoStratego uses Term anti-quotation
+ * - if StrategoStratego uses PreTerm, then meta-explode is checked
+ */
+module anti-quote-preterm
+imports Stratego
+strategies
+
+  main =
+    !|[ ~id:""(id, id) ]|

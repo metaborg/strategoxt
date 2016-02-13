@@ -1,0 +1,22 @@
+/**
+ * Catch failure for strategies that are expected to succeed and
+ * report this event.
+ */
+module expect
+imports term-io
+
+signature
+  constructors
+    General:    Error
+
+strategies
+
+  expect(s,err) = s <+ error(err);fail
+  expect(s) = expect(s,!General)
+
+  error(code) = 
+          where(code;errmsg;debug)
+        ; debug(!" error: expected success on ")
+
+  errmsg: General -> "general"
+

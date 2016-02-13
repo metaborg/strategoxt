@@ -1,0 +1,12 @@
+module xml-comments
+
+exports
+  lexical syntax
+    "<!--" (~[\-] | Dash)* "-->" -> Comment
+    "-" -> Dash
+
+  lexical restrictions
+
+    Dash -/- [\-]
+
+

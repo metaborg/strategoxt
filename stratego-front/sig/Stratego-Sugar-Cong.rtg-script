@@ -1,3 +1,0 @@
-[ Read("Stratego-Sugar")
-, Include([Read("Cong")])
-]

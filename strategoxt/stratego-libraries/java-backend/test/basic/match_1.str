@@ -1,0 +1,13 @@
+module match_1
+
+imports
+  libstratego-lib
+
+rules
+
+  main-match_1 =
+    b := "foo"{2}
+  ; c := "foo"{2}
+  ; !b
+  ; ?c
+  

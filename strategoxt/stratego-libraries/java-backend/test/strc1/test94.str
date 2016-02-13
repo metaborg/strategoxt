@@ -1,0 +1,17 @@
+/**
+ * This a test for issue STR-484
+ */
+module test94
+imports
+  collection/list/cons collection/tuple/cons
+
+strategies
+  
+  main-test94 =
+    <doit(string-tokenize)> "foo bar fred" => ["foo", "bar", "fred"]
+
+  doit(s : t * t -> t) =
+    s(|[' '])
+
+  external string-tokenize(|x_0 : ATerm)
+  external string-tokenize(|y_0 : ATerm)

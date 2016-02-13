@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>strategoxt-distrib-bootstrap2</artifactId>
+  <packaging>pom</packaging>
+
+  <parent>
+    <groupId>org.metaborg</groupId>
+    <artifactId>strategoxt-distrib-parent</artifactId>
+    <version>1.5.1-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <properties>
+    <strategoxt-baseline-version>${metaborg-version}</strategoxt-baseline-version>
+    <strategoxt-baseline-id>strategoxt-distrib-bootstrap1</strategoxt-baseline-id>
+    <strategoxt-build-location>${basedir}/../../</strategoxt-build-location>
+    <strategoxt-assembly-location>${basedir}/../assembly.xml</strategoxt-assembly-location>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>${strategoxt-baseline-id}</artifactId>
+      <version>${strategoxt-baseline-version}</version>
+      <type>tar</type>
+      <classifier>bin</classifier>
+    </dependency>
+  </dependencies>
+</project>

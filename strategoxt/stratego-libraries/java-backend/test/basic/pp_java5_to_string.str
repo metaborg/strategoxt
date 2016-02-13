@@ -1,0 +1,10 @@
+module pp-java5-to-string
+
+imports libjava-front libstratego-lib
+
+rules
+
+  main-pp_java5_to_string =
+    !CompilationUnit(None,[],[ClassDec(ClassDecHead([],Id("Foo"),None,None,None),ClassBody([]))])
+  ; pp-java5-to-string
+  ; is-string

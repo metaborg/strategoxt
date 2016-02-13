@@ -1,0 +1,18 @@
+module define-congruences
+
+imports stratego/strc/opt/stratego-laws 
+	stratego/strc/opt/opt-lib
+
+strategies
+
+  define-congruences =
+    where(assume-shared-terms := <AssumeSharedTerms>)
+  ; apply-to-bodies(
+      bottomup(repeat(DefineCongruences + Simplify(|assume-shared-terms)))
+      ; simplify
+    )
+
+  define-congruences-def =
+    where(assume-shared-terms := <AssumeSharedTerms>)
+  ; bottomup(repeat(DefineCongruences + Simplify(|assume-shared-terms)))
+    ; simplify

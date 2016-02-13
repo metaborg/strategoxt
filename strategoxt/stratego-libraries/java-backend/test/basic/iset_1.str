@@ -1,0 +1,9 @@
+module iset_1
+
+imports libstratego-lib
+
+strategies
+
+  main-iset_1 =
+    new-iset
+  ; iset-add(|1)

@@ -1,0 +1,15 @@
+module assignment
+imports libstratego-lib
+signature
+  constructors
+    A : Term
+    G : Term -> Term
+    F : Term * Term -> Term
+
+strategies
+
+  main-assignment = <bla> G(A())
+
+  s = ?G(x); !F(x,x)
+
+  bla = s => F(x, y)

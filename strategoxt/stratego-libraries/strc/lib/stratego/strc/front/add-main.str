@@ -1,0 +1,72 @@
+module add-main
+strategies
+
+  /**
+   * Adding main strategy
+   * 
+   * What happens if the specification already contains a main strategy? 
+   */
+
+  add-main =
+    try(
+      where(
+        <get-config> "-m" => m
+      ; log(|Notice(),["Main strategy is : ",m])
+      )
+      ; if-not-lib(
+          try(AddMain(|m))
+        )
+    )
+
+
+  MkMain(|main) =
+    !SDef("main", [], Call(SVar(main), []))
+
+  AddMain(|main) : 
+    Specification(sects) -> 
+    Specification([ Strategies([SDef("main", [], Call(SVar(main), []))])
+                  | sects ])
+      where
+        <not("main")>main
+      ; <try(check-other-main)>sects
+
+  check-other-main =
+    fetch-elem( Strategies(fetch-elem(is-main)) + Rules(fetch-elem(is-main)) )
+  ; say(!"Adding main strategy even though one is already present!")
+
+  is-main =
+    ?SDef("main", [], _)
+  + ?RDef("main", [], _)
+
+    // note: check not exhaustive (also test SDefT)
+
+strategies
+
+  m-add-main =
+    if m := <get-config> "-m" then
+      log(|Notice(),["Setting main strategy to : ", m])
+      ; if-not-lib(
+          if <ModDefinition> ("main", 0, 0) then
+            say(!"Adding main strategy even though one is already present!")
+          else 
+            if not( <ModDefinition> (m, 0, 0) ) then
+              log(|Error(),["Could not find specified main strategy/rule called '",m,"'."])
+            ; <exit>1
+            end
+          end
+          ; where(MkMain(|m); m-add-def)
+        )
+    end
+  ; if not(<ModDefinition> ("main", 0, 0)) then
+      log(|Error(),["No 'main' strategy/rule found. Add strategy/rule called 'main' or use -m flag to specify the entry point of the application."])  
+    ; <exit>1
+    end
+
+strategies
+
+  // building a library
+
+  if-lib(s1, s2) = if <get-config>"--library" then s1 else s2 end
+  if-lib(s)      = if-lib(s, id)
+  if-not-lib(s)  = if-lib(id, s)
+  pass-library   = if-lib(!["--library"], ![])

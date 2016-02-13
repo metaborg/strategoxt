@@ -1,0 +1,17 @@
+module pp-pp-table
+imports 
+  libstratego-lib
+  libstratego-xtc strategoxt-xtc-tools
+
+/**
+ * @todo Use libstratego-gpp
+ */
+strategies
+
+  io-pp-pp-table =
+    xtc-io-wrap(
+      xtc-transform(!"ast2abox", !["-p", <xtc-find> "pp-table-pretty.pp.af"])
+    ; xtc-abox-format
+    ; xtc-abox2text
+    )
+

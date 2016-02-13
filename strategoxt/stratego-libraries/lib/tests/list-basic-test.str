@@ -1,0 +1,268 @@
+module list-basic-test
+imports libstratego-lib
+
+strategies
+
+  main-list-basic-test =
+    test-suite(!"list-basic-test",
+      map-test
+    ; split-fetch-test
+    ; split-fetch-keep-test
+    ; upto-test1
+    ; upto-test2
+    ; fetch-test
+    ; fetch-elem-test
+    ; reverse-test
+    ; conc-test
+    ; concat-test
+    ; split-init-last-test
+    ; for-each-pair-test
+    ; list-loop-tests
+    ; list-fold-tests
+    ; list-combinations-tests
+    )
+
+strategies
+
+  map-test =
+    apply-test(!"map-test1"
+	,map(!3)
+	,![1,2,3,4,5,6,7]
+	,![3,3,3,3,3,3,3]
+	);
+    apply-test(!"map-test2"
+	,map(!3)
+	,![]
+	,![]
+	)
+
+strategies
+
+  split-fetch-test =
+    apply-test(!"split-fetch-test"
+	,split-fetch(?4)
+	,![1,2,3,4,5,6,7]
+	,!([1,2,3],[5,6,7])
+	)
+
+strategies
+
+  split-fetch-keep-test =
+    apply-test(!"split-fetch-keep-test-1"
+      , split-fetch-keep(?0)
+      , ![3, 5, 0, 1, 2, 3, 4, 5]
+      , !([3, 5], 0, [1, 2, 3, 4, 5]))
+  ; apply-test(!"split-fetch-keep-test-2"
+      , split-fetch-keep(?0)
+      , ![0, 3, 5, 0, 1, 2, 3, 4, 5]
+      , !([], 0, [3, 5, 0, 1, 2, 3, 4, 5]))
+  ; apply-test(!"split-fetch-keep-test-3"
+      , split-fetch-keep(?0)
+      , ![3, 5, 0]
+      , !([3, 5], 0, []))
+  ; apply-and-fail(!"split-fetch-keep-test-4"
+      , split-fetch-keep(?0)
+      , ![1, 2, 3, 4, 5])
+  
+strategies
+
+  upto-test1 =
+    apply-test(!"upto-test1"
+	      ,upto
+	      ,!5
+	      ,![0,1,2,3,4,5]
+              )
+
+strategies
+
+  upto-test2 =
+    apply-test(!"upto-test2"
+	      ,upto
+	      ,<subt> (0, 3)
+	      ,![]
+              )
+
+strategies
+
+  fetch-test = id
+    ; apply-test(!"fetch-test 1"
+      , fetch( \ 3 -> 6 \ )
+      , ![1,2,3,4,5]
+      , ![1,2,6,4,5]
+      )
+    ; apply-and-fail(!"fetch-test 2"
+      , fetch(?6)
+      , ![1,2,3,4,5]
+      )
+    ; apply-and-fail(!"fetch-test 3"
+      , fetch(?6)
+      , ![]
+      )
+    ; apply-and-fail(!"fetch-test 4"
+      , fetch(?6)
+      , !6
+      )
+
+  fetch-elem-test = 
+    apply-test	(!"fetch-elem-test"
+		,fetch-elem(\3 -> 6\)
+		,![1,2,3,4,5]
+		,!6
+		)
+
+strategies
+
+  length-test = id
+    ; apply-test(!"length-test", length, ![1,2,3,4,5], !5)
+    ; apply-test(!"length-test", length, ![1], !1)
+    ; apply-test(!"length-test", length, ![], !0)
+
+strategies
+
+  reverse-test = 
+    apply-test	(!"reverse-test"
+		,reverse
+		,![1,2,3,4,5]
+		,![5,4,3,2,1]
+		)
+
+strategies
+
+  conc-test = id
+    ; apply-test(!"conc-test 1"
+      , conc
+      , !([1,2,3,4,5], [1,2,3,4,5])
+      , ![1,2,3,4,5,1,2,3,4,5]
+      )
+    ; apply-test(!"conc-test 2"
+      , conc
+      , !([1,2,3,4,5], [1,2,3,4,5], [1,2,3,4,5])
+      , ![1,2,3,4,5,1,2,3,4,5,1,2,3,4,5]
+      )
+    ; apply-test(!"conc-test 3"
+      , conc
+      , !([], [])
+      , ![]
+      )
+    ; apply-test(!"conc-test 4"
+      , conc
+      , !([], [1])
+      , ![1]
+      )
+    ; apply-test(!"conc-test 5"
+      , conc
+      , !([1], [])
+      , ![1]
+      )
+
+  concat-test = id
+    ; apply-test(!"concat-test 1"
+      , concat
+      , ![[1,2,3,4,5], [1,2,3,4,5]]
+      , ![1,2,3,4,5,1,2,3,4,5]
+      )
+
+    ; apply-test(!"concat-test 2"
+      , concat
+      , ![[], [1,2,3,4,5]]
+      , ![1,2,3,4,5]
+      )
+    ; apply-test(!"concat-test 3"
+      , concat
+      , ![[1,2,3,4,5],[]]
+      , ![1,2,3,4,5]
+      )
+    ; apply-test(!"concat-test 4"
+      , concat
+      , ![]
+      , ![]
+      )
+
+strategies
+
+  split-init-last-test =
+    apply-test(!"split-init-last-test"
+	, split-init-last
+	, ![1, 2, 3, 4, 5]
+	, !([1, 2, 3, 4], 5)
+	)
+
+strategies
+
+  for-each-pair-test =
+    apply-test(!"for-each-pair-test1"
+	, for-each-pair(id)
+	, !([1, 2, 3], [4, 5, 6])
+	, ![[(1,4),(1,5),(1,6)],[(2,4),(2,5),(2,6)],[(3,4),(3,5),(3,6)]]
+	);
+    apply-test(!"for-each-pair-test2"
+	, for-each-pair(id)
+	, !([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+	    [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
+	)
+
+strategies
+
+  list-loop-tests =
+    let helper = {x: ?x; rules(ListLoopTest :+ _ -> x)}
+
+        list-loop-test(|xs) =
+          {| ListLoopTest :
+            apply-test(!"list-loop"
+            , list-loop(helper)
+              ; bagof-ListLoopTest
+              ; reverse
+            , !xs
+            , !xs
+            )
+          |}
+
+     in list-loop-test(|[])
+      ; list-loop-test(|[1])
+      ; list-loop-test(|[1, 2, 3])
+      ; list-loop-test(|[1, 2, 3, 4])
+    end
+
+  list-fold-tests =
+    let add-helper(|x) = <add> (x, <id>)
+        mul-helper(|x) = <mul> (x, <id>)
+     in id
+
+    ; apply-test(!"list-fold 1", list-fold(add-helper | 0), ![], !0)
+    ; apply-test(!"list-fold 2", list-fold(add-helper | 0), ![1], !1)
+    ; apply-test(!"list-fold 3", list-fold(add-helper | 0), ![1, 2, 3, 4], !10)
+    ; apply-test(!"list-fold 4", list-fold(mul-helper | 1), ![1, 2, 3, 4], !24)
+    ; apply-test(!"list-fold 5", list-fold(mul-helper | 0), ![1, 2, 3, 4], !0)
+
+    end
+
+strategies
+
+  list-combinations-tests = id
+    ; list-combination-test(|"list-combinations 1"
+      , [[1, 2]]
+      , [[1],[2]]
+      )
+    ; list-combination-test(|"list-combinations 2"
+      , [[1, 2], []]
+      , []
+      )
+    ; list-combination-test(|"list-combinations 3"
+      , []
+      , [[]]
+      )
+    ; list-combination-test(|"list-combinations 4"
+      , [[1, 2], ["a", "b"]]
+      , [[1,"a"],[2,"a"],[1,"b"],[2,"b"]]
+      )
+    ; list-combination-test(|"list-combinations 5"
+      , [[1, 2], ["a", "b"], [()]]
+      , [[1,"a",()],[2,"a",()],[1,"b",()],[2,"b",()]]
+      )
+
+  list-combination-test(|msg, input, output) =
+    apply-and-check(!msg
+    , list-combinations
+    , !input
+    , <set-eq> (<id>, output)
+    )

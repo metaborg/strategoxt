@@ -1,0 +1,261 @@
+/**
+ * Generates a Stratego module that puts Parenthetical constructors at
+ * the right places.
+ *
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ * @since   0.11
+ */
+module sdf2parenthesize
+imports
+  libstratego-lib
+  Stratego
+  libstratego-xtc
+  strategoxt-xtc-tools
+  ast-conflicts
+  sdf/tool/options
+  tool-doc
+
+strategies
+
+  main-sdf2parenthesize =
+    xtc-io-wrap(
+      parenthesize-options
+    , sdf2parenthesize-usage
+    , sdf2parenthesize-about
+    , ![]
+    , report-config
+      ; sdf2parenthesize <+ <xtc-exit> 1
+    )
+
+  sdf2parenthesize = 
+      xtc-transform(!"sdf2ast-conflicts", <conc> (<pass-verbose>, <pass-sdf-main-module>))
+    ; xtc-io-transform(core-sdf2parenthesize <+ log(|Error(), "rewriting failed. Please submit a bug report."); fail)
+    ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
+
+strategies
+
+  core-sdf2parenthesize =
+      where(new-hashtable => tbl)
+    ; where(guess-rule-name => l)
+
+    ; map({sym1, sym2, pos:
+        ?SubtermConflict(sym1, pos, sym2)
+      ; <hashtable-push(|(sym1, pos), sym2)> tbl
+      })
+
+    ; <hashtable-keys> tbl
+    ; map(generate-rule(|l, tbl))
+
+    ; innermost-module
+
+  generate-rule(|l, tbl) :
+    (sym1, pos) -> |[ l : t1 -> t2 where <s> x ]|
+    where
+        <Symbol2Term> sym1 => t1
+      ; <Symbol2ParenTerm(|pos)> sym1 => t2
+      ; <index-to-subterm-id> pos => x
+
+      ; <hashtable-get(|(sym1, pos))> tbl
+      ; make-set
+      ; map(Symbol2Wld)
+      ; <foldl( \ (s1, s2) -> |[ s1 + s2 ]| \ )> (<id>, |[ fail ]|)
+      ; ?s
+
+strategies
+
+  /**
+   * @type  Int -> String
+   */
+  index-to-subterm-id =
+    <strcat> ("t_", <int-to-string>)
+
+  /**
+   * @type  Symbol -> StrategoStrategy
+   */
+  Symbol2Wld :
+    Symbol(x, arity) -> Strat |[ ?x(t* ) ]|
+      where <range> (0, arity); map(!Term |[ _ ]|) => t*
+
+  Symbol2Term :
+    Symbol(x, arity) -> Term |[ x(t* ) ]|
+    where <range> (0, arity)
+        ; map(
+            index-to-subterm-id
+          ; \ x -> Term |[ x ]| \
+          )
+        ; ?t*
+
+  Symbol2ParenTerm(|pos) :
+    Symbol(x, arity) -> Term |[ x(t* ) ]|
+    where <range> (0, arity)
+        ; map(
+            if ?pos then
+              index-to-subterm-id
+              ; \ x -> Term |[ Parenthetical(x) ]| \
+            else 
+              index-to-subterm-id
+              ; \ x -> Term |[ x ]| \
+            end
+          )
+        ; ?t*
+
+/**
+ * Produce a module
+ */
+strategies
+
+  innermost-module :
+    [] ->
+      |[ module M1
+         imports libstratego-lib
+         strategies
+
+           f =
+             io-wrap(id)
+      ]|
+    where
+        guess-module-name => M1
+      ; guess-main-strategy-name => f
+  
+  innermost-module :
+    rs@[_ | _] ->
+      |[ module M1
+         imports libstratego-lib M2
+         strategies
+
+           f =
+             io-wrap(g)
+
+           g =
+             innermost(l)
+
+         rules
+           ~*rs
+
+         signature
+           constructors
+             Parenthetical : Unknown -> Unknown
+      ]|
+    where
+        guess-module-name => M1
+      ; guess-signature-name => M2
+      ; guess-main-strategy-name => f
+      ; guess-language-name => lang
+      ; <conc-strings> ("parenthesize-", lang) => g
+      ; guess-rule-name => l
+
+/**
+ * Options
+*/
+strategies
+
+  parenthesize-options =
+    sdf-main-module-option
+  + stratego-module-option
+  + main-strategy-name-option
+  + signature-name-option
+  + language-name-option
+  + rule-prefix-option
+
+  report-config =
+      log(|Info(), <conc-strings> ("SDF main module is ", <get-sdf-main-module>))
+    ; log(|Info(), <conc-strings> ("Name of output module is ", <guess-module-name>))
+    ; log(|Info(), <conc-strings> ("Main strategy is ", <guess-main-strategy-name>))
+    ; log(|Info(), <conc-strings> ("Name of signature module is ", <guess-signature-name>))
+    ; log(|Info(), <conc-strings> ("Language name is ", <guess-language-name>))
+    ; log(|Info(), <conc-strings> ("Name of parenthesize rules is ", <guess-rule-name>))
+
+strategies
+
+  stratego-module-option =
+    ArgOption("--omod"
+    , ?s; rules(ModuleName : _ -> s)
+    , !HelpString("--omod <module>", "Name of the resulting Stratego module [basename of output]")
+    )
+
+  guess-module-name =
+    ModuleName
+    <+ <get-config; remove-extension> "-o"
+    <+ log(|Critical(), "No Stratego module name specified. Use the --omod option to specify a module name. See also --help.")
+       ; <exit> 1
+
+strategies
+
+  main-strategy-name-option =
+    ArgOption("--main-strategy"
+    , ?s; rules(MainStrategyName : _ -> s)
+    , !HelpString("--main-strategy <strategy>", "Name of the main strategy [io-<module>])")
+    )
+
+  guess-main-strategy-name =
+    MainStrategyName
+    <+ guess-module-name => M1
+      ; <conc-strings> ("io-", M1) => f
+
+strategies
+
+  signature-name-option =
+    ArgOption("--sig-module"
+    , ?s; rules(SignatureName : _ -> s)
+    , !HelpString("--sig-module <module>", "Stratego module that contains signature for the language [<language>]")
+    )
+
+  guess-signature-name =
+    SignatureName
+    <+ guess-language-name
+
+strategies
+
+  language-name-option =
+    ArgOption("--lang"
+    , ?s; rules(LanguageName : _ -> s)
+    , !HelpString("--lang <language>", "Name of the language [basename of input file]")
+    )
+
+  guess-language-name =
+    LanguageName
+    <+ <get-config; remove-extension> "-i"
+    <+ log(|Critical(), "No language name specified. You must specify the name of the language with --lang. See also --help.")
+       ; <exit> 1
+
+strategies
+
+  rule-prefix-option =
+    ArgOption("--rule-prefix"
+    , ?s; rules(RulePrefix : _ -> s)
+    , !HelpString("--rule-prefix <string>", "Prefix to use for the parenthesize rules [<language>]")
+    )
+
+  guess-rule-name =
+    (RulePrefix <+ guess-language-name)
+    ; <conc-strings> (<id>, "Parenthesize") => l
+
+/**
+ * Documentation
+ */
+strategies
+
+  sdf2parenthesize-usage =
+    <tool-doc>
+      [ Usage("sdf2parenthesize [OPTIONS]")
+      , Summary("Generates a Stratego module that puts Parenthetical constructors at the right places.")
+      , OptionUsage()
+      , AutoReportBugs()
+      ]
+
+  sdf2parenthesize-about =
+    <tool-doc>
+      [ HSection("sdfparenthesize", [
+          DefList([
+            Def("Package",  Paragraph(<package-name> ()))
+          , Def("Version",  Paragraph(<package-version> ()))
+          , Def("Revision", Paragraph(<prim("SVN_REVISION_TERM")> ()))
+          ])
+        ])
+      , Author(Person("Martin Bravenboer", "martin.bravenboer@gmail.com"))
+      , GNU_LGPL("2004-2008", "Stratego Software Foundation <stratego@cs.uu.nl>")
+      , Config([
+          DefaultXTCRepository()
+        , CurrentXTCRepository()
+        ])
+      ]

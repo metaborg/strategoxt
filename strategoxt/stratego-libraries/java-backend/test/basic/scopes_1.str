@@ -1,0 +1,15 @@
+module scopes_1
+
+imports libstratego-lib
+
+rules
+
+  main-scopes_1 =
+    { x:
+      { y:
+        y := <debug> 1;
+        x := y
+      };
+      !x
+    }
+    

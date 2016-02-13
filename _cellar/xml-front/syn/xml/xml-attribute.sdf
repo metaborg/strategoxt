@@ -1,0 +1,32 @@
+module xml-attribute
+imports xml-names xml-text
+
+exports
+
+  context-free syntax
+
+    QName "=" AttValue -> Attribute {cons("Attribute")}
+
+  syntax
+
+    "\"" DoubleQuotedPart* "\"" -> <AttValue-CF> {cons("DoubleQuoted")}
+    "'"  SingleQuotedPart* "'" -> <AttValue-CF> {cons("SingleQuoted")}
+
+    FooDoubleQuotedText -> DoubleQuotedPart {cons("Literal")}
+    FooSingleQuotedText -> SingleQuotedPart {cons("Literal")}
+
+    <DoubleQuotedText-LEX> -> FooDoubleQuotedText
+    <SingleQuotedText-LEX> -> FooSingleQuotedText
+
+    <Ref-CF> -> DoubleQuotedPart
+    <Ref-CF> -> SingleQuotedPart
+
+  lexical syntax
+
+    ~[\&\<\"]+ -> DoubleQuotedText
+    ~[\&\<\']+ -> SingleQuotedText
+
+  lexical restrictions
+
+    DoubleQuotedText -/- ~[\&\<\"]
+    SingleQuotedText -/- ~[\&\<\']

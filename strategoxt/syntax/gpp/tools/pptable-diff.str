@@ -1,0 +1,57 @@
+module pptable-diff
+imports
+  libstratego-lib
+  libstratego-xtc
+  core-pp-table-diff
+  pp-table-diff-options
+
+strategies
+
+  io-pptable-diff =
+    xtc-io-wrap(
+      pp-table-diff-options
+    , pp-table-diff-usage
+    , system-about
+    , ![] // dependencies
+    , pptable-diff
+    )
+    
+  pptable-diff =
+    maybe-parse-pptable
+    ; core-pptable-diff(|<get-old-pp-table; read-pptable-file>)
+    ; write-to
+    ; if is-patch-enabled + is-prune-enabled then
+        xtc-transform(!"pp-pp-table", pass-verbose)
+      end
+      
+  maybe-parse-pptable =
+    if ?FILE(file); <has-extension(|"pp")> file then
+      <parse-pptable-file> file
+    else
+      read-from
+    end
+
+strategies
+
+  pp-table-diff-usage =
+    default-system-usage(
+      !["Usage: pptable-diff [options]"]
+    , ![
+"   This program writes to standard error a list of
+   pretty-print rules that are contained in
+   pretty-print table 'old' but not in the input
+   parse table.
+
+   If the '--patch' switch is specified, the table
+   'old' is updated by adding pretty-print
+   rules that are in 'new' but not in 'old'.
+
+   If the '--prune' switch is specified, the table
+   'old' is returned from which obsolete entries
+   have been removed
+   
+   Warning: the input parse table must be in abstract syntax. So,
+   .pp files have to be parsed using parse-pp-table before
+   passing them to pptable-diff.
+"])
+

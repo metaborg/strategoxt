@@ -1,0 +1,42 @@
+module pp-sdf
+imports 
+  libstratego-lib
+  libstratego-gpp
+  libstratego-xtc
+  libstratego-sdf
+  lib/rtg-ppfix
+
+strategies
+
+  main-pp-sdf =
+    io-stream-wrap(
+      ?(fin, fout)
+      ; <read-from-stream> fin
+      ; pp-sdf-stream(|fout)
+      ; !fout
+    )
+
+  pp-sdf-file(|path) =
+    let open =
+          open-stream <+ ?(<id>, _); perror; fail
+
+     in pp-sdf-box
+      ; where(fout := <open> (path, "w"))
+      ; finally(
+          box2text-stream(|80, fout)
+          ; <fputs> ("\n", fout)
+        , try(<fclose> fout)
+        )
+   end
+
+  //pretty-printer for sdf
+ // pp-sdf-box =
+	//  sdf-desugar;
+	//  parenthesize-Sdf2;
+	//  sdf-ppfix;
+	//  ast2box(|[<pp-table-sdf>, PP-Table([PP-Entry(Path1("Constructor"),[Arg("1")])])])
+  
+  
+ // pp-table-rtg =
+  //  import-term(rtg.pp.af)
+

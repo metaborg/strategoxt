@@ -1,0 +1,187 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "XTC" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+xtc \- registers, unregisters and queries XTC components in a repository
+.SH "SYNOPSIS"
+.HP 4
+\fBxtc\fR [\-r\ \fIrep\fR\ |\ \-\-repository\ \fIrep\fR] [i\ \fIrep\fR\ |\ import\ \fIrep\fR] [r\ |\ register] [\-t\ \fIname\fR\ |\ \-\-tool\ \fIname\fR] [\-l\ \fIloc\fR\ |\ \-\-location\ \fIloc\fR] [\-V\ \fIname\fR\ |\ \-\-Version\ \fIname\fR] [query\ |\ q] [\-a\ |\ \-\-all] [\-L\ |\ \-\-Location] [\-R\ |\ \-\-Repository] [\-\-verbose\ \fIint\fR] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+The Stratego/XT component model is called XTC. It allows developers to compose XT components (Stratego programs) together, creating new components in a flexible, scalable and modular way. Components live together in XTC repositories, which have an internal directory structure.
+.PP
+The
+\fBxtc\fR
+tool is used to administer components in an XTC repository. It can add and remove components from a repository as well as inspect repositories.
+.SH "OPTIONS"
+.PP
+\fBRepository Manipulation Options\fR
+.TP
+\fB\-r \fR\fB\fIrep\fR\fR, \fB\-\-repository \fR\fB\fIrep\fR\fR
+The repository to work on.
+\fIrep\fR
+is the base path to the repository. This option is mandatory.
+.TP
+\fBi \fR\fB\fIrep\fR\fR, \fBimport \fR\fB\fIrep\fR\fR
+Import the repository in
+\fIrep\fR.
+.sp
+This command will import the entire contents (all components) of the repository
+\fIrep\fR.
+.TP
+\fBr\fR, \fBregister\fR
+Register a file in the repository. This option must be followed by
+\fB\-t\fR,
+\fB\-V\fR
+and
+\fB\-l\fR.
+.TP
+\fB\-t \fR\fB\fIname\fR\fR, \fB\-\-tool \fR\fB\fIname\fR\fR
+Name of the tool to register (\fBr\fR
+command) or query for (\fBq\fR
+command).
+.TP
+\fB\-l \fR\fB\fIloc\fR\fR, \fB\-\-location \fR\fB\fIname\fR\fR
+Location inside the repository to place a new tool. Used with the register (\fBr\fR) command.
+.TP
+\fB\-V \fR\fB\fInum\fR\fR, \fB\-\-Version \fR\fB\fInum\fR\fR
+Version of the tool to register (\fBr\fR
+command) or query for (\fBq\fR).
+.TP
+\fBq\fR, \fBquery\fR
+Queries the repository for all installed components. May be used with
+\fB\-L\fR.
+.sp
+By using the
+\fB\-a\fR,
+\fB\-t\fR
+and
+\fB\-V\fR
+option, filtering may be done.
+.TP
+\fB\-a\fR, \fB\-\-all\fR
+List all registered tools. Used with the
+\fBq\fR
+command.
+.TP
+\fB\-L\fR, \fB\-\-Location\fR
+List only locations. Used with the
+\fBq\fR
+command.
+.TP
+\fB\-R\fR, \fB\-\-Repository\fR
+List the location of the repository as a Bash\-compatible shell environment variable setting.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLES"
+.PP
+Consider the following command.
+.sp
+.nf
+$ xtc \-r /usr/share/StrategoXT/XTC register \-t sglr \-l /bin \-V 3.8
+.fi
+.PP
+This will register version 3.8 of
+\fBsglr\fR
+with the XTC repository located in
+\fI/usr/share/StrategoXT\fR. It will be placed in the
+\fI/bin\fR
+directory inside the repository.
+.PP
+Note that the generic
+\fIMakefile.xt\fR
+provided by AutoXT automatically registers all installed tools with the package repository.
+.PP
+XTC repositories can be used to find the installation location of a tool without needing to know all the installation paths. For example, the following query can be used to find out where
+\fBsglr\fR
+is installed:
+.sp
+.nf
+$ xtc \-r /usr/share/StrategoXT/XTC query \-t sglr
+sglr (3.8) : /bin/sglr
+.fi
+.PP
+An existing repository can be inherited by importing it:
+.sp
+.nf
+$ xtc \-r /home/user/share/tiger/XTC import /usr/share/StrategoXT/XTC
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

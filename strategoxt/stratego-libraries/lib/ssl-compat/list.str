@@ -1,0 +1,14 @@
+module list
+imports strategy/traversal/simple
+	term/string
+	strategy/iteration
+	system/io/term
+	collection/tuple/common
+	collection/list/cons
+	collection/list/common
+	collection/list/index
+	collection/list/zip
+	collection/list/sort
+	collection/list/set
+	collection/list/lookup
+	collection/list/filter

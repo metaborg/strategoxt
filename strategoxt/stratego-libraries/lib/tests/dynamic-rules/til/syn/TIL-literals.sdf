@@ -1,0 +1,12 @@
+module TIL-literals
+exports 
+  sorts Id Int String StrChar
+  lexical syntax
+    [A-Za-z][A-Za-z0-9]* -> Id
+    [0-9]+               -> Int
+    "\"" StrChar* "\""   -> String
+    ~[\"\\\n]            -> StrChar
+    [\\][\"\\n]          -> StrChar
+  lexical restrictions
+    Id  -/- [A-Za-z0-9]
+    Int -/- [0-9]    

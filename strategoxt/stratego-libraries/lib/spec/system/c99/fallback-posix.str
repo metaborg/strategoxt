@@ -1,0 +1,5 @@
+module system/c99/fallback-posix
+strategies
+
+  report-run-time =
+    id

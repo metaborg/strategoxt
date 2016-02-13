@@ -1,0 +1,16 @@
+module test97
+imports collection/list/cons collection/tuple/cons
+strategies
+
+  main-test97 =
+    test1
+
+  test1 =
+    <FooBar> "aa"
+
+  FooBar : 
+    x -> y 
+    where y := <foobar> x
+
+  foobar = id
+

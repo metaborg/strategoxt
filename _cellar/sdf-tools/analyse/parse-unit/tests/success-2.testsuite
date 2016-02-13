@@ -1,0 +1,7 @@
+testsuite Expressions
+options
+  topsort Exp
+  ambiguity succeeds
+
+test simple int literal
+  "1 = 1 = 1" -> amb([...])

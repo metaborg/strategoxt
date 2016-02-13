@@ -1,0 +1,12 @@
+module improper-list-test
+imports libstratego-lib
+
+signature
+  constructors
+    Bla : List(a) -> List(a)
+
+strategies 
+
+  main-improper_list_test = 
+    (!["a" | ["b" | Bla(["c" | ["d" | []]])]] <+ !"a");
+    ?"a"

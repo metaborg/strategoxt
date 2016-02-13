@@ -1,0 +1,9 @@
+module test09
+imports
+  test09-lib
+
+strategies
+
+  main =
+    add2
+

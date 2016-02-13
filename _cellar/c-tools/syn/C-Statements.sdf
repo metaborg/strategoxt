@@ -1,0 +1,49 @@
+module C-Statements
+imports
+  C-Expressions
+
+exports
+  sorts Stm
+
+  context-free syntax
+    LabeledStm    -> Stm
+    CompoundStm   -> Stm
+    ExpStm        -> Stm
+    SelectionStm  -> Stm
+    IterationStm  -> Stm
+    JumpStm       -> Stm
+
+  sorts LabeledStm
+  context-free syntax
+    IdOrTypedefName ":" Stm     -> LabeledStm {cons("Label")}
+    "case" ConstantExp ":" Stm  -> LabeledStm {cons("Case")}
+    "default" ":" Stm           -> LabeledStm {cons("Default")}
+
+  sorts CompoundStm
+  context-free syntax
+    "{" Declaration* Stm* "}" -> CompoundStm {cons("Compound")}
+
+  sorts ExpStm
+  context-free syntax
+    CommaExpOpt ";" -> ExpStm {cons("Stat")}
+
+  sorts SelectionStm
+  context-free syntax
+    "if" "(" CommaExp ")" Stm             -> SelectionStm {cons("If")}
+    "if" "(" CommaExp ")" Stm "else" Stm  -> SelectionStm {cons("IfElse")}
+    "switch" "(" CommaExp ")" Stm         -> SelectionStm {cons("Switch")}
+
+  sorts IterationStm
+  context-free syntax
+    "while" "(" CommaExp ")" Stm           -> IterationStm {cons("While")}
+    "do" Stm "while" "(" CommaExp ")" ";"  -> IterationStm {cons("DoWhile")}
+    "for" "(" CommaExpOpt ";" CommaExpOpt ";" CommaExpOpt ")" Stm -> IterationStm {cons("For")}
+
+  sorts JumpStm
+  context-free syntax
+    "goto" IdOrTypedefName ";" -> JumpStm {cons("Goto")}
+    "continue" ";"             -> JumpStm {cons("Continue")}
+    "break" ";"                -> JumpStm {cons("Break")}
+    "return" CommaExpOpt ";"   -> JumpStm {cons("Return")}
+    "exit" CommaExpOpt ";"     -> JumpStm {cons("Exit")}
+

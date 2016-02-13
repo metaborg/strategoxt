@@ -1,0 +1,30 @@
+testsuite XML Content
+topsort Content
+
+test empty element
+  "<test/>" -> EmptyElement(QName(None(), "test"), [])
+
+test empty element
+  "<a/>" -> EmptyElement(QName(None(), "a"), [])
+
+test qualified empty element
+  "<html:a/>" -> EmptyElement(QName(Some(Prefix("html")), "a"), [])
+
+test text
+  "Foo" -> Text([Literal("Foo")])
+
+test text in element
+  "<a>foo</a>" ->
+      Element(QName(None(), "a"), [], [Text([Literal("foo")])], QName(None(), "a"))
+
+test text and entity in element
+  "<a>foo&gt;</a>" ->
+      Element(QName(None(), "a"), [], [Text([Literal("foo"), EntityRef("gt")])], QName(None(), "a"))
+
+test simple CDATA
+  "<![CDATA[foo]]>" ->
+      Text([CDATASection("foo")])
+
+test simple CDATA
+  "<![CDATA[foo <bar/>]]>" ->
+      Text([CDATASection("foo <bar/>")])

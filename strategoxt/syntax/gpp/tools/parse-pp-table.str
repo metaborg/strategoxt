@@ -1,0 +1,13 @@
+module parse-pp-table
+imports 
+  libstratego-lib
+  libstratego-xtc strategoxt-xtc-tools
+
+strategies
+  
+  io-parse-pp-table =
+    xtc-io-wrap(
+      xtc-sglr(!"pp-table.tbl")
+    ; xtc-implode-asfix
+    )
+

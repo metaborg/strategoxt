@@ -1,0 +1,42 @@
+--------------------------------------------------------------------------
+stratego-regular
+--------------------------------------------------------------------------
+
+  * wf-checker:
+    - core-wf-checker (rtg-nf)
+    - wf-checker (rtg, rtg-nf, sig, dtd)
+    - testsuite
+    - wf checking of annotations
+
+  * rtg-normalize:
+    - remove injections?
+    - check for cyclic injections?
+
+  * sdf2-normalize:
+    - test suite (parsing)
+    - renamings
+    - move into sdf-tools
+
+  * sdf2rtg:
+    - testsuite
+    - handling of complex separators is incorrect.
+
+  * sig2rtg:
+    - accept -I and pass to strc.
+    - pretty print output?
+
+  * rtg2sig:
+
+  * move improved sunit into the SSL
+  * move xtc-debug from xml-tools to stratego-regular
+
+  * rtg in concrete syntax:
+    - allow sdf/sig production style as sugar
+
+tool-doc ?
+
+  * covert to install time mechanism
+
+  * move tool-doc into StrategoXT
+    - autoxt-extra.m4
+    - write some samples in GPP

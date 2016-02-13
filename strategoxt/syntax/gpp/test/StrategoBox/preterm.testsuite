@@ -1,0 +1,43 @@
+testsuite Patterns of Box Concrete Object Syntax
+options
+  topsort StrategoTerm
+  ambiguity succeeds
+
+test Simple quote
+  "|[ H [] ]|" -> ToTerm(H(...))
+
+test Simple quote
+  "box |[ H[] ]|" -> ToTerm(H(...))
+
+test Simple string literal variable
+  "|[ s ]|" -> ToTerm(S(meta-var(_)))
+
+test Simple Box variable
+  "|[ b ]|" -> ToTerm(meta-var(_))
+
+test Quote without quotation tokens
+  "H hs=0 []" -> ToTerm(_)
+
+test Quote without quotation tokens
+  "H []" -> ToTerm(_)
+
+test Boxes
+  "|[ H[] V[] ]|" -> ToTerm([_, _])
+
+test Boxes with tag
+  "box* |[ H[] V[] ]|" -> ToTerm([_, _])
+
+test Box anti-quotation
+  "H [~b]" -> ToTerm(H(_, [FromTerm(Var("b"))]))
+
+test Box anti-quotation
+  "H [~*b]" -> ToTerm(H(_, FromTerm(Var("b"))))
+
+test Box anti-quotation
+  "H [~b ~*b]" -> ToTerm(H(_, Conc([FromTerm(_)],FromTerm(Var("b")))))
+
+test Box meta variables
+  "H [b b*]" -> ToTerm(H(_, Conc([meta-var(_)], meta-listvar(_))))
+
+test Box literal anti quotation
+  "H [ ~lit:x ]" -> ToTerm(H(_, [S(FromTerm(_))]))

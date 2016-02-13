@@ -1,0 +1,11 @@
+/**
+ * Stratego library for parsing and pretty-printing SDF.
+ *
+ * @author Martin Bravenboer
+ */
+module stratego-sdf
+imports
+  stratego/sdf/desugar
+  stratego/sdf/parse
+  stratego/sdf/pretty-print
+  stratego/sdf/syntax

@@ -1,0 +1,244 @@
+testsuite Stratego Strategies
+topsort Strategy
+
+test Strategy variable
+  "s" -> CallNoArgs(SVar("s"))
+
+test Strategy variable
+  "<s> t" -> BA(_, Var("t"))
+
+test Choice and sequence priority
+  "s; s + s; s" -> Choice(Seq(_,_), Seq(_,_))
+
+test If then else 
+  "if s then s else s end" -> CondChoice(_, _, _)
+
+test If then else in seq
+  "s; if s then s else s end" -> Seq(_, CondChoice(_, _, _))
+
+test Seq in then branche of if then else
+  "if s
+     then s; s
+     else s
+   end"
+  -> CondChoice(_, Seq(_, _), _)
+
+test Seq in else branche of if then else
+  "if s
+     then s
+     else s; s
+   end"
+    -> CondChoice(_, _, Seq(_, _))
+
+test Seq of s and seq in else branche of if then else
+  "s; if s
+        then s
+        else s; s
+      end"
+    -> Seq(_, CondChoice(_, _, Seq(_, _)))
+
+test Seq of s and choice in else branche of if then else
+  "s; if s
+        then s
+        else (s + s)
+      end"
+    -> Seq(_, CondChoice(_, _, Choice(_, _)))
+
+test If then else in else branche of if then else
+  "if s
+     then s
+     else if s
+            then s
+            else s
+          end
+   end"
+    -> CondChoice(_, _, CondChoice(_, _, _))
+
+test If then else in then branche of if then else
+  "if s
+     then if s
+            then s
+            else s
+          end
+     else s
+   end"
+    -> CondChoice(_, CondChoice(_, _, _), _)
+
+test If then else in else branche of if then else
+  "if s
+     then s
+     else if s
+            then s
+            else s; s
+          end
+   end"
+    -> CondChoice(_, _, CondChoice(_, _, Seq(_, _)))
+
+test If then else in else branche of if then else
+  "if s
+     then s
+     else s; if s
+               then s
+               else s; s
+             end
+   end"
+    -> CondChoice(_, _, Seq(_, CondChoice(_, _, Seq(_, _))))
+
+test Switch case no otherwise
+  "switch s0 case s1:s1' case s2:s2' end"
+  -> SwitchChoiceNoOtherwise(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(CallNoArgs(SVar("s1")), CallNoArgs(SVar("s1'")))
+       , SwitchCase(CallNoArgs(SVar("s2")),CallNoArgs(SVar("s2'")))
+       ])
+
+test Switch case with otherwise
+  "switch s0 case s1:s1' otherwise:s' end"
+  -> SwitchChoice(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'")))]
+     , CallNoArgs(SVar("s'"))
+     )
+
+test Switch case no otherwise, no branches
+  "switch s0 end"
+  -> SwitchChoiceNoOtherwise(CallNoArgs(SVar("s0")), [])
+
+test Switch case no branches
+  "switch s0 otherwise:s' end"
+  -> SwitchChoice(CallNoArgs(SVar("s0")), [], CallNoArgs(SVar("s'")))
+
+test Switch case as selector
+  "switch switch sA case sB:sB' end case s1:s1' end"
+  -> SwitchChoiceNoOtherwise(
+       SwitchChoiceNoOtherwise(
+         CallNoArgs(SVar("sA"))
+       , [ SwitchCase(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'"))) ]
+       )
+     , [ SwitchCase(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'"))) ]
+     )
+
+test Switch case as branch condition
+  "switch s0 case switch sA case sB:sB' end:s1' end"
+  -> SwitchChoiceNoOtherwise(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(
+           SwitchChoiceNoOtherwise(
+             CallNoArgs(SVar("sA"))
+           , [ SwitchCase(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'")))]
+           )
+         , CallNoArgs(SVar("s1'")))
+       ])
+
+test Switch case as branch body
+  "switch s0 case s1:switch sA case sB:sB' end end"
+  -> SwitchChoiceNoOtherwise(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(
+           CallNoArgs(SVar("s1"))
+         , SwitchChoiceNoOtherwise(
+             CallNoArgs(SVar("sA"))
+           , [ SwitchCase(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'"))) ]
+           )
+         )
+       ])
+
+test fixed-point intersection
+  "/R1\* While(s, s)" -> DynRuleIntersectFix(["R1"], Call(_, _))
+
+test fixed-point union
+  "\R1/* While(s,s)" -> DynRuleUnionFix(["R1"], Call(_, _))
+
+test fixed-point union: space is allowed around the RuleNames
+  "\ R1 /* While(s,s)" -> DynRuleUnionFix(["R1"], Call(_, _))
+
+test fixed-point union: two spaces are not allwed after RuleNames
+  "\ R1  /* While(s,s)" fails
+
+test fixed-point union: comment is not allowed after RuleNames
+  "\ R1 /* */ /* While(s,s)" fails
+
+test fixed-point union: comment is allowed after fixed-point union
+  "\ R1 /* /* */ While(s,s)" -> DynRuleUnionFix(["R1"], Call(_, _))
+
+test fixed-point intersection union
+  "/R1\R2/* While(s,s)" -> DynRuleIntersectUnionFix(["R1"],["R2"], Call(_, _))
+
+
+test priority of fixed-point intersection wrt sequential composition
+  "s; /R\* While(s,s); s" 
+  -> Seq(_, Seq(DynRuleIntersectFix(["R"], Call(_, _)), _))
+
+test priority of fixed-point intersection union wrt sequential composition
+  "s; /R1\R2/* While(s,s); s" 
+  -> Seq(_, Seq(DynRuleIntersectUnionFix(["R1"],["R2"], Call(_, _)), _))
+
+test priority of fixed-point union wrt sequential composition
+  "s; \R/* While(s,s); s" 
+  -> Seq(_, Seq(DynRuleUnionFix(["R"], Call(_, _)), _))
+
+
+test priority of fixed-point intersection wrt left choice
+  "s <+ /R\* While(s,s) <+ s" 
+  -> LChoice(_,LChoice(DynRuleIntersectFix(["R"],Call(_,_)),_))
+
+
+test priority of fixed-point intersection union wrt 
+  "s <+ /R1\R2/* While(s,s)<+ s" 
+  -> LChoice(_, LChoice(DynRuleIntersectUnionFix(["R1"],["R2"], Call(_, _)), _))
+
+test priority of fixed-point union wrt left choice
+  "s <+ \R/* While(s,s) <+ s" 
+  -> LChoice(_, LChoice(DynRuleUnionFix(["R"], Call(_, _)), _))
+
+test asignment operator
+  "Foo(Bar(x), y) := z"
+  -> Assign(_,Var("z"))
+
+test asignment operator and application in lhs
+  "<s> Foo(y) := z"
+  -> Assign(App(_,_),Var("z"))
+
+test asignment operator and application in rhs
+  "Foo(y) := <s> z"
+  -> Assign(_,App(_,Var("z")))
+
+test assignment in rule condition
+  "(Foo(x) -> Bar(y) where y := <foobar> x)"
+  -> SRule(Rule(_,_,Assign(Var("y"), App(_,_))))
+
+test priority of guarded left choice and choice (STR-683)
+  "s0 < s1 <+ s2 + s3" ->  GuardedLChoice(_, LChoice(_, _), _)
+
+test priority of guarded left choice and choice (STR-683)
+  "s0 < (s1 <+ s2) + s3" -> GuardedLChoice(_, LChoice(_, _), _)
+
+test priority of guarded left choice and choice
+  "s0 < s1 + s2 + s3" ->  GuardedLChoice(_, _, Choice(_, _))
+
+test priority of guarded left choice and choice
+  "s0 < s1 + s2 <+ s3" ->  GuardedLChoice(_, _, LChoice(_, _))
+
+test priority of guarded left choice and choice
+  "s0 <+ s1 < s2 + s3" -> LChoice(_, GuardedLChoice(_, _, _))
+
+test associativity of guarded left choice
+  "s0 < s1 + s2 < s3 + s4" -> GuardedLChoice(_, _, GuardedLChoice(_, _, _))
+
+test STR-714: amb with annotations in := operator
+  "a := 1{2}" -> Assign(_, AnnoList(_, _))
+
+test STR-714: amb with annotations in := operator
+  "a := x#([])" -> Assign(_, NoAnnoList(_))
+
+test Global variable syntax
+  "rules(Foo := [1, 2, 3])" -> GenDynRules([DynRuleAssign(_, _)])
+
+test Global variable syntax
+  "rules(Foo := <conc> (xs, ys))" -> GenDynRules([DynRuleAssign(_, _)])
+
+test Global variable syntax
+  "rules(Foo :+= 1)" -> GenDynRules([DynRuleAssignAdd(_, NoAnnoList(Int("1")))])
+  
+test Strategy identifier with underscore
+  "let a = b := <c> _d = e in id end" -> Let([SDefNoArgs("a",Assign(Var("b"),RootApp(CallNoArgs(SVar("c"))))),SDefNoArgs("_d",CallNoArgs(SVar("e")))],Id)

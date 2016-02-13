@@ -1,0 +1,72 @@
+module parenthesize-tests
+imports 
+  libstratego-lib
+  parenthesize-Exp libstratego-xtc strategoxt-xtc-tools
+
+strategies
+
+  io-parenthesize-tests =
+    option-wrap(io-options,
+      test-suite(!"sdf2parenthesize generator tests",
+        where(register-test-data)
+      ; exp-tests
+      )
+    )
+
+  exp-tests =
+      exp-test(|"a + e")
+
+    ; exp-test(|"b + (c + d)")
+    ; exp-test(|"(b + c) + d", "b + c + d")
+
+    ; exp-test(|"b * (c + d)")
+    ; exp-test(|"(b + c) * d")
+    ; exp-test(|"b + c * d")
+
+    ; exp-test(|"(b * c) + d", "b * c + d")
+    ; exp-test(|"(b + c) + d", "b + c + d")
+
+    ; exp-test(|"a ? b : c ? d : e")
+    ; exp-test(|"a ? b : (c ? d : e)", "a ? b : c ? d : e")
+    ; exp-test(|"(a ? b : c) ? d : e", "(a ? b : c) ? d : e")
+
+    ; exp-test(|"(b - c) - d", "(b - c) - d")
+    ; exp-test(|"b - (c - d)", "b - (c - d)")
+
+    ; exp-test(|"(a ? b : c) == d")
+    ; exp-test(|"(a ? b : c) != d")
+
+    ; exp-test(|"a * (b ? c : d)")
+    ; exp-test(|"a * (b || c)")
+    ; exp-test(|"a * (b && c)")
+    ; exp-test(|"a * (b == c)")
+    ; exp-test(|"a * (b < c)")
+    ; exp-test(|"a * (b - c)")
+
+  /**
+   * @param  txt  Expression to test
+   */
+  exp-test(|txt) =
+    exp-test(|txt, txt)
+
+  exp-test(|txt1, txt2) =
+    apply-test(<concat-strings> ["test -- ", txt1, "  ->  " , txt2],
+      xtc-temp-files(
+        <print-to> [<id>]
+      ; xtc-sglr(!"Exp.tbl")
+      ; xtc-implode-asfix
+      ; xtc-io-transform(parenthesize-Exp)
+      ; xtc-ast2abox(!["Exp-pretty.pp.af"])
+      ; xtc-abox2text
+      ; ?FILE(<read-text-file>)
+      ; string-as-chars(trim(is-all-whitespace))
+      )
+    , !txt1
+    , !txt2
+    )
+
+  register-test-data =
+      xtc-register(|"Exp-pretty.pp.af", "Foo", ".")
+    ; xtc-register(|"Exp.tbl", "Foo", ".")
+
+  is-all-whitespace = '\t' + '\r' + '\n' + ' '

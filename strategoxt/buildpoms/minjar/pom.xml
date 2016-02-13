@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>strategoxt-min-jar</artifactId>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>org.metaborg</groupId>
+		<artifactId>org.metaborg.maven.parent</artifactId>
+		<version>1.5.1-SNAPSHOT</version>
+		<relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>strategoxt-jar</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<includes>
+									<include>org.metaborg:strategoxt-jar</include>
+								</includes>
+							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>org.metaborg:strategoxt-jar</artifact>
+									<excludes>
+										<exclude>run.class</exclude>
+										<exclude>start.class</exclude>
+										<exclude>COPYING</exclude>
+										<exclude>build.xml</exclude>
+										<exclude>Log4j*</exclude>
+
+										<exclude>META-INF/**/*</exclude>
+										<exclude>com/**/*</exclude>
+										<exclude>net/**/*</exclude>
+										<exclude>fj/**/*</exclude>
+										<exclude>javax/**/*</exclude>
+										<exclude>jdbm/**/*</exclude>
+										<exclude>jline/**/*</exclude>
+										<exclude>etc/**/*</exclude>
+										<exclude>org/aopalliance/**/*</exclude>
+										<exclude>org/apache/**/*</exclude>
+										<exclude>org/slf4j/**/*</exclude>
+										<exclude>org/metaborg/**/*</exclude>
+										<exclude>org/spoofax/**/*</exclude>
+										<exclude>org/qos/**/*</exclude>
+										<exclude>org/strategoxt/*.class</exclude>
+										<exclude>org/strategoxt/lang/*.class</exclude>
+										<exclude>org/strategoxt/lang/compat/*.class</exclude>
+										<exclude>org/strategoxt/lang/compat/override/*.class</exclude>
+										<exclude>org/strategoxt/lang/compat/stratego_rtg_compat/**/*</exclude>
+										<exclude>org/strategoxt/lang/compat/strc_compat/**/*</exclude>
+										<exclude>org/strategoxt/lang/parallel/**/*</exclude>
+										<exclude>rx/**/*</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

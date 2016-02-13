@@ -1,0 +1,51 @@
+module Naming
+
+imports
+  languages/sdf2/syntax/Sdf2
+
+exports
+
+context-free syntax
+  
+  IdCon -> Namespace
+  
+  Namespace "@=" Symbol -> Symbol {cons("namespacedef")}
+
+syntax
+  
+  %% controlled layout for "@"
+
+  "@" <Namespace-CF> -> <Symbol-CF> {cons("namespaceref")}
+  
+  <Namespace-CF> "@" <Symbol-CF> -> <Symbol-CF> {cons("namespaceref2")}
+  
+context-free syntax
+
+%%  "scopes" ScopeList* -> Section {cons("Scopes")}
+%%  
+%%  "@" Namespace ":" Scope -> ScopeList {cons("ScopeList")}
+%%  
+%%  ID+ -> Scope {cons("Scope")}
+
+  "scope" "(" {Namespace ","}+ ")" -> Attribute {prefer, ast("term(default(appl(unquoted(\"scope\"), [fun(quoted(<1>))])))")}
+
+%%  "scope" "(" "*" ")" -> Attribute {prefer, ast("term(default(appl(unquoted(\"scope\"), [fun(quoted(\"*\"))])))")}
+
+priorities
+
+    {
+    <Symbol-CF> <LAYOUT?-CF> "?"            -> <Symbol-CF>
+    <Symbol-CF> <LAYOUT?-CF> "*"             -> <Symbol-CF>
+    <Symbol-CF> <LAYOUT?-CF> "+"             -> <Symbol-CF>
+    }
+    >
+    <Symbol-CF> <LAYOUT?-CF> "|" <LAYOUT?-CF> <Symbol-CF> -> <Symbol-CF>
+    >
+    {
+     <Namespace-CF> <LAYOUT?-CF> "@=" <LAYOUT?-CF> <Symbol-CF> -> <Symbol-CF>
+     <Namespace-CF>              "@"               <Symbol-CF> -> <Symbol-CF> 
+    }
+
+lexical restrictions
+  
+  Sort -/- [\@]

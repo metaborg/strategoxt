@@ -1,0 +1,3 @@
+module pipe
+imports system/posix/pipe
+

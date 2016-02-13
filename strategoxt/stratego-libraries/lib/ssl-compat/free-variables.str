@@ -1,0 +1,3 @@
+module free-variables
+imports  strategy/general/free-variables
+

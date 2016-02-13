@@ -1,0 +1,15 @@
+module match_5
+
+imports
+  libstratego-lib
+
+strategies
+
+  main-match_5 =
+    x := 0
+  ; !1
+  ; switch !x
+      case fail: !"nested case condition"
+      case is-int: id
+    end
+  ; ?1

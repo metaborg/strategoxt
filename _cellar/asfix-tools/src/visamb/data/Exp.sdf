@@ -1,0 +1,10 @@
+definition
+module Main
+exports
+  sorts Exp
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+  context-free syntax
+    "id"    -> Exp
+    Exp Exp -> Exp
+  

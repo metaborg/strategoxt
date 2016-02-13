@@ -1,0 +1,14 @@
+module override_1
+
+imports
+  libstratego-lib
+
+rules
+
+  main-override_1 =
+    not(<cify> "foo-bar" => "foo_bar")
+  ; <cify> "foosbar" => "foobar"
+    
+  override Cify(s) :
+    ['s' | tail] -> <s> tail
+

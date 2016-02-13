@@ -1,0 +1,257 @@
+/**
+ * @todo    Support annotations
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ */
+module core-format-check-to-xhtml
+imports
+  libstratego-lib 
+  libstratego-rtg
+  xml-doc
+  xml-text-tools
+
+strategies
+
+  core-format-check-xhtml(|rtg, starts) =
+      where(new-hashtable => tbl)
+    ; where(new-iset => set)
+    ; rtgfc-type(|rtg, tbl, set)
+    ; where(
+        if rtgfc-format-check-error(|starts, tbl, set) then
+          <set-config> ("--exit-code", 0)
+        else
+          <set-config> ("--exit-code", 1)
+        end
+      )
+    ; where(
+        <set-config> ("typetable", tbl)
+      ; <set-config> ("typeset", set)
+      )
+    ; print-to-xhtml-doc
+
+strategies
+
+  print-to-xhtml-doc =
+    !%>
+      <?xml version="1.0"?>
+      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" >
+
+      <html>
+        <head>
+          <title>format-check report</title>
+          <style type="text/css">
+
+            .typo {
+              padding: 2pt;
+              border-style: solid;
+              border-width: 1px;
+              border-color: red;
+              background-color : rgb(255,220,220);
+            }
+
+            .fixed-info {
+              position : fixed;
+              z-index  : 1;
+              width    : 125pt;
+              top      : 10pt;
+              right    : 10pt;
+              padding  : 5pt;
+              background-color : #E0E0E0;
+              border-style: solid;
+              border-width: 1px;
+              border-color: black;
+            }
+          </style>
+
+          <script type="text/javascript">
+            function displayType(t) {
+              var info = document.getElementById('type-info');
+              info.firstChild.nodeValue = t;
+            }
+
+            function stopHandling(e) {
+              if (!e)
+                var e = window.event;
+
+              e.cancelBubble = true;
+
+              if (e.stopPropagation)
+                e.stopPropagation();
+            }
+          </script>
+        </head>
+        <body>
+          <h1>format-check report</h1>
+
+          <p class="fixed-info">
+            Type info: <span id="type-info">no selection</span>
+          </p>
+
+          <p>
+            <% print-to-xhtml %>
+          </p>
+        </body>
+      </html>
+    <%
+
+  print-to-xhtml =
+    xhtml-print-type(
+       xhtml-print-Int
+    <+ xhtml-print-Real
+    <+ xhtml-print-Str
+    <+ xhtml-print-List
+    <+ xhtml-print-Tuple
+    <+ xhtml-print-Cnst
+    <+ xhtml-print-App
+    )
+
+  xhtml-is-typed = 
+    is-typed(|<get-config> "typetable", <get-config> "typeset")
+
+  xhtml-print-type(s) =
+    if xhtml-is-typed <+ one-consnil(not(xhtml-is-typed)) then
+      where(xhtml-get-types-to-chardata => type)
+    ; s
+    ; xhtml-wrap-in-attrs(| [@> class="typed" <@, @>onmouseover="displayType('<% !type %>'); stopHandling(event)"<@])
+    else
+      s
+    ; xhtml-wrap-in-class(|"typo")
+    end
+
+  xhtml-wrap-in-class(|class) =
+    xhtml-wrap-in-attrs(| [@> class="<% !class %>" <@])
+
+  xhtml-wrap-in-attrs(|att*) =
+    switch id
+      case ?%><div><%= children :: * %></div><% :
+        !%><div att*><% !children :: *%></div><%
+
+      case ?%><div @*><%= _ :: * %></div><% :
+        !%><div att*><% id %></div><%
+
+      otherwise:
+        !%><span att*><% id %></span><%
+    end
+
+rules
+
+  /**
+   * @todo  escape the string.
+   */
+  xhtml-print-Str :
+    s -> %>"<% !s :: cdata %>"<%
+      where <is-string> s
+
+  xhtml-print-Int :
+    x -> %><% !s :: cdata %><%
+      where <is-int> x
+          ; <int-to-string> x => s
+
+  xhtml-print-Real :
+    x ->  %><% !s :: cdata %><%
+      where <is-real> x
+          ; <real-to-string> x => s
+
+/**
+ * Constructor applications
+ */
+rules 
+
+  xhtml-print-Cnst : 
+    f#([]) -> %><% !f :: cdata %>()<%
+
+  xhtml-print-App =
+    if <gt> (<term-size>, 8) then
+      xhtml-print-App-worstcase
+    else
+      xhtml-print-App-nicecase
+    end
+
+  xhtml-print-App-nicecase:  
+    f#([x | xs]) ->
+      %><span><% !f :: cdata %>(<% !children :: content* %>)</span><%
+      where < map(print-to-xhtml)
+            ; <separate-by> (%>, <%, <id>)
+            > [x | xs] => children
+
+  xhtml-get-types-to-chardata =
+    rtgfc-retrieve-types(|<get-config> "typetable", <get-config> "typeset")
+  ; rtgfc-types-to-string
+  ; xml-escape
+
+  xhtml-print-App-worstcase:  
+    t@f#([x | xs]) ->
+      %><div>
+          <% !f :: cdata %>(
+            <div style="padding-left: 1em"><% <print-to-xhtml> x %></div>
+            <% <map(
+                 print-to-xhtml
+               ; !%><div>
+                      <span style="position: absolute">,</span>
+                      <div style="padding-left: 1em"><% id %></div>
+                    </div><%
+               )> xs
+             :: content* %>
+          )
+        </div><%
+
+rules
+         
+  xhtml-print-Tuple =
+    ?""#(<id>); xhtml-pp-generic-list(!%>()<%, !%>(<%, !%>)<%)
+            
+  xhtml-print-List =
+    xhtml-pp-generic-list(!%>[]<%, !%>[<%, !%>]<%)
+    
+strategies
+      
+  xhtml-pp-generic-list(empty, before, after) =
+    ?[_ | _];
+    if <gt> (<term-size>, 10) then
+      xhtml-generic-list-worstcase(empty, before, after)
+    else
+      xhtml-generic-list-nicecase(empty, before, after)
+    end
+    
+  xhtml-pp-generic-list(empty, before, after) :
+    [] -> <empty> ()
+
+  xhtml-generic-list-nicecase(empty, before, after) :
+    [x | xs] ->
+      %><span><%
+            before
+          %><%
+            <print-to-xhtml> x
+          %><%
+             <map-consnil(
+                xhtml-print-type(
+                  ?[<id> | _]
+                ; print-to-xhtml
+                ; !%><span>, <% id %></span><%
+                )
+              )> xs
+           :: content*
+          %><%
+            after
+          %></span><%
+
+  xhtml-generic-list-worstcase(empty, before, after) :
+    [x | xs] -> 
+      %><div>
+          <div>
+            <span style="position: absolute"><% before %></span>
+            <div style="padding-left: 1em"><% <print-to-xhtml> x %></div>
+          </div>
+          <% 
+             <map-consnil(
+                xhtml-print-type(
+                  ?[<id> | _]
+                ; print-to-xhtml
+                ; !%><div>
+                      <span style="position: absolute">,</span>
+                      <div style="padding-left: 1em"><% id %></div>
+                    </div><%
+                )
+             )> xs
+           :: content* %>
+          <div><% after %></div>
+        </div><%

@@ -1,0 +1,6 @@
+regular tree grammar
+  start Strategy
+  productions
+    Strategy -> Cong(Id, ListStarOfStrategy0)
+    Strategy -> Cong(Id, ListStarOfStrategy_0)
+    Id       -> Mod(String, String)

@@ -1,0 +1,20 @@
+module test78
+imports libstratego-lib
+
+strategies
+
+  main-test78 = 
+    asd123(|1) 
+    ; asd321(|1) 
+    ; asd111(|1)
+
+  asd123(|t) =
+    ?a
+    ; rules( asd+a : _ -> t depends on [] )
+
+  asd321(|t) =
+    ?a
+    ; rules( asd1+a : _ -> t )
+
+  asd111(|t) =
+    rules(asd : _ -> t)

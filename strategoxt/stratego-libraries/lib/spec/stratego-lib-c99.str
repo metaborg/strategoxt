@@ -1,0 +1,5 @@
+module stratego-lib-c99
+imports
+  stratego-lib-generic
+  system/c99/file
+  system/c99/fallback-posix

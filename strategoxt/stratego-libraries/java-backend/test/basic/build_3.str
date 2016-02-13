@@ -1,0 +1,17 @@
+module build_3
+
+imports libstratego-lib
+
+signature constructors
+
+  Foo  : Term * Term -> Term
+  Foo2 : Term * Term -> Term 
+
+strategies
+
+  main-build_3 =
+    !""#([1,2]) => (1,2);
+    !Foo(1,2); to-foo2; debug => Foo2(1,2)
+  
+  to-foo2:
+    _#(kids) -> "Foo2"#(kids)

@@ -1,0 +1,6 @@
+prefix=@prefix@
+xtc=@prefix@/bin/xtc
+
+Name: XTC
+Description: Transformation Tool Composition
+Version: @PACKAGE_VERSION@

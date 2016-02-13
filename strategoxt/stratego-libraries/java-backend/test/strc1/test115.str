@@ -1,0 +1,9 @@
+module test115
+
+imports
+  libstratego-lib
+  libstratego-sdf
+  test114
+
+strategies
+  main-test115 = main-test114

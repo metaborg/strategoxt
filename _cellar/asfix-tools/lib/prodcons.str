@@ -1,0 +1,157 @@
+/**
+ * Add cons(...) attributes to Sdf productions.
+ *
+ * Use option --modular to prefix cons attributes with the
+ * name of the module they belong to.
+ *
+ * Bracket and reject productions remain unchanged.
+ * Lexical syntax productions remain unchanged.
+ * When a production already has a cons(..) attribute,
+ * it is _not_ overriden by a synthesized one.
+ * All constructor names in the output are quoted literals,
+ * even user-supplied non-quoted ones are given quotes.
+ *
+ * Constructor names are synthesized from productions
+ * roughly using the following heuristics:
+ *
+ * o Concatenate any literals occuring in the LHS,
+ *   verbalizing some non-alphanumerical literals, and
+ *   filter-out remaining non-alphanumerical literals.
+ *   Hyphens are not filtered or verbalized.
+ *   If the resulting constructorname does not start
+ *   with a letter, it is qualified with
+ *   the result sort name.
+ *
+ * o In the absence of (verbalizable) literals, verbalize
+ *   the sorts of the LHS, and concatenate the resulting
+ *   words.
+ *
+ * o In the absence of verbalizable literals and sorts,
+ *   use the constructor name "dunno", qualified with the
+ *   result sort name and suffixed with a generated
+ *   unique string.
+ *
+ * Author: Joost Visser (Joost.Visser@cwi.nl)
+ * Changes by : Merijn de Jonge, Eelco Visser, and Hedzer Westra.
+ */
+module prodcons
+imports
+  Sdf2
+  verbalize-sdf
+  asfix-extra
+
+signature
+  constructors
+    term : ATerm -> Attribute
+
+rules
+
+  prodcons :
+    p -> <at-cons(<uq2q> c)> p
+    where
+      c := <get-constr> p
+
+  prodcons :
+    p -> <add-attributes> (p, [term(cons(<mk-constr> p))])
+    where
+      <not(get-constr + is-bracket + is-reject + is-injection)> p 
+
+  mk-constr :
+    prod([], sym, _) -> c
+    where
+      c := <conc; strs2constr> (<syms2strs>[sym], ["empty"])
+
+  mk-constr :
+    prod(syms, sym, _) -> c
+    where
+      <lits2strs; strs2constr> syms => c
+      <+ <conc;strs2constr>(<syms2strs>[sym],<lits2strs;empty-test>syms) => c
+      <+ <syms2strs; strs2constr> syms => c
+      <+ <conc;strs2constr>(<syms2strs>[sym],["dunno",<new>()]) => c
+
+  mk-constr' :
+    prod(syms, sym,_)	-> c
+    where <conc;strs2constr>(<syms2strs>[sym],["dunno",<new>()]) => c
+
+strategies
+
+  empty-test
+    = test( filter(not(empty-string))
+          ; Hd
+          )
+
+  strs2constr =
+    filter(not(empty-string))
+    ; Cons(test(string-Hd;is-alpha),id) /*First char of first string is Alpha*/
+    ; separate-by(!"-")
+    ; concat-strings
+    ; ?s
+    ; <not(is-subterm)> (s, ["START","LCons","SCons","some","all","id","Cons","Nil","TCons","TNil","NL","L","Bracket"])
+    ; !s
+    ; escape
+    ; double-quote
+
+  string-Hd
+    = explode-string;Hd
+
+  normalize-constr
+    = try(test(not(un-double-quote)) ; double-quote)
+
+  empty-string
+    = ?""
+
+  at-cons(s)
+    = oncetd(cons(s))
+
+strategies
+
+  /**
+   * @todo The get-config --injections is a very dirty hook for the configuration
+   *       of sdf-cons. This should be replaced with a better mechanism.
+   */
+  is-injection =
+    prod([syntaxless-sort], id, id)
+    ; where(<get-config> "--injections")
+
+  syntaxless-sort =
+    rec x(
+	sort(id) + alt(x,x) + opt(x) 
+	+ iter(x) + iter-star(x) + iter-sep(x,id) + iter-star-sep(x,id)
+    )    
+
+rules
+
+  get-constr :
+    prod(syms,sym,as) -> c
+    where
+      <oncetd(?cons(c))> as
+
+  get-mod:
+    prod(syms,sym,as) -> c
+    where
+      <oncetd(?'id(c))> as
+
+  is-bracket :
+    prod(syms,sym,as) -> ()
+    where
+      <oncetd(?bracket())> as
+
+  is-reject :
+    prod(syms,sym,as) -> ()
+    where
+      <oncetd(?reject())> as
+
+  add-attributes :
+    (prod(syms,sym,no-attrs()),as) -> prod(syms,sym,attrs(as))
+
+  add-attributes :
+    (prod(syms,sym,attrs(as')),as) -> prod(syms,sym,attrs(<conc>(as',as)))
+
+strategies
+
+  uq2q =
+    explode-string
+    ; test(not(Hd;?34))         /* first char is NOT double-quote */
+    ; test(not(at-last(?[34]))) /* last char is NOT double-quote */
+    ; <concat> [[34], <id>, [34]]
+    ; implode-string

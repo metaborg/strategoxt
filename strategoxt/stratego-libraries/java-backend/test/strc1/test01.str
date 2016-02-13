@@ -1,0 +1,4 @@
+module test01
+strategies
+
+  main-test01 = id

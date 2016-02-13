@@ -1,0 +1,12 @@
+module test80
+imports libstratego-lib
+
+strategies 
+
+  main-test80 = 
+    let s = ?n; debug(!"n: ") 
+            ; inc => n'; debug(!"n': ") 
+            ; !(<id>, n') 
+     in try(<map(s)> [1, 2, 3, 4, 5, 6])
+	; !(n, n') => (1, 2)
+    end 

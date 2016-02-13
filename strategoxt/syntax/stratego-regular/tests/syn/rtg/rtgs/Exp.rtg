@@ -1,0 +1,11 @@
+regular tree grammar
+  start Var Exp
+  productions
+    Var -> Var   (<string>)
+    Exp -> Int   (<int>)
+    Exp -> Times (Exp, Exp)
+    Exp -> Plus  (Exp, Exp)
+    Exp -> Call  (Var, ExpList)
+
+    ExpList -> <cons> (Exp, ExpList)
+             | <nil> ()

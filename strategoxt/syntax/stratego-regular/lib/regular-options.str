@@ -1,0 +1,75 @@
+/**
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ */
+module regular-options
+strategies
+
+  input-to-rtg-nf =
+    get-rtg-nf-config
+    <+ get-rtg-config
+    <+ fatal-err(|"No tree grammar specified")
+
+/**
+ * rtg-nf options
+ */
+strategies
+
+  rtg-nf-option(|descr) =
+    ArgOption("--rtg-nf"
+    , where(<set-config> ("--rtg-nf", <id>))
+    , !HelpString("--rtg-nf file", descr)
+    )
+
+  /**
+   * Returns the specified rtg-nf. Fails if there was not rhg specified.
+   *
+   * @type  _ -> RTG
+   */
+  get-rtg-nf-config =
+    <get-config> "--rtg-nf"
+    ; ReadFromFile
+
+strategies
+
+  rtg-option(|descr) =
+    ArgOption("--rtg"
+    , where(<set-config> ("--rtg", <id>))
+    , !HelpString("--rtg file", descr)
+    )
+
+  /**
+   * Returns the specified rtg. Fails if there was not rtg specified.
+   *
+   * @type  _ -> RTG
+   */
+  get-rtg-config =
+    <get-config> "--rtg"
+    ; <xtc-rtg-front-end> FILE(<id>)
+
+strategies
+
+  start-nonterm-option(|msg) =
+    ArgOption("-s" + "--start"
+    , set-start-nonterm
+    , !HelpString("-s|--start s", msg)
+    )
+
+  set-start-nonterm =
+    <set-config> ("start-nonterm", <id>)
+
+  get-start-nonterm = 
+    <get-config> "start-nonterm"
+
+strategies
+
+  fast-option(|msg) =
+    Option("--fast"
+    , enable-fast-mode
+    , !HelpString("--fast", msg)
+    )
+
+  enable-fast-mode =
+    <set-config> ("--fast", "true")
+
+  if-fast-mode(s) =
+    if <get-config> "--fast" => "true" then s else id end

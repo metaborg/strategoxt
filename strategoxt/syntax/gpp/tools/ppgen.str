@@ -1,0 +1,48 @@
+module ppgen
+imports
+  libstratego-lib
+  libstratego-xtc
+  sdf-2-pp-table
+  sdf/tool/xtc
+
+signature
+  constructors
+    PlainText : InputType
+    ParseTree : InputType
+    AST       : InputType
+
+strategies
+  
+  io-ppgen=
+    xtc-io-wrap(ppgen-options, ppgen)
+
+  ppgen = 
+    <pre-process-sdf> (<get-input-type>, <id>)
+    ; read-from
+    ; ppgenerate
+    ; write-to
+    ; if not(<get-config> "--output-type" => AST()) then
+        xtc-transform(!"pp-pp-table", pass-verbose)
+      end
+
+  pre-process-sdf : (PlainText(), f) -> <xtc-parse-sdf2-definition> f
+  pre-process-sdf : (ParseTree(), f) -> <xtc-implode-asfix> f
+  pre-process-sdf : (AST()      , f) -> f
+
+  get-input-type =
+    <get-config> "--input-type"  <+ !PlainText()
+
+  ppgen-options =
+      Option("-A"
+      , where(<set-config> ("--input-type", ParseTree()))
+      ,	!"-A          Input is parse tree."
+      )
+    + Option("-a"
+      , where(<set-config> ("--input-type", AST()))
+      ,	!"-a          Input is abstract syntax tree."
+      )
+    + Option("-t"
+      , where(<set-config> ("--output-type", AST()))
+      ,	!"-t          Output is abstract syntax tree."
+      )
+

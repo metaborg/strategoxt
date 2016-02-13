@@ -1,0 +1,4 @@
+module StrategoForTesting
+imports Stratego
+hiddens
+  context-free start-symbols Strategy

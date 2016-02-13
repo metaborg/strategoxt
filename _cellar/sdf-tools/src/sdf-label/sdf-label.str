@@ -1,0 +1,89 @@
+module sdf-label
+imports
+  Sdf2
+  verbalize-sdf
+  AsFix
+  libstratego-lib
+
+signature
+   constructors
+      empty-layout : a
+
+strategies
+
+  io-sdf-label =
+    io-wrap(sdf-label)
+
+  sdf-label =
+    alltd(dont-label <+ label-production)
+
+  label-production =
+    prod(map(try(label-symbol)), id, id)
+    ; warn-if-labels-not-unique
+
+  dont-label =
+      priorities(id)
+    + context-free-priorities(id)
+    + lexical-priorities(id)
+    + variables(id)
+    + lexical-variables(id)
+
+  warn-if-labels-not-unique =
+    if(
+      where(
+        get-argument-symbols  
+      ; filter(?label(<id>,_))
+      ; contains-doubles
+      )
+    , debug(!"Labels not unique in production: ")
+    )
+
+  contains-doubles =
+    not(?l; uniq; ?l)
+
+  get-argument-symbols =
+    ?prod(<id>,_,_)
+    
+  label-symbol =
+      label(id,id)
+   <+ \ sort(n) -> label(<sortname2label>n,sort(n)) \
+   <+ \ sym     -> label(<symbol2label>sym,sym) \
+   // <+ \sym     -> label(<lit2str>sym,sym) \
+
+  sortname2label =
+    lcHd
+    ; quote-sdf-keyword
+
+  symbol2label =
+    sym2str'
+    ; lcHd
+    ; quote-sdf-keyword
+
+  lcHd =
+    explode-string
+    ; [to-lower | id]
+    ; implode-string
+
+  quote-sdf-keyword =
+    not(is-sdf-keyword) <+ double-quote
+
+  is-sdf-keyword =
+      "aliases"
+    + "lexical"
+    + "priorities"
+    + "context-free" 
+    + "definition"
+    + "syntax"
+    + "variables"
+    + "module"
+    + "exports" 
+    + "hiddens"
+    + "left"
+    + "right"
+    + "assoc"
+    + "non-assoc"
+    + "bracket"
+    + "sorts"
+    + "restrictions"
+    + "constructor"
+    + "memo"

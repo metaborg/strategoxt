@@ -1,0 +1,8 @@
+module io-test1
+imports libstratego-lib
+
+strategies
+
+   main-io_test1 = debug
+
+

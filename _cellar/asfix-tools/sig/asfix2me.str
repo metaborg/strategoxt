@@ -1,0 +1,12 @@
+/**
+ * Constructors for AsFix2ME format
+ */
+module asfix2me
+imports AsFix
+
+signature
+constructors
+   list : Sort   -> Production
+   lit  : String -> Tree
+   assoc : Attr  -> Attr
+

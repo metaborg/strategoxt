@@ -1,0 +1,24 @@
+module xml-document
+imports xml-prolog xml-whitespace xml-names xml-comments xml-text xml-attribute
+
+exports
+  sorts Document Element Content
+  context-free syntax
+
+    Prologue Element Epilogue -> Document {cons("Document")}
+
+    "<" QName Attribute* "/>" -> Element {cons("EmptyElement")}
+
+    Element -> Content
+    Comment -> Content {cons("Comment")}
+    PI      -> Content
+
+  syntax
+
+    CharData      -> <Content-CF>
+
+    "<"
+    <LAYOUT?-CF> <QName-CF> <LAYOUT?-CF> <Attribute*-CF> <LAYOUT?-CF>
+      ">" <Content-CF>* "</"
+    <LAYOUT?-CF> <QName-CF> <LAYOUT?-CF>
+    ">"  -> <Element-CF> {cons("Element")}

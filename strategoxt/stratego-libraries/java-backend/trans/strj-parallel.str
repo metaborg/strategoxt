@@ -1,0 +1,15 @@
+/**
+ * A module to facilitate linking strj against the experimental stratego-parallel library.
+ */
+module strj-parallel
+
+imports
+  // org.strategoxt.strj
+  // org.strategoxt.libstratego_parallel
+
+strategies
+
+  main-strj-parallel =
+    main-strj
+
+  external main-strj(|)

@@ -1,0 +1,2 @@
+module option
+imports strategy/general/option

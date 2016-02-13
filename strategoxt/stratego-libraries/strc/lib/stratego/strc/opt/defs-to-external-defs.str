@@ -1,0 +1,67 @@
+module defs-to-external-defs
+imports libstratego-lib Stratego
+strategies
+
+  dted-options =
+    Option("--no-inlining",
+	where(<set-config>("--no-inlining", ())),
+	!"--no-inlining: do not include definition bodies")
+  
+strategies // extract external definitions
+
+  defs-to-external-defs =
+    Specification(
+      [Signature([Constructors(filter-exported-constructors)]), 
+       Strategies(filter-exported-strategies)])
+
+
+strategies // exported strategies
+
+  filter-exported-strategies =
+    filter(
+      ignore-anno-def(DefToExtDefInl <+ DefToExtDef /* + ExtSDef(unmangle,id,id) */ )
+      ; is-exported-definition
+    )    
+
+  DefToExtDef :
+    SDefT(f, a1*, a2*, s) -> ExtSDef(<unmangle>f, a1*, a2*)
+
+  DefToExtDefInl :
+    SDefT(f, a1*, a2*, s) -> 
+    ExtSDefInl(<unmangle>f, a1*, a2*, <topdown(try(UnmangleSVar))> s)
+    where <inlinable> s
+
+  inlinable = 
+    false
+    // where(not(<get-config>"--no-inlining"))
+
+  UnmangleSVar :
+    SVar(x) -> SVar(<unmangle>x)
+
+  unmangle =
+    explode-string
+    ; at-suffix(['_' | match-digits(['_' | match-digits([]) ])]; ![])
+    ; implode-string
+    ; uncify
+
+  match-digits(s) =
+    [is-num | match-digits(s) <+ s]
+
+  is-exported-definition =
+    ExtSDef(not(?"DYNAMIC_CALLS"), id, id)
+    <+ ExtSDefInl(not(?"DYNAMIC_CALLS"), id, id, id)
+
+
+strategies // exported constructors
+
+  filter-exported-constructors =
+    filter(OpDeclToExtOpDecl)
+
+  OpDeclToExtOpDecl :
+    OpDeclInj(t) ->  ExtOpDeclInj(t)
+
+  OpDeclToExtOpDecl :
+    OpDeclQ(c, t) -> ExtOpDeclQ(c, t)
+
+  OpDeclToExtOpDecl :
+    OpDecl(c, t) -> ExtOpDecl(c, t)

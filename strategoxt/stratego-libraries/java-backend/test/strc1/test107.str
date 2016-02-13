@@ -1,0 +1,12 @@
+/**
+ * Test for issue STR-577: support import of an ATerm from a file
+ */
+module test107
+imports libstratego-lib
+
+strategies
+
+  main-test107 =
+    import-term(./Java-15.tbl)
+    ; ?"parse-table"#(_)
+    ; !"ok"

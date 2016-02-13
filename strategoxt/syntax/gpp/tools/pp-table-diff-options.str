@@ -1,0 +1,68 @@
+/**
+ * Options for pptable-diff
+ */
+module pp-table-diff-options
+imports
+  lib-pp-table-args
+
+signature
+   constructors
+      OldTable : Option
+      Patch    : Option
+      Prune    : Option
+
+strategies
+
+  pp-table-diff-options =
+         Option( "--patch", enable-patch, !"--patch          Bring old table up-to-date" )
+    +    Option( "--prune", enable-prune, !"--prune          Remove obsolete pp entries" )
+    + ArgOption( "--old",   <set-config> (OldTable(), <id>), !"--old <table>    Old table" )
+
+/**
+ * Passing options
+ */
+strategies
+
+//  pass-pp-table-diff-options =
+//    <concat> [<pass-patch> (), <pass-prune>(), <pass-old-pp-table>()]
+
+//  pass-patch =
+//    is-patch-enabled < !["--patch"] + ![]
+
+//  pass-prune =
+//    is-prune-enabled < !["--prune"] + ![]
+
+//  pass-old-pp-table =
+//    <get-config> OldTable() < ensure-pp-table-parsed; !["--old", <id>] + ![]
+
+/**
+ * Setting options
+ */
+strategies
+
+  enable-patch  =
+    <set-config> (Patch(), "on")
+
+  disable-patch =
+    <set-config> (Patch(), "off")
+
+  enable-prune  =
+    <set-config> (Prune(), "on")
+
+  disable-prune =
+    <set-config> (Prune(), "off")
+
+/**
+ * Getting options
+ */
+strategies
+
+  is-patch-enabled =
+    <get-config> Patch() => "on"
+
+  is-prune-enabled =
+    <get-config> Prune() => "on"
+
+  get-old-pp-table =
+    <get-config> OldTable()
+    <+ <fatal-error> ["please specify old table with --old switch"] 

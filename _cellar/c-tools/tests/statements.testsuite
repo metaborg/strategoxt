@@ -1,0 +1,5 @@
+testsuite C Statements
+topsort Stm
+
+test simple assignment
+  "x = 1;" succeeds

@@ -1,0 +1,8 @@
+/**
+ * @author Martin Bravenboer <martin.bravenboer@gmail.com>
+ */
+module stratego-tool-doc
+imports
+  libstratego-sglr
+  stratego/tool-doc/Main
+  stratego/tool-doc/PrettyPrint

@@ -1,0 +1,182 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "XML2ATERM" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+xml2aterm \- converts an XML document to a comparable ATerm.
+.SH "SYNOPSIS"
+.HP 10
+\fBxml2aterm\fR [\-\-explicit] [\-\-very\-explicit] [\-\-implicit] [\-i\ \fIf\fR\ |\ \-\-input\ \fIf\fR] [\-o\ \fIf\fR\ |\ \-\-output\ \fIf\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIint\fR] [\-k\ \fIint\fR\ |\ \-\-keep\ \fIint\fR] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+The
+\fBxml2aterm\fR
+utility is used to convert an XML document to a corresponding ATerm. The ATerm and XML languages are slightly different, so there is a tradeoff between how "natural" the result of the conversion feels and how faithfully it can be converted back into XML.
+.PP
+Since applications have different needs, there are three conversion modes available:
+\fIimplicit\fR,
+\fIexplicit\fR, and
+\fIvery explicit\fR.
+.PP
+The
+\fIexplicit\fR
+mode is the default mode and supports a roundtrip for almost all ATerms. This means that an ATerm can be converted to XML and back without changing its structure.
+.PP
+The
+\fIimplicit\fR
+mode does not support such a roundtrip, but the XML is usually more attractive. Use this mode if you only want to export some ATerm to an XML application. The name 'implicit' is related to the more implicit structure in the resulting XML.
+.PP
+The
+\fIvery explicit\fR
+mode supports a roundtrip for all ATerms. This mode is the way to go if you need the guarantee that a roundtrip preserves the structure of all your ATerms.
+.PP
+The structure of the XML documents in the very explicit mode is generic: there are no language specific elements in these XML documents. The structure is described as a RELAX NG schema.
+.SH "OPTIONS"
+.PP
+\fBXML Processing Options\fR
+.TP
+\fB\-\-explicit\fR
+Do conversion in explicit mode. This is the default. See below for details.
+.TP
+\fB\-\-very\-explicit\fR
+Do conversion in very explicit mode. See below for details.
+.TP
+\fB\-\-implicit\fR
+Do conversion in implicit mode. See below for details.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Consider the ATerm below.
+.sp
+.nf
+fred(None, [foo, bar])
+    
+.fi
+.PP
+In the explicit mode, the corresponding XML would be:
+.sp
+.nf
+<fred xmlns:at="http://aterm.org">
+  <None/>
+  <at:list>
+    <foo/>
+      <bar/>
+  </at:list>
+</fred>
+    
+.fi
+.PP
+In the very explicit mode, the corresponding XML would be:
+.sp
+.nf
+<at:appl xmlns:at="http://aterm.org" at:fun="fred">
+ <at:appl at:fun="None"/>
+  <at:list>
+   <at:appl at:fun="foo"/>
+   <at:appl at:fun="bar"/>
+ </at:list>
+</at:appl>
+    
+.fi
+.PP
+In the implicit mode, the corresponding XML would be
+.sp
+.nf
+<fred xmlns:at="http://aterm.org">
+ <foo/>
+ <bar/>
+</fred>
+    
+.fi
+.PP
+The following terms cannot be encoded into XML in the implicit mode, but will work in either of the explicit noes.
+.sp
+.nf
+1 "abc" () (1, 2) [] [1, 2] 
+    
+.fi
+.PP
+Invocation is straightforward:
+.sp
+.nf
+$ xml2aterm \-\-very\-explicit \-i tree.trm \-o tree.xml
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

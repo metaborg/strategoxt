@@ -1,0 +1,72 @@
+module util/config/stats
+imports util/config/common
+strategies
+
+/**
+  * Sets the 'statistics' level.
+  *
+  * E.g. <set-statistics>4 sets the statistics level to 4.
+  */
+  set-statistics = 
+    <set-config> ("--statistics", <id>)
+
+ /**
+  * Give the current 'statistics' level. Default is 0.
+  */
+  get-statistics = 
+    <get-config> "--statistics" <+ !0
+
+ /**
+  * Builds command-line parameter for 'statistics' levels for calling XT tools.
+  *
+  * E.g. xtc-transform(!"abox2text", pass-statistics ) passes the 'statistics' level
+  * to abox2text.
+  */
+  pass-statistics = 
+    !["--statistics", <subt; int-to-string>(<get-config <+ !1> "--statistics", 1)]
+
+/**
+ * Apply the supplied strategy if the 'statistics' level is set to a value greater
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-statistics5(debug) calls the debug strategy if 'statistics' level is > 5.
+ *
+ * @param strategy to be applied
+ */
+strategies
+
+  if-statistics(s|t) =
+    if <geq> (<get-statistics> (), t) then
+      s
+    end
+ 
+  if-statistics1(s) = if-statistics(s|1)
+  if-statistics2(s) = if-statistics(s|2)
+  if-statistics3(s) = if-statistics(s|3)
+  if-statistics4(s) = if-statistics(s|4) 
+  if-statistics5(s) = if-statistics(s|5) 
+  if-statistics6(s) = if-statistics(s|6) 
+  if-statistics7(s) = if-statistics(s|7)
+
+/**
+ * Apply the supplied strategy if the 'statistics' level is set to a value lesser
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-less-statistics3(s) calls the s strategy if 'statistics' level is < 3.
+ *
+ * @param strategy to be applied
+ */
+strategies
+
+  if-less-statistics(s|t) = 
+    if <leq> (<get-statistics> (), t) then
+      s
+    end
+
+  if-less-statistics1(s) = if-statistics(s|1)
+  if-less-statistics2(s) = if-statistics(s|2)
+  if-less-statistics3(s) = if-statistics(s|3) 
+  if-less-statistics4(s) = if-statistics(s|4) 
+  if-less-statistics5(s) = if-statistics(s|5) 
+  if-less-statistics6(s) = if-statistics(s|6) 
+  if-less-statistics7(s) = if-statistics(s|7) 

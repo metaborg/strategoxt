@@ -1,0 +1,82 @@
+module til-eval
+imports TIL
+rules
+
+  EvalAdd :
+    Add(Int(i), Int(j)) -> Int(<addS>(i,j))
+
+  EvalAdd :
+    Add(String(i), String(j)) -> String(<conc-strings>(i,j))
+
+  EvalSub : 
+    Sub(Int(i), Int(j)) -> Int(<subtS>(i,j))
+
+  EvalMul :
+    Mul(Int(i), Int(j)) -> Int(<mulS>(i,j))
+
+  EvalDiv :
+    Div(Int(i), Int(j)) -> Int(<divS>(i,j))
+
+  EvalMod :
+    Mod(Int(i), Int(j)) -> Int(<modS>(i,j))
+
+  EvalLt :
+    Lt(Int(i), Int(j)) -> <compare(ltS)>(i,j)
+
+  EvalGt :
+    Gt(Int(i), Int(j)) -> <compare(gtS)>(i,j)
+
+  EvalLeq :
+    Leq(Int(i), Int(j)) -> <compare(leqS)>(i,j)
+
+  EvalGeq :
+    Geq(Int(i), Int(j)) -> <compare(geqS)>(i,j)
+
+  EvalEqu :
+    Equ(Int(i), Int(j)) -> <compare(eq)>(i,j)
+    
+  EvalNeq :
+    Neq(Int(i), Int(j)) -> <compare(not(eq))>(i,j)
+    
+  compare(s) =
+    if s then !True() else !False() end
+    
+  EvalOr :
+    Or(True(), e) -> True()
+    
+  EvalOr :
+    Or(False(), e) -> e
+    
+  EvalAnd :
+    And(True(), e) -> e
+    
+  EvalAnd :
+    And(False(), e) -> False()
+    
+  AddZero :
+    Add(e, Int("0")) -> e
+
+  AddZero :
+    Add(Int("0"), e) -> e
+
+  MulOne :
+    Mul(e, Int("1")) -> e
+
+  MulOne :
+    Mul(Int("1"), e) -> e
+    
+  EvalS2I :
+    FunCall("string2int", [String(x)]) -> Int(x)
+    where <string-to-int> x
+   
+  EvalI2S :
+    FunCall("int2string", [Int(i)]) -> String(i)
+ 
+  EvalIf :
+    IfElse(False(), st1*, st2*) -> Block(st2*)
+
+  EvalIf :
+    IfElse(True(), st1*, st2*) -> Block(st1*)
+
+  EvalWhile :
+     While(False(), st*) -> Block([])

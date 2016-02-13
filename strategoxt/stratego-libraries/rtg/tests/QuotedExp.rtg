@@ -1,0 +1,9 @@
+regular tree grammar
+  start Id IntConst Exp
+  productions
+    Id         -> <string>
+    [IntConst] -> <int>
+
+    Exp -> IntConst (IntConst)
+        |  Plus     (Exp, Exp)
+        |  Var      (Id)

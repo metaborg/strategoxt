@@ -1,0 +1,33 @@
+/**
+ * Variable access.
+ *
+ * @author Karl Trygve Kalleberg
+ * @author Lennart Kats
+ */
+module variable-access
+
+rules
+  
+  to-java-vardecl :
+    x{} -> |[ IStrategoTerm x = null; ]|
+
+  to-java-vardecl:
+    x{Offset(i), Escapes()} -> |[ TermReference x = new TermReference(); ]|
+
+  java-VarToWrite :
+    (x{}, e) -> |[ x = e; ]|
+
+  java-VarToWrite : 
+    (x{Frames([])}, e) -> |[ x = e; ]|
+
+  java-VarToWrite : 
+    (x{Offset(i), Frames(_)}, e) -> |[ x.value = e; ]|
+
+  java-VarToReadRef : 
+    Var(x{}) -> expr |[ x ]|
+
+  java-VarToReadRef :
+    Var(x{Frames([])}) -> expr |[ x ]|
+
+  java-VarToReadRef :
+    Var(x{Offset(i), Frames(_)}) -> |[ x.value ]|

@@ -1,0 +1,9 @@
+module Box-Layout
+exports
+  lexical syntax
+    "%%" ~[\n]* "\n" -> LAYOUT
+    [\ \t\n\r] -> LAYOUT
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n\13]
+

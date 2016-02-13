@@ -1,0 +1,43 @@
+module Exp
+exports
+  context-free start-symbols Exp
+  sorts Id IntConst Exp
+  
+  lexical syntax
+    [\ \t\n]  -> LAYOUT
+    [a-zA-Z]+ -> Id
+    [0-9]+    -> IntConst
+  
+  context-free syntax
+    Id        -> Exp {cons("Var")}
+    IntConst  -> Exp {cons("Int")}
+  
+    Exp "*"  Exp -> Exp  {left, cons("Mul")}
+    Exp "/"  Exp -> Exp  {left, cons("Div")}
+    Exp "%"  Exp -> Exp  {left, cons("Mod")}
+  
+    Exp "+"  Exp -> Exp  {left, cons("Plus")}
+    Exp "-"  Exp -> Exp  {left, cons("Minus")}
+
+    Id "(" {Exp ","}* ")" -> Exp {cons("Call")}
+
+    %% ambiguous on purpose
+    Exp "="  Exp -> Exp  {cons("Eq")}
+
+    %% tuple
+    "fun" Id "(" {(Id Id) ","}* ")" -> Exp {cons("FunDec")}
+
+  syntax
+    UnicodeEscape -> <Exp-CF>
+    "\\" [u]+ [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] -> UnicodeEscape {cons("UnicodeEscape")}
+
+  context-free priorities
+    {left:
+      Exp "*"  Exp -> Exp
+      Exp "/"  Exp -> Exp
+      Exp "%"  Exp -> Exp
+    } 
+  > {left:
+      Exp "+"  Exp -> Exp
+      Exp "-"  Exp -> Exp
+    }

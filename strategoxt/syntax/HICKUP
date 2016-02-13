@@ -1,0 +1,2 @@
+* Building ATerm requires sdf-library from Nix. See aterm-syntax task
+* Building SDF syntax requires sdf-library from Nix. See sdf-syntax task

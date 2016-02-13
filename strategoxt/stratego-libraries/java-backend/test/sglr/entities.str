@@ -1,0 +1,14 @@
+module entities
+
+imports
+  libstratego-lib
+  libstratego-xtc
+  libstratego-sglr
+
+rules
+
+  main-entities =
+    <parse-file> "Entities.ent"
+  
+  parse-file =
+    parse-file(|<import-term(Entities.tbl)>)

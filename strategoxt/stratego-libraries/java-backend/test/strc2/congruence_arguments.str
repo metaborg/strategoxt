@@ -1,0 +1,10 @@
+module congruence-arguments
+imports libstratego-lib
+signature
+  constructors
+    If : a * b -> b
+
+strategies
+
+  main-congruence_arguments = <If(id, id)> If("a","b")
+

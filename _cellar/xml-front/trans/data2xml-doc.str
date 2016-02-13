@@ -1,0 +1,179 @@
+module data2xml-doc
+imports
+  xml-doc
+  xml-info2xml-doc
+  xml-front-options
+  libstratego-lib 
+
+strategies
+
+  main-data2xml-doc =
+    io-wrap(explicit-mode-option,
+      dispatch-explicit-mode(
+        implicit-data2xml
+      , explicit-data2xml
+      , very-explicit-data2xml
+      )
+    ; data2xml-finish
+    )
+
+strategies
+
+  implicit-data2xml =
+    bottomup(
+      data2xml-doc-anno-wrap(implicit-data2xml, 
+        \ None() -> [] \
+      <+ ?Some(<id>)
+      <+ Explode-String
+      <+ Explode-Int
+      <+ Explode-List
+      <+ Explode-Tuple 
+      <+ Explode-Appl
+      )
+    )
+
+  explicit-data2xml =
+    bottomup(
+      data2xml-doc-anno-wrap(explicit-data2xml, 
+         ExplicitExplode-String
+      <+ ExplicitExplode-Int
+      <+ ExplicitExplode-List
+      <+ ExplicitExplode-Tuple
+      <+ Explode-Appl
+      )
+    )
+
+  very-explicit-data2xml =
+    bottomup(
+      data2xml-doc-anno-wrap(very-explicit-data2xml, 
+         ExplicitExplode-List
+      <+ ExplicitExplode-Tuple
+      <+ VeryExplicitExplode-Int
+      <+ VeryExplicitExplode-String
+      <+ VeryExplicitExplode-Appl
+      )
+    )
+
+strategies
+
+  data2xml-finish =
+      add-aterm-namespace
+    ; !%>
+        <?xml version="1.0"?>
+
+        <% id %>
+      <%
+    <+ say(!"error: resulting top-level is not an element")
+     ; <exit> 1
+
+
+  add-aterm-namespace :
+    EmptyElement(n, atts) -> EmptyElement(n, [ @> xmlns:at="http://aterm.org" <@ | atts])
+
+  add-aterm-namespace :
+    Element(n, atts, content, n) -> Element(n, [ @> xmlns:at="http://aterm.org" <@ | atts], content, n)
+
+/**
+ * Implicit mode
+ */
+strategies
+
+  Explode-Appl =
+    Explode-EmptyAppl <+ Explode-NotEmptyAppl
+
+  Explode-EmptyAppl :
+    s#([]) -> %>< ~n:s /><%
+
+  Explode-NotEmptyAppl :
+    s#(children) ->
+      %>< ~n:s ><% <flatten-list> children :: * %></ ~n:s ><%
+
+  Explode-Attr :
+    (s, v) -> @> ~n:s="<% <string2xml-attr-value> v %>" <@
+
+  Explode-String :
+    s -> %><% !s2 :: cdata %><%
+      where <is-string; xml-escape> s => s2
+
+  Explode-List :
+    xs -> %><% !xs :: * %><% :: *
+    where
+      <is-list> xs
+
+  Explode-Tuple :
+    "" # (xs) -> %><% !xs :: * %><% :: *
+
+  Explode-Int :
+    i ->  %><% !s :: cdata %><%
+    where
+      <is-int> i
+      ; <int-to-string> i => s
+
+/**
+ * Explicit mode
+ */
+rules
+
+  ExplicitExplode-List =
+    !%><at:list><% Explode-List :: * %></at:list><%
+
+  ExplicitExplode-Tuple =
+    !%><at:tuple><% Explode-Tuple :: * %></at:tuple><%
+
+  ExplicitExplode-Int =
+    !%><at:int><% Explode-Int %></at:int><%
+
+  ExplicitExplode-String =
+    !%><at:string><% Explode-String %></at:string><%
+
+/**
+ * Very explicit mode
+ */
+rules
+
+  VeryExplicitExplode-Int :
+    i -> %><at:int><at:value><% <Explode-Int> i %></at:value></at:int><%
+
+  VeryExplicitExplode-String :
+    s -> %><at:string><at:value><% <Explode-String> s %></at:value></at:string><%
+
+  VeryExplicitExplode-Appl :
+    s#(children) -> %><at:appl at:fun="<% !s %>"><% <flatten-list> children :: * %></at:appl><%
+
+strategies
+
+  data2xml-doc-anno-wrap(x, s) =
+    let /**
+         * Recursive call to an annotation. This might result in a single element
+         * or a list, which is normalized by flatten-list and list construction.
+         */
+        anno-rec =
+          x
+          ; if is-list then
+              flatten-list
+            else
+              ![<id>]
+            end
+     in 
+        ?_{anno*}
+      ; s
+      ; if ![anno*] => [_ | _] then
+          where(
+            <map(!%><at:anno><% anno-rec :: * %></at:anno><%)> [anno*] => anno-content
+          )
+        ; add-to-elem(|anno-content)
+        end
+   end
+
+  /**
+   * Add the specified annos represented in XML to an XML element.
+   */
+  add-to-elem(|annos) =
+    add-to-nonempty-elem(|annos)
+    <+ add-to-empty-elem(|annos)
+
+  add-to-nonempty-elem(|annos) :
+    Element(n, atts, content, n) -> Element(n, atts, <conc> (annos, content), n)
+
+  add-to-empty-elem(|annos) :
+    EmptyElement(n, atts) -> Element(n, atts, annos, n)

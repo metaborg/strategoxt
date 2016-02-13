@@ -1,0 +1,28 @@
+testsuite Patterns pf Stratego Concrete Object Syntax
+options
+  topsort PreTerm
+  ambiguity succeeds
+
+test Simple match
+  "|[ ?x ]|" -> ToTerm(Match(Var(meta-var("x"))))
+
+test Simple identifier
+  "Term |[ x ]|" -> ToTerm(Var(meta-var("x")))
+
+test Simple identifier with tag is amb
+  "|[ x ]|" -> amb(_)
+
+test Match any term
+  "|[ ?t ]|" -> ToTerm(Match(meta-var("t")))
+
+test Match a constructor
+  "|[ ?x(t*) ]|" -> ToTerm(Match(NoAnnoList(Op(meta-var("x"), meta-listvar("t*")))))
+
+test Rule definition is not ambiguous with dyn rule
+  "|[ Foo : 1 -> 2 ]|" -> ToTerm(RDefNoArgs(...))
+
+test Rule definition is not ambiguous with dyn rule
+  "DynRuleDef |[ Foo : 1 -> 2 ]|" -> ToTerm(SetDynRule(...))
+
+test Id anti-quotation bug
+  [[ |[ ~id:""(id, id) ]| ]] -> ToTerm(Call(SVar(FromTerm(NoAnnoList(Str("\"\"")))),[Id,Id]))

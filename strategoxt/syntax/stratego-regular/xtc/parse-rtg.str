@@ -1,0 +1,24 @@
+module parse-rtg
+imports 
+  libstratego-lib
+  libstratego-rtg
+  libstratego-sglr
+
+strategies
+  
+  main-parse-rtg =
+    io-stream-wrap(
+      ?(fin, fout)
+      ; <parse-rtg-stream> fin
+      ; <write-to-stream> (fout, <id>)
+    )
+
+  my-parse-rtg-stream =
+    where(
+      get-rtg-parse-table
+      ; tbl := <open-parse-table>
+    )
+    ; finally(parse-stream(|tbl), <close-parse-table> tbl)
+    ; rtg-parsefix
+
+  external STRRTG-get-rtg-parsetable(|)

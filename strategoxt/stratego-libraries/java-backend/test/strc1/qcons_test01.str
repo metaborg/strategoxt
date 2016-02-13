@@ -1,0 +1,14 @@
+/**
+ * Build of a quoted constructor
+ */
+module qcons-test01
+imports collection/list/cons collection/tuple/cons
+
+strategies
+
+  main-qcons_test01 =
+    !"aap"(1)
+
+signature
+  constructors
+   "aap" : Term -> Term

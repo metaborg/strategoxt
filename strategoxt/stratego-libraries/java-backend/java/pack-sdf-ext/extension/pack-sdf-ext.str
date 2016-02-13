@@ -1,0 +1,256 @@
+/**
+ * An extension of pack-sdf to support an extended
+ * version of the SDF syntax definition formalism.
+ *
+ * Yes, it's a hack.
+ */
+module pack-sdf-ext
+
+imports
+  libstratego-lib
+  libstratego-sglr
+  pack-sdf
+
+rules
+
+  pack-sdf-ext-postprocess:
+    (path, asfix) -> (path, <remove-sdf-ext-top> asfix)
+
+  remove-sdf-ext-top =
+    topdown(repeat(remove-sdf-ext))
+
+  remove-sdf-ext:
+    appl(
+      prod(_, _, attrs([term(cons("namespacedef")) | _]))
+    , contents
+    ) ->
+    symbol
+    with
+      !contents => [namespace, layout1, atequals, layout2, symbol]
+
+  remove-sdf-ext:
+    appl(
+      prod(_, _, attrs([term(cons("namespaceref2")) | _]))
+    , contents
+    ) ->
+    symbol
+    with
+      !contents => [namespace, at, symbol]
+
+  remove-sdf-ext:
+    appl(
+      prod(_, _, attrs([term(cons("namespaceref")) | _]))
+    , contents
+    ) ->
+    symbol
+    with
+      !contents => [at, namespace];
+      symbol := // the sort "ID" in asfix format
+          appl(
+             prod(
+               [cf(sort("Sort"))]
+             , cf(sort("Symbol"))
+             , attrs([term(cons("sort"))])
+             )
+           , [ appl(
+                 prod(
+                   [lex(sort("Sort"))]
+                 , cf(sort("Sort"))
+                 , no-attrs()
+                 )
+               , [ appl(
+                     prod(
+                       [ char-class([range(65, 90)])
+                       , lex(
+                           iter-star(
+                             char-class(
+                               [ 45
+                               , range(48, 57)
+                               , range(65, 90)
+                               , range(97, 122)
+                               ]
+                             )
+                           )
+                         )
+                       , char-class(
+                           [range(48, 57), range(65, 90), range(97, 122)]
+                         )
+                       ]
+                     , lex(sort("Sort"))
+                     , attrs([term(cons("more-chars"))])
+                     )
+                   , [ 73
+                     , appl(
+                         list(
+                           lex(
+                             iter-star(
+                               char-class(
+                                 [ 45
+                                 , range(48, 57)
+                                 , range(65, 90)
+                                 , range(97, 122)
+                                 ]
+                               )
+                             )
+                           )
+                         )
+                       , []
+                       )
+                     , 68
+                     ]
+                   )
+                 ]
+               )
+             ]
+           )
+
+  remove-sdf-ext: // "literal" attribute to cons("literal")
+    appl(
+      prod(
+        [cf(sort("ATerm"))]
+      , cf(sort("ATermAttribute"))
+      , _
+      )
+    , [ contents @ appl(
+          prod(
+            [cf(sort("AFun"))]
+          , cf(sort("ATerm"))
+          , _
+          )
+        , [ appl(
+              prod(
+                [cf(sort("StrCon"))]
+              , cf(sort("AFun"))
+              , _
+              )
+            , _
+            )
+          ]
+        )
+      ]
+    )
+  ->
+    appl(
+      prod(
+        [cf(sort("ATerm"))]
+      , cf(sort("ATermAttribute"))
+      , attrs([term(cons("term")), avoid()])
+      )
+    , [ appl(
+          prod(
+            [ cf(sort("AFun"))
+            , cf(opt(layout()))
+            , lit("(")
+            , cf(opt(layout()))
+            , cf(iter-sep(sort("ATerm"), lit(",")))
+            , cf(opt(layout()))
+            , lit(")")
+            ]
+          , cf(sort("ATerm"))
+          , attrs([term(cons("appl"))])
+          )
+        , [ appl(
+              prod(
+                [cf(sort("Literal"))]
+              , cf(sort("AFun"))
+              , no-attrs()
+              )
+            , [ appl(
+                  prod(
+                    [cf(sort("UQLiteral"))]
+                  , cf(sort("Literal"))
+                  , attrs([term(cons("uqlit"))])
+                  )
+                , [ appl(
+                      prod(
+                        [lex(sort("UQLiteral"))]
+                      , cf(sort("UQLiteral"))
+                      , no-attrs()
+                      )
+                    , [ appl(
+                          prod(
+                            [ char-class([range(97, 122)])
+                            , lex(
+                                iter-star(
+                                  char-class(
+                                    [ 45
+                                    , range(48, 57)
+                                    , range(65, 90)
+                                    , range(97, 122)
+                                    ]
+                                  )
+                                )
+                              )
+                            , char-class(
+                                [range(48, 57), range(65, 90), range(97, 122)]
+                              )
+                            ]
+                          , lex(sort("UQLiteral"))
+                          , attrs([term(cons("more-chars"))])
+                          )
+                        , [ 99
+                          , appl(
+                              list(
+                                lex(
+                                  iter-star(
+                                    char-class(
+                                      [ 45
+                                      , range(48, 57)
+                                      , range(65, 90)
+                                      , range(97, 122)
+                                      ]
+                                    )
+                                  )
+                                )
+                              )
+                            , [111, 110]
+                            )
+                          , 115
+                          ]
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          , appl(
+              prod([cf(layout())], cf(opt(layout())), no-attrs())
+            , [ appl(
+                  prod([lex(iter(layout()))], cf(layout()), no-attrs())
+                , [appl(list(lex(iter(layout()))), [])]
+                )
+              ]
+            )
+          , appl(
+              prod([char-class([40])], lit("("), no-attrs())
+            , [40]
+            )
+          , appl(
+              prod([cf(layout())], cf(opt(layout())), no-attrs())
+            , [ appl(
+                  prod([lex(iter(layout()))], cf(layout()), no-attrs())
+                , [appl(list(lex(iter(layout()))), [])]
+                )
+              ]
+            )
+          , appl(
+              list(cf(iter-sep(sort("ATerm"), lit(","))))
+            , [ contents ]
+            )
+          , appl(
+              prod([cf(layout())], cf(opt(layout())), no-attrs())
+            , [ appl(
+                  prod([lex(iter(layout()))], cf(layout()), no-attrs())
+                , [appl(list(lex(iter(layout()))), [])]
+                )
+              ]
+            )
+          , appl(
+              prod([char-class([41])], lit(")"), no-attrs())
+            , [41]
+            )
+          ]
+        )
+      ]
+    )

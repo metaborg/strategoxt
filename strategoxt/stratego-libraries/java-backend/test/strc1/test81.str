@@ -1,0 +1,20 @@
+module test81
+imports libstratego-lib
+signature 
+   constructors 
+     "pp-tables-0" : Int -> Foo 
+
+strategies 
+ 
+ main-test81 = 
+   test-suite(!"test81: test quoted constructors",
+     test-match
+   )
+
+ test-match =
+   apply-test(!"test-match"
+	, ?"pp-tables-0"(<id>)
+        , !"pp-tables-0"("a")
+	, !"a"
+	)
+

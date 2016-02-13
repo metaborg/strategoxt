@@ -1,0 +1,6 @@
+regular tree grammar
+  start List
+  productions
+    List -> <nil> ()
+    List -> <cons> (<int>, List)
+    List -> <conc> (List, List)

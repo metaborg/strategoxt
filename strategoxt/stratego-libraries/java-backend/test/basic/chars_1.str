@@ -1,0 +1,17 @@
+module chars_1
+
+imports
+  libstratego-lib
+  libstratego-sglr
+
+rules
+
+  main-chars_1 =
+    !"öä";
+    explode-string;
+    implode-string; debug => "öä";
+    
+    !"module foo rules bar = !\"öä\"";
+    parse-string(|<import-term(Stratego-Sugar.tbl); open-parse-table>);
+    debug;
+    oncetd(?"\"öä\"")

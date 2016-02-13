@@ -1,0 +1,130 @@
+module stratego/aterm/PrettyPrintRules
+imports
+  libstratego-gpp
+
+strategies
+
+  pp-aterm-box =
+    pp-aterm-box(|8)
+
+  pp-aterm-box(|maxtermsize) =
+    rec rec(
+      if has-annos then
+        aterm-ugly-print-with-anno(rec | maxtermsize)
+      else
+        aterm-ugly-print-without-anno(rec | maxtermsize)
+      end
+    )
+
+strategies
+
+  aterm-ugly-print-without-anno(rec | maxtermsize) =
+     aterm-UP-Int
+  <+ aterm-UP-Real
+  <+ aterm-UP-Str
+  <+ aterm-UP-List(rec) 
+  <+ aterm-UP-Tuple(rec)
+  <+ aterm-UP-Cnst	
+  <+ aterm-UP-App(rec | maxtermsize)
+
+  aterm-ugly-print-with-anno(rec |maxtermsize) :
+    t -> |[  H hs=0 [  ~plain ~annos ] ]|
+    where
+      <aterm-ugly-print-without-anno(rec | maxtermsize)> t => plain
+      ; < get-annotations
+        ; aterm-pp-generic-list(rec, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)
+        > t => annos
+
+rules // string & int
+
+  aterm-UP-Str :
+    x -> |[ H hs=0 ["\"" ~lit:x "\""] ]|
+    where
+      <is-string> x
+
+  aterm-UP-Int :
+    x -> |[ NUM [ ~lit:s ] ]|
+    where
+      <is-int> x
+      ; <int-to-string> x => s
+
+  aterm-UP-Real :
+    x -> |[ NUM [ ~lit:s ] ]|
+    where
+      <is-real> x
+      ; <real-to-string> x => s
+
+rules // constructor applications
+
+  aterm-UP-Cnst : 
+    f#([]) -> |[ H hs=0[~lit:f "()"] ]|
+
+  aterm-UP-App(s | maxtermsize) =
+    if <gt> (<term-size>, maxtermsize) then
+      aterm-UP-App-worstcase(s)
+    else
+      aterm-UP-App-nicecase(s)
+    end
+  
+  aterm-UP-App-nicecase(s):
+    f#([x | xs]) -> |[ H hs=0 [ ~lit:f "(" ~<s> x ~*children ")"] ]|
+    where
+      <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+ 
+  aterm-UP-App-worstcase(s):
+    f#([x | xs]) ->
+      |[  V vs=0 [
+            H hs=0 [ ~lit:f "(" ]
+            H hs=1 [" " ~<s> x]
+            ~*children
+            ")"
+          ]
+      ]|
+      where
+        <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+
+rules // tuples and list      
+         
+  aterm-UP-Tuple(s) =
+    ?""#(<id>)
+    ; aterm-pp-generic-list(s, !|[ "()" ]|, !|[ "(" ]|, !|[ ")" ]|)
+            
+  aterm-UP-List(s) =
+    aterm-pp-generic-list(s, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
+    
+strategies
+      
+  aterm-pp-generic-list(s, empty, before, after) =
+    if <gt> (<term-size>, 10) then
+      aterm-generic-list-worstcase(s, empty, before, after)
+    else
+      aterm-generic-list-nicecase(s, empty, before, after)
+    end
+
+  aterm-pp-generic-list(s, empty, before, after) :
+    [] -> <empty> ()
+    
+  aterm-generic-list-nicecase(s, empty, before, after) :
+    [x | xs] -> |[
+      H hs=0 [
+        ~<before> ()
+        ~<s> x ~*tail
+        ~<after> ()
+      ]
+    ]|
+    where
+      <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+
+  aterm-generic-list-worstcase(s, empty, before, after) :
+    [x | xs] -> |[
+      V vs=0 [
+        H hs=1 [
+          ~<before> ()
+          ~<s> x
+        ]
+        ~*tail
+        ~<after> ()
+      ]
+    ]|
+    where
+      <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail

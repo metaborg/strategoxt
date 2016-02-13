@@ -1,0 +1,55 @@
+module C-Preprocessor
+exports
+  sorts TokenChar Slash Token TokWS WS TokenSeq FileName
+  lexical syntax
+    ~[\ \t\n\/]                           -> TokenChar
+    [\/]                                  -> Slash
+    Slash                                 -> TokenChar
+    TokenChar+                            -> Token
+    ( [\ \t] | ( [\\] [\n] ) | Comment )+ -> TokWS
+    ( [\ \t] | Comment )*                 -> WS
+    {Token TokWS}+                        -> TokenSeq
+    ~[\"\ \t\n\>]+                        -> FileName
+
+  lexical restrictions
+    Slash    -/- [\*]
+    Token    -/- ~[\ \t\n\/]
+    TokenSeq -/- ~[\ \t\n]
+    WS       -/- [\ \t]
+
+  sorts ControlLine ControlLineNot IfLine ElifLine ElseLine
+  lexical syntax
+    "#" WS "define" WS ID WS ( "(" WS {( ID WS ) ( "," WS )}* ")" WS )? TokenSeq? WS [\n] -> ControlLine
+
+  lexical syntax
+    "#" WS "undef" WS ID WS [\n]                                     -> ControlLine
+    "#" WS "include" WS "<" FileName ">" WS [\n]                     -> ControlLine
+    "#" WS "include" WS "\"" FileName "\"" WS [\n]                   -> ControlLine
+    "#" WS "include" WS TokenSeq WS [\n]                             -> ControlLineNot
+    "#" WS "line" WS [0-9]+ WS ( "\"" WS FileName WS "\"" )? WS [\n] -> ControlLine
+    "#" WS IntLiteral WS "\"" FileName "\"" WS {LineFlag [\ ]+}* [\n] -> ControlLine
+   
+    "#" WS "error" WS TokenSeq? WS [\n]                              -> ControlLine
+    "#" WS "pragma" WS TokenSeq? WS [\n]                             -> ControlLine
+    "#" WS "if" WS ConstantExp WS [\n]                               -> IfLine
+    "#" WS "if" WS ID WS [\n]                                        -> IfLine
+    "#" WS "if" WS ID WS "!=" WS [0-9]+ WS [\n]                      -> IfLine
+    "#" WS "ifdef" WS ID WS [\n]                                     -> IfLine
+    "#" WS "ifndef" WS ID WS [\n]                                    -> IfLine
+    "#" WS "elif" WS ConstantExp WS [\n]                             -> ElifLine
+    "#" WS "else" WS [\n]                                            -> ElseLine
+    
+    "1" -> LineFlag
+    "2" -> LineFlag
+    "3" -> LineFlag
+    "4" -> LineFlag
+
+  context-free syntax
+    ControlLine -> ExternalDef {cons("PpControl")}
+    ControlLine -> MemberDeclaration {cons("PpControl")}
+
+  context-free syntax
+    IfLine ExternalDef* 
+    ( ElifLine ExternalDef* )* 
+    ( ElseLine ExternalDef* )? 
+    "#" "endif" -> ExternalDef {cons("PpIf")}

@@ -1,0 +1,28 @@
+definition
+
+module Main
+exports
+  context-free syntax
+    A 		-> S
+    "a" 	-> S
+    "a" B	-> S
+  context-free syntax
+    ()  	-> S
+    (A A)	-> S
+    A?		-> S
+    A+		-> S
+    A*		-> S
+  context-free syntax
+    {A "."}+	-> S
+    {A ","}+	-> S
+    {A B}+	-> S
+    {"." B}+	-> S
+    {"," B}+	-> S
+  context-free syntax
+    {A "."}*	-> S
+    {A ","}*	-> S
+    {A B}*	-> S
+    {"." B}*	-> S
+    {"," B}*	-> S
+  context-free syntax
+    A | B	-> S

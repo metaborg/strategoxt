@@ -1,0 +1,11 @@
+# simplify program
+../sim/til-simplify -i test1.atil -o test1.sim.atil
+
+# check result
+format-check --rtg ../sig/TIL.rtg -i test1.sim.atil
+
+# parentheses
+../pp/til-parenthesize -i test1.sim.atil -o test1.sim.par.atil
+
+# pretty-print
+ast2text -p ../pp/TIL-pretty.pp -i test1.sim.par.atil -o test1.sim.txt

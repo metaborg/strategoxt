@@ -1,0 +1,3 @@
+module term-properties
+imports term/properties
+

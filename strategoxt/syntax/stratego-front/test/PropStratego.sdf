@@ -1,0 +1,14 @@
+module PropStratego
+imports Prop StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
+
+exports
+  context-free syntax
+    "|[" Prop "]|"                     -> StrategoTerm     {cons("ToTerm")}
+    "|>" Prop "<|"                     -> StrategoStrategy {cons("ToBuild")}
+    "<|" StrategoStrategy "|>"         -> Prop 		   {cons("FromApp")}
+    Prop "{|" {StrategoTerm ","}* "|}" -> Prop 		   {cons("WithAnno")}
+  variables
+    [pqr][0-9]* -> Prop
+    "la"[0-9]  -> LAYOUT

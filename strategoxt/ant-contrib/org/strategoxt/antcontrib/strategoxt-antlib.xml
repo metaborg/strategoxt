@@ -1,0 +1,537 @@
+<?xml version="1.0"?>
+<antlib>
+	<macrodef name="pack-sdf">
+		<attribute name="input" />
+		<attribute name="output" />
+		<element name="args" optional="true" />
+		<element name="sdf-deps" optional="true" />
+		<sequential>
+			<uptodate-mio input="@{input}" output="@{output}" type="pack-sdf">
+				<action>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-pack-sdf" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<args />
+					</java>
+				</action>
+				<deps>
+					<sdf-deps />
+				</deps>
+			</uptodate-mio>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="sglri">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="parsetable" />
+		<element name="args" optional="true" />
+		<sequential>
+			<property name="@{parsetable}.abs" location="@{parsetable}" />
+			<uptodate-io input="@{input}" output="@{output}" type="sglri">
+				<action>
+					<java classname="org.spoofax.jsglr.Main" failonerror="true">
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="-p" />
+						<arg value="${@{parsetable}.abs}" />
+						<arg value="--implode" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<args />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="sdf2rtg">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="main" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="sdf2rtg">
+				<action>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-sdf2rtg" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="-m" />
+						<arg value="@{main}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<arg value="--ignore-missing-cons" />
+						<arg value="-Xnativepath" />
+						<arg value="${nativepath}/" />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="rtg2sig">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="main" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="rtg2sig">
+				<action>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-rtg2sig" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="--module" />
+						<arg value="@{main}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="sdf2table">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="main" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="sdf2table">
+				<action>
+					<exec executable="${nativepath}/sdf2table">
+						<arg value="-t" />
+						<arg value="-i" />
+						<arg value="@{input}" />
+						<arg value="-m" />
+						<arg value="@{main}" />
+						<arg value="-o" />
+						<arg value="@{output}" />
+					</exec>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="ppgen">
+		<attribute name="input" />
+		<attribute name="output" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="ppgen">
+				<action>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-ppgen" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="-t" />
+						<arg value="-b" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}.af" />
+					</java>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-pp-pp-table" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{output}.af" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="sdf2generated">
+		<attribute name="base" />
+		<attribute name="main" />
+		<attribute name="pp" default="true" />
+		<attribute name="output" default="." />
+		<element name="includeargs" optional="true" />
+		<element name="deps" optional="true" />
+		<sequential>
+			<pack-sdf input="@{base}.sdf" output="@{output}/@{main}.def">
+				<includeargs />
+				<sdf-deps>
+					<deps />
+				</sdf-deps>
+			</pack-sdf>
+			<sdf2table input="@{output}/@{main}.def" output="@{output}/@{main}.tbl" main="@{main}" />
+
+			<if>
+				<equals arg1="@{pp}" arg2="true" />
+				<then>
+					<ppgen input="@{output}/@{main}.def" output="@{output}/@{main}.pp" />
+				</then>
+			</if>
+
+			<sdf2rtg input="@{output}/@{main}.def" output="@{output}/@{main}.rtg" main="@{main}" />
+			<rtg2sig input="@{output}/@{main}.rtg" output="@{output}/@{main}.str" main="@{main}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="sdf2parenthesize">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="language" />
+		<attribute name="main" />
+		<attribute name="outputmodule" />
+		<element name="args" optional="true" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="sdf2parenthesize">
+				<action>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-sdf2parenthesize" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="-m" />
+						<arg value="@{main}" />
+						<arg value="--lang" />
+						<arg value="@{language}" />
+						<arg value="--omod" />
+						<arg value="@{outputmodule}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<args />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="gen-sdf-mix">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="main" />
+		<attribute name="name" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="gen-sdf-mix">
+				<action>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-gen-sdf-mix" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="--main" />
+						<arg value="@{main}" />
+						<arg value="--name" />
+						<arg value="@{name}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<arg value="-Xnativepath" />
+						<arg value="${nativepath}/" />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="strj">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="package" />
+		<element name="strjargs" optional="true" />
+		<element name="str-deps" optional="true" />
+		<sequential>
+			<property name="@{input}.abs" location="@{input}" />
+			<property name="@{output}.abs" location="@{output}" />
+			<uptodate-mio input="@{input}" output="@{output}" type="strj">
+				<action>
+					<java classname="org.strategoxt.strj.Main" failonerror="true">
+						<arg value="-i" />
+						<arg value="${@{input}.abs}" />
+						<arg value="-o" />
+						<arg value="${@{output}.abs}" />
+						<arg value="-p" />
+						<arg value="@{package}" />
+						<arg value="-D" />
+						<arg value="VERSION_TERM=&quot;${version}&quot;" />
+						<arg value="-D" />
+						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
+						<strjargs />
+					</java>
+				</action>
+				<deps>
+					<str-deps />
+				</deps>
+			</uptodate-mio>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="strj-lib">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="lib-output" default="${@{input}.dirname}/lib${@{input}.basename}.ctree" />
+		<attribute name="package" />
+		<element name="strjlibargs" optional="true" />
+		<element name="str-deps" optional="true" />
+		<sequential>
+			<dirname file="@{input}" property="@{input}.dirname" />
+			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
+			<uptodate-mio input="@{input}" output="@{output}" type="strj-lib">
+				<action>
+					<strj input="@{input}" output="@{lib-output}" package="@{package}">
+						<strjargs>
+							<arg value="--library" />
+							<arg value="-F" />
+							<strjlibargs />
+						</strjargs>
+					</strj>
+					<strj input="@{lib-output}" output="@{output}" package="@{package}">
+						<strjargs>
+							<arg value="--library" />
+							<strjlibargs />
+						</strjargs>
+					</strj>
+				</action>
+				<deps>
+					<str-deps />
+				</deps>
+			</uptodate-mio>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="gen-renamed-sdf-module">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="main" />
+		<attribute name="name" />
+		<attribute name="prefix" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="gen-renamed-sdf-module">
+				<action>
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.tools.main-gen-renamed-sdf-module" />
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="--main" />
+						<arg value="@{main}" />
+						<arg value="--name" />
+						<arg value="@{name}" />
+						<arg value="--prefix" />
+						<arg value="@{prefix}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<arg value="-Xnativepath" />
+						<arg value="${nativepath}/" />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="make-permissive">
+		<attribute name="input" />
+		<attribute name="output" />
+		<element name="permissiveargs" optional="true" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="make-permissive">
+				<action>
+					<java classname="org.strategoxt.permissivegrammars.make_permissive" failonerror="true">
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<permissiveargs />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<!--
+  **************************************************************
+  *********** MACROS FOR TESTING *******************************
+  -->
+
+	<macrodef name="strj-workingdir">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="package" />
+		<attribute name="workdir" />
+		<attribute name="strj" />
+		<element name="strjargs" optional="true" />
+		<element name="str-deps" optional="true" />
+		<sequential>
+			<property name="@{input}.abs" location="@{input}" />
+			<property name="@{output}.abs" location="@{output}" />
+			<uptodate-mio input="@{input}" output="@{output}" type="strj">
+				<action>
+					<java classname="org.strategoxt.strj.Main" failonerror="true" fork="true" dir="@{workdir}" classpath="@{strj}">
+						<arg value="-i" />
+						<arg value="${@{input}.abs}" />
+						<arg value="-o" />
+						<arg value="${@{output}.abs}" />
+						<arg value="-p" />
+						<arg value="@{package}" />
+						<arg value="-D" />
+						<arg value="VERSION_TERM=&quot;${version}&quot;" />
+						<arg value="-D" />
+						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
+						<strjargs />
+						<jvmarg value="-Xss16m" />
+					</java>
+				</action>
+				<deps>
+					<str-deps />
+				</deps>
+			</uptodate-mio>
+		</sequential>
+	</macrodef>
+
+	<!--
+	**************************************************************
+	*********** UTILITIES FOR THE ABOVE **************************
+	-->
+
+	<macrodef name="uptodate-io">
+		<attribute name="type" />
+		<attribute name="input" />
+		<attribute name="output" />
+		<element name="action" />
+		<sequential>
+			<condition property="@{input}.@{output}.@{type}">
+				<uptodate srcfile="@{input}" targetfile="@{output}" />
+			</condition>
+			<if>
+				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
+				<then>
+					<echo message="@{input} -> @{output} is up-to-date" />
+				</then>
+				<else>
+					<log message="@{input} -> @{output}" />
+					<action />
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="uptodate-mio">
+		<attribute name="type" />
+		<attribute name="input" />
+		<attribute name="output" />
+		<element name="action" />
+		<element name="deps" />
+		<sequential>
+			<condition property="@{input}.@{output}.@{type}">
+				<uptodate targetfile="@{output}">
+					<srcfiles dir="." includes="@{input}" />
+					<deps />
+				</uptodate>
+			</condition>
+			<if>
+				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
+				<then>
+					<echo message="@{output} is up-to-date" />
+				</then>
+				<else>
+					<log message="@{input} -> @{output}" />
+					<action />
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="log">
+		<attribute name="message" />
+		<sequential>
+			<echo message="========================================================================================" />
+			<echo message="@{message}" />
+			<echo message="========================================================================================" />
+			<echo message="" />
+		</sequential>
+	</macrodef>
+
+	<!-- ____ CELLAR ____ -->
+	<!-- <macrodef name="strj-for-test">
+    <attribute name="input" />
+    <attribute name="output" />
+    <attribute name="package" />
+    <attribute name="compiler" />
+    <element name="strjargs" optional="true" />
+    <element name="str-deps" optional="true" />
+    <sequential>
+      <property name="@{input}.abs" location="@{input}" />
+      <property name="@{output}.abs" location="@{output}" />
+      <uptodate-mio input="@{input}" output="@{output}" type="strj">
+        <action>
+          <java classname="org.strategoxt.strj.Main" failonerror="true" classpath="@{compiler}" fork="true">
+            <arg value="-i" />
+            <arg value="${@{input}.abs}" />
+            <arg value="-o" />
+            <arg value="${@{output}.abs}" />
+            <arg value="-p" />
+            <arg value="@{package}" />
+            <arg value="-D" />
+            <arg value="VERSION_TERM=&quot;${version}&quot;" />
+            <arg value="-D" />
+            <arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
+            <strjargs />
+            <jvmarg value="-Xss8m" />
+            <jvmarg value="-Xmx512m" />
+          </java>
+        </action>
+        <deps>
+          <str-deps />
+        </deps>
+      </uptodate-mio>
+    </sequential>
+  </macrodef> -->
+
+	<!-- <macrodef name="strj-test">
+    <attribute name="input" />
+    <attribute name="synaterm" />
+    <attribute name="synbox" />
+    <attribute name="generated" />
+    <attribute name="compiler" />
+    <sequential>
+      <log message="Testing @{input}" />
+      <dirname file="@{input}" property="@{input}.dirname" />
+      <basename file="@{input}" property="@{input}.basename" suffix=".str" />
+      <mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
+      <strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test" compiler="@{compiler}">
+        <strjargs>
+          <arg value="-m" />
+          <arg value="main-${@{input}.basename}" />
+          <arg value="-la" />
+          <arg value="stratego-lib" />
+          <arg value="-la" />
+          <arg value="stratego-gpp" />
+          <arg value="-la" />
+          <arg value="stratego-xtc" />
+          <arg value="-la" />
+          <arg value="stratego-aterm" />
+          <arg value="-la" />
+          <arg value="stratego-rtg" />
+          <arg value="-la" />
+          <arg value="stratego-sglr" />
+          <arg value="-la" />
+          <arg value="java-front" />
+          <arg value="-I" />
+          <arg value="@{synaterm}" />
+          <arg value="-I" />
+          <arg value="@{synbox}" />
+          <arg value="-I" />
+          <arg value="@{generated}" />
+          <arg value="-I" />
+          <arg value="${@{input}.dirname}" />
+        </strjargs>
+        <str-deps>
+          <srcfiles dir="." includes="*.jar" />
+        </str-deps>
+      </strj-for-test>
+      <uptodate-io input="${@{input}.dirname}/${@{input}.basename}/test/Main.java" output="${@{input}.dirname}/${@{input}.basename}/test/fingerprint" type="javac">
+        <action>
+          <javac srcdir="${@{input}.dirname}/${@{input}.basename}" destdir="${@{input}.dirname}/${@{input}.basename}" classpath="@{compiler}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="source">
+          </javac>
+          <java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
+            <classpath>
+              <pathelement location="@{compiler}" />
+              <pathelement path="${@{input}.dirname}/${@{input}.basename}" />
+            </classpath>
+          </java>
+          <touch file="${@{input}.dirname}/${@{input}.basename}/test/fingerprint" />
+        </action>
+      </uptodate-io>
+    </sequential>
+  </macrodef> -->
+</antlib>

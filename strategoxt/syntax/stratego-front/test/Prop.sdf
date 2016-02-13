@@ -1,0 +1,20 @@
+module Prop
+exports
+  sorts Id Prop
+  lexical syntax
+    [A-Z]+ -> Id
+  context-free syntax
+    Id 			-> Prop {cons("Var")}
+    "true"  		-> Prop {cons("True")}
+    "false" 		-> Prop {cons("False")}
+    "~" Prop		-> Prop {cons("Not")}
+    Prop "/\\" Prop 	-> Prop {cons("And"),left}
+    Prop "\\/" Prop 	-> Prop {cons("Or"),left}
+    "(" Prop ")"	-> Prop {bracket}
+  context-free priorities 
+    "~" Prop		-> Prop {cons("Not")}
+  > Prop "/\\" Prop 	-> Prop {cons("And"),left}
+  > Prop "\\/" Prop 	-> Prop {cons("Or"),left}
+
+hiddens
+  context-free start-symbols Prop

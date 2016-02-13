@@ -1,0 +1,164 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "SDF2RTG" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+sdf2rtg \- generates a abstract regular tree grammar (RTG) from an SDF concrete syntax definition.
+.SH "SYNOPSIS"
+.HP 8
+\fBsdf2rtg\fR [\-m\ \fImod\fR\ |\ \-\-main\ \fImod\fR] [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-\-check] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+The
+\fBsdf2rtg\fR
+utility is used to generate an abstract regular tree grammar (RTG) from a SDF concrete syntax definition.
+.PP
+Regular tree grammars are useful for doing format checking of terms. Refer to
+Format Checking with format\-check
+for further details.
+.SH "OPTIONS"
+.PP
+\fBGrammar Options\fR
+.TP
+\fB\-m \fR\fB\fImod\fR\fR, \fB\-\-main \fR\fB\fImod\fR\fR
+Set the main module in the SDF syntax definition to
+\fI\fImod\fR\fR. The default main module is
+\fIMain\fR.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Consider the following SDF syntax definition for a simple expression language:
+.sp
+.nf
+definition
+module Exp
+exports
+  sorts Exp
+
+  lexical syntax
+    [\\ \\t\\n]  \-> LAYOUT
+    [a\-zA\-Z]+ \-> Id
+    [0\-9]+    \-> IntConst
+
+  context\-free syntax
+    Id        \-> Exp {cons("Var")}
+    IntConst  \-> Exp {cons("Int")}
+
+    Exp "*"  Exp \-> Exp  {left, cons("Mul")}
+    Exp "/"  Exp \-> Exp  {left, cons("Div")}
+    Exp "%"  Exp \-> Exp  {left, cons("Mod")}
+
+    Exp "+"  Exp \-> Exp  {left, cons("Plus")}
+    Exp "\-"  Exp \-> Exp  {left, cons("Minus")}
+
+  context\-free priorities
+    {left:
+      Exp "*"  Exp \-> Exp
+      Exp "/"  Exp \-> Exp
+      Exp "%"  Exp \-> Exp
+    }
+  > {left:
+      Exp "+"  Exp \-> Exp
+      Exp "\-"  Exp \-> Exp
+    }
+.fi
+.PP
+Invoking
+\fBsdf2rtg\fR
+with
+\fBsdf2rtg \-i Exp.def \-\-main Exp\fR
+will result in the following regular tree grammar:
+.sp
+.nf
+regular tree grammar
+start Exp
+productions
+  Exp      \-> Minus(Exp,Exp)
+  Exp      \-> Plus(Exp,Exp)
+  Exp      \-> Mod(Exp,Exp)
+  Exp      \-> Div(Exp,Exp)
+  Exp      \-> Mul(Exp,Exp)
+  Exp      \-> Int(IntConst)
+  Exp      \-> Var(Id)
+  IntConst \-> <string>
+  Id       \-> <string>
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>strategoxt-distrib-parent</artifactId>
+  <version>1.5.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <parent>
+    <groupId>org.metaborg</groupId>
+    <artifactId>org.metaborg.maven.parent</artifactId>
+    <version>1.5.1-SNAPSHOT</version>
+    <relativePath>../../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
+  </parent>
+
+  <properties>
+    <strategoxt-assembly-location>${basedir}/assembly.xml</strategoxt-assembly-location>
+    <strategoxt-build-location>${basedir}/../</strategoxt-build-location>
+
+    <strategoxt-skip-build>false</strategoxt-skip-build>
+    <strategoxt-skip-assembly>false</strategoxt-skip-assembly>
+    <strategoxt-baseline-version>${metaborg-version}</strategoxt-baseline-version>
+    <strategoxt-baseline-id>strategoxt-distrib</strategoxt-baseline-id>
+
+    <strategoxt-baseline-location>${project.build.directory}/baseline</strategoxt-baseline-location>
+    <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
+    <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
+    <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>linux-os-profile</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <strategoxt-nativepath>share/strategoxt/linux</strategoxt-nativepath>
+      </properties>
+    </profile>
+    <!-- Order of profiles is important here because OSX is of both the unix and mac families, last profile that
+      gets activated overrides the value of the property. -->
+    <profile>
+      <id>macosx-os-profile</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <strategoxt-nativepath>share/strategoxt/macosx</strategoxt-nativepath>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows-os-profile</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <strategoxt-nativepath>share/strategoxt/cygwin</strategoxt-nativepath>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <!-- Position clean plugin before others, to make sure that clean happens before unpacking. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>org.metaborg</groupId>
+              <artifactId>${strategoxt-baseline-id}</artifactId>
+              <version>${strategoxt-baseline-version}</version>
+              <type>tar</type>
+              <classifier>bin</classifier>
+              <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
+            </artifactItem>
+          </artifactItems>
+        </configuration>
+        <executions>
+          <execution>
+            <id>strategoxt-unpack-baseline-build</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>strategoxt-unpack-baseline-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.metaborg</groupId>
+            <artifactId>strategoxt-jar</artifactId>
+            <version>0.1</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar</systemPath>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <skip>${strategoxt-skip-build}</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>strategoxt-ant-build-clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <target>
+                <property
+                  name="baseline"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="sdf2bundle"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="nativepath"
+                  value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                <property
+                  name="install-prefix-out"
+                  value="${strategoxt-dist-location}" />
+                <property
+                  name="subdists-install-prefix"
+                  value="${strategoxt-subdist-location}" />
+                <property
+                  name="bin"
+                  value="${strategoxt-bin-location}" />
+
+                <ant
+                  antfile="build.xml"
+                  dir="${strategoxt-build-location}"
+                  inheritRefs="true"
+                >
+                  <target name="clean" />
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>strategoxt-ant-build</id>
+            <phase>compile</phase>
+            <configuration>
+              <target>
+                <property
+                  name="baseline"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="sdf2bundle"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="nativepath"
+                  value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                <property
+                  name="install-prefix-out"
+                  value="${strategoxt-dist-location}" />
+                <property
+                  name="subdists-install-prefix"
+                  value="${strategoxt-subdist-location}" />
+                <property
+                  name="bin"
+                  value="${strategoxt-bin-location}" />
+
+                <ant
+                  antfile="build.xml"
+                  dir="${strategoxt-build-location}"
+                  inheritRefs="true"
+                >
+                  <target name="install" />
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>${strategoxt-assembly-location}</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <skipAssembly>${strategoxt-skip-assembly}</skipAssembly>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

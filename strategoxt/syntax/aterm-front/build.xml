@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.StrategoXT.atermfront" default="all">
+	<!-- Import Stratego/XT Ant contributions -->
+	<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/aterm-front" />
+
+	<property name="syn" value="syn" />
+	<property name="bin" value="bin" />
+
+	<target name="all" depends="build, install" />
+
+	<target name="build" depends="build-syntax" />
+
+	<target name="build-syntax">
+		<mkdir dir="${bin}/${syn}" />
+
+		<sdf2generated base="${syn}/ATerms" main="ATerms" output="${bin}">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${sdf2bundle}/share/sdf-library/library" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="install">
+		<mkdir dir="${install-location}" />
+		<copy todir="${install-location}">
+			<fileset dir="${bin}" includes="ATerms.str, ATerms.rtg, ATerms.pp*" />
+		</copy>
+
+		<mkdir dir="${install-location}/sdf" />
+		<copy todir="${install-location}/sdf">
+			<fileset dir="${bin}" includes="ATerms.def, ATerms.tbl" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin}" />
+		<delete dir="${install-location}" />
+	</target>
+</project>

@@ -1,0 +1,12 @@
+module test-chain02
+imports
+  libstratego-lib
+
+strategies
+
+  main-test_chain02 =
+    !3 => z
+    ; rules(Foo :+ (x, y, _) -> (<add> (x, 1), y, z))
+    ; rules(Foo :+ (x, y, _) -> (<add> (x, 10), y, z))
+    ; <bigchain-Foo> (0, 0, 0)
+    ; ?(11, 0, 3)

@@ -1,0 +1,16 @@
+/**
+ * Test where quotations are yielded.
+ */
+module cs-test03
+imports AsFix libstratego-lib
+strategies
+
+  main-cs_test03 =
+    test-suite(!"cs-test03", tests)
+
+  tests = 
+    apply-test(!"test 1"
+    , id
+    , !|[ f(a, b) ]|
+    , !appl(prod([],"yield",no-attrs),[102,40,97,44,32,98,41])
+    )

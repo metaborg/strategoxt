@@ -1,0 +1,533 @@
+-----------------------------------------------------------------------
+Stratego/XT 0.17 - released July 2009
+-----------------------------------------------------------------------
+
+---------++!! Summary of Changes
+
+Stratego/XT 0.17 introduces a major improvements across the board,
+including language additions, a new compiler library, numerous
+improvements to the compiler, significant changes to the library
+handling, new libraries for parsing, pretty printing and term
+validation, 64-bit support, stack traces and more.
+
+For this release, over 200 outstanding issues have been addressed,
+much thanks to the efforts of external bug reporters and contributors.
+
+The manual has been updated to reflect the changes made to the
+language and libraries, and the new libraries come with up-to-date
+source code documentation.
+
+%TOC%
+
+---------++ Stratego in Print
+
+M. Bravenboer, K. T. Kalleberg, R. Vermaas, and E. Visser. Stratego/XT
+0.17. A Language and Toolset for Program Transformation. Science of
+Computer Programming, 2008. Special issue on Experimental Systems and
+Tools, http://dx.doi.org/10.1016/j.scico.2007.11.003 
+
+---------++ Stratego Compiler
+
+---------+++ Standard C: Dropped GCC's nested functions
+
+The backend has been changed so that the GCC-specific nested functions
+feature is no longer required. This makes the C-code a lot more
+portable across GCC-supported platforms, since nested functions are
+not reliably supported on all architectures, notably not on MIPS and
+OSX/Intel. Furthermore, this allows Stratego to use other C compilers
+for than GCC for the generation of platform-specific binary code.
+
+   * [<a href="http://bugs.strategoxt.org/browse/STR-697">STR-697</a>] - Standalone strc; allow users to override --cc and ---ld
+   * [<a href="http://bugs.strategoxt.org/browse/STR-119">STR-119</a>] - Replace GCC nested functions by stack-allocated closures as structs
+
+---------+++ Stack traces on "rewriting failed"
+
+The compiler backend and supporting runtime code have been modified to
+provide full stack traces for the dreaded "rewriting failed"
+situations.
+
+Consider the following program:
+
+<verbatim>
+  main = foo
+
+  foo = bar
+
+  bar = fap ; zap
+
+  fap = id
+
+  zap = fail 
+</verbatim>
+
+When executed, it will print:
+
+<verbatim>
+prog: rewriting failed, trace:
+        main_0_0
+        foo_0_0
+        bar_0_0
+        zap_0_0 
+</verbatim>
+
+This also works when you use =io-wrap= and friends, but there are some
+caveats:
+
+   * Only code compiled with the new compiler will show up in the
+     stack trace: if you call old libraries, stack frames for those
+     strategies will be invisble.
+ 
+   * =let= blocks and other reasons for lifting will show up as
+     =lifted_X= frames.
+
+A tiny set of stack introspection strategies for debugging purposes
+has also been introduced.
+
+---------+++ A new "with" construct for rewrite rules
+
+A new =with= construct has been added for rewrite rules, which makes
+use of the stack tracing feature above. A =with= clause works much
+like a regular =where= clause, and can for example be used to assign
+variables for use in the right-hand side of a rule:
+
+<verbatim>
+  desugar:
+    |[ e1 + e2 ]| -> |[ x_add(e1, e2) ]|
+    where
+      <typeof> e1 => Int()
+    ; <typeof> e2 => Int()
+    with
+      x_add := <new-add-operation> (e1, e2)
+</verbatim>
+
+However, unlike the =where= clause, its operations are not allowed to
+fail, or a run-time error will be reported with a stack trace. Thus,
+this addition allows Stratego programmers to explicitly distinguish
+between _conditions_ of a rule (the =where= clause) and _operations_
+that must always succeed (the =with= clause). This helps in
+readability and in debugging errors in rewrite rules. Any failures
+inside a =with= clause are considered programmer errors: the contract
+specified by the =with= clause is then not satisfied (for example, a
+rule may require some dynamic rule to be defined). By immediately
+reporting such errors, this feature allows them to be quickly
+identified, avoiding problems that are only detected in the result of
+a transformation (e.g., after some rules did not fire in a
+topdown(try(s)) strategy).
+
+For every rewrite rule, an unrestricted number of =with= and =where=
+clauses can be used. In strategies, ==with== can be used as a strategy
+invocation, similar to =where= (e.g., =with(&lt;may-not-fail&gt; t)=).
+
+
+---------+++ Compiler library
+
+The compiler has been librarified. Program analysis and transformation
+tools which work on Stratego code may now be based on the Stratego
+compiler library. The intent is to make meta-programming with Stratego
+a lot easier and speedup the Stratego compiler.
+
+   * [<a href="http://bugs.strategoxt.org/browse/STR-311">STR-311</a>]
+     - strc-lib : a library for compilation (meta-programming)
+     Stratego
+
+---------++ Stratego Language
+
+---------+++ Assignment operator
+
+An assignment operator has been added to the language as a more
+attractive syntax for the common pattern =s => t=. In the assignment
+operator, the variable name is now before the right-hand side. Also,
+the right-hand side is a term pattern.
+
+<verbatim>
+  get-signature(|file) :
+    Method(_, returntype, name, types, _, _) -> 
+    MethodSignature(cn, returntype, name, types)
+    where
+      cn := <get-classname> file
+</verbatim>
+
+This used to be written as:
+<verbatim>
+  <get-classname> file => cn
+</verbatim>
+
+Note that this is a purely syntactic change: the variable can only be
+assigned to once.
+
+   * [<a href="http://bugs.strategoxt.org/browse/STR-550">STR-550</a>] - Assignment operator
+
+--------+++ Dynamic rules
+
+---------++++ Improved flow-sensitive transformations
+
+Thanks to Bogdan Dumitriu, the dynamic rule facility of Stratego has been 
+extended to deal with additional control flow constructs, including break, 
+break to label, continue and exceptions (try-catch-finally). Some of the
+dynamic rule strategies, such as =dr-fix-and-intersect= and =dr-fix-and-union=
+have been extended to work with labels, and new dynamic rule prefixes =break-= 
+and =break-to-label-= are introduced. 
+
+A
+<a href="ftp://ftp.strategoxt.org/pub/stratego/SUD06/sud06-bogdan.pdf">presentation</a> 
+from Stratego User Days 2006 provides a high-level walk-through. 
+
+---------++++ Scoped global variables
+
+Stratego now supports *scoped* global variables. In the context of a
+dynamic rules section one can now write
+<pre>
+    rules( Foo := &lt;compute&gt; )
+</pre>
+which abbreviates the following commonly used programming pattern:
+<pre>
+    x := &lt;compute&gt;
+    ; rules( Foo : _ -> x )
+</pre>
+The value bound in the assignment can be retrieved by the application &lt;Foo&gt;. 
+The usual scoping features of dynamic rules apply to global variable as well.
+For more information see this 
+[[http://blog.eelcovisser.net/index.php?/archives/53-Global-Variables.html][blog]].
+
+---------++++ Chained dynamic rules
+
+A useful extension to the standard strategies generated for invoking
+dynamic rules such as bagof-Foo, once-Foo, etc. 
+
+The idea is that it is in general useful to apply a sequence of
+dynamic rules, but not produce all possible results, but chain each
+result to the next dynamic rule invocation.
+
+Suppose that you have two dynamic rules defined:
+
+<verbatim>
+ Foo : x -> (1, x)
+ Foo : x -> (2, x)
+</verbatim>
+
+With these two rules defined, applying <chain-Foo> 0 will result in
+(2, (1, 0)).
+
+In this way, you can apply a series of dynamic rules to a term. Note
+that you can achieve this with repeat(once-Foo) as well, but once-Foo
+will remove the rule from the environment, which is not always
+desirable.
+
+While chain-Foo only applies the rules visible in the current scope,
+bigchain-Foo applies the rules from all scopes.
+
+---------+++ External Constructor Declarations
+
+   * [<a href="http://bugs.strategoxt.org/browse/STR-672">STR-672</a>]: fix multiple external definitions problems
+
+While proper strategy definitions that are imported as externals are
+not exported as externals from a library (as per August 2006),
+constructors imported by a library, were also exported by that
+library. This caused congruences to be regenerated, possibly not in
+that same library, but in a library one step further in the import
+chain. Thus, the external definitions for congruences from an imported
+library, prevented generation of new congruences. However, since
+imported external definitions are not exported, the next library does
+not see those congruence definitions, and will re-generate them;
+giving rise to a warning when the external definition for this new
+congruence is imported in another application or library.
+
+To solve this issue constructors are now treated in the same way as
+strategy definitions.
+
+There is now a notion of "external" constructor declarations. Syntax:
+
+<verbatim>
+  external Foo : A * B -> C
+</verbatim>
+
+These external constructor declarations are exported by a library along
+with the external definitions for the strategies in the library. Thus,
+importing libraries and programs can use these constructors in rules
+and strategies.
+
+However, external constructors are not exported from an importing
+library. Just like external definitions are not exported from an
+importing library. This entails that a third library that imports the
+second, does not get the constructor declarations of the first. In order
+to use those, the first library needs to be imported explicitly. Here is
+an example:
+
+<verbatim>
+Library A
+-----------------
+module A
+  constructors
+    Foo : A
+----------------->
+module libA
+  constructors
+    external Foo : A
+-----------------
+
+Library B
+-----------------
+module B
+  imports libA
+  strategies
+    bar = !Foo()
+    // constructor Foo is available through libA import
+----------------->
+module libB
+  strategies
+    external bar
+    // only strategy bar is exported, not constructor Foo
+-----------------
+
+Library or Application C
+-----------------
+module C
+  imports libB
+  strategies
+    baz = !Foo(); ...; bar
+          // error! libB does not export constructor Foo
+------------------
+
+Library or Application C // corrected
+-----------------
+module C
+  imports libB libA
+  strategies
+    baz = !Foo(); ...; bar
+    // Foo is imported through libA
+------------------
+</verbatim>
+
+This change may break existing code; explicit imports of indirectly
+imported libraries are needed. In practice, the change had a minimal
+impact on the code in Stratego/XT and derived projects. 
+
+
+---------+++ Rule syntax in let
+
+The =let= construct now allows the defition of rules in addition to strategies:
+
+<verbatim>
+  let R : p1 -> p2
+  in 
+    ...
+  end
+</verbatim>
+
+---------+++ Import ATerm from file
+
+A new language construct called =import-term= was added which allows
+the embedding of terms (data) directly into the program.
+
+<verbatim>
+  get-pp-table = import-term(pptable.trm)
+</verbatim>
+
+This removes the need for external data files, such as parse and
+pretty-print tables. The resulting executable is self-contained, thus
+making deployment of your program transformation tools easier.
+
+   * [<a href="http://bugs.strategoxt.org/browse/STR-577">STR-577</a>] - Stratego: support import of an ATerm from a file
+
+---------++ Stratego Libraries
+
+A new discipline for library naming and usage is introduces in
+0.17. The standard library is now named =libstratego-lib=, whereas the
+XTC library is named =libstratego-xtc=. Additional libraries have been
+added for parsing, pretty printing and term validation, see below.
+
+---------+++ Migrating from XTC to libraries
+
+To avoid the term serialization paid when composing transformation
+pipelines using XTC, the compiler and all supporting tools have been
+rearchitected as libraries in addition to the familiar XTC
+components.
+
+For Stratego/XT users, the most significant change is that the SGLR
+parser, the various RTG tools and the GPP tools are now available as
+libraries, respectively named =libstratego-sglr=, =libstratego-rtg=
+and =libstratego-gpp=.
+
+The librarification allows parse tables to be loaded once, at startup,
+and used repeatedly when multiple files must be parsed (when using
+XTC, the parse table is loaded by the =sglr= child process every time
+a file must be parsed).
+
+Consider the following program:
+
+<verbatim>
+module foo
+imports
+  libstratego-lib
+  libstratego-sglr
+strategies
+  main =
+    tbl := <import-term(Exp.tbl); open-parse-table>
+    ; <parse-string(|tbl)> "a+b"
+</verbatim>
+
+It assumes the existence of a parse table (=Exp.tbl=). This table is
+included into the program using the =import-term= construct
+(introduced above). The call to =open-parse-table= will register the
+parse table with the =libstratego-sglr= library, and subsequent calls
+to =parse-string= will not need to reload the parse table.
+
+Compiling and executing the program:
+
+<verbatim>
+$ strc -i foo.str $(strcflags stratego-lib stratego-sglr)
+$ ./foo 
+Plus(Var("a"),Var("b"))
+</verbatim>
+
+The resulting program =foo= is now fully self-contained. It does not need
+the =Exp.tbl= file to execute.
+
+API documentation for the Stratego Libraries is available from the
+Documentation page on the Stratego/XT website.
+
+---------+++ strcflags
+
+The new tool =strcflags= makes it no longer necessary to know all the
+details of how to invoke the Stratego compiler when you're using a
+certain library. Given the name of a package or Stratego library, the
+tool returns the flags (such as include paths) for strc.
+
+Example:
+<verbatim>
+$ strc -i foo.str $(strcflags stratego-lib)
+</verbatim>
+
+You can also specify multiple packages. For example, if you're using
+java-front, then you are usually using the Stratego library as well.
+
+<verbatim>
+$ strc -i foo.str $(strcflags stratego-lib java-front)
+</verbatim>
+
+The tool strcflags is a simple wrapper around the tool =pkg-config=,
+which we are using for configuring Stratego/XT packages when building
+packages from source.
+
+To support strcflags with your own packages, add a declaration of a
+variable =strcflags= to the pkg-config =.pc= files.
+
+---------+++ Easy library creation
+
+Creating libraries using the Stratego compiler has never been
+easier. By using the =--library= option to the compiler, all necessary
+library files will be created.
+
+<verbatim>
+$ strc -i foo.str --library
+</verbatim>
+
+The resulting output includes static and dynamic libraries, as well as
+libtool support files:
+
+<verbatim>
+libfoo.a  libfoo.c  libfoo.la  libfoo.lo  libfoo.o  libfoo.rtree  libfoo.so 
+</verbatim>
+
+This option is intended for creating libraries that are not part of an
+autoconf/automake package, similar to invoking =strc= to compile a
+program all the way to an executable.
+
+---------++ Deployment
+
+This release brings about major improvements to the deployment capabilities of 
+Stratego/XT. 
+
+---------+++ Standards-compliant libraries
+
+The Stratego libraries expose various features from the underlying
+platform Stratego/XT executes on. In 0.17, the library has been
+refactored so that the dependence on platforms is clearer, and this
+gives rise to several variants of the library, including one for C99,
+POSIX and one for POSIX+XSI. The great majority of Stratego/XT
+programs, use the high-level strategies for file and term I/O, and
+these programs will be unaffected.
+
+The main benefit of this change is that we can now build all the
+Stratego libraries on platforms that only support functions from
+standard C99 (i.e. not full POSIX). This enables the deployment of
+Stratego applications on such platforms. Some strategies from the
+Stratego library are only available in the POSIX and POSIX+XSI
+extensions. The name of the modules defining these strategies reflect
+this.
+
+   * [STR-613] - Stratego library: Allow creation of library for specific standard (C99, POSIX, POSIX XSI)
+
+---------+++ Native Windows Support (MinGW)
+
+Stratego/XT now supports compiling natively on Microsoft Windows using
+MinGW.  This results in a smaller footprint because of significantly
+fewer and smaller dependencies as compared with Cygwin.
+
+Binaries created for MinGW can be deployed to Microsoft Windows users
+without any dependencies.
+
+For this purpose, the =stratego-libraries= package is also available
+separately from Stratego/XT as source tarball and native Microsoft
+Windows binaries. If you already have Stratego/XT, then there is no
+need to install the =stratego-libraries=.
+
+---------+++ OSX support
+
+Stratego/XT 0.17 now fully supports OSX on <nop>PowerPC as well as Intel CPUs.
+
+---------+++ x86-64 support
+
+Thanks to patches from Eelco Dolstra, the ATerm library now supports
+64-bit machines, and the final blocker preventing Stratego/XT running
+on 64-bit is now removed. This means 64-bit support is finally
+here. Binary packages for 64-bit Linux distributions are provided for
+your convenience.
+
+   * [<a href="http://bugs.strategoxt.org/browse/STR-698">STR-698</a>] - x86_64 support
+
+---------++!! Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.strategoxt.org/Stratego/StrategoRelease017Issues
+
+---------++!! Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.strategoxt.org/Stratego/StrategoRelease017
+
+---------++!! Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://bugs.strategoxt.org/browse/STR
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++!! Contributions
+
+Developments, bug reports, and beta tests carried out by
+
+   * Sigoure Benoit
+   * Eric Bouwers
+   * Martin Bravenboer
+   * Arthur van Dam
+   * Valentin David
+   * Eelco Dolstra
+   * Bogdan Dumitriu
+   * Karl Trygve Kalleberg
+   * Lennart Kats 
+   * Nicolas Pierron
+   * Zef Hemel
+   * Rob Vermaas
+   * Eelco Visser
+
+Thanks!
+
+---------------------------------------------------------------------------------
+

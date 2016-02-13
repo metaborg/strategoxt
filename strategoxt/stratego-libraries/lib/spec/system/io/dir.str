@@ -1,0 +1,24 @@
+/**
+ * Strategies for exploring directories.
+ */
+module system/io/dir
+strategies
+
+  /**
+   * Removes a file from a directory.
+   */
+  remove-file =
+    ?name; prim("SSL_remove", name)
+
+ /**
+  * The  getenv() function searches the environment list for a
+  * string that matches the string pointed to  by  name.   The
+  * strings are of the form name = value. 
+  */
+  getenv = 
+    ?name; prim("SSL_getenv", name)
+
+strategies
+
+  home-dir =
+    <getenv> "HOME"

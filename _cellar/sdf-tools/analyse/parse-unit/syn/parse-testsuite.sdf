@@ -1,0 +1,147 @@
+%%%
+ %% Syntax definition of parse-unit testsuites
+ %%
+ %% @author Martin Bravenboer <martin.bravenboer@gmail.com>
+ %%%
+module parse-testsuite
+imports languages/aterm/syntax/ATerms
+hiddens
+  context-free start-symbols TestSuite
+
+exports
+  sorts TestSuite TopSort Test Input Result 
+  context-free syntax
+    "testsuite" Name Options Test+ -> TestSuite {cons("parse-testsuite")}
+    "topsort" Sort    -> Options {cons("topsort")}
+    "options" Option+ -> Options {cons("options")}
+    OptionValue OptionValue -> Option {cons("option")}
+
+  lexical syntax
+    ~[\ \t\n\r]+ -> OptionValue
+    "test"       -> OptionValue {reject}
+
+  lexical restrictions
+    OptionValue -/- ~[\ \t\n\r]
+
+  %% The description syntax is very ambiguous if comments are allowed around it. So, we forbid comments.
+  syntax
+    "test" <Space-LEX> <Description-CF> <LAYOUT?-CF> <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF> {cons("parse-test")}
+    "test" [\ \t\n\r]+ <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF>  {cons("parse-test")}
+
+  lexical syntax
+    [\ ]+ -> Space
+
+  lexical restrictions
+    Space -/- [\ ]
+
+  context-free syntax
+    "->" "file" PathName -> Result {cons("file")}
+    "->" ATerm           -> Result {cons("pattern")}
+    "_"                  -> ATerm  {cons("wildcard")}
+    "..."                -> { ATerm ","}+ {cons("wildcardvar")}
+
+    "fails"    -> Result {cons("failure")}
+    "succeeds" -> Result {cons("success")}
+
+    "file" PathName -> Input {cons("file")}
+
+  %% allow unquoted upper case AFuns
+  lexical syntax
+    "" -> IdCon {cons("empty")}
+
+  %% empty is ok, but cannot be a complete ATerm.
+  context-free syntax
+    ""-> ATerm {reject}
+
+  %% allow function applications without arguments
+  context-free syntax
+    fun:AFun "(" ")" -> ATerm {cons("fun")}
+
+  sorts 
+  syntax
+    <DQuote1-LEX> <InputChars1-LEX> <DQuote1-LEX> -> <Input-CF> {cons("string")}
+    <DQuote2-LEX> <InputChars2-LEX> <DQuote2-LEX> -> <Input-CF> {cons("string")}
+    <DQuote3-LEX> <InputChars3-LEX> <DQuote3-LEX> -> <Input-CF> {cons("string")}
+    <DQuote4-LEX> <InputChars4-LEX> <DQuote4-LEX> -> <Input-CF> {cons("string")}
+
+    <Bracket1-LEX> <InputChars21-LEX> <CloseBracket1-LEX> -> <Input-CF> {cons("string")}
+    <Bracket2-LEX> <InputChars22-LEX> <CloseBracket2-LEX> -> <Input-CF> {cons("string")}
+    <Bracket3-LEX> <InputChars23-LEX> <CloseBracket3-LEX> -> <Input-CF> {cons("string")}
+    <Bracket4-LEX> <InputChars24-LEX> <CloseBracket4-LEX> -> <Input-CF> {cons("string")}
+
+  sorts Name Description
+  context-free syntax
+    EOLString -> Name {cons("name")}
+    EOLString -> Description {cons("description")}
+
+  sorts Sort EOLString
+  lexical syntax
+    [A-Z]                          -> Sort
+    [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> Sort
+
+    ~[\n]+ -> EOLString
+
+  sorts
+    InputChars1 InputChars2 InputChars3 InputChars4
+    DQuote1 DQuote2 DQuote3
+    InputChars21 InputChars22 InputChars23 InputChars24
+    Bracket1 Bracket2 Bracket3
+
+  lexical syntax
+    ~[\"]* -> InputChars1
+    (~[\"]  | DQuote1)*                      -> InputChars2
+    (~[\"]  | DQuote1 | DQuote2)*            -> InputChars3
+    (~[\"]  | DQuote1 | DQuote2 | DQuote3 )* -> InputChars4
+
+    "\""       -> DQuote1
+    "\"\""     -> DQuote2
+    "\"\"\""   -> DQuote3
+    "\"\"\"\"" -> DQuote4
+
+    ~[\[]* -> InputChars21
+    (~[\[]  | Bracket1)*                        -> InputChars22
+    (~[\[]  | Bracket1 | Bracket2)*             -> InputChars23
+    (~[\[]  | Bracket1 | Bracket2 | Bracket3 )* -> InputChars24
+
+    "["    -> Bracket1
+    "[["   -> Bracket2
+    "[[["  -> Bracket3
+    "[[[[" -> Bracket4
+
+    "]"    -> CloseBracket1
+    "]]"   -> CloseBracket2
+    "]]]"  -> CloseBracket3
+    "]]]]" -> CloseBracket4
+
+  sorts PathName
+  lexical syntax
+    [A-Za-z0-9\-\_\.\\\/]+ -> PathName
+
+  lexical restrictions
+    Sort      -/- [A-Za-z0-9\-]
+    EOLString -/- ~[\n]
+
+    DQuote1   -/- [\"]
+    DQuote2   -/- [\"]
+    DQuote3   -/- [\"]
+
+    Bracket1   -/- [\[]
+    Bracket2   -/- [\[]
+    Bracket3   -/- [\[]
+
+  sorts ShortCom LongCom CommChar Asterisk Eof
+  lexical syntax
+    "//" ~[\n]* ([\n] | Eof) -> ShortCom
+    "/*" CommChar* "*/"      -> LongCom
+
+    ~[\*]      -> CommChar
+
+    "*"        -> Asterisk
+    Asterisk   -> CommChar
+
+  lexical restrictions
+    Asterisk -/- [\/]
+
+  lexical syntax
+    ShortCom 	-> LAYOUT
+    LongCom 	-> LAYOUT

@@ -1,0 +1,7 @@
+[ Read("Stratego-Sugar-3")
+
+, DeleteTerm(Term("ListVar"))
+
+, Reduce
+
+]

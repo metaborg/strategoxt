@@ -1,0 +1,24 @@
+/**
+ * This module provides standard fallbacks to important Stratego strategies.
+ * 
+ * The strategies are usually less efficient or feature rich than
+ * their POSIX+XSI equivalents.
+ *
+ * Warning: this file is currently also included in the POSIX library.
+ */
+module system/c99/file
+strategies
+
+  /**
+   * Alternative to the POSIX+XSI copy-file
+   */
+  copy-file =
+    ?(oldname, newname)
+    ; prim("SSL_copy", oldname, newname)
+
+  /**
+   * Alternative to the POSIX+XSI rename-file
+   */
+  rename-file =
+    ?(oldname, newname)
+    ; prim("SSL_rename", oldname, newname)

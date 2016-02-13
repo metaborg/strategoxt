@@ -1,0 +1,7 @@
+/**
+ * Stratego GPP Library
+ */
+module stratego-gpp
+imports
+  libstratego-xtc
+  stratego/gpp/-

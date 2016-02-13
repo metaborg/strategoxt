@@ -1,0 +1,2 @@
+# typestate annotate test1.til after parsing 
+../typestate/til-typestate -i test1.atil | pp-aterm > test1.ts

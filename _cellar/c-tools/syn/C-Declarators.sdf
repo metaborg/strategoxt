@@ -1,0 +1,26 @@
+module C-Declarators
+imports
+  C-Identifiers
+
+exports
+  sorts Declarator
+  context-free syntax
+    IdDeclarator      -> Declarator
+    TypedefDeclarator -> Declarator
+
+  sorts IdDeclarator
+  context-free syntax
+    Pointer* IDENTIFIER PostfixingAbstractDeclarator?           -> IdDeclarator {cons("IdDecl")}
+    Pointer* "(" IdDeclarator ")" PostfixingAbstractDeclarator? -> IdDeclarator {cons("FunDecl")}
+
+  sorts TypedefDeclarator
+  context-free syntax
+    Pointer* TypedefName PostfixingAbstractDeclarator?               -> TypedefDeclarator {cons("TypedefDeclarator1")}
+    Pointer* "(" TypedefDeclarator ")" PostfixingAbstractDeclarator? -> TypedefDeclarator {cons("TypedefDeclarator2")}
+
+  sorts OldFunDeclarator ParenIdDeclarator 
+  context-free syntax
+    Pointer* ParenIdDeclarator "(" {IDENTIFIER ","}+ ")"         -> OldFunDeclarator     {cons("OldFunction1")}
+    Pointer* "(" OldFunDeclarator ")" PostfixingAbstractDeclarator? -> OldFunDeclarator     {cons("OldFunction2")}
+    IDENTIFIER                                                     -> ParenIdDeclarator
+    "(" ParenIdDeclarator ")"                                    -> ParenIdDeclarator {bracket}

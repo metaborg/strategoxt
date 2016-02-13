@@ -1,0 +1,6 @@
+module stratego-aterm
+imports
+  libstratego-sglr
+  stratego/aterm/PrettyPrint
+  stratego/aterm/Explode
+  stratego/aterm/Map

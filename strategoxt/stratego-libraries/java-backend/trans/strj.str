@@ -1,0 +1,156 @@
+/**
+ * Stratego compiler for Java.
+ *
+ * @author Lennart Kats
+ */
+module strj
+
+imports
+  shared-constructors
+
+  libstrc
+  libstratego-lib
+  libstratego-xtc
+  libstratego-gpp
+  libjava-front
+    
+  strj-options
+  s2j
+  lib/dr-scoping
+
+strategies
+
+  main-strj =
+    strj-parse-options
+  ; main-module-required
+  ; log-timed(
+      xtc-input(strj-or-die)
+    | "Compilation succeeded", 1
+    )
+  ; <exit> 0
+  
+  strj-or-die =
+  	strj
+  <+
+    prim("SSL_stacktrace_get_all_frame_names")
+  ; if-verbose3(
+      report-failure(
+        log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+      ; <exit> 1
+      )
+    )
+  ; log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+  ; <exit> 1
+  
+  strj =
+    if FILE(get-extension => "ctree") then
+      xtc-ensure-file
+    ; strc-get-infile
+    ; read-from
+    ; strc-output-ast
+    <+
+      <get-config> "-i"
+    ; err(|"File does not exist")
+    ; fail
+    else
+      dr-scope-all-verbose(
+        with(<set-config> ("JAVA_PLATFORM", ()))
+      ; strc-front-end
+      )
+    end
+  ; try(mark-always-needed(|<get-config> "-m", 0, 0))
+  ; strc-optimize
+  ; strc-export-external-defs
+  ; strc-output-frontend
+  ; s2j
+  ; with(clean-output-dir)
+  ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
+  
+  clean-output-dir =
+    if <get-config> "--clean" then
+      if <get-config> "-p" then
+        output-dirname
+      ; if file-exists then
+          delete-java-files-in-dir
+        end
+      else
+        warn-msg(|"Ignored --clean option: no package name specified")
+      end
+    end
+  
+  delete-java-files-in-dir =
+    log-timed(
+      with(olddir := <getcwd>)
+    ; finally(
+        chdir
+      ; <readdir> "."
+      ; list-loop(
+          if has-extension(|"java") then
+            remove-file
+          end
+        )
+      , <chdir> olddir
+      )
+    | $[Deleted existing java files in output directory [<output-dirname>]], 1
+    )
+  <+
+    warn(|"Could not clean output directory")
+
+  output-java :
+    ast -> name
+    with
+      name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
+      // UNDONE. VladVergu. FastPretty printing only available in C, no more C backend.
+    // ; if FastPrettyPrinting then
+    //     if-c-platform(
+    //       <parenthesize-Java5; pp-java-native> ast
+    //     ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
+    //     )
+    //   else
+        ;  file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
+        ; box  := <pp-java5-to-abox> ast
+        ; <box2text-stream(|80, file)> box
+        ; <fclose> file
+      // end
+    <+
+      output-java-error
+       
+   external pp-java-native(|)
+
+   // TODO: Override .dep file location
+   
+   output-filename :
+     CompilationUnit(
+       _
+     , _
+     , [ClassDec(ClassDecHead(_, Id(x_name), _, _, _), _)]
+     )
+     -> x_name'
+     with
+       x_name' := <conc-strings> (<output-dirname>, "/", x_name, ".java")
+   
+   output-dirname =
+     OutputDirName
+   <+
+     <get-config> "-o"
+   ; if has-extension(|"java") + has-extension(|"ctree") then
+       dirname
+     end
+   ; try(file-exists <+ mkdir <+ fatal-err(|"Output directory does not exist"))
+   ; rules(OutputDirName := <id>)
+   <+
+     strc-getoutfile(!"")
+   ; dirname
+   ; try(file-exists <+ mkdir)
+   ; rules(OutputDirName := <id>)
+
+   // Using XTC for debugging:
+   // using something like rtg-format-check(true, true|<java-rtg>) is more expensive atm,
+   // because of the import-term involved)
+   output-java-error =
+      with(not(<pp-java5-to-abox> Id("foo") => Id("foo")) | "Internal error: linking against libjava-front failed")
+    ; err-msg(|"Internal error: generated Java AST is malformed")
+    ; write-to => FILE(file)
+    ; try(<xtc-command(!"format-check")> ["--vis", "-i", file, "--rtg", <xtc-find> "Java-15.rtg" | <pass-verbose>])
+    ; log(|Critical(), "Fatal errors encountered in generated code")
+    ; <xtc-exit> 1

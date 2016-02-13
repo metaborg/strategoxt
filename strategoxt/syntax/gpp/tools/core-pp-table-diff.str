@@ -1,0 +1,157 @@
+/**
+ * @author Merijn de Jonge (m.de.jonge@tue.nl)
+ */
+module core-pp-table-diff
+signature
+  constructors
+    Patched       : String -> String
+
+strategies
+
+  /**
+   * @param PpTable
+   * @type  PpTable -> PpTable
+   */
+  core-pptable-diff(|old) =
+    ?new
+    ; oldtbl := <pptable-make-hashtable> [old]
+    ; newtbl := <pptable-make-hashtable> [new]
+      
+    // Find keys of pp tables
+    ; keys-old := <hashtable-keys> oldtbl
+    ; keys-new := <hashtable-keys> newtbl
+    ; keys-common := <isect> (keys-old, keys-new)
+
+    /**
+     * Find obsolete pp entries by calculating the set difference:
+     * old-table \ new-table
+     */
+    ; <diff> (keys-old, keys-new) => obsolete-ones
+    ; map({key:
+        ?key
+        ; <hashtable-get(|key)> oldtbl
+        ; Fst
+        ; pptable-path-to-string
+      })
+    ; try(
+        not([])
+        ; <fprintnl> (stderr(), ["Obsolete entries: ", <id>])
+      )
+
+      /**
+       * Find new pp entries by calculating the set difference:
+       * new-table \ old-table
+       */
+    ; new-ones := <diff> (keys-new, keys-old)
+    ; map({key:
+        ?key
+        ; <hashtable-get(|key)> newtbl
+        ; Fst
+        ; pptable-path-to-string
+      })
+    ; try(
+        not([])
+        ; <fprintnl> (stderr(), ["New entries: ", <id>])
+      )
+
+     /**
+      * Find entries for changed productions, by testing the terminal and
+      * non-terminal symbols (as place holders) Arg2(elem,sub-elem)
+      * elements are checked as Arg(elem) (i.e., their sub-elements are
+      * ignored. If a pp entry in both tables has different terminal
+      * symbols or place holder symbols, the entries are considered
+      * different. This way, we abstract over different BOX expressions.
+      */
+
+    ; old-elements := <map(get-elements(|oldtbl))> keys-common
+    ; new-elements := <map(get-elements(|newtbl))> keys-common
+    ; <diff> (old-elements, new-elements)
+    ; where(
+        changed-ones := <map( \ (key, _, _) -> key \ )>
+      )
+    ; map(\ (_,path,_) -> <pptable-path-to-string> path \ )
+    ; try(
+        not([])
+        ; <fprintnl> (stderr(), ["Changed productions: ", <id>])
+      )
+      
+    // Patch and prune old pp table if required
+    ; if is-patch-enabled then
+        <patch(|oldtbl, newtbl)> (new-ones, changed-ones)
+      end
+
+    ; if is-prune-enabled then
+        <prune(|oldtbl)> obsolete-ones
+      end
+
+    ; if is-patch-enabled + is-prune-enabled then
+        <hashtable-getlist> oldtbl
+        ; map(\  (_, (path,box)) -> PP-Entry(path, box) \ )
+        ; desugar
+        ; !PP-Table(<id>)
+      end
+
+    // If the set [changed-ones, new-ones] is not empty,
+    // and if the --patch switch has not been specified,
+    // we terminate with an exit code of 1 to indicate that the
+    // pretty-print tables are inconsistent.
+    ; if not(is-patch-enabled) then
+        // If tables are inconsistent and not patched or pruned, 
+        // exit with error code 1
+        try(
+          <concat> [changed-ones, new-ones]
+          ; not([])
+          ; <xtc-exit> 1
+        )
+     end
+       
+  get-elements(|tbl) :
+    key -> (key, path, elems)
+    where
+      <hashtable-get(|key)> tbl
+      ; (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ))
+      ; ?(path, elems)
+
+  /**
+   * Construct new pretty-print table from "old-table" by inserting
+   * new pp entries from "new-table"
+   */
+  patch(|oldtbl, newtbl) =
+    ?(new-ones, changed-ones)
+
+    // Insert new entries in "old-table"
+    ; !new-ones
+    ; map(\ x -> <hashtable-put(|x, <hashtable-get(|x)> newtbl)> oldtbl \ )
+
+    // Update changed entries in "old-table" and save old ones
+    // Entries are saved by storing (key,(path,box)) as
+    // (Patched(key),(Patched(path,box))
+    // This way uniq tables are created to store old entries. Later,
+    // patches terms are prefixed by the string '--saved--entry'.
+    ; !changed-ones
+    ; map({oldval: \
+        x -> <hashtable-put(|x, <hashtable-get(|x)> newtbl)> oldtbl
+        where
+          (old1, old2) := <hashtable-get(|x)> oldtbl
+          ; <hashtable-put(|Patched(x), (Patched(old1), old2))> oldtbl
+       \ })
+
+  /**
+   * Construct new pretty-print table from "old-table" by removing obsolete pp
+   * entries  from "old-table"
+   */
+  prune(|oldtbl) =
+    map(\ key -> <hashtable-remove(|key)> oldtbl \)
+   
+  desugar = 
+    topdown( 
+      try(
+        Arg(int-to-string)
+      + Arg2(int-to-string, int-to-string)
+      + SOpt(id, id)
+      + S(escape; double-quote)
+      + selector(int-to-string, id)
+      + \ Patched(Path(x,y)) -> Path(<concat-strings>["--saved-entry--", x],y) \
+      + \ Patched(Path1(x)) -> Path1(<concat-strings>["--saved-entry--", x]) \
+      )
+    )

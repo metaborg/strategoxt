@@ -1,0 +1,29 @@
+module switch-options
+strategies
+
+  SwitchOption(switch, description) =
+      where(<switch; construct-long-switch> () => sw)
+    ; ArgOption(?sw
+      , where(<set-config> (sw, <norm-switch-arg>))
+      , <concat-strings> [sw, " on|off    ", <description> (), " (default: on)"]
+      )
+      
+  if-switch(switch, strat) =
+    if-switch(switch, start, id)
+    
+  if-switch(switch, then-s, else-s) =
+    if <switch; construct-long-switch> (); eval-config-switch then
+      then-s
+    else
+      else-s
+    end
+    
+  eval-config-switch =
+    get-config < ?"on" + id
+
+  norm-switch-arg =
+      lower-case
+    ; (?"off" + ?"on")
+
+  construct-long-switch =
+    <conc-strings> ("--", <id>)

@@ -1,0 +1,14 @@
+module number-syntax-test
+imports libstratego-lib
+rules
+
+  bla : 1 -> 2
+
+  blabla : 0.2 -> 0.1
+
+strategies
+
+  main-number_syntax_test = 
+   <bla> 1 => 2;
+   <blabla> 0.2 => 0.1
+

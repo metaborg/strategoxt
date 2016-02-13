@@ -1,0 +1,11 @@
+module test109
+
+imports libstratego-lib
+
+strategies
+
+  main-test109 = !1 => <foo> => <bar> => 3
+  
+  foo: 1 -> b where 1 with b := 2
+  
+  bar: 2 -> c with 2 where 2 with 2 where c := 3

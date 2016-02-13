@@ -1,0 +1,17 @@
+module pp-box
+imports
+  libstratego-lib
+  libstratego-xtc strategoxt-xtc-tools parse-box
+
+/**
+ * @todo Use libstratego-gpp
+ */
+strategies
+
+  io-pp-box =
+    xtc-io-wrap(
+      xtc-io-transform(box-ensugar)
+    ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Box.pp.af"])
+    ; xtc-abox-format
+    ; xtc-abox2text
+    )

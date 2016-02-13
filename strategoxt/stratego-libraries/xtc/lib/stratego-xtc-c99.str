@@ -1,0 +1,10 @@
+module stratego-xtc-c99
+imports
+  libstratego-lib-c99
+  stratego/xtc/Repository
+  stratego/xtc/Proc
+  stratego/xtc/Register
+
+  stratego/xtc/c99/Proc
+  stratego/xtc/c99/Repository
+  stratego/xtc/c99/xtc-new-file

@@ -1,0 +1,5 @@
+testsuite Expressions
+topsort Exp
+
+test simple addition
+  "2 + 3" -> Mul(...)

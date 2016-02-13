@@ -1,0 +1,257 @@
+/**
+ * Implosion of productions that result in constructor applications.
+ *
+ * An application of a context-free production is transformed
+ * into an actual application of a constructor name to the list
+ * of children. The Stratego primitive \verb|mkterm| takes a pair
+ * of a string \verb|c| and a list of terms \verb|ts| and turns
+ * it into the term \verb|c(ts)|. The constructor \verb|c| is
+ * derived from the production. If it has a \verb|cons(c)|
+ * attribute that attribute is taken. Otherwise the production
+ * should be some derived production for regular expressions.
+ */
+module stratego/asfix/implode/constructor
+strategies
+
+  ReplCons(impl) =
+       ReplNamedCons(impl)
+    <+ ReplAstPattern(impl)
+    <+ ReplConsNil(impl)
+    <+ ReplConsNone(impl)
+    <+ ReplConsIns(impl)
+    <+ ReplConsSome(impl)
+    <+ ReplConsConc(impl)
+
+rules
+
+  ReplNamedCons(impl) : 
+    appl(p, ts){a*} -> c#(<map(impl)>ts){a*}
+    where
+      <get-cons> p => c
+
+  get-cons : 
+    prod(_, _, as) -> x
+    where
+      <oncetd(?cons(x))> as
+
+rules
+
+  /**
+   * Handles the experimental ast annotations.
+   */
+  ReplAstPattern(impl) : 
+    appl(p, ts){a*} -> term{c*}
+    where
+      <get-ast-pattern> p => pattern 
+    ; <map(impl)>ts => is
+    ; {| ReplacePlaceholder: 
+        <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })>is
+      ; !pattern
+      ; rec rec(
+           alltd({ ph, t1, t2, a*, b*, c*:
+             if is-placeholder then
+               ?_{a*}
+               ; get-placeholder => ph
+               ; (  ReplacePlaceholder
+
+                 <+ "conc"#([rec, rec])
+                    ; if "conc"#([is-list, is-list]) then
+                        \ "conc"#([xs, ys]) -> <conc> (xs, ys) \
+                      end
+
+                 <+ ?"yield"#([<ReplacePlaceholder>])
+                    ; asfix-yield-appl
+
+                 <+ log(| Error()
+                        , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
+                                          , <write-to-string>pattern]) ; <exit> 1 )
+               ; if not([] := a*) then
+                   \ t1{b*} -> t1{c*} where c* := <conc> (<map(rec)> a*, b*) \
+                 end
+             else
+               ?_{^[_ | _]}
+               ; \ t1{a*} -> t2{b*} where b* := <map(rec)> a*; t2 := <rec> t1{^[]} \
+             end
+           })
+         )
+      ; ?term{b*}
+      ; if [] := a* then
+          !b*
+        else
+          if [] := b* then
+            <conc> (a*, b*)
+          else
+            !a*
+          end
+        end
+      ; ?c*
+      |}
+
+  /**
+   * @todo Cache the parsed placeholders.
+   */
+  get-ast-pattern : 
+    prod(_, _, as) -> <read-from-string>x
+    where <oncetd(?ast(x))> as
+
+/**
+ * @todo Find a more appropiate place for this.
+ */
+signature
+  constructors
+    ast : Term -> Term
+
+rules
+
+  ReplConsNil(impl) : 
+    appl(p, []) -> []
+    where
+      <is-nil> p
+
+  ReplConsNone(impl) : 
+    appl(p, []) -> None()
+    where
+      <is-none> p
+
+  ReplConsIns(impl) : 
+    appl(p, [t]) -> [<impl>t]
+    where
+      <is-ins> p
+
+/**
+ * In some case a present literal is relevant.
+ */
+rules
+
+  ReplConsIns(impl) : 
+    appl(prod([lit(x)], sym, _), []) -> t
+    where
+      t := <implode-constant-literal(|x)> sym
+
+  ReplConsIns(impl) : 
+    appl(prod([cilit(x)], sym, _), []) -> t
+    where
+      t := <implode-constant-literal(|x)> sym
+
+  implode-constant-literal(|constant) =
+    rec rec(
+      ?cf(<rec>)
+    + ?lex(<rec>)
+    + \ iter(<rec>) -> [<id>] \
+    + \ iter-star(<rec>) -> [<id>] \
+    + \ iter-sep(<rec>, _) -> [<id>] \
+    + \ iter-star-sep(<rec>, _) -> [<id>] \
+    + \ opt(<rec>) -> Some(<id>) \
+    + \ lit(_) -> constant \
+    + \ cilit(_) -> constant \
+    )
+
+rules
+
+  ReplConsSome(impl) : 
+    appl(p, [t]) -> Some(<impl>t)
+    where
+      <is-some> p
+
+  ReplConsConc(impl) : 
+    appl(p, [t1,t2]) -> t
+    where
+      <is-conc> p
+      ; <impl>t1 => ts1
+      ; <impl>t2 => ts2
+      ; (<[] + [id|id]> ts2; <conc>(ts1, ts2)
+          <+ !"Conc"#([ts1, ts2])) => t
+
+  /**
+   * Note: the separator of this concatenation operator is
+   * made into an element of the list. Does this make sense?
+   */
+  ReplConsConc(impl) : 
+    appl(p, [t1,t2,t3]) -> <conc>(<impl>t1, [<impl>t2 | <impl>t3])
+    where
+      <is-conc> p
+
+strategies
+
+  is-nil  = ?prod([], cf(iter-star-sep(_, _)), _)
+  is-nil  = ?prod([], cf(iter-star(_)), _)
+  is-nil  = ?prod([], iter-star-sep(_, _), _)
+  is-nil  = ?prod([], iter-star(_), _)
+
+  is-ins  = ?prod([cf(x)], cf(iter-sep(x,_)), _)
+  is-ins  = ?prod([cf(x)], cf(iter(x)), _)
+  is-ins  = ?prod([x], iter-sep(x,_), _)
+  is-ins  = ?prod([x], iter(x), _)
+
+  is-conc = ?prod([_, _, _], cf(iter(_)), _)
+  is-conc = ?prod([_,    _],    iter(_), _)
+  is-conc = ?prod([_, _, _], cf(iter-star(_)), _)
+  is-conc = ?prod([_, _, _],    iter-star(_), _)
+  is-conc = ?prod([_, _, _, _, _], cf(iter-sep(_, _)), _)
+  is-conc = ?prod([_,    _,    _], iter-sep(_, _), _)
+  is-conc = ?prod([_, _, _, _, _], cf(iter-star-sep(_, _)), _)
+  is-conc = ?prod([_,    _,    _], cf(iter-star-sep(_, _)), _)
+
+  /**
+   * @todo Not sure what this case is for.
+   */
+  is-conc = ?prod([_, _], cf(iter-star-sep(_, _)), _)
+
+  is-none = ?prod([], cf(opt(_)), _)
+  is-none = ?prod([], opt(_), _)
+
+  is-some = ?prod([cf(x)], cf(opt(x)), _)
+  is-some = ?prod([x], opt(x), _)
+
+strategies
+
+  Cns = CnsNil <+ CnsGeneric
+
+rules
+
+  CnsNil : 
+    appl(p, ts) -> []
+    where
+      <ConstrNil> p => c 
+
+  ConstrNil : prod([],cf(iter-star-sep(_,_)),_)     -> "Nil"
+  ConstrNil : prod([],cf(iter-star(_)),_)           -> "Nil"
+  ConstrNil : prod([],iter-star-sep(_,_),_)         -> "Nil"
+  ConstrNil : prod([],iter-star(_),_)               -> "Nil"
+
+  CnsGeneric : 
+    appl(p, ts) -> c#(ts)
+    where <Constr0 <+ Constr1> p => c 
+
+  /**
+   * @todo Optimize the oncetd
+   */
+  Constr0 : 
+    prod(_, _, as) -> x
+    where
+      <oncetd(?cons(x))> as
+
+  Constr1 : prod([cf(x)], cf(iter-sep(x,_)), _)   -> "Ins"
+  Constr1 : prod([cf(x)], cf(iter(x)), _)         -> "Ins"
+  Constr1 : prod([x], iter-sep(x,_), _)           -> "Ins"
+  Constr1 : prod([x], iter(x), _)                 -> "Ins"
+
+  Constr1 : prod([_,_,_,_,_],cf(iter-sep(_,_)),_) -> "Conc"
+  Constr1 : prod([_,_,_],    cf(iter-sep(_,_)),_) -> "Conc" // after layout removal
+  Constr1 : prod([_,_,_],    cf(iter(_)),_)       -> "Conc"
+  Constr1 : prod([_,_],      cf(iter(_)),_)       -> "Conc" // after layout removal
+  Constr1 : prod([_,_,_],    iter-sep(_,_),_)	  -> "Conc"
+  Constr1 : prod([_,_],      iter(_),_)           -> "Conc"
+
+  Constr1 : prod([_,_,_,_,_], cf(iter-star-sep(_,_)),_) -> "Conc"
+  Constr1 : prod([_,_,_],     cf(iter-star-sep(_,_)),_) -> "Conc"
+
+  Constr1 : prod([], cf(opt(_)), _)		  -> "None"
+  Constr1 : prod([], opt(_), _)			  -> "None"
+
+  Constr1 : prod([cf(x)], cf(opt(x)), _)          -> "Some"
+  Constr1 : prod([x], opt(x), _)                  -> "Some"
+
+  Constr23 : 
+    prod(args, cf(iter-sep(x, y)), _) -> c
+    where <(?[cf(x)]; !"Ins" <+ ?[_,_,_,_,_]; !"Conc")> args => c

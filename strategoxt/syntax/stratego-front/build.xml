@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<project name="stratego-front" default="all">
+	<!-- Import Stratego/XT Ant contributions -->
+	<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/stratego-front" />
+	<property name="dep.box" location="../gpp/dist/share/strategoxt/gpp" />
+	
+	
+	<property name="syn" value="syn" />
+	<property name="pp"  value="pp" />
+	<property name="bin" value="bin" />
+	<property name="syn.abs" location="${syn}" />
+	<property name="bin.abs" location="${bin}" />
+
+	<target name="all" depends="build, install" />
+
+	<target name="build">
+		<mkdir dir="${bin}" />
+		<sdf2generated base="${syn}/Stratego" main="Stratego" output="${bin}">
+			<deps>
+				<srcfiles dir="${syn}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<sdf2generated base="${syn}/Stratego-Core" main="Stratego-Core" output="${bin}">
+			<deps>
+				<srcfiles dir="${syn}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<sdf2generated base="${syn}/Stratego-Sugar" main="Stratego-Sugar" output="${bin}">
+			<deps>
+				<srcfiles dir="${syn}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<sdf2generated base="${syn}/Stratego-Amb" main="Stratego-Amb" output="${bin}">
+			<deps>
+				<srcfiles dir="${syn}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<pack-sdf input="${syn}/EmbeddedStratego.sdf" output="${bin}/EmbeddedStratego.def">
+			<sdf-deps>
+				<srcfiles dir="${syn}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</sdf-deps>
+		</pack-sdf>
+		<gen-sdf-mix input="${bin}/Stratego.def" output="${bin}/StrategoMix.sdf" main="Stratego" name="StrategoMix" />
+		<pack-sdf input="${bin}/StrategoMix.sdf" output="${bin}/StrategoMix.def">
+			<args>
+				<arg value="-I" />
+				<arg value="${syn.abs}" />
+			</args>
+			<sdf-deps>
+				<srcfiles dir="${syn}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</sdf-deps>
+		</pack-sdf>
+		<gen-sdf-mix input="${bin}/EmbeddedStratego.def" output="${bin}/EmbeddedStrategoMix.sdf" main="EmbeddedStratego" name="EmbeddedStrategoMix" />
+		<gen-renamed-sdf-module input="${bin}/Stratego.def" output="${bin}/StrategoRenamed.sdf" prefix="Stratego" main="Stratego" name="StrategoRenamed" />
+		<sdf2generated base="${syn}/StrategoStratego" main="StrategoStratego" output="${bin}">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${bin.abs}" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+		<sdf2generated base="${syn}/Stratego-Sugar-in-Stratego" main="Stratego-Sugar-in-Stratego" output="${bin}">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${bin.abs}" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+		<mkdir dir="${bin}/stratego/strc/pp" />
+		<sdf2parenthesize input="${bin}/Stratego.tbl" output="${bin}/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
+		<copy file="${syn}/Stratego-MetaTransition.str" todir="${bin}" />
+		<copy file="${syn}/Stratego-Sugar-MetaTransition.str" todir="${bin}" />
+		<sglri input="${pp}/Stratego-Core-pretty.pp" output="${bin}/Stratego-Core-pretty.pp.af" parsetable="${dep.box}/sdf/pp-table.tbl" />
+		<sglri input="${pp}/Stratego-pretty.pp" output="${bin}/Stratego-pretty.pp.af" parsetable="${dep.box}/sdf/pp-table.tbl" />
+		<sglri input="${pp}/Stratego-Sugar-pretty.pp" output="${bin}/Stratego-Sugar-pretty.pp.af" parsetable="${dep.box}/sdf/pp-table.tbl" />
+	</target>
+
+	<target name="install" depends="build">
+		<mkdir dir="${install-location}" />
+		<copy todir="${install-location}">
+			<fileset dir="${bin}" includes="*Stratego*.str, *Stratego*.rtg, *Stratego*.pp*" />
+			<fileset dir="${bin}" includes="stratego/strc/**/*.str" />
+		</copy>
+		<mkdir dir="${install-location}/sdf" />
+		<copy todir="${install-location}/sdf">
+			<fileset dir="${bin}" includes="*Stratego*.def, *Stratego*.tbl, *Stratego*.sdf" />
+			<fileset dir="${syn}" includes="*.sdf" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin}" />
+		<delete dir="${install-location}" />
+	</target>
+</project>

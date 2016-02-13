@@ -1,0 +1,10 @@
+module prop
+rules
+
+  DN : Not(Not(p)) -> p
+
+  DAOL : And(p, Or(q, r)) -> Or(And(p,q),And(p,r))
+
+
+
+  

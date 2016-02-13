@@ -1,0 +1,13 @@
+/**
+ * Test for STR-626
+ */
+module test103
+imports libstratego-lib
+strategies
+
+  main-test103 =
+    <not(foo)> Some("Hey")
+
+  foo =
+    ?f
+    ; rules(Foo : f#(_) -> [])

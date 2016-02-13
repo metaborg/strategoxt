@@ -1,0 +1,140 @@
+/**
+ * Indent-padding annotation.
+ *
+ * @author Lennart Kats
+ */
+module stratego/asfix/implode/indent-padding
+imports
+  stratego/concrete-syntax/markers
+
+signature constructors
+
+  AddPadding     : Term -> AddPadding
+  PaddingContext : Term -> PaddingContext
+  PaddingId      : Term -> PaddingId
+  PaddingStart   : PaddingStart
+  indentpadding  : Attr
+  parse-tree     : Term * Term -> parse-tree
+  Stop           : Term -> Term
+
+strategies
+    
+  /**
+   * Add an annotation uniquely identifying each {indentpadding} lexical.
+   */
+  AddPaddedLexicalAnno :
+    appl(prod(_, _, attrs([term(indentpadding())])), _) -> <id> {PaddingId(<new>)}
+    
+  ImplodePaddedLexical :
+    appl(prod(_, _, attrs([term(indentpadding())])), _) -> AddPadding(imploded) {PaddingContext(<id>)}
+    with
+      imploded := <asfix-yield-appl>
+
+  AddIndentPadding(|asfix) :
+    AddPadding(t) -> t'
+    with
+      if !asfix => appl(_, _) then
+        if !asfix => _{PaddingId(_)} then
+          t' := <id> // keep constructor (add padding later)
+        else
+          where(
+            padding := <collect-tree-chars-before(?_{PaddingId(_)})> asfix
+            //; <debug(!"  padding1: ")> <write-to-string> <implode-string> <asfix-yield-appl-chars> asfix
+            //; <debug(!"  padding2: ")> <write-to-string> <implode-string> padding
+          )
+        ; if not(<one('\n')> padding) then
+            t' := <id> // keep constructor (add padding later)
+          else
+            t' := <add-indent-padding-string(|asfix)> t
+          end
+        end
+      else
+        t' := <id> // keep constructor (add padding later)
+      end
+
+  /**
+   * The yield of an AsFixTerm are the characters at the leaves of the tree.
+   */
+  asfix-yield-appl-chars =
+    let yield(|chars) =
+            asfix-yield-acc(yield | chars)
+
+     in ?appl(_, <id>)
+      ; yield(|[])
+    end
+  
+  add-indent-padding-string(|asfix) =
+    topdown(try(AddIndentPaddingString(|asfix)))
+  ; conc-to-cons
+  
+  AddIndentPaddingString(|asfix) :
+    AddPadding(s){a*} -> s'
+    with
+      if !a* => [PaddingContext(context)] then
+        asfix'   := <collect-tree-chars-before(?context)> asfix
+      ; padding  := <chars-before-newlines; reverse; chars-to-whitespace> asfix'
+      ; s'       := <conc; implode-string> (padding, <explode-string> s)
+      else
+        s' := s
+      end
+  
+  /**
+   * Collects a reverse list of all characters in a parse tree,
+   * before a certain subtree is encountered.
+   */
+  collect-tree-chars-before(stop):
+    t -> c*
+    with
+      try(?parse-tree(<id>, _))
+    ; c* := <try(?Stop(<id>))> <collect-tree-chars-before-acc(stop | [])>
+  
+  collect-tree-chars-before-acc(stop|c*):
+    appl(_, ts) -> <collect-tree-chars-before-acc(stop|c*)> ts
+
+  collect-tree-chars-before-acc(stop|c*):
+    [] -> c*
+
+  collect-tree-chars-before-acc(stop|c*):
+    [x | xs] -> result
+    with
+      !c* => Stop(_)
+    ; result := c*
+    <+
+      if <is-int> x then
+        c'*    := [x | c*]
+      ; result := <collect-tree-chars-before-acc(stop|c'*)> xs
+      else
+        if <stop> x then
+          result := Stop(c*)
+        else
+          x'     := <collect-tree-chars-before-acc(stop|c*)> x
+        ; result := <collect-tree-chars-before-acc(stop|x')> xs
+        end
+      end
+  
+  collect-tree-chars-before-acc(stop|c*):
+    amb([x | _]) -> <collect-tree-chars-before-acc(stop|c*)> x
+  
+  chars-to-whitespace :
+    [c | c*] -> c'*
+    where
+      if !c => '\t' then
+        c'* := ['\t' | <chars-to-whitespace> c*]
+      else
+        c'* := [' '  | <chars-to-whitespace> c*]
+      end
+    
+  chars-to-whitespace :
+    [] -> []
+
+  chars-before-newlines :
+    [] -> []
+  
+  chars-before-newlines :
+    [c | cs] -> c*
+    where
+      if !c => '\n' + !c => '\r' then
+        c* := []
+      else
+        c* := [c | <chars-before-newlines> cs]
+      end

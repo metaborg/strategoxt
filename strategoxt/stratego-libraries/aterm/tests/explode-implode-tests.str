@@ -1,0 +1,43 @@
+module explode-implode-tests
+imports 
+  libstratego-lib
+  libstratego-aterm
+
+strategies 
+
+  main-explode-implode-tests = 
+    option-wrap(general-options,
+      test-suite(!"explode-implode tests",
+        roundtrip-tests
+      )
+    )
+
+  roundtrip-tests = id
+    ; roundtrip-test(|"1")
+    ; roundtrip-test(|"2")
+
+    ; roundtrip-test(|"\"\"")
+    ; roundtrip-test(|"\"a\"")
+    ; roundtrip-test(|"\"abc\"")
+
+    ; roundtrip-test(|"[]")
+    ; roundtrip-test(|"[1]")
+    ; roundtrip-test(|"[1, 2, 3]")
+
+    ; roundtrip-test(|"()")
+    ; roundtrip-test(|"(1)")
+    ; roundtrip-test(|"(1, 2)")
+    ; roundtrip-test(|"(1, 2, 3)")
+
+    ; roundtrip-test(|"Foo{}")
+    ; roundtrip-test(|"Foo{1}")
+    ; roundtrip-test(|"Foo{1, 2}")
+    ; roundtrip-test(|"Foo{1, 2, 3}")
+
+  roundtrip-test(|s) =
+    apply-test(
+      <conc-strings> ("Roundtrip test ", s)
+    , explode-aterm; implode-aterm
+    , <read-from-string> s
+    , <read-from-string> s
+    )

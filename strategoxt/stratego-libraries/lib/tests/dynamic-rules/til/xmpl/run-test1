@@ -1,0 +1,2 @@
+# run test1.til after parsing and simplification
+echo "10" | ../run/til-run -i test1.sim.atil > test1.run

@@ -1,0 +1,7 @@
+module Stratego-Sugar-and-C-in-Stratego
+imports
+  Stratego-C
+  Stratego-Sugar-in-Stratego
+
+hiddens
+  context-free start-symbols StrategoModule

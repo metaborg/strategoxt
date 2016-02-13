@@ -1,0 +1,158 @@
+/**
+ * strj options
+ *
+ * @see s2j-options
+ *
+ * @author Lennart Kats
+ */
+module strj-options
+
+imports
+  libstratego-lib
+  libstrc
+  s2j-options
+  s2j
+  strj-version
+  strj
+
+strategies
+
+  strj-preinit-options =
+    <set-config> ("VERSION", <strc-version-number>)
+  ; <set-config> ("--verbose", 1)
+  ; <set-config> ("--statistics", 1)
+  ; <set-config> ("-O", 2)
+  ; <set-config> ("-I", [])
+  ; <set-config> ("--no-concrete-syntax-externals", 1)
+  ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib"])
+ 
+  strj-parse-options =
+    with(
+      strj-preinit-options
+    )
+  ; parse-options(
+      strj-options
+    )
+  ; display-version
+  ; if not(output-dirname); <get-config> "-o" then
+      fatal-err-msg(|"Illegal output directory")
+    end
+  ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)); not(<get-config> "-F") then
+      <get-config> "-o"
+    ; fatal-err(|"Output file name is not a legal Java name")
+    end
+  ; if IsIncrementalCompilation; not(<file-exists> $[[<output-dirname>]/Main.java]) then
+      log(|Info(), "No existing output files found; performing initial compilation");
+      rules(IsIncrementalCompilation :- _)
+    end
+  ; if IsIncrementalCompilation then
+      olevel2(
+        fatal-err-msg(|"Inlining not supported with incremental compilation: use -O 1 or lower")
+      )
+    end
+  ; if <get-config> "-o"; base-filename => "main.java" then
+      fatal-err(|"Output file name 'main' is not allowed as it causes problems on case-insensitive file systems; use 'Main' instead")
+    end
+  ; if <get-config> "--library"; not(<get-config> "-p" + <get-config> "-F") then
+      fatal-err-msg(|"No package name specified")
+    end
+  
+  strj-options =
+    input-option
+  <+
+    output-option // TODO: add a -d destination dir option that uses the package name
+  <+
+    ArgOption(
+      "--main" + "-m"
+    , <set-config>("-m", <id>); !()
+    , !"--main f | -m f    Main strategy to compile (default: main)"
+    )
+  <+
+    Option(
+      "--clean" + "-clean"
+    , <set-config> ("--clean", <id>)
+    , !"--clean            Remove all existing Java files in the output directory"
+    )
+  <+
+    s2j-general-options
+        
+  <+ ArgOption(fail, fail, !"")
+  <+ ArgOption(fail, fail, !"Library options:")
+  <+ ArgOption(fail, fail, !"")
+  <+
+    s2j-library-options
+
+  <+ ArgOption(fail, fail, !"")
+  <+ ArgOption(fail, fail, !"Configuration of the Stratego compiler:")
+  <+ ArgOption(fail, fail, !"")
+  <+
+    Option("--ast",
+      where(<set-config>("--ast",())); !(),
+      !"--ast              Produce abstract syntax tree of packed program"
+    )
+  <+
+    Option("-F",           
+      where(<set-config>("-F",())); !(),
+      !"-F                 Produce core after front-end"
+    )
+  <+ 
+    Option("--prefer-str",
+    where(<set-config> ("--prefer-str", "")); !(),
+    !"--prefer-str       Prefer .str files over .rtree files")
+  <+
+    ArgOption("--default-syntax", where(<set-config>("--default-syntax", <id>)),
+	!"--default-syntax syn        use syntax syn as default")
+  <+
+    ArgOption("--cache-dir",
+    where(<set-config> ("--cache-dir", <where(file-exists; filemode; isdir <+ mkdir)>)),
+    !"--cache-dir <dir>  Maintain a compilation cache in <dir>")
+  <+
+    Option("--fusion",     
+    where(<toggle-config>("--fusion",())); !(),
+    !"--fusion           Toggle specialize applications of innermost (default: on)" )
+  <+
+    Option("--asfix",
+    where(<set-config>("--asfix",())); !(),
+    !"--asfix            Concrete syntax parts are not imploded")
+  // UNDONE. VladVergu. No fast pretty printing for Java, no C platform anymore. Removed for bootstrapping.
+  // <+
+  //   Option("--Xfast-pp",
+  //     if-java-platform(warn(|"Fast pretty printing not available on Java"));
+  //     if-c-platform(rules(FastPrettyPrinting: _))
+  //   , !"--Xfast-pp         Use the C-based ugly and fast pretty-printer";
+  //     if-java-platform(fail)
+  //   )
+  <+
+    Option("--Xecj33",
+      rules(OldECJCompatibility: _)
+    , !"--Xecj33           Generate code compatible with ECJ 3.3 and lower";
+      if-java-platform(fail)
+    )
+  <+
+    Option("-c",
+      warn-msg(|"Ignored unsupported option -c")
+    , fail
+    )
+  + Option(
+      "-Xsep-comp-tool"
+    , rules(IsIncrementalCompilation: _);
+      <set-config> ("--library", ());
+      (ManuallySetOptimization <+ <set-config> ("-O", <strc-set-opt-level> 1))
+    , !"--Xsep-comp-tool  Compile based on sep-comp-tool (experimental)"
+    )
+  
+  <+ ArgOption(fail, fail, !"")
+  <+ ArgOption(fail, fail, !"General options:")
+  <+ ArgOption(fail, fail, !"")
+  <+
+    general-options
+  <+
+    Option("-h" + "--help",         
+    where(<set-config> ("--help",())); !(),         
+    !"-h | --help        Show help")
+  <+
+    Option("-v" + "--version",     
+    where(<set-config> ("-v",())); !(),         
+    !"-v | --version     Display program's version")
+  <+
+    stratego-warnings-options

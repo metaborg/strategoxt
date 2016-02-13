@@ -1,0 +1,60 @@
+/**
+ * This module contains strategies for handling bags.
+ *
+ * A bag is a set of elements where each element has an occurence number. Adding
+ * an element to a bag which already exists, will increase the occurence number
+ * for that element by one.
+ *
+ * In the current implementation, bags are represented as lists of 
+ * (element,occurrence) tuples. Adding a new element is done using bag-insert.
+ */
+module collection/list/bag
+imports collection/list/common
+rules
+
+  /**
+   * Inserts a new element into a bag. The element must be on the form
+   * a (element, occurrence) tuple, where occurrence is an integer. The
+   * bag may be empty.
+   * 
+   * Example: <bag-insert> (('a', 1), []) => [('a',1)]
+   *
+   * @type (elem, occur) * List(a) -> List(a)
+   */
+  bag-insert :
+    ((x,j), l) -> 
+    <fetch(\ (y,i) -> (y, <add>(i,j)) where <eq>(y,x) \ ) <+ ![(x,j)|l]> l
+
+  /**
+   * Takes the union of two bags. 
+   *
+   * Example: <bag-union> ([('a',2), ('b',1)], [('a',1)]) => [('b',1),('a',3)]
+   *
+   * @type List(a) * List(a) -> List(a)
+   */
+  bag-union : 
+    (l1, l2) -> <foldr(!l2, bag-insert)> l1
+
+
+  /**
+   * Inserts a new element into a bag. The element must be on the form
+   * a (element, occurrence) tuple, where occurrence is an integer. The
+   * bag may be empty.  The strategy parameter is used to check elements
+   * for equality.
+   *
+   * @param  Used to test equality on elements.
+   * @type   (elem, occurrence) * List(a) -> List(a)
+   */
+  bag-insert(equ) : 
+    ((x,j), l) -> 
+    <fetch(\ (y,i) -> (<equ>(x,y), <add>(i,j)) \ ) <+ ![(x,j)|l]> l
+   
+  /**
+   * Takes the union of two bags. The strategy parameter is used
+   * to check elements for equality.
+   *
+   * @param  Used to test equality on elements.
+   * @type   List(a) * List(a) -> List(a)
+   */
+  bag-union(equ) : 
+    (l1, l2) -> <foldr(!l2, bag-insert(equ))> l1

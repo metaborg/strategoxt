@@ -1,0 +1,67 @@
+/**
+ * Test for $[ string quotation syntax. ]
+ * As this tests for indentation using the regular string syntax,
+ * this test is ironically very badly formatted.
+ */
+module test112
+imports libstratego-lib
+
+strategies
+  
+  show(|s) = where(write-to-string; debug(!s)); say(id)
+
+  main-test112 =
+    x := $[ 1
+            2 ];
+    !$[ Indent me: [x]]; show(|1) =>
+"Indent me: 1
+           2";
+    
+    !$[ Indent
+           me too: [x] ]; show(|2) =>
+"Indent
+   me too: 1
+           2";
+    
+    y := $[- [x] -
+             3];
+    
+    !${ me
+    [three]: {y} }; show(|3) =>
+"me
+[three]: - 1
+           2 -
+           3";
+    
+    !$[]; show(|4) => "";
+    !$[[""]]; show(|5) => "";
+    !$[ - ["a"]
+          b
+      ]; show(|6) =>
+"- a
+  b
+";
+    !$[ 1
+["2"]3]; show(|7) =>
+"1
+23";
+
+    z := "z";
+    !$< <z> <z> $<z>$ >; show(|8) =>
+"z z $z$";
+
+    !$<$ $<x>$ <z>$$>$$ >; show(|9) =>
+"$ $1
+   2$ z$>$";
+
+    !$<$ $<x>$ <z>$<">">$ >; show(|10) =>
+"$ $1
+   2$ z$>$";
+
+    !${ block {"{"} foo $}$  }; show(|11) =>
+"block { foo }";
+
+    !$[ 1[2]3 ]; show(|12) => "123";
+    
+    !$[a\\b]; show(|13); string-length => 4
+

@@ -1,0 +1,167 @@
+/**
+ * Implements Determinization Algorithm DET of TATA (page 24)
+ *
+ * @author Martin Bravenboer
+ */
+module stratego/rtg/determinize
+imports
+  stratego/rtg/signature
+  libstratego-lib
+
+strategies
+
+  rtg-determinize =
+    ?RTG(Start(states-start), ProdRules(trans))
+
+    ; topdown(try(
+          ?Ref(<id>)
+        + rtgdet-normalize-none
+        + rtgdet-normalize-some
+        + rtgdet-normalize-conc
+      ))
+
+    ; where(
+          state-states-d-tbl := <new-hashtable>
+        ; states-d-set := <new-iset>
+        ; trans-d-set := <new-iset>
+        ; reverse-trans-tbl := <new-hashtable>
+        ; symbol-tbl := <new-hashtable>
+      )
+
+    ; rtgdet-init-reverse-trans(|reverse-trans-tbl)
+    ; rtgdet-init-symbol-tbl(|symbol-tbl)
+
+    ; <hashtable-keys> reverse-trans-tbl
+    ; strrtg-repeat(
+        strrtg-list-loop1(
+          rtg-determinize-step(|
+              state-states-d-tbl
+            , states-d-set
+            , reverse-trans-tbl
+            , symbol-tbl
+            , trans-d-set)
+        )
+      )
+
+    ; states-d := <iset-elements> states-d-set
+    ; states-start-d := <rtg-determinize-start-states(|states-start)> states-d
+    ; trans-d := <iset-elements> trans-d-set
+
+    ; where(
+          <iset-destroy> states-d-set
+        ; <iset-destroy> trans-d-set
+        ; <hashtable-destroy> state-states-d-tbl
+        ; <hashtable-destroy> reverse-trans-tbl
+        ; <hashtable-destroy> symbol-tbl
+      )
+
+    ; !RTG(Start(states-start-d), ProdRules(trans-d))
+
+  rtgdet-normalize-none :
+    Appl(Term("None"), []) -> Appl(NoneTerm(), [])
+
+  rtgdet-normalize-some :
+    Appl(Term("Some"), [t]) -> Appl(SomeTerm(), [t])
+
+  rtgdet-normalize-conc :
+    Appl(Term("Conc"), [t1, t2]) -> Appl(ConcTerm(), [t1, t2])
+
+  rtg-determinize-start-states(|states-start) =
+    retain-all(rtg-determinize-start-state(|states-start))
+
+  rtg-determinize-start-state(|states-start) =
+    where(<isect> (<try(?Set(<id>))>, states-start); not(?[]))
+
+  /**
+   * @param Hashtable(State, List(State))
+   * @param Hashtable(State, List(State))
+   * @param IndexedSet(Transition)
+   */
+  rtg-determinize-step(|state-states-d, states-d, reverse-trans, symbol-tbl, trans-d) =
+    ?a@Appl(f, qs)
+
+    ; let get-states-d(|t) =
+            <hashtable-get(|t)> state-states-d <+ ![]
+
+          add-state-d(|q, s) = {ss:
+              ( <hashtable-get(|q)> state-states-d <+ ![])
+              ; ss := <fetch(?s) <+ ![s | <id>]>
+              ; <hashtable-put(|q, ss)> state-states-d
+              ; <iset-add(|s)> states-d
+            }
+
+          add-transition-d(|s) = {p:
+              p := ProdRule(s, [Appl(f, <id>)])
+              ; <iset-add(fail | p)> trans-d
+            }
+
+          // TODO make-set can be more efficient (list is sorted)
+          make-unique-state =
+            quick-sort(term-address-lt)
+            ; !Set(<make-set>)
+
+          get-states-to = {s:
+              ?s; <hashtable-get(|s)> reverse-trans
+            }
+
+          appl-matches-s1n(|s1n) = {f, qs:
+              where(
+                ?Appl(f, qs)
+                ; !(qs, s1n)
+                ; zip({q, s: ?(q, s); <fetch(?Set(<id>); fetch(?q))> s})
+              )
+            }
+
+       in id
+        ; s1n  := <map( \ q -> <get-states-d(|q)> () \ )> qs
+        ; s1n' := <list-combinations> s1n
+
+        // find all applications of this symbol in the RTG
+        ; <hashtable-get(|Appl(f, <length> qs))> symbol-tbl
+
+        // for every application check if it matches s1n
+        ; as := <retain-all(appl-matches-s1n(|s1n))>
+        ; to := <mapconcat(get-states-to)> as
+        ; s  := <make-unique-state> to
+
+        ; <length> s1n'
+        ; <strrtg-list-loop1(add-transition-d(|s))> s1n'
+        ; <map( \ q -> <add-state-d(|q, s)> () \ )> to
+      end
+
+strategies
+
+  rtgdet-init-reverse-trans(|tbl) =
+    where(
+      ?RTG(Start(states-start), ProdRules(<id>))
+      ; map(rtgdet-init-reverse-trans(|tbl))
+    )
+
+  rtgdet-init-reverse-trans(|tbl) =
+    where(
+      ?ProdRule(q, [Appl(f, qs)])
+      ; <hashtable-push(|Appl(f, qs), q)> tbl
+    )
+
+/**
+ * Table that maps Symbols to their Applications
+ */
+strategies
+
+  rtgdet-init-symbol-tbl(|tbl) =
+    where(
+      ?RTG(Start(states-start), ProdRules(<id>))
+      ; map(rtgdet-init-symbol-tbl(|tbl))
+    )
+
+  rtgdet-init-symbol-tbl(|tbl) =
+    where(
+      ?ProdRule(_, [a@Appl(f, qs)])
+      ; <hashtable-push(|Appl(f, <length> qs), a)> tbl
+    )
+
+strategies
+
+  external strrtg-repeat(s |)
+
+  external strrtg-list-loop1(s |)

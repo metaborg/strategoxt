@@ -1,0 +1,22 @@
+module nested-defs01
+imports collection/list/cons collection/tuple/cons
+
+strategies
+
+  main-nested_defs01 = 
+    <test1> ("a", "b") => ("b", "a")
+
+  seq(s1, s2) = 
+    s1; s2
+
+  split(f, g) =
+    !(<f>, <g>)
+
+  test1 = 
+    let f = ?(x, y)
+        g = !(y, x)
+     in seq(f, g)
+    end
+
+
+

@@ -1,0 +1,10 @@
+module mapconcat_1
+
+imports libstratego-lib
+
+strategies
+
+  main-mapconcat_1 =
+    ![1,2,3]
+  ; mapconcat(![<id>]) => [1,2,3]
+

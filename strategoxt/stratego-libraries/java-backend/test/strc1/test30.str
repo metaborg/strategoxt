@@ -1,0 +1,9 @@
+module test30
+strategies
+ 
+  main-test30 = a
+
+  a = b
+  a = id
+
+  b = ?c

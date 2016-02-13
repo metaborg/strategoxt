@@ -1,0 +1,77 @@
+module util/config/keep
+imports util/config/common
+strategies
+
+/**
+  * Sets the 'keep' level.
+  *
+  * E.g. <set-keep>4 sets the keep level to 4.
+  */
+  set-keep = 
+    <set-config> ("--keep", <id>)
+
+ /**
+  * Give the current 'keep' level. Default is 0.
+  */
+  get-keep = 
+    <get-config> "--keep" <+ !0
+
+ /**
+  * Builds command-line parameter for 'keep' levels for calling XT tools.
+  *
+  * E.g. xtc-transform(!"abox2text", pass-keep ) passes the 'keep' level
+  * to abox2text.
+  */
+  pass-keep = 
+    !["--keep", <subt; int-to-string>(<get-config <+ !1> "--keep", 1)]
+
+/**
+ * Apply the supplied strategy if the 'keep' level is set to a value greater
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-keep5(debug) calls the debug strategy if 'keep' level is > 5.
+ *
+ * @param strategy to be applied
+ */
+strategies
+
+  if-keep(s|t) =
+    if <geq> (<get-keep> (), t) then
+      s
+    end
+ 
+  if-keep1(s) = if-keep(s|1)
+  if-keep2(s) = if-keep(s|2)
+  if-keep3(s) = if-keep(s|3)
+  if-keep4(s) = if-keep(s|4) 
+  if-keep5(s) = if-keep(s|5) 
+  if-keep6(s) = if-keep(s|6) 
+  if-keep7(s) = if-keep(s|7)
+
+/**
+ * Apply the supplied strategy if the 'keep' level is set to a value lesser
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-less-keep3(s) calls the s strategy if 'keep' level is < 3.
+ *
+ * @param strategy to be applied
+ */
+strategies
+
+ /** 
+  * @obsolete
+  */ 
+  if-less-keep1(s|t) = if-less-keep(s|t)
+
+  if-less-keep(s|t) = 
+    if <leq> (<get-keep> (), t) then
+      s
+    end
+
+  if-less-keep1(s) = if-keep(s|1)
+  if-less-keep2(s) = if-keep(s|2)
+  if-less-keep3(s) = if-keep(s|3) 
+  if-less-keep4(s) = if-keep(s|4) 
+  if-less-keep5(s) = if-keep(s|5) 
+  if-less-keep6(s) = if-keep(s|6) 
+  if-less-keep7(s) = if-keep(s|7) 

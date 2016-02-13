@@ -1,0 +1,14 @@
+module fusion-test
+imports fusion 
+strategies
+
+  fusion-test-io = 
+    build-test-strategy
+    ; derive-hnf-traversal(|"aux")
+
+  build-test-strategy = !Strat|[
+    {u : ?Inf(u); !Cns(u, Inf(S(u)))}
+    <+ {p,q : ?Nth(Z(), Cns(p, q)); !p}
+    <+ {u,v,w : ?Nth(S(u), Cns(v, w)); !Nth(u, w)}
+  ]|
+

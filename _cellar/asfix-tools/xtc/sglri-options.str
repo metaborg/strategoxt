@@ -1,0 +1,131 @@
+module sglri-options
+signature
+  constructors
+    ParseTable           : ConfigKey
+    StartSymbol          : ConfigKey
+
+strategies
+
+  /**
+   * Parse table
+   */
+  sglr-parse-table-option =
+    ArgOption("-p"
+    , where(<set-config> (ParseTable(), <id>))
+    , !"-p <file.tbl>         Use parse table <file.tbl> (required)"
+    )
+
+  /**
+   * Start symbol
+   */
+  sglr-start-symbol-option =
+    ArgOption("-s" + "--start"
+    , where(<set-config> (StartSymbol(), <id>))
+    , !"-s, --start <symbol>  Start parsing with <symbol>"
+    )
+
+  /**
+   * Ambiguities configuration
+   */
+  sglr-amb-option =
+      ArgOption("-a" + "--amb"
+      , switch id
+          case "off" : set-ambiguity-is-error(true)
+          case "on"  : set-ambiguity-is-error(false)
+          otherwise  : fatal-err(|"Invalid value for option --amb: use on or off")
+        end
+      , !"-a, --amb <on|off>            Enable ambiguities (default: on)"
+      )
+   <+ Option("-A"
+      , set-ambiguity-is-error(true)
+      , !"-A                            Treat ambiguities as errors (alias of --amb off)"
+      )
+
+  /**
+   * Filters
+   */
+  sglr-filter-option =
+      ArgOption("--heuristic-filters"
+      , switch id
+          case "off" : set-heuristic-filters(false)
+          case "on"  : set-heuristic-filters(true)
+          otherwise  : fatal-err(|"Invalid value for option --heurstic-filters: use on or off")
+        end
+      , !"--heuristic-filters <on|off>  Enable heuristic disambiguation filters (default: off)"
+      )
+    + Option("--no-heuristic-filters"
+      , set-heuristic-filters(false)
+      , !"--no-heuristic-filters        Disable heuristic disambiguation filters (deprecated option)"
+      )
+
+  /**
+   * Custom sglr options.
+   */
+  custom-sglr-option =
+    Option("--sglr"
+    , obsolete(!"sglri: --sglr option")
+    , !"--sglr <opt>     Pass <opt> to sglr (obsolete: ignored)"
+    )
+
+  /**
+   * Custom implode-asfix options
+   */
+  custom-implode-option =
+    Option("--impl"
+    , obsolete(!"sglri: --impl option")
+    , !"--impl <opt>     Pass <opt> to implode-asfix (obsolete: ignored)"
+    )
+
+strategies
+
+  preserve-comments-option =
+    Option("--preserve-comments"
+    , <set-preserve-comments> "yes"
+    , !"--preserve-comments   
+                    Preserve source code comments as annotations of the abstract 
+                    syntax tree. [off]"
+    )
+
+  set-preserve-comments =
+    <set-config> ("preserve-comments", <id>)
+
+  must-preserve-comments =
+    <get-config> "preserve-comments" => "yes"
+
+strategies
+
+  preserve-positions-option =
+    Option("--preserve-positions"
+    , <set-preserve-positions> "yes"
+    , !"--preserve-positions
+                    Preserve source code positions in the input file as annotations 
+                    of the abstract syntax tree. [off]"
+    )
+
+  set-preserve-positions =
+    <set-config> ("preserve-positions", <id>)
+
+  must-preserve-positions =
+    <get-config> "preserve-positions" => "yes"
+
+strategies
+
+  preserve-locations-option =
+    Option("--preserve-locations"
+    , <set-preserve-locations> "yes"
+    , !"--preserve-locations
+                    Preserve source code locations in the input file as annotations 
+                    of the abstract syntax tree. [off]"
+    )
+
+  set-preserve-locations =
+    <set-config> ("preserve-locations", <id>)
+
+  must-preserve-locations =
+    <get-config> "preserve-locations" => "yes"
+
+
+
+
+
+

@@ -1,0 +1,4 @@
+module test11
+strategies
+
+  main = rules(Foo: a -> b with clause) // only allowed in regular rules

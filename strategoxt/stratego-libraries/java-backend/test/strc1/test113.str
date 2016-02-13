@@ -1,0 +1,71 @@
+/**
+ * Test for $[ string quotation syntax ] in combination with tabs (STR-783.)
+ * Sander likes tabs.
+ */
+module test113
+
+imports
+  libstratego-lib
+
+strategies
+  
+	show(|s) = where(write-to-string; debug(!s)); say(id)
+
+	main-test113 =
+		s := $[ Sorry! ];
+		!$[		I like tabs.
+					[s]
+				[s]];
+		show(|1) => x =>
+"I like tabs.
+	Sorry!
+Sorry!";
+        !$[ Sometimes, I like tabs with my spaces.
+            	[x]
+            [s]];
+		show(|2) =>
+"Sometimes, I like tabs with my spaces.
+	I like tabs.
+		Sorry!
+	Sorry!
+Sorry!";
+		!$[ Sometimes, I even like spaces with my tabs.
+			  Makes people angry and confused sometimes.
+		      Again, [s] Shame on me. [s]
+		    [s] [s] ];
+		show(|3) =>
+"Sometimes, I even like spaces with my tabs.
+  Makes people angry and confused sometimes.
+  Again, Sorry! Shame on me. Sorry!
+Sorry! Sorry!";
+	n := $[	1
+		2 ];
+	!$[
+		tabs go here
+			0
+			[n]
+	]; show(|4) =>
+"
+	tabs go here
+		0
+		1
+		2
+";
+	!$[	tabs go here
+			0
+			[n]
+	]; show(|5) =>
+"tabs go here
+	0
+	1
+	2
+";
+	!$[ tabs go here
+			0
+			[n]
+	]; show(|6) =>
+"tabs go here
+	0
+	1
+	2
+"

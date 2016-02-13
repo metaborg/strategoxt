@@ -1,0 +1,57 @@
+module C-Types
+imports
+  C-Expressions
+
+exports
+  context-free syntax
+    "typedef"  -> StorageClass {cons("Typedef")}
+    "extern"   -> StorageClass {cons("Extern")}
+    "static"   -> StorageClass {cons("Static")}
+    "auto"     -> StorageClass {cons("Auto")}
+    "register" -> StorageClass {cons("Register")}
+
+  context-free syntax
+    "int"      -> BasicTypeName {cons("Int")}
+    "char"     -> BasicTypeName {cons("Char")}
+    "short"    -> BasicTypeName {cons("Short")}
+    "long"     -> BasicTypeName {cons("Long")}
+    "float"    -> BasicTypeName {cons("Float")}
+    "double"   -> BasicTypeName {cons("Double")}
+    "signed"   -> BasicTypeName {cons("Signed")}
+    "unsigned" -> BasicTypeName {cons("Unsigned")}
+    "void"     -> BasicTypeName {cons("Void")}
+
+  context-free syntax
+    "const"    -> TypeQualifier {cons("Const")}
+    "volatile" -> TypeQualifier {cons("Volatile")}
+
+  context-free syntax
+    ( DeclarationQualifierList | TypeQualifier+ ) {IdDecl ","}* ";" -> Declaration {cons("Declaration")}
+    ( DeclarationSpecifier | TypeSpecifier ) {VarDecl ","}* ";"     -> Declaration {cons("Declaration2")}
+
+  context-free syntax
+    IdDeclarator                   -> IdDecl
+    IdDeclarator "=" Initializer   -> IdDecl      {cons("IdDeclInit")}
+    Declarator                     -> VarDecl
+    Declarator   "=" Initializer   -> VarDecl     {cons("DeclInit")}
+
+    "{" {Initializer ","}+ "}"     -> Initializer {cons("ArrayInit")}
+    "{" {Initializer ","}+ "," "}" -> Initializer {cons("ArrayInitIncomplete")}
+    AssignExp                      -> Initializer {cons("AssignInit")}
+
+  context-free syntax
+    TypeQualifier* TypeOrDefName (TypeQualifier | BasicTypeName)* -> TypeSpecifier {cons("TypeSpec")}
+
+  context-free syntax
+    StorageClass  -> DeclarationQualifier
+    TypeQualifier -> DeclarationQualifier
+
+  context-free syntax
+    TypeQualifier* StorageClass DeclarationQualifier*  -> DeclarationQualifierList {cons("DQualifiers")}
+
+  context-free syntax
+    TypeQualifier* StorageClass DeclarationQualifier* TypeOrDefName
+    (DeclarationQualifier | BasicTypeName)* -> DeclarationSpecifier {cons("DeclSpec")}
+
+    (BasicTypeName | ElaboratedTypeName | TypedefName) -> TypeOrDefName
+

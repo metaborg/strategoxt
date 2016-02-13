@@ -1,0 +1,21 @@
+module io-test10  
+imports libstratego-lib
+signature
+  constructors
+    Zero  : Nat
+    Succ  : Nat -> Nat
+    Plus  : Nat * Nat -> Nat
+
+rules
+
+  A : Plus(Zero, x) -> x
+  B : Plus(Succ(x), y) -> Succ(Plus(x, y))
+
+strategies
+
+  eval = 
+    innermost(A + B)
+
+  main-io_test10 = 
+    <conc>(<id>, ["-i", "io-test10.in", "-o", "io-test10.out"])
+    ; io-wrap(eval)

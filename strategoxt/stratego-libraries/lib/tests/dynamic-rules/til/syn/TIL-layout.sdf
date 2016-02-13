@@ -1,0 +1,7 @@
+module TIL-layout
+exports 
+  lexical syntax
+    [\ \t\n\r]    -> LAYOUT
+    "//" ~[\n\r]* -> LAYOUT
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n\r]

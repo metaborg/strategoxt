@@ -1,0 +1,684 @@
+2005-03-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/sdf2parenthesize.str: --lang was used for several purposes
+	(signature, prefix of rules and more), which leads to problems
+	when using hierachical module names (which contain a / ). This
+	now solved by having specific flags for the various names that can
+	be configured. They all default to --lang, so this will not break
+	existing invocations.
+	
+	* trans/sdf2parenthesize.str: at --verbose info level,
+	sdf2parenthesize now reports the way it is going to use the
+	configuration specified at the command-line.
+
+	* trans/sdf2parenthesize.str: using tool-doc for more attractive
+	help and about.
+
+2005-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/sdf2parenthesize.str: the --lang and --omod are now
+	optional. The values default to the basenem of -i and -o. This
+	makes the tool much easier to invoke. The -m is still required.
+
+2005-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* lib/*: started collecting generic SDF utils in an sdf library
+	for Stratego/XT.
+	
+2005-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/tests/*: implemented a badly needed testsuite
+	for parse-unit.
+
+2005-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/parse-unit.str: fixed the testing of
+	testsuites with 'succeeds' and 'fails' output checks. Output
+	checks are not always patterns.
+	
+2005-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/parse-unit.str: fallback to abstract input is
+	no longer supported. Use --abstract-input to disable parsing of
+	the testsuite by parse-unit.
+
+	* analyse/parse-unit/parse-unit.str: using sglri for parsing
+	testsuites. This is a major improvement of the error reporting of
+	syntactical errors in testsuites.
+	
+	* analyse/parse-unit/Makefile.am: parse-parse-testsuite is now a
+	libexec programs. There is no reason to provide this tool to an
+	ordinary user by default.
+	
+2005-01-22  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/parse-unit.str: set the default verbosity to
+	1 in parse-unit. It will now by default show the test result. Use
+	--verbose 0 or silent if you don't want to see anything.
+
+	* analyse/parse-unit/parse-unit.str: parse-unit is now an input
+	only tool. Structured results could be added as an optional
+	feature, but they mess up the command-line if they are enabled by
+	default.
+	
+2004-09-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/parse-unit.str: parse-unit now has an option
+	to parse a single test and write the the result to the output. In
+	this mode ambiguities are accepted, which is useful for debugging.
+
+	The option for the 'single test mode' is --single <nr> where <nr>
+	is the number in the testsuite (printed when the testsuite is
+	executed).
+
+	The --asfix2 flag can be used to produce asfix2 instead of an AST.
+
+2004-09-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/parse-unit.str: parse-unit now parses the
+	testsuite, so it accepts testsuites concrete syntax. No more
+	parse-parse-testsuite! It will fall back to abstract syntax, so
+	this change should not break anything. The --abstract-input option
+	can be used to declare that you are passing a testsuite in
+	abstract syntax.
+
+2004-08-08  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/parse-unit.str: added the
+	--no-heuristic-filters flag to disable the heuristic -fi
+	(injection count) and -fe (eagerness) disambiguation filters of
+	sglr. Maybe this should be done by default, but it might break
+	stuff.
+
+2004-07-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/sdf2ast-conflicts.str: separate tool for producing a list
+	of conflict information from an SDF syntax
+	definition. Currently, the only conflict information that is
+	produced is a SubtermConflict.
+
+	* trans/sdf2parenthesize.str: use the separate sdf2ast-conflicts
+	tool.
+
+	* trans/sdf2parenthesize.str: produce more Stratego compiler
+	friendly output: for every constructor/pos there is now only a
+	single rewrite rule. This rewrite rule checks for a conflicting
+	subterm in the where clause. This reduces the number of generated
+	rules, the LOC, and it doesn't blow up the compile-match
+	component.
+
+	* trans/sdf2ast-conflicts.str: fixed a major bug in the generation
+	of rewrite rules for chain priorities. I was assuming that the SDF
+	normalizer generates chain priorities for the transitive closure
+	of the priorities that are defined in an SDF syntax
+	definition. For example,
+
+	----------------------------------------------------
+	  context-free priorities
+	      Exp "*" Exp -> Exp
+            > Exp "+" Exp -> Exp
+            > Exp "<" Exp -> Exp 	
+	----------------------------------------------------
+
+	will not result in a chain priority 
+
+	----------------------------------------------------
+	  Exp "*" Exp -> Exp
+        > Exp "<" Exp -> Exp
+	----------------------------------------------------
+
+	sdf2parenthesize now takes the transitive closure itself, and
+	generates all the required rules for chain priorities.
+
+	This bug was revealed by pretty-printing the GNU Classpath source
+	code with the pretty-printer of java-front, which uses the
+	sdf2parenthesize tools for printing parentheses.
+	
+2004-05-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/sdf2parenthesize.str: new tool to generate a Stratego
+	transformation tool that adds the necessary parentheses to an
+	abstract syntax tree. The information is obtained from an SDF
+	syntax definition.
+
+	For example, if Plus is declared to left associative, then the
+	following rule will be generated:
+
+	----------------------------------------------------
+	ExpParenthesize :
+	  Plus(q_15, Plus(o_15, p_15))
+	    ->
+	  Plus(q_15, Parenthetical(Plus(o_15, p_15)))
+	----------------------------------------------------
+
+	A relative priority related example:
+	----------------------------------------------------
+	ExpParenthesize :
+          Mul(Plus(v_2, w_2), u_2)
+	    ->
+	  Mul(Parenthetical(Plus(v_2, w_2)), u_2)
+
+	ExpParenthesize :
+	  Mul(t_2, Plus(v_2, w_2))
+	    ->
+	  Mul(t_2, Parenthetical(Plus(v_2, w_2)))
+	----------------------------------------------------
+
+	The tool supports:
+	o relative priorities
+	  --------------------------------------------------
+	      Exp "&&"  Exp -> Exp
+	  >   Exp "||"  Exp -> Exp
+	  --------------------------------------------------
+	
+	o groups of associative productions
+	  --------------------------------------------------
+	    {left:
+	      Exp "*" Exp -> Exp
+	      Exp "/" Exp -> Exp
+	    } 
+	  > {left:
+	      Exp "+" Exp -> Exp
+	      Exp "-" Exp -> Exp
+	    }
+	  --------------------------------------------------
+
+	o Associativity attributes: non-assoc, assoc, left, right.
+	  --------------------------------------------------
+	    Exp "+"   Exp -> Exp  {left, cons("Plus")}
+	  --------------------------------------------------
+
+	o Kernel SDF associativities
+	  --------------------------------------------------
+	    prod1 assoc prod2
+	  --------------------------------------------------
+
+	To be honest, this is all support because the SDF normalizer is
+	applied ;) .
+
+	Does this solve all the parentheses related problems? No,
+	unfortunately not. The tool does not support {prefer} attributes,
+	which are for example used in the dangling else problem.
+
+	So, if you want to make sure that IfThenElse(_, IfThen(_, _, _),
+	_) is pretty-printed correctly as:
+
+	--------------------------------------------------
+	if a then (if b then c) else d
+	--------------------------------------------------
+
+	then you still need to implement this be hand. I don't have a clue
+	how I could automate this in the generator, since the {prefer}
+	attributes are not really declarative.
+
+	Bug reports are welcome.
+	
+2004-05-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/sdf-spread-cons.str: new tool to annotate all equivalent
+	productions with a constructor, if one of them has a
+	constructor. Not really monkey proof at the moment, but well,
+	Stratego users are no monkeys!
+
+2004-05-01  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/sdf: Kodak Moment! This was the sdf.cons pp-table, def and
+	.tbl (AKA SDF variant 3). They are no longer used.
+	
+2004-05-01  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* Updated to most recent SDF:
+	- sdf-doc
+	- sdf-wf
+	- sdf2sg
+	- sdf-bracket
+	- sdf2asdf
+	- fdl2sdf
+	- sdf2sdf
+	- sdf-regularize
+	- sdf-imports
+
+2004-04-23  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/sdf-cons/sdf-cons.str: upgraded to new SDF syntax.
+	
+2004-04-20  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/sdf-bracket/sdf-bracket.str:
+	- removed GPL license.
+	- don't remove the top level term if it is not the accepted
+	grammar identifier (sdf 2.1)
+	
+2004-02-24  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/sdf-normalize/*: removed.
+
+2004-02-24  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/*: parse-unit now supports wildcards in the
+	specifications of expected results in a testsuite. In error
+	message they appear as "_", which is somewhat poor.
+
+2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
+
+2004-02-19  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/gen-renamed-sdf-module.str: since we are now using the
+	constructors of the SDF2 syntax definition in PGEN 2.0 it is
+	possible to implode the AsFix result of the sdf normalizer instead
+	of a yield followed by a parse. This is major performance
+	improvement. implodePT is used because the output of the
+	normalizer is AsFix2ME.
+
+2004-02-18  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/pack-sdf/pack-sdf.str: now parses sdf modules using the new
+	SDF2 syntax definition of pgen 2.0. 
+
+2004-02-15  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/*: added [ ] delimiters for test input. This
+	is useful for testing typical string literals in programming
+	languages. Writing many double quotes is not very attractive in
+	this case.
+
+	* analyse/parse-unit/*: the test description is now optional. In
+	this case the test input will be shown as the description (or the
+	file name if the input is a file). 
+
+	Example of testsuite without descriptions:
+	----------------------------------------------------
+	testsuite Java Expressions
+	topsort Expr
+
+	test "1 + 2" -> Plus(Int("1), Int("2))
+	
+	test "1++2" fails
+	
+        test "6*7" succeeds
+	----------------------------------------------------
+
+
+2004-02-15  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* analyse/parse-unit/*: designed a concrete syntax for parse-unit
+	testsuites. Parse-unit is now ready for the technology push.
+
+	Example:
+	----------------------------------------------------
+	testsuite RTG nonterminals
+	topsort NonTerm
+
+	test Primitive string
+	  "<string>" -> string
+
+	test Primitive string
+	  "String" -> plain("String")
+
+	test Quoted non terminal 1
+	  "[Bla]"  -> nonterm(quoted([chars("Bla")]))
+
+	test Quoted non terminal 1
+	  "[Bl]a]" fails
+
+	test Quoted non terminal 1
+	  "[Bl]a]" succeeds
+	----------------------------------------------------
+
+	The concrete syntax does not require escaping and that's very
+	convenient in typical parse-testsuites. Instead of escaping
+	special characters you just write more double quotes if your test
+	involves double quotes. Descriptions of tests and testsuite are
+	terminated by an newline. Wildcards are allowed in the syntax, but
+	are not supported in the implementation. Implementing wildcards in
+	parse-unit is a to do.
+
+2004-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/gen-renamed-sdf-module.str: a simple collect over the AST
+	of an SDF definition is not really correct: the definition might
+	contain modules with renamings and aliases.
+
+	The generator now invokes the sdf normalizer in pgen before
+	collecting the sorts. This is very expensive (especially because
+	the resulting AsFix is yielded to a string followed by a parse),
+	but this is n0t really a problem for such a generator. The result
+	is that the generator can now handle all sdf constructs. You can
+	for example rename a module that is itself a renamer as well. How
+	useful.
+
+2004-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* trans/gen-renamed-sdf-module.str: tool to generate a RenamedLang
+	module, which renames all sorts in an SDF syntax definition to
+	more unique names. Such a module is typically used in syntax
+	definitions for concrete syntax. Such modules are boring to write,
+	so they should be generated.
+
+	The tool accept a --scheme flag. The value of this flag must be an
+	ATerm list, with Var(_)s and ATerm Strings. This scheme is used to
+	generate the renamed sort names.
+
+	--prefix Name is sugar for --scheme [Name, Var("Sort")]
+
+	Example:
+	gen-renamed-sdf-module -i Java.def \
+	    --name Java-Prefixed --import Java \
+	    --scheme "[\"Java\", Var(\"Sort\")]"
+
+	Yes, yes, the scheme option is ridiculous ;) .
+
+2004-02-04  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/parse-unit/parse-unit.str: parse unit now fails with exit
+	code 1 if one of the tests fails.
+
+2004-02-01  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/parse-unit/parse-unit.str: binary output for sglr and
+	implode-asfix is *much* faster. It also solves a problem in the
+	aterm library with reading text files: ATreadFromFile returns a
+	segmentation fault after reading about 500 files. Binary aterms
+	don't have this problem for some reason.
+
+2003-12-05  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/pack-sdf/pack-sdf.str: support multiple output formts using
+	the -of (or --output-format) flag. By default pack-sdf from now
+	returns an SDF definition in concrete syntax (-of txt). Other
+	supported output formats are asfix and ast.
+
+	Note that tools must use the new Makefile.xt. Bootstrapped source
+	distributions that include Makefile.xt will only install because
+	the .defs are already included. If this file is removed the
+	package will also need the updated Makefile.xt.
+	
+2003-12-05  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* src/pack-sdf/pack-sdf.str: refactored the entry point (no
+	asfix/text/ast changes yet)
+
+	* src/pack-sdf/pack-sdf.str: sdf module not found is now a fatal
+	error. Execution is thus terminated if a module is not available
+	in the include path.
+
+	* src/pack-sdf/pack-sdf.str: be silent if there is nothing to say:
+	"including" messages are only shown if verbosity is 1.
+
+2003-05-27  Merijn de Jonge  <M.de.Jonge@tue.nl>
+
+	* tohtml-sdf: minor modifucation due to change in tohtml tool
+
+2003-02-28  Martin Bravenboer  <martin.bravenboer@gmail.com>
+
+	* Moved pretty-print table from src/sdf to pp. Renamed to Sdf2.pp
+
+	* xtc/parse-sdf-module: XTC tool to parse SDF module
+
+	* syn/*.sdf using constructors (to be refactored)
+
+	* xtc/pp-sdf.str: XTC tool to pp SDF AST to text
+
+	* xtc/sdf2text.str: XTC part of sdf2text shell script
+
+2003-01-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/sdf2sdf/sdf2sdf.str: Reverse order of tools produced
+	by specified-tools
+
+2003-01-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/sdf-bench/Makefile.am: runbm.str does compile any more
+	because of the stricter use-def analysis in sc. Since the program
+	seems to be obsolete anyway (does anyone use it?), it is not in
+	the build anymore. If still useful it should be modernized. There
+	are probably much better ways to do this now.
+
+2002-12-13  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/sdf2sdf/sdf2sdf.str: Using xtc instead of gt-paths
+
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/lib/sglr.str: using new xtc api
+
+	* Using Makefile.stratego template
+
+2002-09-27  Merijn de Jonge <mdejonge@cwi.nl>
+   * Package now depends on stratego-0.8
+   * sdf-wf: removed use of Obsolete constructor Silent
+
+2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
+   * Replaced dependency on stratego package by a dependency on sc-boot
+     package
+   * sdf-wf: try-debug adapted for changed -S switch handling (constructor
+     Silent no longer exists)
+
+2002-09-17  Eelco Visser  <visser@acm.org>
+
+	* src/pack-sdf/pack-sdf.r: error message when module not found
+
+	* src/lib/sglr.r: debugging output at verbosity level 5
+
+2002-09-07  Eelco Visser  <visser@acm.org>
+
+	* src/pack-sdf/pack-sdf.r: Changed pack-sdf to fail if one or more
+	of the modules are not found. The names of missing modules are
+	printed to stderr.
+
+2002-08-14  Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf2text: removed use of getopts because it is not available on every
+     platform
+
+2002-08-02  Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: updated version requirement for gpp package
+
+2002-06-06  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired some syntax errors that were not detected by the parser of the
+     stratego compiler.
+
+2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired generation of package definition file
+
+2002-05-28  Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+
+2002-05-08  Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf2asdf: renamed Sdf2ASdf.r to Sdf-2-ASdf.r to solve case
+     insensitiveness problems on cygwin platform
+
+
+2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired package dependencies
+
+2002-02-21 Merijn de Jonge <mdejonge@cwi.nl>
+   * src/sdf-pp/Makefile.am: (again) commented out tests to run
+
+2002-02-19 Merijn de Jonge <mdejonge@cwi.nl>
+   * src/fdl2sdf/fdl2sdf.r: bug fix due to incorrect dependency on evaluation
+     order
+
+2002-03-14  Eelco Visser  <visser@acm.org>
+
+	* src/sdf-cons/sdf-cons.r: Upgraded definition of uniquify-constr
+	to tuples
+
+	* src/sdf/sdf.cons.pp: Added pp rule for third argument of Module
+
+2002-02-13 Merijn de Jonge <mdejonge@cwi.nl>
+    * sdf-bracket: Generalized and improved  bracket insertion algorithm.
+    * sdf-bracket/data: Extended testset and added rules to generate test
+      input and test verification data
+    * fdl2sdf: bracket-symbols are no longer inserted in AST of generated
+      SDF module. Use sdf-bracket tool for this purpose
+
+2002-02-12 Merijn de Jonge <mdejonge@cwi.nl>
+    * fdl2sdf: Added bracket-symbol around symbol sequences according to all
+       construct
+
+2002-01-17 Merijn de Jonge <mdejonge@cwi.nl>
+    * Added fdl2sdf which transforms a feature description written in the
+      Feature Description Language (FDL) to SDF.
+
+2001-11-29 Merijn de Jonge <mdejonge@cwi.nl>
+    * Version 0.2 released
+    * Increased version number
+
+2001-11-27 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+   * repaired genconf.sh to really remove temporary files on exit
+
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: updated versions of required packages
+
+2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf-imports/get-modules.r: fixed incorrect grammar identifier
+   * sdf-doc/sdf2sg.r: fixed incorrect grammar identifier
+   * renamed acinclude.m4 to program-check.m4
+   * added new version of program-check.m4
+
+2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated version requirements for required packages sgler and pgen.
+
+2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
+   * configuration of sdf-tools package adapted to make use of
+     AC_PACKAGE_REQUIRE macro in configure.in
+   * sdf/makefile.am: repaired generation of sdf parse tables
+
+2001-11-21 Merijn de Jonge <mdejonge@cwi.nl> 
+    * sdf/Makefile.am: added more generated files to CLEANFILES variable
+
+2001-10-12 Merijn de Jonge <mdejonge@cwi.nl> 
+    * sdf-bench/runbm.r: re-added -n switch to sglr call because it is
+      support again by sglr.
+
+2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * sdf-bench/sglr-stats.sdf: Adapted for sglr version 3.4
+
+2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * added uses of termid strategy
+    * all transformation tools now add grammar identifier to generated output
+    * test sets have been adapted to use grammar identifiers
+    * pack-sdf/pack-sdf.r: Adapted overlays for grammar identifier
+    * sdf/Makefile.am: fixed rule to generate parse table
+    * sdf-cons/sdf-cons.r: output term now also contains grammar identifier
+    * sdf-cons/rm-cons.r: output term now also contains grammar identifier
+
+
+2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Adapted to use io-idwrap and grammar identifiers
+
+2001-10-05 Merijn de Jonge <mdejonge@cwi.nl>
+       * src/sdf/sdf.cons.pp: added pp rule for grammar identification
+         production.
+
+2001-10-01  Eelco Visser  <visser@acm.org>
+
+	* src/*/*.r: Added copyright headers to modules
+
+	* src/sdf-normalize/unfold-literal.r: Reimplemented (and improved)
+	unfolding of literals using dynamic rules. This produces a much
+	shorter specification.
+
+2001-09-29  Eelco Visser  <visser@acm.org>
+
+	* src/sdf2sdf/sdf-regularize.r: 
+	Recognize groups of productions that can be expressed by means of
+	a regular expression. Assumptions: (1) all productions for a sort are
+	in one context-free syntax section (2) all productions are available.
+	Sorts representing regular expressions are replaced by these expressions
+	to improve the abstract syntax of the language (no superfluous injections).
+
+2001-09-21 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Version 0.1 released
+    * Increased version number
+
+2001-09-20 Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf-tools package requires stratego 0.6.1
+
+2001-09-18 Joost.Visser@cwi.nl
+   * All `unglued' tools are now installed also in libexec.
+	
+2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Added -2 switch to sglr calls to force asfix2 output
+
+2001-09-11 Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf-imports/get-modules.r: re-added type annotations. 
+   * pack-sdf/data/src/pack-sdf/data/syntax-test.def.dep.correct: updated
+     because the layout of dependency files has changed.
+
+2001-09-11 Merijn de Jonge <mdejonge@cwi.nl>
+   * src/sdf-imports/get-modules.r: removed type annotations because it is
+     required by stratego 0.6 and above, but the distribution of 0.6 is not
+     correct and 0.6.1 is not released.
+
+2001-09-09  Eelco Visser  <visser@acm.org>
+
+   * src/sdf-imports/get-modules.r: provided type annotation for first
+   argument of get-modules.
+
+2001-09-03 Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf-wf/data/Makefile.am: Added missing files to EXTRA_DIST variable
+   * sdf-normalize/data/Makefile.am: Added missing files to EXTRA_DIST variable
+   * sdf: pretty-print tables fixed
+
+2001-09-01 Merijn de Jonge <mdejonge@cwi.nl>
+   * added missing constructors
+
+2001-08-28 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-imports: bug fix: -g switch still produced ig output (not
+     graphxml)
+
+2001-08-17 Joost.Visser@cwi.nl
+   * Added -e and --short switches to sdf-wf. The first treats
+     warnings as errors. The second produces a short version
+     of the well-formedness report. When both these switches
+     are specified, not report is emitted.
+   
+2001-08-16 Joost.Visser@cwi.nl
+   * sdf-de-normalize now also de-normalizes character classes
+     and literals.
+   
+2001-08-09 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-imports: Adapted graphxml output for fixed graphxml signature
+   * src/sdf-imports: -g switch now produces graphxml output (was import
+     graph format). New -ig switch to get import graph output.
+   * src/sdf-doc: Adapted graphxml output for fixed graphxml signature
+
+2001-06-11 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/lib: intergation module ppp-wrap moved to xt-package
+   * src/sdf-doc: Integertion stuff moved to xt package
+
+2001-06-10 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-normalize/data: added missing file to EXTRA_DIST variable
+
+2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Removed obsolete calls to iowrapO
+   * src/sdf2sdf/sdf2sdf.r: Changed sdfcons to sdf-cons
+   * src/sdf2sdf/data/Makefile.am: added test result file
+
+2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf: Imploded pretty-print tables are now again installed
+   * src/lib/graph-terms.r: moved to graph-tools package
+   * src/sdf-pp: Sdf pretty-print tools added
+   * sdf-tools now depends on graph-tools package
+   * extended gt-paths.r.src
+   * src/sdf-imports: imports tool added
+   * src/sdf-doc: moved graph related stuff to graph-tools package
+   * src/sdf2sdf component added
+
+2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-normalize/asfix2sdf* moved to new package grammar-recovery
+
+2001-06-01 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Most tests are now generated from generic rules in the make_rules file
+
+2001-05-31 Merijn de Jonge <mdejonge@cwi.nl> 
+   * moved src/lib/Char-lib.r to asfix-tools package
+   * Extracted sdf tools from Gramar Tools package 0.7 and created a
+     separated SDF Tools package for them.

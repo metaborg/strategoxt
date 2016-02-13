@@ -1,0 +1,17 @@
+/**
+ * Test for STR-626
+ */
+module test111
+imports libstratego-lib
+
+signature
+  constructors
+    Foo : Bar -> Foo
+    Bar : Term -> Bar
+
+strategies
+
+  main-test111 =
+    foo := "Foo"
+  ; bar := "Bar"
+  ; !foo#([bar#([42])]) => Foo(Bar(42))

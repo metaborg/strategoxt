@@ -1,0 +1,69 @@
+module abox2latex
+imports
+  libstratego-lib
+  libstratego-xtc
+
+strategies
+
+  io-abox2latex =
+    option-wrap(abox2latex-options + io-options, xtc-io(abox2latex))
+
+  abox2latex-options =
+      Option(
+         "--alltt",
+         where(<set-config>("output", "--alltt")),
+         !"--alltt          Produce verbatim-like output with alltt environment")
+    + Option(
+         "--boxenv",
+         where(<set-config>("output", "--boxenv")),
+         !"--boxenv         Produce fully formatted LaTeX output (default)")
+    + ArgOption(
+         "-t" + "--latex-table",
+         where(<set-config> ("--latex-tables", [<id>])),
+         !"-t|--latex-table f  Use LaTeX abbreviaitions from file f")
+    + ArgOption(
+         "-w"+ "--width",
+         where(<set-config> ("--width", <id>)),
+         !"-w|--width w        Use page width w")
+
+  abox2latex =
+     xtc-transform(!"Abox-2-latex", create-abox2latex-args)
+
+  create-abox2latex-args =
+      !["-t", <create-table-file> () | <pass-verbose> ()]
+    ; try(!["-w", <<get-config> "--width"> | <id>])
+    ; try(![<get-config>"output" | <id>])
+
+  create-table-file =
+      (<get-config> "--latex-tables" <+ ![])
+    ; map(ReadFromFile)
+    ; ![ [["->"   , "\\ensuremath{\\rightarrow}"],
+          [ "\\/" , "\\ensuremath{\\vee}"],
+          [ "/\\" , "\\ensuremath{\\wedge}"],
+          [ "=="  , "\\ensuremath{\\equiv}"],
+          [ "++"  , "\\ensuremath{+\\kern-.4em+}"],
+          [ "context-free syntax" , "context-free~syntax"]
+         ]
+       | <id> ]
+    ; concat
+    ; write-to 
+    ; ?FILE(<id>)
+
+/*
+usage:
+  abox2latex [--alltt] [--boxenv] [-h] [-i abox] [-o latex] [-t table ...] [-w width]
+
+where
+  --alltt     Produces LaTeX alltt environment
+  --boxenv    Produces fully formatted boxenv environment (default)
+  -h          Displays usage information.
+  -i abox     Specifies the BOX term to transform.
+  -o latex    Specifies the file name of the resulting LaTeX term.
+  -t table    Table containing box to latex macro mappings
+  -w          Specifies max width of output
+
+This tool reads from standard input (or from the file specified with the
+-i option) a BOX term containing formatting information and writes to
+standard output (or to the file specified with the -o option)
+corresponding LaTeX code.
+*/

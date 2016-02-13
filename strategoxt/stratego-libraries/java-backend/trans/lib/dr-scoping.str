@@ -1,0 +1,50 @@
+/**
+ * @author Lennart Kats
+ */
+module lib/dr-scoping // TODO: move out of 'lib' directory
+
+imports
+  libstratego-lib
+
+strategies
+
+  dr-scope-all-verbose(s) =
+    {| DrScopedRules :
+      dr-scope-all-start
+    ; s
+    <+
+      prim("SSL_stacktrace_get_all_frame_names")
+    ; if-verbose3(
+        report-failure(
+          log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+        ; <exit> 1
+        )
+      )
+    ; dr-scope-all-end; fail
+    |}
+
+  // TODO: remove these definitions
+  internal dr-scope-all-start =
+    where(
+      table := Hashtable(<dr-rule-sets-hashtable>);
+      names := ["DrScopedRules" | <hashtable-keys> table];
+      
+      dr-begin-scopes(|names);
+      rules(DrScopedRules' := names)
+    )
+
+  internal dr-scope-all-end =
+    where(
+      table := Hashtable(<dr-rule-sets-hashtable>);
+      names := <DrScopedRules'>;
+      
+      dr-end-scopes(|names);
+  
+      // Remove other, newly defined rules
+      <diff> (<hashtable-keys> table, names);
+      list-loop(
+        { key: ?key;
+          <hashtable-remove(|key)> table
+        }
+      )
+    )

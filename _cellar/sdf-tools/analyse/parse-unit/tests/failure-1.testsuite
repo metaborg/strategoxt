@@ -1,0 +1,6 @@
+testsuite Expressions
+topsort Exp
+
+test
+  "1 * 2 * 3" -> Mul(Int("1"), Mul(Int("2"), Int("3")))
+

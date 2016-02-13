@@ -1,8 +1,0 @@
-module raise-annotations
-imports libstratego-lib libstrc
-strategies
-
-  raise-annotations-io =
-    io-wrap(
-      raise-annotations
-    )

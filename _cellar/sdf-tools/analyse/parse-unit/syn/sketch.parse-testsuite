@@ -1,0 +1,27 @@
+testsuite RTG nonterminals
+topsort NonTerm
+
+// short comment
+
+test Primitive string
+  "<string>" -> string
+
+test Primitive string
+  "String" -> plain("String")
+
+/* longer comment */
+
+test Quoted non terminal 1
+  "[Bla]"  -> nonterm(quoted([chars("Bla")]))
+
+test Quoted non terminal 1
+  "[Bl]a]" fails
+
+test Quoted non terminal 1
+  "[Bl\]a]" succeeds
+
+test Quoted non terminal 7
+  "[Bl\a]" -> nonterm(quoted([chars("Bl"), escapr-seq(92), chars("a")]))
+
+test Whatever
+  file aap/noot/mies -> Plus(_, Plus(_, _))

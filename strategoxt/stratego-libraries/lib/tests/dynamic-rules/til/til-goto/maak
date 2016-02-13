@@ -1,0 +1,20 @@
+# collect modules 
+pack-sdf -I ../syn -i TIL-goto.sdf -o TIL-goto.def
+
+# generate parse table
+sdf2table -i TIL-goto.def -o TIL-goto.tbl -m TIL-goto
+
+# generate regular tree grammar from syntax definition
+sdf2rtg -i TIL-goto.def -o TIL-goto.rtg -m TIL-goto
+
+# generate Stratego signature from regular tree grammar
+rtg2sig -i TIL-goto.rtg -o TIL-goto.str 
+
+# generate pretty-print table from syntax definition
+ppgen -i TIL-goto.def -o TIL-goto.pp
+
+# generate program to insert parentheses
+sdf2parenthesize -i TIL-goto.def -o til-goto-parenthesize.str -m TIL-goto --lang TIL-goto
+
+# compile the generated program
+strc -i til-goto-parenthesize.str -I ../sig -m io-til-goto-parenthesize -la stratego-lib

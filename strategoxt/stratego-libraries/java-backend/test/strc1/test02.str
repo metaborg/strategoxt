@@ -1,0 +1,11 @@
+module test02
+imports collection/list/cons
+signature
+  constructors
+    Call : a * List(a) -> Call
+
+strategies
+
+  main-test02 = 
+    ?[prog | args];
+    !Call(prog, args)

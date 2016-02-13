@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.antcontrib" default="install">
+
+	<property name="install-prefix-out" location="dist" />
+	<property name="install-prefix" location="${install-prefix-out}" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/antcontrib" />
+
+	<property name="jar.file" value="strategoxt-ant.jar" />
+
+	<target name="install">
+		<jar destfile="${install-location}/${jar.file}" update="false">
+			<fileset dir="." includes="**/*.xml" />
+		</jar>
+	</target>
+
+</project>

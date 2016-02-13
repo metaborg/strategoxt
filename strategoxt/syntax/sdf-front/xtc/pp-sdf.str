@@ -1,0 +1,11 @@
+module pp-sdf
+imports 
+  libstratego-lib
+  libstratego-xtc sdf-xtc-tools
+
+strategies
+  
+  io-pp-sdf =
+    xtc-io-wrap(xtc-pp-sdf2)
+    
+    

@@ -1,0 +1,42 @@
+module stratego-meta-markers
+
+signature
+  constructors
+    ToTerm       : a -> Term       // quotation
+    FromTerm     : Term -> a       // antiquotation
+
+    ToBuild      : a -> Strategy   // quotation denoting !t
+
+    FromApp      : Strategy -> a   // antiquotation denoting <s>
+
+    ToStrategy   : a -> Strategy
+    FromStrategy : Strategy -> a
+
+    WithAnno     : a * ListTerm -> a
+
+    meta-var     : String -> a
+    meta-listvar : String -> a
+    Cong         : String * List(Strategy) -> Strategy
+    Conc         : Term * Term -> Term
+    Ins          : Term -> Term
+
+strategies
+
+  is-anti-quotation =
+      ?FromTerm(_)
+    + ?FromStrategy(_)
+    + ?FromApp(_)
+    + ?meta-var(_)
+    + ?meta-listvar(_)
+
+  is-quotation =
+      ?ToTerm(_)
+    + ?ToBuild(_)
+    + ?ToStrategy(_)
+
+strategies
+
+  all-quotation(s) =
+      ToTerm(s)
+    + ToBuild(s)
+    + ToStrategy(s)

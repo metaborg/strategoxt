@@ -1,0 +1,4 @@
+module xml
+imports xml-lexical xml-document
+hiddens
+  context-free start-symbols Document Content Attribute

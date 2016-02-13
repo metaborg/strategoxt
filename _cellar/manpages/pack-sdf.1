@@ -1,0 +1,173 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "PACK\-SDF" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+pack\-sdf \- packs a set of SDF modules into a single definition
+.SH "SYNOPSIS"
+.HP 9
+\fBpack\-sdf\fR [\-I\ \fIdir\fR\ |\ \-\-include\ \fIdir\fR] [\-Idef\ \fIlang\fR] [\-\-dep\ \fIfile\fR] [\-of\ \fIformat\fR] [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-output\ \fIfile\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+An SDF syntax definition consists of a set of modules.
+\fBpack\-sdf\fR
+collects all modules imported by module
+\fI\fIm\fR\fR
+in file
+\fI\fIm\fR\fR\fI.sdf\fR
+and creates a combined syntax definition in file
+\fI\fIm\fR\fR\fI.def\fR.
+.PP
+The search order for SDF modules is:
+.TP 3
+1.
+The directory of the main module specified with the
+\fB\-i\fR
+option
+.TP
+2.
+The specified include options (\fB\-I\fR), in the order they are given on the command\-line.
+.TP
+3.
+The XTC repository
+.SS "Error Reporting"
+.PP
+\fBpack\-sdf\fR
+checks if the module name specified in an SDF module file, corresponds to the actual filename. Having different names can lead to subtle errors which are difficult to find.
+.PP
+Missing modules will be reported by
+\fBpack\-sdf\fR. Usually, the module is not really missing, but the name of this import is incorrect. Therefore,
+\fBpack\-sdf\fR
+reports the module(s) from where the 'missing' module is imported.
+\fBpack\-sdf\fR
+prints a detailed report of all missing modules and the module where these are imported.
+.SS "Generation of Dependency Files"
+.PP
+\fBpack\-sdf\fR
+supports the creation of a dependency file suitable for inclusion in a
+\fIMakefile\fR.
+AutoXT's
+\fIMakefile.xt\fR
+will instruct
+\fBpack\-sdf\fR
+to do this, so there is no need to specify dependencies of SDF files by hand.
+.SH "OPTIONS"
+.PP
+\fBFile Options\fR
+.TP
+\fB\-\-dep \fR\fB\fIfile\fR\fR\fB.dep\fR
+Write make dependencies to
+\fI\fIfile\fR\fR\fI.dep\fR
+.TP
+\fB\-I \fR\fB\fIdir\fR\fR
+Include modules from directory
+\fIdir\fR.
+\fBpack\-sdf\fR
+will give a warning if the directory does not exist.
+.TP
+\fB\-Idef \fR\fB\fIfile\fR\fR\fB.def\fR
+Include modules from SDF definition in file
+\fI\fIfile\fR\fR\fI.def\fR.
+\fBpack\-sdf\fR
+will give a warning if the file does not exist.
+.TP
+\fB\-of \fR\fB\fIformat\fR\fR
+Use output format
+\fIformat\fR, which must be either of
+txt,
+asfix
+or
+ast.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Issuing the following command will collapse all external SDF modules references found in the
+\fIlang.sdf\fR
+file into one single definition, by searching the local directory, then the
+\fIlang/\fR. The result is written to
+\fIlang.def\fR. All file dependencies will be computed and placed in a
+\fBmake\fR\-compatible file, called
+\fIlang.dep\fR:
+.sp
+.nf
+$ pack\-sdf \-I lang \-\-dep lang.dep \-i lang.sdf \-o lang.def
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

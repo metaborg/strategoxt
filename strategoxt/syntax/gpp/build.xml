@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.StrategoXT.gpp" default="all">
+  <!-- Import Stratego/XT Ant contributions -->
+  <taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml"/>
+
+	<!-- use this for a build with recent strategoxt.jar that has the Ant contributions inside -->
+	<!-- <typedef resource="strategoxt-antlib.xml" /> -->
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt" />
+	<property name="dep.stratego-front" location="../stratego-front/dist/share/strategoxt/stratego-front" />
+
+	<property name="syn.box" value="syn/box" />
+	<property name="syn.pp" value="syn/pp-table" />
+	<property name="syn.box.abs" location="${syn.box}" />
+	<property name="syn.pp.abs" location="${syn.pp}" />
+
+	<property name="bin" value="bin" />
+	<property name="bin.abs" location="${bin}" />
+
+	<target name="all" depends="build, install" />
+
+	<target name="build" depends="build-syntax-box, build-syntax-pp" />
+
+	<target name="build-syntax-box">
+		<mkdir dir="${bin}/${syn.box}" />
+		<sdf2generated base="${syn.box}/Box" main="Box" pp="false" output="${bin}/${syn.box}" />
+		<sdf2generated base="${syn.box}/Stratego-Box" main="Stratego-Box" output="${bin}/${syn.box}">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${dep.stratego-front}" />
+					<arg value="-I" />
+					<arg value="${dep.stratego-front}/sdf" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="build-syntax-pp">
+		<mkdir dir="${bin}/${syn.pp}" />
+		<sdf2generated base="${syn.pp}/pp-table" main="pp-table" output="${bin}/${syn.pp}">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${syn.box.abs}" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+		<sglri input="${syn.pp}/pp-table-pretty.pp" output="${bin}/${syn.pp}/pp-table-pretty.pp.af" parsetable="${bin.abs}/${syn.pp}/pp-table.tbl" />
+	</target>
+	
+	<target name="install" depends="build">
+		
+		<mkdir dir="${install-location}/gpp" />
+    <copy todir="${install-location}/gpp">
+      <fileset dir="${bin}/${syn.box}" includes="Box.pp*, Box.rtg, Box.str, boxstyle.css" />
+    	<fileset dir="${syn.box}" includes="Box.pp*" />
+      <fileset dir="${bin}/${syn.pp}" includes="pp-table*.pp*, pp-table.str" />
+    	<fileset dir="${syn.pp}" includes="pp-table*.pp*" />
+    </copy>
+		
+    <mkdir dir="${install-location}/gpp/sdf" />
+		<copy todir="${install-location}/gpp/sdf">
+		  <fileset dir="${bin}/${syn.box}" includes="*.tbl, *.def" />
+			<fileset dir="${bin}/${syn.pp}" includes="*.tbl, *.def" />
+			<fileset dir="${syn.box}" includes="*.sdf" />
+			<fileset dir="${syn.pp}" includes="*.sdf" />
+    </copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin}" />
+		<delete dir="${install-location}" />
+	</target>
+</project>

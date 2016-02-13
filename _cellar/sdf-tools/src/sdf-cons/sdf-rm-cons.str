@@ -1,0 +1,19 @@
+/**
+ * Removes all cons(...) attributes from the productions in an Sdf grammar.
+ *
+ * @author Joost Visser (Joost.Visser@cwi.nl)
+ */
+module sdf-rm-cons
+imports libstratego-lib Sdf2
+
+strategies
+
+  io-sdf-rm-cons =
+    io-wrap(RmCons)
+
+  RmCons =
+    alltd(attrs(filter(not(?term(cons(_)) + ?cons(_)))))
+
+signature
+  constructors
+    cons: ATerm -> Attribute

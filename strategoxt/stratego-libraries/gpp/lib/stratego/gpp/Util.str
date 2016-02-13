@@ -1,0 +1,94 @@
+module stratego/gpp/Util
+strategies
+
+  gpp-topdown-fputs(|stream) =
+    where(Stream(pointer) := stream)
+    ; topdown(
+        try(
+          is-string
+          ; where(gpp-fputs(|pointer))
+        )
+      )
+
+  /**
+   * Writes a String to a Stream
+   *
+   * @type (String, Stream) -> Stream
+   */
+  gpp-fputs(|stream) =
+    ?str; prim("SSL_fputs", str, stream)
+
+strategies
+    
+  /**
+   * Try to flatten lists but do not change to total number of
+   * elements. This means that empty lists (containg for a single
+   * element) are not removed.
+   */
+  gpp-flat-list =
+    gpp-flat-list(![])
+    
+  gpp-flat-list(cont) =  
+    ?[]; cont
+    
+  gpp-flat-list(cont) =
+    ?[hd | tl]
+    ; if !hd => [] then
+        ![[] | <gpp-flat-list(cont)> tl]
+      else
+        if !hd => [_ | _] then
+          <gpp-flat-list(<gpp-flat-list(cont)> tl)> hd
+        else
+          ![hd | <gpp-flat-list(cont)> tl]
+        end
+      end
+
+strategies
+
+  /**
+   * @type List(S-Option) -> Int
+   */
+  gpp-hs-length = gpp-SOpt-value(|HS()) <+ !1
+  gpp-vs-length = gpp-SOpt-value(|VS()) <+ !0
+  gpp-is-length = gpp-SOpt-value(|IS()) <+ !0
+
+  gpp-SOpt-value(|opt) =
+    fetch(?SOpt(opt, value))
+    ; <string-to-int> value
+
+  gpp-SOpts-of-alignment : AL(sopts) -> sopts
+  gpp-SOpts-of-alignment : AR(sopts) -> sopts
+  gpp-SOpts-of-alignment : AC(sopts) -> sopts
+
+  // Make sure that every element in the list occurs within a R box
+  // For instance:
+  //    [R([],[1,2,3]), a,b,c, R([],[4,5,6])]
+  // is tranformed to
+  //    [R([],[1,2,3]), R([],[a,b,c]), R([],[4,5,6])]
+  gpp-construct-rows =
+    split(id, ![]);
+    rec x ({a,b,xs,ys:
+      ?([],xs);![R([],<reverse>xs)]
+    <+
+      ?([R(a,b)|xs], ys);
+      ![R([],<reverse>ys), R(a,b)|<x>(xs, [] )]
+    <+
+     ?( [a|xs],ys);
+     <x>( xs, [a|ys])
+    }); 
+    filter( not( R(id,[]) ) )
+
+  /**
+   * Calculate relative string length. That is, by taking new lines and
+   * current horizontal position into account
+   * 
+   * <string-length'(x)>"my_string" => 9
+   * <string-length'(x)>"my\nstring" => 6 - x
+   */
+  gpp-rel-string-length(|xpos) =
+    explode-string => chars
+    ; if at-suffix(?['\n' | tail]) then
+        <subt> (<length> tail, xpos)
+      else
+        <length> chars
+      end

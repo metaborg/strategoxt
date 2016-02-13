@@ -1,0 +1,127 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "PARSE\-C" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+parse\-c \- parses a C source file
+.SH "SYNOPSIS"
+.HP 8
+\fBparse\-c\fR [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-output\ \fIfile\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+\fBparse\-c\fR
+is used to parse textual C files and obtain an abstract syntax tree in the ATerm format. It is not a fully featured C front\-end. In particular, it does not do pre\-processing.
+.SH "OPTIONS"
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Consider the C program below, stored in
+\fIhello.c\fR.
+.sp
+.nf
+int main() {
+  printf("Hello, World!");
+}
+.fi
+.PP
+By running the command
+.sp
+.nf
+$ parse\-c \-i hello.c \-o hello.trm
+.fi
+.PP
+we get the following in
+\fIhello.trm\fR:
+.sp
+.nf
+TranslationUnit(
+  [ FunDef(
+      TypeSpec([], Int, [])
+    , IdDecl([], Id("main"), Some(ParamList([])))
+    , Compound(
+        []
+      , [Stat(FunCall(Id("printf"), [StringLit(["\\"Hello, World!\\""])]))]
+      )
+    )
+  ]
+)
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

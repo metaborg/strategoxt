@@ -1,0 +1,194 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "SDF2PARENTHESIZE" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+sdf2parenthesize \- generates a Stratego module that puts parenthetical constructors at the correct places.
+.SH "SYNOPSIS"
+.HP 17
+\fBsdf2parenthesize\fR [\-m\ \fImod\fR\ |\ \-\-main\ \fImod\fR] [\-\-omod\ \fImodule\fR] [\-\-main\-strategy\ \fIstrategy\fR] [\-\-sig\-module\ \fImodule\fR] [\-\-lang\ \fIlang\fR] [\-\-rule\-prefix\ \fIstring\fR] [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-\-check] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+The
+\fBsdf2parenthesize\fR
+utility is used to generate a Stratego transformation tool that adds the necessary parentheses to an abstract syntax tree. The information is obtained from an SDF syntax definition.
+.PP
+The following SDF situations are supported by
+\fBsdf2parenthesize\fR:
+.TP 3
+1.
+Relative priorities
+.sp
+.nf
+    
+Exp "&&"  Exp \-> Exp
+> Exp "||"  Exp \-> Exp
+.fi
+.TP
+2.
+Groups of associative productions
+.sp
+.nf
+    
+{left:
+  Exp "*" Exp \-> Exp
+  Exp "/" Exp \-> Exp
+}
+> {left:
+  Exp "+" Exp \-> Exp
+  Exp "\-" Exp \-> Exp
+  }
+.fi
+.TP
+3.
+Associativity attributes: non\-assoc, assoc, left, right.
+.sp
+.nf
+    
+Exp "+"   Exp \-> Exp  {left, cons("Plus")}
+.fi
+.TP
+4.
+Kernel SDF associativities
+.sp
+.nf
+    
+prod1 assoc prod2
+.fi
+.SH "OPTIONS"
+.PP
+\fBGenerator Options\fR
+.TP
+\fB\-m \fR\fB\fImod\fR\fR, \fB\-\-main \fR\fB\fImod\fR\fR
+Set the main module in the SDF syntax definition to
+\fI\fImod\fR\fR. The default main module is
+\fIMain\fR.
+.TP
+\fB\-\-omod \fR\fB\fImod\fR\fR
+Set the name of the resulting Stratego module. The default is to use the filename (basename, i.e. without file type suffix) of the output file.
+.TP
+\fB\-\-main\-strategy \fR\fB\fIstrategy\fR\fR
+Set the name of the main strategy for the generated tool. The default is to use
+\fBio\-\fR\fB\fImodule\fR\fR, where
+\fImodule\fR
+is the module name.
+.TP
+\fB\-\-sig\-module \fR\fB\fImodule\fR\fR
+Specify the Stratego module which contains the signature for the language. The default is to use
+\fIlanguage\fR, see the
+\fB\-\-lang\fR
+option.
+.TP
+\fB\-\-lang \fR\fB\fIlanguage\fR\fR
+Name of the language. The default is to use the basename of the output file.
+.TP
+\fB\-\-rule\-prefix \fR\fB\fIstring\fR\fR
+Prefix to use for the generated parenthesize rules. The default is to use
+\fIlanguage\fR, see the
+\fB\-\-lang\fR
+option.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Assume
+\fBPlus\fR
+is declared as left associative. In this case,
+\fBsdf2parenthesize\fR
+will create the following rule:
+.sp
+.nf
+    
+ExpParenthesize :
+  Plus(q_15, Plus(o_15, p_15)) \-> Plus(q_15, Parenthetical(Plus(o_15, p_15)))
+.fi
+.PP
+The following shows how
+\fBsdf2parenthesize\fR
+deals with relative priorities.
+.sp
+.nf
+ExpParenthesize :
+  Mul(Plus(v_2, w_2), u_2) \-> Mul(Parenthetical(Plus(v_2, w_2)), u_2)
+
+ExpParenthesize :
+  Mul(t_2, Plus(v_2, w_2)) \-> Mul(t_2, Parenthetical(Plus(v_2, w_2)))
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

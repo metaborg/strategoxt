@@ -1,0 +1,6 @@
+module TIL-calls
+imports TIL-expressions TIL-statements
+exports
+  context-free syntax
+    Id "(" {Exp ","}* ")"     -> Exp  {cons("FunCall")}
+    Id "(" {Exp ","}* ")" ";" -> Stat {cons("ProcCall")}

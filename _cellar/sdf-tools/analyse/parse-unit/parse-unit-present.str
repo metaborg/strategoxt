@@ -1,0 +1,88 @@
+/**
+ * Presentation of parse-unit results
+ */
+module parse-unit-present
+imports
+  libstratego-sglr
+
+strategies
+
+  echo-start =
+    if-verbose1(
+      where(
+        ?parse-testsuite(name(name), _, tests)
+      ; <echo> "-----------------------------------------------------------------------"
+      ; <concat-strings; echo> ["executing testsuite ", name, " with ", <length; int-to-string> tests, " tests"]
+      ; <echo> "-----------------------------------------------------------------------"
+      )
+    )
+
+  echo-results =
+    if-verbose1(
+      where(	
+        ?(name, TestResults(results))
+      ; <echo> "-----------------------------------------------------------------------"
+      ; <conc-strings; echo> ("results testsuite ", name)
+      ; <conc-strings; echo> ("successes : ", <count-in-string(?Success())> results)
+      ; <conc-strings; echo> ("failures  : ", <count-in-string(?Failure())> results)
+      ; <echo> "-----------------------------------------------------------------------"
+      )
+    )
+
+  count-in-string(s) = 
+    filter(s); length; int-to-string
+
+  echo-report =
+    if-verbose1(
+      ?(i, parse-test(description(n), _, expected), result, <id>)
+    ; where(
+        try(
+          ?Success()
+        ; <concat-strings; echo> ["* OK   : test ", <int-to-string> i, " (", n, ")"]
+        )
+      )
+    ; where(
+        try(
+          ?Failure()
+        ; <concat-strings; echo> ["* ERROR: test ", <int-to-string> i, " (", n, ")"]
+        ; try(<echo-parse-result> result)
+        ; try(<echo-expected> expected)
+        )
+      )
+    )
+
+  echo-parse-result :
+    ParseResult(file, Failure(Parse(error))) -> ()
+    where
+        <say(!"  - parsing failed")> ()
+      ; <echo> "......................................................................."
+      ; <report-error(|error)> file
+      ; <echo> "......................................................................."
+
+  echo-parse-result :
+    ParseResult(_, Success(ast)) ->
+      < where(<fprint> (<stderr-stream>, ["  - succeeded: "]))
+      ; <write-in-text-to-stream> (<stderr-stream>, <id>)
+      ; <fprint> (<stderr-stream>, ["\n"])
+      > ast
+
+  echo-expected :
+    pattern(p) ->
+      < hack-aterm-pattern
+      ; implode-aterm
+      ; where(<fprint> (<stderr-stream>, ["  - expected:  "]))
+      ; <write-in-text-to-stream> (<stderr-stream>, <id>)
+      ; <fprint> (<stderr-stream>, ["\n"])
+      > p
+
+  hack-aterm-pattern =
+    topdown(try(
+      \ wildcardvar() -> [fun(quoted("\"...\""))] \
+    + \ wildcard() -> fun(quoted("\"_\"")) \
+    ))
+
+  echo-expected :
+    success() ->  <say(!"  - should succeed")> ()
+
+  echo-expected :
+    failure() ->  <say(!"  - should fail")> ()

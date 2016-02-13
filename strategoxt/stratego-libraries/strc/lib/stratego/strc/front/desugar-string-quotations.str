@@ -1,0 +1,167 @@
+/**
+ * Desugar $[ string quotations. ]
+ *
+ * @author Lennart Kats
+ */
+
+module desugar-string-quotations
+
+strategies
+
+  Desugar :
+    StringQuotation4(s, t*) -> <Desugar> StringQuotation1(s, t*)
+
+  Desugar :
+    StringQuotation3(s, t*) -> <Desugar> StringQuotation1(s, t*)
+
+  Desugar :
+    StringQuotation2(s, t*) -> <Desugar> StringQuotation1(s, t*)
+
+  Desugar :
+    StringQuotation1(s, t*) ->
+    (Term |[ <concat-strings(|)> [t''*] ]|)
+    with
+      t'*     := <normalize-quoted(|s)> t*
+    ; t''*    :=  t'*{"quoted"}
+  
+  normalize-quoted(|padding) =
+    map(try(DesugarToQStr))
+  ; if ?[QStr(_) | _] then
+      // Combine padding before the initial string with the padding inside it
+      [QStr(<conc-strings> (padding, <id>) => initial) | id]
+    ; where(
+        padding'       := <string-as-chars(get-padding-chars)> initial
+      ; padding-length := <padding-length> padding'
+      )
+      // Unpadd the initial string
+    ; [QStr(
+         string-as-chars(
+           remove-padding-single-line(|<padding-length> initial)
+         )
+       )
+      | id
+      ]
+    else
+      where(
+        padding-length := <padding-length> padding
+      )
+    end
+  ; map(try(DesugarQuoted))
+  ; string-quotation-padd(|padding-length)
+  ; try(at-last([QStr(string-as-chars(rtrim(' ' + '\t')))]))
+  ; map(try(DesugarQStr))
+  
+  get-padding-chars =
+    [' ' + '\t' | get-padding-chars]
+  <+
+    ![]
+  
+  padding-length =
+    string-replace(|"\t", "    "); string-length
+  
+  /**
+   * Remove balanced padding from quoted strings,
+   * and expand anti-quotations with padding.
+   *
+   * @param max  Maximum number of padding characters to remove.
+   */
+  string-quotation-padd(|max) =
+    [string-literal-unpadd(|max) => (<id>, max') | string-quotation-padd(|max')]
+  <+
+    [string-escape-padd(|max) | string-quotation-padd(|max)]
+  <+
+    []
+  <+
+    with(fail)
+
+  /**
+   * Remove padding from quoted string literals.
+   *
+   * @type List(List(Char)) -> (List(List(Char)), Int)
+   */
+  string-literal-unpadd(|max) =
+    QStr(string-as-chars(
+      split-at-newlines
+    ; try([id | remove-padding(|max, max) => (<id>, max')])
+    ; separate-by(|['\n'])
+    ; concat
+    ))
+    ; !(<id>, max')
+  
+  /**
+   * Remove padding characters from a list of character lists
+   * (each representing a line).
+   *
+   * @param max  Maximum number of padding characters to remove.
+   * @param n    Current number of padding characters to remove
+   *             (decreases with recursion).
+   *
+   * @type List(List(Char)) -> (List(List(Char)), Int)
+   */
+  remove-padding(|max, n) =
+  	where(<leq> (n, 0) <+ ?[[] | _]) // finished with current line
+  ; [id | remove-padding(|max, max) => (<id>, max')]
+  ; !(<id>, max')
+  <+
+    [?[' '  | <id>] | id]
+  ; remove-padding(|max, <dec> n)
+  <+
+    ?[['\t' | _] | _]
+  ; if <lt> (n, 4) then
+      [id | remove-padding(|max, max) => (<id>, max')]
+    ; !(<id>, max')
+    else
+      [?[_ | <id>] | id]
+    ; remove-padding(|max, <subt> (n, 4))
+    end
+  <+
+    ?[_ | _] // uh oh, non-whitespace character with n > 0; reduce max
+  ; where(max' := <subt> (max, n))
+  ; [id | remove-padding(|max', max') => (<id>, max'')]
+  ; !(<id>, max'')
+  <+
+    []
+  ; !([], max)
+  
+  remove-padding-single-line(|n):
+    s -> s'
+    with
+      ([s'], _) := <remove-padding(|n, n)> [s]
+
+  split-at-newlines =
+    at-suffix(
+       (['\n'       | tl] -> [])
+    <+ (['\r', '\n' | tl] -> [])
+    <+ (['\r'       | tl] -> [])
+    )
+    ; ![<id> | <split-at-newlines> tl]
+    <+ ![<id>]
+  
+  /**
+   * Adjust padding of quoted string escapes.
+   */
+  string-escape-padd(|n) :
+    StringEscape1(s, t) -> <desugar> Term |[ <internal-string-interpolation(|t, ~str:s_padded)> ]|
+    with
+      s_padded := <string-as-chars(!['\n' | <remove-padding-single-line(|n)>])> s
+
+  DesugarQuoted :
+    StringEscape2(s, t) -> StringEscape1(s, t)
+
+  DesugarQuoted :
+    StringEscape3(s, t) -> StringEscape1(s, t)
+
+  DesugarQuoted :
+    StringEscape4(s, t) -> StringEscape1(s, t)
+
+  DesugarQStr :
+    QStr(s) -> Anno(Str(s'), Op("Nil", []))
+    with
+      s' := <conc-strings> ("\"", <string-replace(|"\\", "\\\\")> s, "\"")
+
+  DesugarToQStr :
+    QBr(s) -> QStr(s)
+
+  DesugarToQStr :
+    QDollar(s) -> QStr(s)
+

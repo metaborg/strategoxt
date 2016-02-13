@@ -1,0 +1,10 @@
+module StrategoStrategoForTesting
+imports
+  StrategoStratego
+
+exports
+  context-free start-symbols Strategy PreTerm Term
+  context-free syntax
+    Strategy[[StrategoHost]] -> Strategy
+    PreTerm[[StrategoHost]] -> PreTerm
+    Term[[StrategoHost]] -> Term

@@ -1,0 +1,45 @@
+/**
+ * @author Merijn de Jonge (mdjonge@cwi.nl) 
+ */
+module misc
+
+strategies
+
+  collect'(s) =
+    rec rec(
+      s < ![<id>] +  crush(![], conc, rec)
+    )
+
+  /**
+   * Try to flatten lists but do not change to total number of
+   * elements. This means that empty lists (containg for a single
+   * element) are not removed.
+   */
+  flat-list =
+    flat-list(![])
+    
+  flat-list(cont) =  
+    ?[]; cont
+    
+  flat-list(cont) =
+    ?[hd | tl]
+    ; if !hd => [] then
+        ![[] | <flat-list(cont)> tl]
+      else
+        if !hd => [_ | _] then
+          <flat-list(<flat-list(cont)> tl)> hd
+        else
+          ![hd | <flat-list(cont)> tl]
+        end
+      end
+
+  remove-trailing(s) =
+    rec x (
+      try(
+        [s | id]
+      ; ?[_| <x>]
+      )
+    )
+
+  notify(s) =
+    if-verbose5(debug(s))

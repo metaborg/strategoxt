@@ -1,0 +1,23 @@
+/**
+ * Rewrites RTG to Typematching strategies
+ *
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ */
+module rtg2typematch
+imports 
+  libstratego-lib
+  libstratego-xtc
+  libstratego-rtg
+  regular-xtc-tools
+  module-option
+  core-rtg2typematch
+
+strategies
+  
+  main-rtg2typematch =
+    xtc-io-wrap(module-option,
+      xtc-rtg-front-end
+      ; core-rtg2typematch(|<guess-module-name>)
+      ; write-to
+      ; xtc-pp-abstract-stratego
+    )
