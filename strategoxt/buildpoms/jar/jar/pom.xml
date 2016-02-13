@@ -6,7 +6,7 @@
 
 	<parent>
 		<groupId>org.metaborg</groupId>
-		<artifactId>org.metaborg.maven.parent</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
+		<artifactId>parent</artifactId>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
 </project>
