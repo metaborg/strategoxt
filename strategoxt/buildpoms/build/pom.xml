@@ -6,13 +6,13 @@
 >
   <modelVersion>4.0.0</modelVersion>
   <artifactId>strategoxt-distrib</artifactId>
-  <version>1.4.1</version>
+  <version>1.4.2</version>
   <packaging>pom</packaging>
 
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>strategoxt-distrib-parent</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
     <relativePath>../</relativePath>
   </parent>
 
