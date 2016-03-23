@@ -11,6 +11,7 @@ imports
   libstrc
   separate-compilation/std-lib-utils
   s2j
+  backend-simplify
 
 rules
   
@@ -115,7 +116,7 @@ rules
   
   // For compatibility, allow a number of built-in library names
   translate-library =
-	translate-default-library <+jify
+	translate-default-library <+ jify; dollars-for-capitals
   
   // For compatibility, ignore all built-in library paths
   // (e.g., -la /home/.../java-front.la)

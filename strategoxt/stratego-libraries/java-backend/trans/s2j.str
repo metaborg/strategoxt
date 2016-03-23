@@ -396,12 +396,12 @@ rules
   java-import-to-library-initializer-ref :
     x -> |[ new x'.LibraryInitializer() ]|
     with
-      x' := <jify; dollars-for-capitals> x
+      x' := <jify> x
 	  
   java-import-to-library-initializer-string :
     x -> |[ "~x'" + ".LibraryInitializer"]|
     with
-      x' := <jify; dollars-for-capitals> x
+      x' := <jify> x
 	
 
  
