@@ -15,7 +15,7 @@ public class SingletonStore {
 		try {
 		boolean result = SingletonStore.factoryByNameStrategy.evaluate(context);
 		if (!result) {
-			throw new InterpreterException("Failed to evalute");
+			throw new InterpreterException("Failed to evaluate factory by name strategy");
 		}
 		return ObjectWrapperTerm.<T>get(context.current());
 		} catch (InterpreterException e){

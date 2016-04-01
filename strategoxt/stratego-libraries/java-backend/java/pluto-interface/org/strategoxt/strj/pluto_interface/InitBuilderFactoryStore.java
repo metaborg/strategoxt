@@ -21,14 +21,17 @@ public class InitBuilderFactoryStore extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
 		PlutoIContextManager.pushContext(arg0);
-		SingletonStore.factoryByNameStrategy = arg1[0];
-		int logLevel = Term.asJavaInt(arg2[0]);
-		if (logLevel > 2) {
-			Log.log.setLoggingLevel(Log.ALWAYS);
-		} else {
-			Log.log.setLoggingLevel(Log.CORE);
+		try {
+			SingletonStore.factoryByNameStrategy = arg1[0];
+			int logLevel = Term.asJavaInt(arg2[0]);
+			if (logLevel > 2) {
+				Log.log.setLoggingLevel(Log.ALWAYS);
+			} else {
+				Log.log.setLoggingLevel(Log.CORE);
+			}
+		} finally{
+			PlutoIContextManager.popContext();
 		}
-		PlutoIContextManager.popContext();
 		return true;
 	}
 

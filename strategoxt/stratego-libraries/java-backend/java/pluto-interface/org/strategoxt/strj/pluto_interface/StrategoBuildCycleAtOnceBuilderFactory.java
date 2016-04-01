@@ -106,12 +106,14 @@ public class StrategoBuildCycleAtOnceBuilderFactory
 		
 		public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>> Out_ requireBuild(
 				BuildRequest<In_, Out_, B_, F_> req) throws IOException {
+			PlutoIContextManager.assertHaveContext();
 			return super.requireBuild(req);
 		}
 		
 		@Override
 		public <In_ extends Serializable, Out_ extends Output, B_ extends Builder<In_, Out_>, F_ extends BuilderFactory<In_, Out_, B_>, SubIn_ extends In_> Out_ requireBuild(
 				BuildRequest<In_, Out_, B_, F_> req, OutputStamper<? super Out_> ostamper) throws IOException {
+			PlutoIContextManager.assertHaveContext();
 			return super.requireBuild(req.factory, req.input, ostamper);
 		}
 		

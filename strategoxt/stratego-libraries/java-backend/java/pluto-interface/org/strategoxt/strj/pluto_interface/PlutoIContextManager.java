@@ -20,5 +20,10 @@ public class PlutoIContextManager {
 	public static IContext currentContext() {
 		return contexts.get(contexts.size() -1);
 	}
+	
+	public static void assertHaveContext() {
+		if (contexts.isEmpty())
+			throw new AssertionError("No current context available");
+	}
 
 }

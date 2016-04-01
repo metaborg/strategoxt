@@ -109,6 +109,7 @@ public class StrategoBuilderFactory
 	}
 	
 	private Object readResolve() {
+		PlutoIContextManager.assertHaveContext();
 		return SingletonStore.readFromSingletonStore(name);
 	}
 

@@ -48,6 +48,7 @@ public class RequireBuildStamper extends AbstractPrimitive {
 				System.out.println("Builder factory was null");
 				return false;
 			}
+			PlutoIContextManager.assertHaveContext();
 			Out<IStrategoTerm> result = enclosingBuilder.requireBuild(request, (OutputStamper<Out<IStrategoTerm>>) outputStamper);
 			arg0.setCurrent(result.val());
 			return true;
