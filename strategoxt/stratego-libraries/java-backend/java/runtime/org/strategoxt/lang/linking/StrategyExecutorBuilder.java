@@ -12,6 +12,8 @@ import java.util.Map;
 import org.strategoxt.lang.Strategy;
 
 public class StrategyExecutorBuilder {
+	
+	public static final boolean ENABLE_DYNAMIC_EXECUTOR_TRACES = true;
 
 	public static boolean hasAnnotation(Object o, Class<? extends Annotation> a) {
 		//return o.getClass().getAnnotation(a) != null;
@@ -75,6 +77,13 @@ public class StrategyExecutorBuilder {
 	}
 
 	private static Strategy chooseExecutorImpl(List<Strategy> s) {
+		if (ENABLE_DYNAMIC_EXECUTOR_TRACES) {
+			if (s.size() == 1)
+				return s.get(0);
+			else
+				return new StacktraceStrategyExecutor(s.toArray(new Strategy[s.size()]));
+		}
+		
 		switch (s.size()) {
 		case 1:
 			return s.get(0);
