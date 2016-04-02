@@ -559,8 +559,8 @@ rules
 	  			<string-ends-with(|"_instance")> instancename;
 	  			tname_classname := Id(<string-as-chars(reverse;drop(|9);reverse)> instancename);
 	  			instanceid := Id(instancename);
-	  			instancefield :=  |[private tname_classname ~instanceid = new tname_classname();]|;
-	  			log(|Notice(), ["INIT FIELD ", instancefield])
+	  			instancefield :=  |[private tname_classname ~instanceid = new tname_classname();]|
+	  			
 	lifted-def-instance-to-java-field:
 		[] -> ()
 		

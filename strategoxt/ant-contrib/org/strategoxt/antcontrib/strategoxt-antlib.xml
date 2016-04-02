@@ -284,7 +284,7 @@
 						<arg value="-D" />
 						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
 						<arg value="--verbose"/>
-						<arg value="2"/>
+						<arg value="1"/>
 						<arg value="--clean"/>
 						<arg value="${strj.strategy-forward-declaration}" />
 						<arg value="${strj.constructor-forward-declaration}" />
