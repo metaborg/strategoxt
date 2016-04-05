@@ -87,7 +87,7 @@ AC_DEFUN([XT_STRICT_ISO_C99],
   AC_REQUIRE([AC_PROG_CC])
 
   if test "x$GCC" = "xyes"; then
-    STR_CFLAGS="${STR_CFLAGS} -Wall -Wno-unused-label -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter"
+    STR_CFLAGS="${STR_CFLAGS} -Wall -Wno-unused-label -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-parameter"
   fi
 
   # -Werror
