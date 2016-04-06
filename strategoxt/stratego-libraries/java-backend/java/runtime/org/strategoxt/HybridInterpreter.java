@@ -347,6 +347,8 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		loadedJars = true;
 
 		for (URL jar : jars) {
+
+			System.out.println("Load Jar: " + jar);
 			foundRegisterer |=
 				registerJar(classLoader, jar);
 		}
@@ -398,6 +400,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 						Object registerObject = registerClass.newInstance();
 						if (registerObject instanceof InteropRegisterer) {
 							//register instantiated InteropRegisterer
+							System.out.println("Load Registerer for jar file " + entry+": " + registerClass);
 							registerClass((InteropRegisterer)registerObject,classLoader);
 							foundRegisterer = true;
 						} else {
