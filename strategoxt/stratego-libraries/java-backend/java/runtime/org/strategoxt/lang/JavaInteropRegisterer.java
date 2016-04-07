@@ -28,6 +28,10 @@ public class JavaInteropRegisterer extends InteropRegisterer {
 			throw new IllegalStateException("Class must be named InteropRegisterer: " + getClass().getName());
 		this.initializer = initializer;
 	}
+	
+	public LibraryInitializer getLibraryInitializer() {
+		return initializer;
+	}
 
 	@Override
 	public void register(IContext context, Context compiledContext) {

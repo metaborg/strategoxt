@@ -10,9 +10,12 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -41,9 +44,11 @@ import org.spoofax.terms.attachments.AbstractWrappedTermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.InteropSDefT;
+import org.strategoxt.lang.JavaInteropRegisterer;
 import org.strategoxt.lang.LibraryInitializer;
 import org.strategoxt.lang.MissingLibraryException;
 import org.strategoxt.lang.MissingStrategyException;
+import org.strategoxt.lang.RegisteringStrategy;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
@@ -69,6 +74,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	protected static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
 	                                    "      run                    PACKAGE.MAINCLASS [ARGUMENT]...";
 
+	
 	private static final LibraryInitializer[] STANDARD_LIBRARIES = new LibraryInitializer[] {
 		new org.strategoxt.tools.LibraryInitializer(),
 		new org.strategoxt.stratego_gpp.LibraryInitializer(),
@@ -81,6 +87,26 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		new org.strategoxt.javafront.LibraryInitializer(),
 		new org.strategoxt.stratego_lib_posix_xsi.LibraryInitializer(),
 		new org.strategoxt.strc.LibraryInitializer()
+	};
+	
+	private static final LibraryInitializer STANDARD_LIBRARIES_INITIALIZER = new LibraryInitializer() {
+
+		@Override
+		protected List<RegisteringStrategy> getLibraryStrategies() {
+			return Collections.emptyList();
+		}
+
+		@Override
+		protected void initializeLibrary(Context context) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		protected java.util.List<LibraryInitializer> getDependentLibraryInitializer() {
+			return Arrays.asList(STANDARD_LIBRARIES);
+		}
+		
 	};
 
 	private final HybridCompiledContext compiledContext;
@@ -289,11 +315,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			Context context = new Context();
 			System.out.println("Transformed class name to call strategy \""+strategy+"\" and load library " + library );
 			
-			LibraryInitializer[] allInitializers = new LibraryInitializer[STANDARD_LIBRARIES.length + 1];
-			System.arraycopy(STANDARD_LIBRARIES,0,allInitializers, 0, STANDARD_LIBRARIES.length);
-			allInitializers[STANDARD_LIBRARIES.length] = loadLibraryInitializer(library);
-			
-			LibraryInitializer.initialize(context,allInitializers);
+			LibraryInitializer.initialize(context,STANDARD_LIBRARIES_INITIALIZER, loadLibraryInitializer(library));
 			IStrategoTerm result;
 			try {
 				result = context.invokeStrategyCLI(strategy, strategy, mainArgs);
@@ -343,18 +365,42 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			throws SecurityException, NoInteropRegistererJarException, IncompatibleJarException, IOException {
 
 		URLClassLoader classLoader = new URLClassLoader(jars, parentClassLoader);
-		boolean foundRegisterer = false;
 		loadedJars = true;
 
+		final List<LibraryInitializer> initializers = new ArrayList<>();
 		for (URL jar : jars) {
 
 			System.out.println("Load Jar: " + jar);
-			foundRegisterer |=
-				registerJar(classLoader, jar);
+			InteropRegisterer registerer = loadInteropRegistererFromJar(classLoader, jar);
+			if (registerer == null)
+				throw new NoInteropRegistererJarException(jars);
+			
+			if (registerer instanceof JavaInteropRegisterer) {
+				// Separate Compiled Stratego Code
+				initializers.add(((JavaInteropRegisterer)registerer).getLibraryInitializer());
+			} else {
+				// Backward compatability
+				registerClass(registerer,classLoader);
+			}
 		}
+		
+		System.out.println("Register Strategies: " + jar);
+		
+		// Register all jars together, which is cheaper
+		registerClass(new InteropRegisterer() {
 
-		if (!foundRegisterer)
-			throw new NoInteropRegistererJarException(jars);
+			@Override
+			public void register(IContext context, Context compiledContext) {
+				LibraryInitializer.initializeInterop(context, compiledContext, initializers);
+			}
+
+			@Override
+			public void registerLazy(IContext context, Context compiledContext, ClassLoader classLoader) {
+				
+			}
+			
+		}, classLoader);
+
 	}
 	
 	/**
@@ -377,8 +423,10 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		getCompiledContext().addConstructors(recordingFactory.getAndClearConstructorRecord());
 		getCompiledContext().setFactory(recordingFactory.getWrappedFactory());
 	}
+	
+	
 
-	private boolean registerJar(URLClassLoader classLoader, URL jar)
+	private InteropRegisterer loadInteropRegistererFromJar(URLClassLoader classLoader, URL jar)
 			throws SecurityException, IncompatibleJarException, IOException {
 
 		URL protocolfulUrl = new URL("jar", "", jar + "!/");
@@ -399,10 +447,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 						Class<?> registerClass = classLoader.loadClass(className);
 						Object registerObject = registerClass.newInstance();
 						if (registerObject instanceof InteropRegisterer) {
-							//register instantiated InteropRegisterer
-							System.out.println("Load Registerer for jar file " + entry+": " + registerClass);
-							registerClass((InteropRegisterer)registerObject,classLoader);
-							foundRegisterer = true;
+							return (InteropRegisterer) registerObject;
 						} else {
 							throw new IncompatibleJarException(jar, new ClassCastException("Unknown type for InteropRegisterer"));
 						}
@@ -423,7 +468,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		} finally {
 			jarFile.close();
 		}
-		return foundRegisterer;
+		return null;
 	}
 
 	/**
@@ -458,7 +503,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 		// FIXME: HybridInterpreter loads all libs into the same namespace
 		//        Which may affect interpreted code and invoke()
-		LibraryInitializer.initializeInterop(context, compiledContext,STANDARD_LIBRARIES);
+		LibraryInitializer.initializeInterop(context, compiledContext,STANDARD_LIBRARIES_INITIALIZER);
 	}
 
 	public final Context getCompiledContext() {

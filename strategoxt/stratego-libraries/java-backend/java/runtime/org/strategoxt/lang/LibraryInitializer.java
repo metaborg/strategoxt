@@ -48,6 +48,11 @@ public abstract class LibraryInitializer {
 			final LibraryInitializer... initializers) {
 		buildInitializer(initializers).registerInterop(context, compiledContext, context.getVarScope());
 	}
+	
+	public static void initializeInterop(final IContext context, final Context compiledContext,
+			final List<LibraryInitializer> initializers) {
+		buildInitializer(initializers).registerInterop(context, compiledContext, context.getVarScope());
+	}
 
 	public static void initialize(final Context context, final LibraryInitializer... initializers) {
 		buildInitializer(initializers).initialize(context);
