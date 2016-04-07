@@ -384,7 +384,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			}
 		}
 		
-		System.out.println("Register Strategies: " + jar);
+		System.out.println("Register Strategies");
 		
 		// Register all jars together, which is cheaper
 		registerClass(new InteropRegisterer() {
