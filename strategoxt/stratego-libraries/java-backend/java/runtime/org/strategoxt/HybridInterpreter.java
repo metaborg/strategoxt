@@ -380,11 +380,12 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 				initializers.add(((JavaInteropRegisterer)registerer).getLibraryInitializer());
 			} else {
 				// Backward compatability
+				System.out.println("Old load registerer: " + registerer);
 				registerClass(registerer,classLoader);
 			}
 		}
 		
-		System.out.println("Register Strategies");
+		System.out.println("Register Strategies: " + initializers);
 		
 		// Register all jars together, which is cheaper
 		registerClass(new InteropRegisterer() {
@@ -396,7 +397,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 			@Override
 			public void registerLazy(IContext context, Context compiledContext, ClassLoader classLoader) {
-				
+				register(context, compiledContext);
 			}
 			
 		}, classLoader);
