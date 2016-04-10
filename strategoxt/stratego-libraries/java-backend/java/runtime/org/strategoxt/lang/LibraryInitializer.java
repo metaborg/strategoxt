@@ -187,6 +187,8 @@ public abstract class LibraryInitializer {
 						.getClassLoader().loadClass(initializerClassName);
 				LibraryInitializer initializer = initializerClass.newInstance();
 				allInitializers.add(initializer);
+			} catch (UnsupportedOperationException e) {
+				throw new RuntimeException("List object returned by getDependentLibraryInitializer of " + this + " must be mutable if getDependentLibraryInitializerClassNames returns something.", e);
 			} catch (ClassCastException e) {
 				// Wrong class object
 				throw new Error("Wrong library initializer class for " + initializerClassName, e);
