@@ -1,6 +1,8 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
-SCRIPT=$(readlink -f $0)
-SCRIPTPATH=$(dirname $SCRIPT)
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+STRJAR=$SCRIPTPATH/../share/strategoxt/strategoxt/strategoxt.jar
 
-java -Xss8m -cp $SCRIPTPATH/../share/strategoxt/strategoxt.jar run org.strategoxt.tools.main-parse-pp-table $@
+exec java -Xss8M -cp "$STRJAR" \
+  run org.strategoxt.tools.main-parse-pp-table "$@"

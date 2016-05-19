@@ -5,4 +5,4 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 STRJAR=$SCRIPTPATH/../share/strategoxt/strategoxt/strategoxt.jar
 
 exec java -Xss8M -cp "$STRJAR" \
-  run org.strategoxt.tools.main-gen-sdf-mix "$@"
+  run org.strategoxt.strc.io-pp-stratego "$@"
