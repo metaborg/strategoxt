@@ -5,9 +5,8 @@
 
 set -eu
 
-SCRIPT=$(readlink -f "$0")
-SCRIPTPATH=$(dirname "$SCRIPT")
-STRJAR=$SCRIPTPATH/../share/strategoxt/strategoxt/strategoxt.jar
+SCRIPTDIR=$(cd "$(dirname "$0")" && pwd -P)
+STRJAR=$SCRIPTDIR/../share/strategoxt/strategoxt/strategoxt.jar
 
 IOPTION=
 FOPTION=
@@ -103,7 +102,7 @@ while true; do
   break
 done
 
-TEMPDIR=`mktemp -d`
+TEMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/str.XXXXX")
 
 if [ "$INPUTFILE" == "" ]; then
   INPUTFILE=$TEMPDIR/script.str
@@ -113,15 +112,15 @@ if [ "$INPUTFILE" == "" ]; then
     PROGRAM="module script imports libstratego-lib libstratego-xtc libstratego-sglr libstratego-rtg libstratego-aterm libstrc rules main = $@"
   fi
   echo "$PROGRAM" |
-    sed -e 's/\blibstratego-lib\b//; s/module\s+[\w\-'']+\b/$& imports libstratego-lib strategies/' > $INPUTFILE
+    sed -e 's/\blibstratego-lib\b//; s/module\s+[\w\-'']+\b/$& imports libstratego-lib strategies/' > "$INPUTFILE"
 fi
 
-BASENAME=`basename $INPUTFILE | sed -e 's/\.str$//'`
+BASENAME=$(basename "$INPUTFILE" | sed -e 's/\.str$//')
 OUTPUTDIR=$TEMPDIR/$BASENAME
 
 (strj $FOPTION $LOPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 \
     -la stratego-lib -la stratego-xtc -la stratego-aterm -la strc -la stratego-sglr -la stratego-rtg \
-    -I . -i $INPUTFILE -o $OUTPUTDIR --statistics 0 || exit 1)
+    -I . -i "$INPUTFILE" -o "$OUTPUTDIR" --statistics 0 || exit 1)
 RET=$?
 
 if [ ! -e "$OUTPUTDIR" ]; then
