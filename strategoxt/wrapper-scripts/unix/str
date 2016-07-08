@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+#
+# by Lennart Kats <lennart add lclnet.nl>
+# adapted for strj by Hendrik van Antwerpen <hendrik add van-antwerpen.net>
+
+set -eu
+
+SCRIPTDIR=$(cd "$(dirname "$0")" && pwd -P)
+STRJAR=$SCRIPTDIR/../share/strategoxt/strategoxt/strategoxt.jar
+
+IOPTION=
+FOPTION=
+JOPTION=
+MOPTION=
+LOPTION=
+LAOPTION=
+INPUTFILE=
+OOPTION="-O 1"
+
+while true; do
+
+  if [ "$1" = "-F" ]; then
+    FOPTION="-F"
+    shift
+    continue
+  fi
+  
+  if [ "$1" = "-j" ]; then
+    JOPTION="-j"
+    shift
+    continue
+  fi
+
+  if [ "$1" = "--library" ] || [ "$1" = "--lib" ]; then
+    LOPTION="--library"
+    shift
+    continue
+  fi
+  
+  if [ "$1" = "-m" ]; then
+    MOPTION="-m $2"
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "-O" ]; then
+    OOPTION="-O $2"
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "-la" ]; then
+    LAOPTION="$LAOPTION -la $2"
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "-I" ]; then
+    IOPTION="-I $2"
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "-i" ]; then
+    INPUTFILE=$2
+    shift; shift
+    continue
+  fi
+  
+  if (echo "$1" | grep -e '^ [^ ]\.' &>/dev/null || [ -f "$1" ]) && [ $# = 1 ]; then
+    if [ -f "$1" ]; then
+      INPUTFILE=$1
+    else
+      echo Not a Stratego module: $1 >&2
+      exit 1
+    fi
+  fi
+  
+  if [ "$1" = "--help" ] || [ "$1" = "-h" ] ||
+     ([ $# = 0 ] && [ "$INPUTFILE" = "" ]) ||
+     echo "$1" | grep '^-' &>/dev/null; then
+    echo 'Usage: str [-j | -F | -g] [OPTIONS] [-i FILE | INPUT]'
+    echo 'Compile and run Stratego program in FILE or from INPUT.'
+    echo
+    echo 'COMMANDS:'
+    echo '  -j        Display program output Java code instead of running it.'
+    echo '  -F        Display program in core format instead of running it.'
+    echo
+    echo 'OPTIONS:'
+    echo '  --lib     Treat as library, keeping all unused strategies.'
+    echo '  -la NAME  Search the libtool library libNAME.la when linking.'
+    echo '  -m NAME   Sets the main strategy to use (default main).'
+    echo '  -I DIR    Include modules from directory DIR.'
+    echo '  -O N      Use optimization level N (default 1).'
+    echo
+    echo 'INPUT:'
+    echo '  -i FILE   Read input from FILE.'
+    echo '  INPUT     Use INPUT as the input program (typically specified using single quotes).'
+    echo '            Can be a single strategy or a complete module'
+    exit
+  fi
+  break
+done
+
+TEMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/str.XXXXX")
+
+if [ "$INPUTFILE" == "" ]; then
+  INPUTFILE=$TEMPDIR/script.str
+  if echo "$@" | grep '^module ' >/dev/null; then
+    PROGRAM="$@"
+  else
+    PROGRAM="module script imports libstratego-lib libstratego-xtc libstratego-sglr libstratego-rtg libstratego-aterm libstrc rules main = $@"
+  fi
+  echo "$PROGRAM" |
+    sed -e 's/\blibstratego-lib\b//; s/module\s+[\w\-'']+\b/$& imports libstratego-lib strategies/' > "$INPUTFILE"
+fi
+
+BASENAME=$(basename "$INPUTFILE" | sed -e 's/\.str$//')
+OUTPUTDIR=$TEMPDIR/$BASENAME
+
+(strj $FOPTION $LOPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 \
+    -la stratego-lib -la stratego-xtc -la stratego-aterm -la strc -la stratego-sglr -la stratego-rtg \
+    -I . -i "$INPUTFILE" -o "$OUTPUTDIR" --statistics 0 || exit 1)
+RET=$?
+
+if [ ! -e "$OUTPUTDIR" ]; then
+  echo "ERROR: No output produced."
+  RET=1
+fi
+
+if [ $RET == 0 ]; then
+  if [ $FOPTION ]; then
+    (pp-stratego -a -i "$OUTPUTDIR"/*.tmp || pp-aterm -i "$OUTPUTDIR"/*.tmp)
+  elif [ $JOPTION ]; then
+    cat "$OUTPUTDIR/$BASENAME.java"
+    echo
+  else
+    CLASSDIR=$TEMPDIR/classes
+    mkdir "$CLASSDIR"
+    javac -classpath "$STRJAR" -d "$CLASSDIR" "$OUTPUTDIR/$BASENAME.java"
+    java -cp "$CLASSDIR:$STRJAR" "$BASENAME"
+    RET=$?
+  fi
+fi
+
+rm -rf "$TEMPDIR"
+
+exit $RET

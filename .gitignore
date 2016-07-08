@@ -1,2 +1,3 @@
-/**/.cache
-/**/test-gen
+.cache
+test-gen
+target

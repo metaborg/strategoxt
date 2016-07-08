@@ -1,6 +1,6 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
-SCRIPT=$(readlink -f $0)
-SCRIPTPATH=$(dirname $SCRIPT)
+SCRIPTDIR=$(cd "$(dirname "$0")" && pwd -P)
+STRJAR=$SCRIPTDIR/../share/strategoxt/strategoxt/strategoxt.jar
 
-java -Xss8m -Xmx1024m -jar $SCRIPTPATH/../share/strategoxt/strategoxt.jar $@
+exec java -Xss8m -Xmx1024m -jar "$STRJAR" "$@"

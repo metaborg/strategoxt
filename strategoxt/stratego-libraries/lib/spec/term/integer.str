@@ -21,10 +21,10 @@ strategies
    * Adds two integers
    */
   addi = ?(x,y); prim("SSL_addi",x,y)
-  
+
   /**
    * Adds two integers
-   */  
+   */
   int-add(|y) =
     ?x; prim("SSL_addi", x, y)
 
@@ -58,7 +58,7 @@ strategies
   /**
    * Bitwise shift x to the right by y places
    */
-  shli = ?(x, y); prim("SSL_shri",x,y)
+  shri = ?(x, y); prim("SSL_shri",x,y)
 
 strategies
 
@@ -71,7 +71,7 @@ strategies
    * Subtracts two integers
    */
   subti = ?(x,y); prim("SSL_subti",x,y)
-  
+
   /**
    * Subtracts two integers
    */
@@ -146,7 +146,7 @@ strategies
   geq = ?(x,x) <+ gt
   lt  = not(geq)
   leq = not(gt)
-  
+
 strategies
 
   /**
@@ -225,7 +225,7 @@ strategies
    * Returns a random number between 0 and get-random-max.
    *
    * For a given seed, this strategy always returns the same sequence  of numbers.
-   * If no seed value has been set using set-random-seed, then the seed is 1, which 
+   * If no seed value has been set using set-random-seed, then the seed is 1, which
    * means that the sequence of random numbers will always be the same if you set no seed.
    *
    * @see    man rand
@@ -235,7 +235,7 @@ strategies
   next-random = prim("SSL_rand")
 
 strategies
-  
+
   apply-int-to-str-tuple(s) =
     (string-to-int, string-to-int) ; s ; int-to-string
 
@@ -258,33 +258,33 @@ strategies
    * @type Int -> Int
    */
   inc = <add>  (<id>, 1)
-  
+
   /**
    * Increments an integer
    *
    * @type Int -> Int
-   */  
+   */
   int-inc =
     int-add(|1)
-    
+
   /**
    * Decrements a number.
    *
    * @type Int -> Int
    */
   dec = <subt> (<id>, 1)
-  
+
   /**
    * Decrements an integer.
    *
    * @type Int -> Int
-   */  
+   */
   int-dec =
     int-subt(|1)
 
 strategies
 
-  log2 = 
+  log2 =
     !(<id>, 0);
     repeat((!(<divi>(<id>, 2), <mod; ?0>(<id>, 2)); Fst, inc));
     ?(1, <id>)
@@ -292,10 +292,10 @@ strategies
 strategies
 
   gcd =
-    (abs,abs) 
-  ; let gcd' = \ (x,0) -> x \ + \ (x,y) -> <gcd'>(y,<mod>(x,y)) \ 
-    in 
-      gcd' 
+    (abs,abs)
+  ; let gcd' = \ (x,0) -> x \ + \ (x,y) -> <gcd'>(y,<mod>(x,y)) \
+    in
+      gcd'
     end
 
   abs =
@@ -327,7 +327,7 @@ strategies
   reset-counter = ?c;
     where(<set-counter> (c, 0))
 
-  set-counter = 
+  set-counter =
     ?(c,n); rules( Counter : c -> n )
 
   get-counter =
@@ -396,7 +396,7 @@ strategies
   /**
    * @type List(Char) * Int -> Int
    */
-  generic-chars-to-int = 
+  generic-chars-to-int =
     neg-chars-to-int <+ pos-chars-to-int
 
   // :: List(Char) * Int -> Int
