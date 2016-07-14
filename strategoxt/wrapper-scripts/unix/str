@@ -5,7 +5,8 @@
 
 set -eu
 
-STRJAR=$($(dirname "$0")/strategoxt-path)
+SCRIPTDIR=$(dirname "$0")
+STRJAR=$("$SCRIPTDIR/strategoxt-path")
 
 IOPTION=
 FOPTION=
@@ -125,7 +126,7 @@ fi
 BASENAME=$(basename "$INPUTFILE" | sed -e 's/\.str$//')
 OUTPUTDIR=$TEMPDIR/$BASENAME
 
-(strj $VOPTION $FOPTION $LOPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 \
+("$SCRIPTDIR/strj" $VOPTION $FOPTION $LOPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 \
     -la stratego-lib -la stratego-xtc -la stratego-aterm -la strc -la stratego-sglr -la stratego-rtg \
     -I . -i "$INPUTFILE" -o "$OUTPUTDIR" --statistics 0 || exit 1)
 RET=$?
@@ -137,7 +138,7 @@ fi
 
 if [ $RET == 0 ]; then
   if [ $FOPTION ]; then
-    (pp-stratego -a -i "$OUTPUTDIR"/*.tmp || pp-aterm -i "$OUTPUTDIR"/*.tmp)
+    ("$SCRIPTDIR/pp-stratego" -a -i "$OUTPUTDIR"/*.tmp || pp-aterm -i "$OUTPUTDIR"/*.tmp)
   elif [ $JOPTION ]; then
     cat "$OUTPUTDIR/$BASENAME.java"
     echo
