@@ -5,8 +5,7 @@
 
 set -eu
 
-SCRIPTDIR=$(cd "$(dirname "$0")" && pwd -P)
-STRJAR=$SCRIPTDIR/../share/strategoxt/strategoxt/strategoxt.jar
+STRJAR=$($(dirname "$0")/strategoxt-path)
 
 IOPTION=
 FOPTION=
@@ -16,6 +15,7 @@ LOPTION=
 LAOPTION=
 INPUTFILE=
 OOPTION="-O 1"
+VOPTION=
 
 while true; do
 
@@ -56,13 +56,19 @@ while true; do
   fi
   
   if [ "$1" = "-I" ]; then
-    IOPTION="-I $2"
+    IOPTION="$IOPTION -I $2"
     shift; shift
     continue
   fi
   
   if [ "$1" = "-i" ]; then
     INPUTFILE=$2
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "--verbose" ]; then
+    VOPTION="--verbose $2"
     shift; shift
     continue
   fi
@@ -83,20 +89,21 @@ while true; do
     echo 'Compile and run Stratego program in FILE or from INPUT.'
     echo
     echo 'COMMANDS:'
-    echo '  -j        Display program output Java code instead of running it.'
-    echo '  -F        Display program in core format instead of running it.'
+    echo '  -j            Display program output Java code instead of running it.'
+    echo '  -F            Display program in core format instead of running it.'
     echo
     echo 'OPTIONS:'
-    echo '  --lib     Treat as library, keeping all unused strategies.'
-    echo '  -la NAME  Search the libtool library libNAME.la when linking.'
-    echo '  -m NAME   Sets the main strategy to use (default main).'
-    echo '  -I DIR    Include modules from directory DIR.'
-    echo '  -O N      Use optimization level N (default 1).'
+    echo '  --lib         Treat as library, keeping all unused strategies.'
+    echo '  -la NAME      Search the libtool library libNAME.la when linking.'
+    echo '  -m NAME       Sets the main strategy to use (default main).'
+    echo '  -I DIR        Include modules from directory DIR.'
+    echo '  -O N          Use optimization level N (default 1).'
+    echo '  --verbose i   Verbosity level or descriptor.'
     echo
     echo 'INPUT:'
-    echo '  -i FILE   Read input from FILE.'
-    echo '  INPUT     Use INPUT as the input program (typically specified using single quotes).'
-    echo '            Can be a single strategy or a complete module'
+    echo '  -i FILE       Read input from FILE.'
+    echo '  INPUT         Use INPUT as the input program (typically specified using single quotes).'
+    echo '                Can be a single strategy or a complete module'
     exit
   fi
   break
@@ -118,7 +125,7 @@ fi
 BASENAME=$(basename "$INPUTFILE" | sed -e 's/\.str$//')
 OUTPUTDIR=$TEMPDIR/$BASENAME
 
-(strj $FOPTION $LOPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 \
+(strj $VOPTION $FOPTION $LOPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 \
     -la stratego-lib -la stratego-xtc -la stratego-aterm -la strc -la stratego-sglr -la stratego-rtg \
     -I . -i "$INPUTFILE" -o "$OUTPUTDIR" --statistics 0 || exit 1)
 RET=$?

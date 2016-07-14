@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-SCRIPTDIR=$(cd "$(dirname "$0")" && pwd -P)
-STRJAR=$SCRIPTDIR/../share/strategoxt/strategoxt/strategoxt.jar
+STRJAR=$($(dirname "$0")/strategoxt-path)
 
 exec java -Xss8M -cp "$STRJAR" \
   run org.strategoxt.tools.main-sdf2rtg "$@"
