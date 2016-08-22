@@ -1456,7 +1456,7 @@ strategies
       stm1
     ]|
   where 
-      <not(Wld)> pt2
+      <not(Wld())> pt2
   with
       x    := <newname> "annos"
     ; stm0 := <translate-Match> Match(pt1, e)

@@ -504,7 +504,7 @@ rules
     Match(t) -> <translate-strat(|S,F)> Match(t, Id("t"))
 
   TranslateStrat(|S,F) :
-    Match(Wld, trm) -> stm|[ goto ~id:S; ]|
+    Match(Wld(), trm) -> stm|[ goto ~id:S; ]|
 
 //  TranslateStrat(|S,F) :
 //    Match(BuildDefault(t), trm) -> stm|[ goto ~id:S; ]|
