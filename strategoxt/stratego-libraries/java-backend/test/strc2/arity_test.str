@@ -11,11 +11,11 @@ signature
 
 rules
 
-  r6: [6] -> Six(Zero, Zero, Zero, Zero, Zero, Zero)
+  r6: [6] -> Six(Zero(), Zero(), Zero(), Zero(), Zero(), Zero())
 
-  r7: [7] -> Seven(Zero, Zero, Zero, Zero, Zero, Zero, Zero)
+  r7: [7] -> Seven(Zero(), Zero(), Zero(), Zero(), Zero(), Zero(), Zero())
 
-  r8: [8] -> Eight(Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero) 
+  r8: [8] -> Eight(Zero(), Zero(), Zero(), Zero(), Zero(), Zero(), Zero(), Zero()) 
 
 strategies
 

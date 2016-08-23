@@ -70,11 +70,11 @@ strategies
   test1 = 
     apply-test(!"test1"
 	, propconst
-	, !Stats([VarDecl("a", TpInt), 
+	, !Stats([VarDecl("a", TpInt()), 
 		  Assign("a", Int("2")),
 		  Assign("a", Add(Var("a"), Call("readInt", ()))),
 		  Assign("b", Var("a"))])
-	, !Stats([VarDecl("a", TpInt), 
+	, !Stats([VarDecl("a", TpInt()), 
 		  Assign("a", Int("2")),
 		  Assign("a", Add(Int("2"), Call("readInt", ()))),
 		  Assign("b", Var("a"))])

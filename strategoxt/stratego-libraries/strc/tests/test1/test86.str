@@ -42,9 +42,9 @@ strategies
   test1-strategy =
     B <+ A <+ C <+ D
 
-  A : F(G(x, y), z){I} -> OA(x, y, z)
+  A : F(G(x, y), z){I()} -> OA(x, y, z)
   
-  B : F(G(I, y), z) -> OB(y, z)
+  B : F(G(I(), y), z) -> OB(y, z)
 
   C : F(x, H(y, z)) -> OC(x, y, z)
 
@@ -57,7 +57,7 @@ strategies
   test2a = 
     apply-test(!"test2a"
 	, test2-strategy
-	, !F("a", "b"){I}
+	, !F("a", "b"){I()}
 	, !OE("a", "b")
 	)
 
@@ -72,7 +72,7 @@ strategies
 
   test2-strategy = E <+ F
 
-  E : F(x, y){I} -> OE(x, y)
+  E : F(x, y){I()} -> OE(x, y)
   F : F(x, y)    -> OF(x, y)
 
 strategies
@@ -110,8 +110,8 @@ strategies
   test4a =
     apply-test(!"test4a"
 	, test4-strategy
-	, !F(G("a", "b"){I}, "c")
-	, !("T4-1", G("a", "b"){I}, "c")
+	, !F(G("a", "b"){I()}, "c")
+	, !("T4-1", G("a", "b"){I()}, "c")
 	)
 
   test4b =
@@ -126,7 +126,7 @@ strategies
   test4-strategy =
     T4-1 <+ T4-2
 
-  T4-1 : F(x{I}, y) -> ("T4-1", x, y)
+  T4-1 : F(x{I()}, y) -> ("T4-1", x, y)
 
   T4-2 : F(G(x, y), z) -> ("T4-2", x, y, z)
 
@@ -137,8 +137,8 @@ strategies
   test5a =
     apply-test(!"test5a"
 	, test5-strategy
-	, !(G("a", "b"){I}, "c")
-	, !("T5-1", G("a", "b"){I}, ["c"])
+	, !(G("a", "b"){I()}, "c")
+	, !("T5-1", G("a", "b"){I()}, ["c"])
 	)
 
   DYNAMIC-CALLS = test5-strategy

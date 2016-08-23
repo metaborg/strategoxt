@@ -13,11 +13,11 @@ signature
 
 rules
 
-  Eval1 : If(True,  x) -> x
-  Eval2 : If(False, x) -> Skip
+  Eval1 : If(True(),  x) -> x
+  Eval2 : If(False(), x) -> Skip()
 
-  Eval3 : If(True,  x, y) -> x
-  Eval4 : If(False, x, y) -> y
+  Eval3 : If(True(),  x, y) -> x
+  Eval4 : If(False(), x, y) -> y
 
 strategies
 
@@ -38,41 +38,41 @@ strategies
   eval-test1 = 
     apply-test(!"eval-test1"
 	      ,Eval
-	      ,!If(True, Assign("x", Var("y")))
+	      ,!If(True(), Assign("x", Var("y")))
 	      ,!Assign("x",Var("y"))
 	      )
 
   eval-test2 = 
     apply-test(!"eval-test1"
 	      ,Eval
-	      ,!If(False, Assign("x", Var("y")))
-	      ,!Skip
+	      ,!If(False(), Assign("x", Var("y")))
+	      ,!Skip()
 	      )
 
   eval-test3 = 
     apply-test(!"eval-test3"
 	      ,Eval
-	      ,!If(True, Assign("x", Var("y")), Assign("a", Var("b")))
+	      ,!If(True(), Assign("x", Var("y")), Assign("a", Var("b")))
 	      ,!Assign("x",Var("y"))
 	      )
 
   eval-test4 = 
     apply-test(!"eval-test4"
 	      ,Eval
-	      ,!If(False, Assign("x", Var("y")), Assign("a", Var("b")))
+	      ,!If(False(), Assign("x", Var("y")), Assign("a", Var("b")))
 	      ,!Assign("a", Var("b"))
 	      )
 
   eval-test5 = 
     apply-test(!"eval-test5"
 	      ,Eval3 + Eval4 + Eval1 + Eval2
-	      ,!If(True, Assign("x", Var("y")))
+	      ,!If(True(), Assign("x", Var("y")))
 	      ,!Assign("x",Var("y"))
 	      )
 
   eval-test6 = 
     apply-test(!"eval-test6"
 	      ,not(Eval3 + Eval4)
-	      ,!If(False, Assign("x", Var("y")))
-	      ,!If(False, Assign("x", Var("y")))
+	      ,!If(False(), Assign("x", Var("y")))
+	      ,!If(False(), Assign("x", Var("y")))
 	      )    

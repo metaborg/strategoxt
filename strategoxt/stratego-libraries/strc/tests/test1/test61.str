@@ -8,7 +8,7 @@ strategies
   main =
     !Cons()
     ; Cons()
-    ; ?Cons
+    ; ?Cons()
 
 signature
   constructors

@@ -23,29 +23,29 @@ strategies
   all-test1 =
     apply-test(!"all-test1a"
 	, all(id)
-	, !F(A)
-	, !F(A)
+	, !F(A())
+	, !F(A())
 	);
     apply-test(!"all-test1b"
 	, all(id)
-	, !A
-	, !A
+	, !A()
+	, !A()
 	);
     apply-test(!"all-test1c"
-	, all(?A;!C)
-	, !G(A,A)
-	, !G(C,C)
+	, all(?A();!C())
+	, !G(A(),A())
+	, !G(C(),C())
 	);
     apply-and-fail(!"all-test1d"
-	, all(?A;!C)
-	, !G(A,B)
+	, all(?A();!C())
+	, !G(A(),B())
 	);
     apply-and-fail(!"all-test1e"
-	, all(?A;!C)
-	, !G(B,C)
+	, all(?A();!C())
+	, !G(B(),C())
 	);
     apply-test(!"all-test1f"
-	, all(?A;!C)
+	, all(?A();!C())
 	, !1
 	, !1
 	)
@@ -53,8 +53,8 @@ strategies
   all-test2 =
     apply-test(!"all-test2a"
 	, all(id)
-	, ![A,B]
-	, ![A,B]
+	, ![A(),B()]
+	, ![A(),B()]
 	);
     apply-test(!"all-test2b"
 	, all(id)
@@ -62,64 +62,64 @@ strategies
 	, ![]
 	);
     apply-test(!"all-test2c"
-	, all(?A;!C)
-	, ![A,A]
-	, ![C,C]
+	, all(?A();!C())
+	, ![A(),A()]
+	, ![C(),C()]
 	);
     apply-and-fail(!"all-test2d"
-	, all(?A;!C)
-	, ![A,B]
+	, all(?A();!C())
+	, ![A(),B()]
 	);
     apply-and-fail(!"all-test2e"
-	, all(?A;!C)
-	, ![B,C]
+	, all(?A();!C())
+	, ![B(),C()]
 	)
 
   some-test1 =
     apply-test(!"some-test1a"
 	, some(id)
-	, !F(A)
-	, !F(A)
+	, !F(A())
+	, !F(A())
 	);
     apply-and-fail(!"some-test1b"
 	, some(id)
-	, !A
+	, !A()
 	);
     apply-test(!"some-test1c"
-	, some(?A;!C)
-	, !G(A,B)
-	, !G(C,B)
+	, some(?A();!C())
+	, !G(A(),B())
+	, !G(C(),B())
 	);
     apply-and-fail(!"some-test1d"
-	, some(?A;!C)
-	, !G(B,C)
+	, some(?A();!C())
+	, !G(B(),C())
 	);
     apply-and-fail(!"some-test1e"
-	, some(?A;!C)
+	, some(?A();!C())
 	, !1
 	)
 	
   some-test2 =
     apply-test(!"some-test2a"
-	, manytd(?A;!C)
-	, !G(B,A)
-	, !G(B,C)
+	, manytd(?A();!C())
+	, !G(B(),A())
+	, !G(B(),C())
 	);
     apply-and-fail(!"some-test2b"
-	, manytd(?A;!C)
-	, !G(G(B,C),C)
+	, manytd(?A();!C())
+	, !G(G(B(),C()),C())
 	);
     apply-test(!"some-test2c"
-	, manytd(not(?A;!C))
-	, !G(B,A)
-	, !G(B,A)
+	, manytd(not(?A();!C()))
+	, !G(B(),A())
+	, !G(B(),A())
 	)
 
   one-test2 =
     apply-test(!"one-test2a"
 	, one(id)
-	, ![A,B]
-	, ![A,B]
+	, ![A(),B()]
+	, ![A(),B()]
 	);
     apply-and-fail(!"one-test2b"
 	, one(id)
@@ -127,16 +127,16 @@ strategies
 	, ![]
 	);
     apply-test(!"one-test2c"
-	, one(?A;!C)
-	, ![A,A]
-	, ![C,A]
+	, one(?A();!C())
+	, ![A(),A()]
+	, ![C(),A()]
 	);
     apply-test(!"one-test2d"
-	, one(?A;!C)
-	, ![B,A,A]
-	, ![B,C,A]
+	, one(?A();!C())
+	, ![B(),A(),A()]
+	, ![B(),C(),A()]
 	);
     apply-and-fail(!"one-test2e"
-	, one(?A;!C)
-	, ![B,C]
+	, one(?A();!C())
+	, ![B(),C()]
 	)

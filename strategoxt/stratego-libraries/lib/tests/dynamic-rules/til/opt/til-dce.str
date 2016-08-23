@@ -102,7 +102,7 @@ strategies
     ; IfElse(declare-var-needed, id, id)
 
   dce-break =
-    ?Break(None)
+    ?Break(None())
     ; break-bp-VarNeeded
     ; break-bp-VarUsed
 

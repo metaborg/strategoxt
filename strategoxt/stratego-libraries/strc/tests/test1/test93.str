@@ -10,11 +10,11 @@ strategies
   main =
       !Minus(
         And(
-          CastPrim(Long,ExprName(Id("save")))
+          CastPrim(Long(),ExprName(Id("save")))
         , Lit(Hexa("0xffffffffL"))
         )
       , And(
-          CastPrim(Long,ExprName(Id("borrow")))
+          CastPrim(Long(),ExprName(Id("borrow")))
         , Lit(Hexa("0xffffffffL"))
         )
       )
@@ -25,13 +25,13 @@ strategies
     ; ?Minus(
         Parenthetical(
           And(
-            CastPrim(Long,ExprName(Id("save")))
+            CastPrim(Long(),ExprName(Id("save")))
           , Lit(Hexa("0xffffffffL"))
           )
         )
       , Parenthetical(
           And(
-            CastPrim(Long,ExprName(Id("borrow")))
+            CastPrim(Long(),ExprName(Id("borrow")))
           , Lit(Hexa("0xffffffffL"))
           )
         )

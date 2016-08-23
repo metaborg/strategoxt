@@ -34,15 +34,15 @@ strategies
     parenthesize(!Paren(<id>), test-priorities)
    
   test-priorities =
-     ![(None,			["Uminus","FieldVar","Subscript"]),
+     ![(None(),			["Uminus","FieldVar","Subscript"]),
        (Some("left"),		["Power"]),
        (Some("left"),		["Times","Divide"]),
        (Some("left"),		["Plus","Minus"]),
        (Some("non-assoc"),	["CPlus","CMinus","Eq","Neq","Gt","Lt","Geq","Leq"]),
        (Some("left"),		["And"]),
        (Some("left"),		["Or"]),
-       (None,			["Array"]),
-       (None,			["Assign"]),
+       (None(),			["Array"]),
+       (None(),			["Assign"]),
        (Some("right"),		["If","While","For"])]
 
 signature

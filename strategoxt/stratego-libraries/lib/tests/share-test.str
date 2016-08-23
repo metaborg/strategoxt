@@ -24,8 +24,8 @@ strategies
                ,fail
 	       ,\ (x, t, t') -> Let(x, t, t') \
 	       )
-	, !F(F(A, A), F(F(A, A), F(A, A)))
-	, ?Let(Var(var1077592168),A,
+	, !F(F(A(), A()), F(F(A(), A()), F(A(), A())))
+	, ?Let(Var(var1077592168),A(),
            Let(Var(var1075859784),F(Var(var1077592168),Var(var1077592168)),
                F(Var(var1075859784),F(Var(var1075859784),Var(var1075859784)))))
 	)
@@ -33,11 +33,11 @@ strategies
   test2 = 
     apply-and-check(!"test2"
 	, graph(\ x -> Var(x) \ )
-	, !F(F(A, A), F(F(A, A), F(A, A)))
+	, !F(F(A(), A()), F(F(A(), A()), F(A(), A())))
 	, ?[(Var(var1076162904),F(Var(var1076162872),Var(var1076162888))), 
 	    (Var(var1076162888),F(Var(var1076162872),Var(var1076162872))), 
 	    (Var(var1076162872),F(Var(var1077895264),Var(var1077895264))),
-	    (Var(var1077895264),A)]
+	    (Var(var1077895264),A())]
 	)
 
   test3 = 
@@ -46,8 +46,8 @@ strategies
 	, ![(Var(1076162904),F(Var(1076162872),Var(1076162888))), 
 	    (Var(1076162888),F(Var(1076162872),Var(1076162872))),
 	    (Var(1076162872),F(Var(1077895264),Var(1077895264))), 
-	    (Var(1077895264),A)]
-	, ?Let(Var(var1077895264),A,
+	    (Var(1077895264),A())]
+	, ?Let(Var(var1077895264),A(),
            Let(Var(var1076162872),F(Var(var1077895264),Var(var1077895264)),
                F(Var(var1076162872),F(Var(var1076162872),Var(var1076162872)))))
 	)     

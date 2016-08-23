@@ -8,7 +8,7 @@ signature
 
 rules
 
-  Eval1 : Plus(Zero, x) -> <Eval2> x
+  Eval1 : Plus(Zero(), x) -> <Eval2> x
   Eval1 : Plus(Succ(x), y) -> Succ(<Eval2> Plus(x, y))
 
   Eval2 : Zero -> Zero
@@ -18,7 +18,7 @@ rules
 strategies
 
   main-test10 =  
-    !Plus(Succ(Plus(Succ(Zero), Succ(Zero))), Succ(Zero));
+    !Plus(Succ(Plus(Succ(Zero()), Succ(Zero()))), Succ(Zero()));
     Eval2
 
 
