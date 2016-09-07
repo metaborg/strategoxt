@@ -3,7 +3,7 @@
 set -eu
 
 SCRIPTDIR=$(dirname "$0")
-for DISTDIR in "$SCRIPTDIR/../../buildpoms/build/target/dist" "$SCRIPTDIR/.."; do
+for DISTDIR in "$SCRIPTDIR"/../../buildpoms/build/target/dist "$SCRIPTDIR"/..; do
     STRDIR=$DISTDIR/share/strategoxt/strategoxt
     if [ -d "$STRDIR" ]; then
         echo $(cd "$STRDIR" && pwd -P)/strategoxt.jar

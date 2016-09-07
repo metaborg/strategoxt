@@ -124,7 +124,8 @@ if [ "$INPUTFILE" == "" ]; then
 fi
 
 BASENAME=$(basename "$INPUTFILE" | sed -e 's/\.str$//')
-OUTPUTDIR=$TEMPDIR/$BASENAME
+JAVANAME=$(echo $BASENAME | sed -e 's/[^[:alnum:]]/_/g' | tee)
+OUTPUTDIR=$TEMPDIR/$JAVANAME
 
 ("$SCRIPTDIR/strj" $VOPTION $FOPTION $LOPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 \
     -la stratego-lib -la stratego-xtc -la stratego-aterm -la strc -la stratego-sglr -la stratego-rtg \
@@ -140,13 +141,13 @@ if [ $RET == 0 ]; then
   if [ $FOPTION ]; then
     ("$SCRIPTDIR/pp-stratego" -a -i "$OUTPUTDIR"/*.tmp || pp-aterm -i "$OUTPUTDIR"/*.tmp)
   elif [ $JOPTION ]; then
-    cat "$OUTPUTDIR/$BASENAME.java"
+    cat "$OUTPUTDIR/$JAVANAME.java"
     echo
   else
     CLASSDIR=$TEMPDIR/classes
     mkdir "$CLASSDIR"
-    javac -classpath "$STRJAR" -d "$CLASSDIR" "$OUTPUTDIR/$BASENAME.java"
-    java -cp "$CLASSDIR:$STRJAR" "$BASENAME"
+    javac -classpath "$STRJAR" -d "$CLASSDIR" "$OUTPUTDIR/$JAVANAME.java"
+    java -cp "$CLASSDIR:$STRJAR" "$JAVANAME"
     RET=$?
   fi
 fi
