@@ -11,8 +11,8 @@ strategies
 
   eq-or-c-r = 
     {?(x, x); !x} 
-    + {?(r@A, C); !r}
-    + {?(r@B, C); !r}
+    + {?(r@A(), C()); !r}
+    + {?(r@B(), C()); !r}
 
   main = 
     test-suite(!"test16", 
@@ -22,22 +22,22 @@ strategies
   test1 = debug;
     apply-test(!"test1a"
 	, eq-or-c-r
-	, !(D, D)
-	, !D
+	, !(D(), D())
+	, !D()
 	);
     apply-test(!"test1b"
 	, eq-or-c-r
-	, !(A, C)
-	, !A
+	, !(A(), C())
+	, !A()
 	);
     apply-test(!"test1c"
 	, eq-or-c-r
-	, !(B, C)
-	, !B
+	, !(B(), C())
+	, !B()
 	);
     apply-test(!"test1d"
 	, eq-or-c-r
-	, !(B, B)
-	, !B
+	, !(B(), B())
+	, !B()
 	)
 

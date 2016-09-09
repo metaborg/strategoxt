@@ -43,20 +43,20 @@ strategies
 
   sc-options =
 	ArgOption("-e",          \x -> ExecDir(x)\ )
-	+ ArgOption("-I",        !Ignore) // \x -> InclDir(x)\ )
-	+ ArgOption("--Include", !Ignore) // \x -> InclDir(x)\ ) 
-	+ ArgOption("-CI",       !Ignore) // \ (x,y) -> CInclDir(x)\ )
-	+ ArgOption("-CL",       !Ignore) // \ (x,y) -> CLibDir(x)\ )
-	+ Option("-CC",          !CC )
-	+ Option("--norm",        !NORM )
+	+ ArgOption("-I",        !Ignore()) // \x -> InclDir(x)\ )
+	+ ArgOption("--Include", !Ignore()) // \x -> InclDir(x)\ ) 
+	+ ArgOption("-CI",       !Ignore()) // \ (x,y) -> CInclDir(x)\ )
+	+ ArgOption("-CL",       !Ignore()) // \ (x,y) -> CLibDir(x)\ )
+	+ Option("-CC",          !CC() )
+	+ Option("--norm",        !NORM() )
 	+ ArgOption("-i",        \x -> Input(<remove-extension> x)\ )
 	+ ArgOption("--main",    \x -> Main(x)\ )
 	+ ArgOption("-m",        \x -> Main(x)\ ) 
-	+ Option("--ast",        !AST )
-	+ Option("-F",           !FRONTEND )
-	+ Option("--fusion",     !FUSION )
-	+ Option("--csyntax",	 !CSYNTAX )
-	+ Option("--trace-all",  !TraceAll; rules(TraceAllFuns : () -> ()))
+	+ Option("--ast",        !AST() )
+	+ Option("-F",           !FRONTEND() )
+	+ Option("--fusion",     !FUSION() )
+	+ Option("--csyntax",	 !CSYNTAX() )
+	+ Option("--trace-all",  !TraceAll(); rules(TraceAllFuns : () -> ()))
 	+ ArgOption("-t",        \x -> Trace(x) where rules(TraceFun : x -> ()) \ )
 
   my-io-options =
@@ -73,12 +73,12 @@ strategies
 	, where(<table-put>("usage-table", "usage", []));
           parse-options'( sc-options <+ my-io-options + system-usage-switch)
 	, !["pack-stratego", "-I", ".", "-I", "..", "-CI", "-I/tmp/include"]
-	, ![Program("pack-stratego"),Ignore,Ignore,Ignore]
+	, ![Program("pack-stratego"),Ignore(),Ignore(),Ignore()]
 	)
 
   test2 =
     apply-test(!"test2"
 	, parse-options(sc-options <+ my-io-options)
 	, !["pack-stratego", "-I", ".", "-I", "..", "-CI", "-I/tmp/include"]
-	, ![Program("pack-stratego"),Ignore,Ignore,Ignore] 
+	, ![Program("pack-stratego"),Ignore(),Ignore(),Ignore()] 
 	)

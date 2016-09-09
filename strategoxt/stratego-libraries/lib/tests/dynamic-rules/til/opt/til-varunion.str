@@ -79,7 +79,7 @@ strategies
     )
 
   varunion-break =
-    ?Break(None)
+    ?Break(None())
     ; break-VarUnion
 
   varunion-break-label =
@@ -87,7 +87,7 @@ strategies
     ; break-to-label-VarUnion(|label)
 
   varunion-continue =
-    ?Continue(None)
+    ?Continue(None())
     ; continue-VarUnion
 
   varunion-continue-label =

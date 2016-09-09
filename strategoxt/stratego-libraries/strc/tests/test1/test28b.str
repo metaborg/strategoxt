@@ -13,7 +13,7 @@ signature
 strategies 
  
   main = 
-    !Plus(Var("a"), Var("b")){Int}
+    !Plus(Var("a"), Var("b")){Int()}
     ; rm-annotations 
 
   rm-annotations :

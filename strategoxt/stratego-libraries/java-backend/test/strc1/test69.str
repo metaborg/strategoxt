@@ -9,8 +9,8 @@ signature
 
 rules
 
-  R1 : If(c, x) -> If(c, x, Skip)
-  R2 : If(c, x, Skip) -> If(c, x)
+  R1 : If(c, x) -> If(c, x, Skip())
+  R2 : If(c, x, Skip()) -> If(c, x)
 
 strategies
 

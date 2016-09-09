@@ -3,8 +3,8 @@ imports libstratego-lib
 strategies
 
   main =
-    <all-G-by-H> H(G(G(H(G(B, I(1)), A), B), I(0)), A)
-	      => H(G(G(H(H(B, I(1)), A), B), I(0)), A)
+    <all-G-by-H> H(G(G(H(G(B(), I(1)), A()), B()), I(0)), A())
+	      => H(G(G(H(H(B(), I(1)), A()), B()), I(0)), A())
 
   all-G-by-H = 
     bottomup-term(try(?G(x, y); !H(x, y)))

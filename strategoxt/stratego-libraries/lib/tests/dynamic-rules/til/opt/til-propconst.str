@@ -72,7 +72,7 @@ strategies
     )
 
   propconst-break =
-    ?Break(None)
+    ?Break(None())
     ; break-PropConst
 
   propconst-break-label =
@@ -80,7 +80,7 @@ strategies
     ; break-to-label-PropConst(|label)
 
   propconst-continue =
-    ?Continue(None)
+    ?Continue(None())
     ; continue-PropConst
 
   propconst-continue-label =

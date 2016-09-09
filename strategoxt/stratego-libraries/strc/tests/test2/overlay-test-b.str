@@ -17,13 +17,13 @@ overlays
   DefaultLayout = " "
 
   BinOp(o) = 
-    prod([sort("E"), layout, lit(o), layout, sort("E")], sort("E"), [])
+    prod([sort("E"), layout(), lit(o), layout(), sort("E")], sort("E"), [])
 
   BinExp(x, l1, o, l2, y) = 
     appl(BinOp(o), [x, l1, lit(o), l2, y])
 
   BinExp(x, o, y) =   
-    appl(BinOp(o), [x, _ DefaultLayout, lit(o), _ DefaultLayout, y])
+    appl(BinOp(o), [x, _ DefaultLayout(), lit(o), _ DefaultLayout(), y])
 
   Add(x, l1, l2, y) = BinExp(x, l1, "+", l2, y) 
 

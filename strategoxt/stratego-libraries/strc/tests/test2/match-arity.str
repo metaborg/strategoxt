@@ -9,9 +9,9 @@ signature
 
 rules
 
-  R1 : If(c, x) -> If(c, x, Skip)
+  R1 : If(c, x) -> If(c, x, Skip())
 
-  R2 : If(c, x, Skip) -> If(c, x)
+  R2 : If(c, x, Skip()) -> If(c, x)
 
 strategies
 
@@ -28,41 +28,41 @@ strategies
   match-arity1 =
     apply-test(!"match-arity1"
 	      ,not(R1)
-	      ,!If(Skip, Skip, Skip)
-	      ,!If(Skip, Skip, Skip)
+	      ,!If(Skip(), Skip(), Skip())
+	      ,!If(Skip(), Skip(), Skip())
 	      )
 
   match-arity2 =
     apply-test(!"match-arity2"
 	      ,not(R2)
-	      ,!If(Skip, Skip)
-	      ,!If(Skip, Skip)
+	      ,!If(Skip(), Skip())
+	      ,!If(Skip(), Skip())
 	      )
 
   match-arity3 =
     apply-test(!"match-arity3"
 	      ,R1
-	      ,!If(Skip, Skip)
-	      ,!If(Skip, Skip, Skip)
+	      ,!If(Skip(), Skip())
+	      ,!If(Skip(), Skip(), Skip())
 	      )
 
   match-arity4 =
     apply-test(!"match-arity4"
 	      ,R2
-	      ,!If(Skip, Skip, Skip)
-	      ,!If(Skip, Skip)
+	      ,!If(Skip(), Skip(), Skip())
+	      ,!If(Skip(), Skip())
 	      )
 
   match-arity5 =
     apply-test(!"match-arity5"
 	      ,R1 + R2
-	      ,!If(Skip, Skip, Skip)
-	      ,!If(Skip, Skip)
+	      ,!If(Skip(), Skip(), Skip())
+	      ,!If(Skip(), Skip())
 	      )
 
   match-arity6 =
     apply-test(!"match-arity6"
 	      ,R1 + R2
-	      ,!If(Skip, Skip)
-	      ,!If(Skip, Skip, Skip)
+	      ,!If(Skip(), Skip())
+	      ,!If(Skip(), Skip(), Skip())
 	      )

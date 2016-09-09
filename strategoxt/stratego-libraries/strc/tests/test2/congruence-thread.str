@@ -21,7 +21,7 @@ signature
 
 rules
 
-  add-one : (Id,x) -> (Id,Succ(x))
+  add-one : (Id(),x) -> (Id(),Succ(x))
 
 /*
 strategies
@@ -29,15 +29,15 @@ strategies
   congruence-dist-test = 
     apply-test(!"congruence-dist-test"
 	      ,If^D(id,id,id)
-	      ,!(If(Id,Id,Id),[]) 
-	      ,!If((Id,[]),(Id,[]),(Id,[]))
+	      ,!(If(Id(),Id(),Id()),[]) 
+	      ,!If((Id(),[]),(Id(),[]),(Id(),[]))
 	      )
 
   congruence-thread-test = 
     apply-test(!"congruence-thread-test"
 	      ,If^T(add-one,add-one,add-one)
-	      ,!(If(Id,Id,Id),Zero)
-	      ,!(If(Id,Id,Id),Succ(Succ(Succ(Zero))))
+	      ,!(If(Id(),Id(),Id()),Zero())
+	      ,!(If(Id(),Id(),Id()),Succ(Succ(Succ(Zero()))))
 	      )
 */
 

@@ -351,7 +351,7 @@ strategies
   test-overlays-1 =
     apply-test(!"test-overlays-1"
 	, id
-	, !VarA{Int}
+	, !VarA(){Int}
 	, !Var("a"){Int}
 	)
 
@@ -365,7 +365,7 @@ strategies
   test-overlays-3 =
     apply-test(!"test-overlays-3"
 	, id
-	, !VarAFloat{Int}
+	, !VarAFloat(){Int}
 	, !Var("a"){Int}
 	)
 

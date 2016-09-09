@@ -7,11 +7,11 @@ signature
 
 rules
 
-    RuleA      : A -> B
+    RuleA      : A() -> B()
 
 strategies
 
-    main       = debug(!"main: "); <Main> [A, A]; debug(!"main x: ")
+    main       = debug(!"main: "); <Main> [A(), A()]; debug(!"main x: ")
 
     Main       = debug(!"Main: "); memo-scope([ma, ma]); debug(!"Main x: ")
 

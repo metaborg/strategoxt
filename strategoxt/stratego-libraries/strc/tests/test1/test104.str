@@ -6,7 +6,7 @@ imports libstratego-lib
 
 signature
   constructors
-    Foo : A * () * Tuple([B,C]) -> D
+    Foo : A * () * Tuple([B,C()]) -> D
     Bar : List(String) -> A
     Baz : B
     Aap : C

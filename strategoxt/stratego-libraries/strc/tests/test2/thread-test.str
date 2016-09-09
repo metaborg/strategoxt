@@ -25,8 +25,8 @@ strategies
     apply-test(!"simple-test"
 	, \ t -> (t, 0) \; 
 	  thread(\ (x,y) -> (x, <add>(y,1)) \ ) 
-	, !F(G(A),H(B),C)
-	, !(F(G(A),H(B),C),3)
+	, !F(G(A()),H(B()),C())
+	, !(F(G(A()),H(B()),C()),3)
 	)
 
   preorder-number = 
@@ -34,24 +34,24 @@ strategies
 	, \ t -> (t, 0) \ ; 
 	  rec x(\ (t, n) -> Ann(n, <thread(x)> (t, <add>(n,1))) \;
 	        SwapAnn)
-	, !F(G(A),H(B),C)
-	, !(Ann(0,F(Ann(1,G(Ann(2,A))),Ann(3,H(Ann(4,B))),Ann(5,C))),6)
+	, !F(G(A()),H(B()),C())
+	, !(Ann(0,F(Ann(1,G(Ann(2,A()))),Ann(3,H(Ann(4,B()))),Ann(5,C()))),6)
 	)
 
   postorder-number = 
     apply-test(!"postorder-number"
 	, \ t -> (t, 0) \ ; 
 	  rec x(thread(x); Annotate)
-	, !F(G(A),H(B),C)
-	, !(Ann(5,F(Ann(1,G(Ann(0,A))),Ann(3,H(Ann(2,B))),Ann(4,C))),6)
+	, !F(G(A()),H(B()),C())
+	, !(Ann(5,F(Ann(1,G(Ann(0,A()))),Ann(3,H(Ann(2,B()))),Ann(4,C()))),6)
 	)
 
   thread-list-test = 
     apply-test(!"thread-list-test"
 	, \ t -> (t, 0) \; 
 	  thread(\ (x,y) -> (x, <add>(y,1)) \ ) 
-	, ![G(A),H(B),C]
-	, !([G(A),H(B),C],3)
+	, ![G(A()),H(B()),C()]
+	, !([G(A()),H(B()),C()],3)
 	)
 
 rules
