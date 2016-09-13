@@ -52,23 +52,20 @@ strategies
    */
   Dupl  : x -> (x, x)
 
-  /** Apply a pair of strategies, f and g, to a two-element tuple. The 
-   * strategy f will be applied to the first element, g to the second.
+  /** Apply a pair of strategies, f and g, to an element.
    *
    * @param f        a -> a'
-   * @param g        b -> b'
-   * @type           Tuple(a, b) -> Tuple(a', b')
+   * @param g        a -> b'
+   * @type           a -> Tuple(a', b')
    */
   split(f, g) = !(<f>, <g>)
   
-  /** Apply a triple of strategies, f, g and h to a three-element tuple.
-   * The strategy f will be applied to the first element, g to the second
-   * and h to the third.
+  /** Apply a triple of strategies, f, g and h to an element.
    *
    * @param f        a -> a'
-   * @param g        b -> b'
-   * @param h        c -> c'
-   * @type           Tuple(a, b, c) -> Tuple(a', b', c')
+   * @param g        a -> b'
+   * @param h        a -> c'
+   * @type           a -> Tuple(a', b', c')
    */
   split3(f, g, h) = !(<f>, <g>, <h>)
 
