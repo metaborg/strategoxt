@@ -27,7 +27,7 @@ strategies
     error;
     SRTS-EXT-fatal-err(|<try(concat-strings)>, ())
   
-  override report-failure(|message, term) = SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
+  override report-failure(|message, term) = SRTS-EXT-fatal-err(|message, <try(concat-strings)> term, <id>)
   
   
   /**

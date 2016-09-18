@@ -20,7 +20,7 @@ strategies
    */
   with(s|message) =
     where(s <+ ?term; prim("SSL_stacktrace_get_all_frame_names"); report-failure(|message, term))
-  
+
   /**
   * Evaluate strategy s1 and catch with-failures that get thrown.
   * If s1 throws a with-failure then s2 is called on the original input term 
