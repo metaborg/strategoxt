@@ -57,7 +57,7 @@ public class InteropStrategy extends DynamicStrategy {
 			boolean success = definition.evaluate(context);
 			return success ? context.current() : null;
 		} catch (InterpreterErrorExit e) {
-			throw new StrategoErrorExit(e.getMessage(), e.getTerm(), e);
+			throw new StrategoErrorExit(e.getMessage(), e.getTerm(), e.getTrace(), e.getCause());
 		} catch (InterpreterExit e) {
 			throw new StrategoExit(e.getValue(), e);
 		} catch (InterpreterException e) {

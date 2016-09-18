@@ -1,7 +1,5 @@
 package org.strategoxt.lang;
 
-import java.util.Iterator;
-
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -18,25 +16,26 @@ public class StrategoErrorExit extends StrategoExit {
 	private final IStrategoTerm term;
 	private final IStrategoList trace;
 
-	public StrategoErrorExit(String message, IStrategoTerm term, Throwable cause) {
-		super(1, message, cause);
-		this.term = term;
-		this.trace = null;
-	}
-
-	public StrategoErrorExit(String message, IStrategoTerm term,
-			IStrategoList trace) {
-		super(1, message, null);
-		this.term = term;
-		this.trace = trace;
+	public StrategoErrorExit(String message) {
+	    this(message, null, null, null);
 	}
 
 	public StrategoErrorExit(String message, IStrategoTerm term) {
-		this(message, term, (IStrategoList) null);
+	    this(message, term, null, null);
 	}
 
-	public StrategoErrorExit(String message) {
-		this(message, null, (IStrategoList) null);
+	public StrategoErrorExit(String message, IStrategoTerm term, Throwable cause) {
+	    this(message, term, null, cause);
+	}
+
+	public StrategoErrorExit(String message, IStrategoTerm term, IStrategoList trace) {
+	    this(message, term, trace, null);
+	}
+
+	public StrategoErrorExit(String message, IStrategoTerm term, IStrategoList trace, Throwable cause) {
+		super(1, message, cause);
+		this.term = term;
+		this.trace = trace;
 	}
 
 	public IStrategoTerm getTerm() {
@@ -44,8 +43,8 @@ public class StrategoErrorExit extends StrategoExit {
 	}
 
 	@Override
-	public String getLocalizedMessage() { // used for toString() and stacktraces
-		StringBuilder sb = new StringBuilder(getMessage());
+	public String getMessage() { // used for toString() and stacktraces
+		StringBuilder sb = new StringBuilder(super.getMessage());
 		IStrategoTerm term = getTerm();
 		if (term != null) {
 			sb.append("\n\t" + term);
