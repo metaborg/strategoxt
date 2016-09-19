@@ -43,7 +43,7 @@ public class StrategoErrorExit extends StrategoExit {
 	}
 
 	@Override
-	public String getMessage() { // used for toString() and stacktraces
+	public String getLocalizedMessage() { // used for toString() and stacktraces
 		StringBuilder sb = new StringBuilder(super.getMessage());
 		IStrategoTerm term = getTerm();
 		if (term != null) {
