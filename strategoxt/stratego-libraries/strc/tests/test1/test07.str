@@ -10,7 +10,7 @@ signature
 
 rules
 
-  A : Plus(Zero, x) -> x
+  A : Plus(Zero(), x) -> x
   B : Plus(Succ(x), y) -> Plus(x, Succ(y))
 
 strategies
@@ -24,5 +24,5 @@ strategies
     repeat(A + B)
 
   main =  
-    !Plus(Succ(Succ(Zero)), Succ(Zero));
+    !Plus(Succ(Succ(Zero())), Succ(Zero()));
     eval

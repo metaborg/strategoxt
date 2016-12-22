@@ -12,9 +12,9 @@ signature
 
 rules
 
-  R1 : F(x, y @ G(A, z)) -> H(x, y, z)
+  R1 : F(x, y @ G(A(), z)) -> H(x, y, z)
  
-  R2 : F(x, G(y, B)) -> H(x, y, B)
+  R2 : F(x, G(y, B())) -> H(x, y, B())
 
 strategies
 
@@ -27,13 +27,13 @@ strategies
   as-pattern1 = 
     apply-test(!"as-pattern1"
 	      ,R1
-              ,!F(B,G(A,C))
-              ,!H(B,G(A,C),C)
+              ,!F(B(),G(A(),C()))
+              ,!H(B(),G(A(),C()),C())
               )
 
   as-pattern2 = 
     apply-test(!"as-pattern2"
 	      ,R1 + R2
-              ,!F(B,G(C,B))
-              ,!H(B, C, B)
+              ,!F(B(),G(C(),B()))
+              ,!H(B(), C(), B())
               )

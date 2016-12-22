@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eu
+
+SCRIPTDIR=$(dirname "$0")
+for DISTDIR in "$SCRIPTDIR"/../../buildpoms/build/target/dist "$SCRIPTDIR"/..; do
+    STRDIR=$DISTDIR/share/strategoxt/strategoxt
+    if [ -d "$STRDIR" ]; then
+        echo $(cd "$STRDIR" && pwd -P)/strategoxt.jar
+        exit 0
+    fi
+done
+echo "Cannot find strategoxt.jar" 1>&2
+exit 1

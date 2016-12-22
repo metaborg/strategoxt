@@ -1,7 +1,7 @@
-Internal error: with clause failed unexpectedly in 'Foo', defined in strategy 'main'
+Internal error: 'with' clause failed unexpectedly in 'Foo', defined in strategy 'main'
 	1
-	report_with_failure_0_1
-	aux_Foo_0_1
-	fetch_elem_1_0
-	Foo_0_0
 	main_0_0
+	Foo_0_0
+	fetch_elem_1_0
+	aux_Foo_0_1
+	with_1_1 <==

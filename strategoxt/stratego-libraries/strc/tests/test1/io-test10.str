@@ -8,7 +8,7 @@ signature
 
 rules
 
-  A : Plus(Zero, x) -> x
+  A : Plus(Zero(), x) -> x
   B : Plus(Succ(x), y) -> Succ(Plus(x, y))
 
 strategies

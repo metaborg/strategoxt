@@ -13,10 +13,10 @@ strategies
    * The bug results in: [Var("t"),Var(ListVar("t*"))]
    */
   main-test92 =
-    !Match(AnnoList(Wld, [Var("t"), Var(ListVar("t*"))]))
+    !Match(AnnoList(Wld(), [Var("t"), Var(ListVar("t*"))]))
     ; parenthesize-Stratego
     ; debug(!"result: ")
-    ; ?Match(AnnoList(Wld, [Var("t"), Var(ListVar("t*"))]))
+    ; ?Match(AnnoList(Wld(), [Var("t"), Var(ListVar("t*"))]))
 
   parenthesize-Stratego =
     innermost(StrategoParenthesize)

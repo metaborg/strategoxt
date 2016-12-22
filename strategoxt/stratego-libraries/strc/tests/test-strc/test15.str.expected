@@ -1,4 +1,4 @@
-Internal error: with clause failed unexpectedly in 'main'
+Internal error: 'with' clause failed unexpectedly in 'main'
 	"test15"
-	report_with_failure_0_1
 	main_0_0
+	with_1_1 <==

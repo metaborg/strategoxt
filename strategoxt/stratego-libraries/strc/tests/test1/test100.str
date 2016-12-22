@@ -4,7 +4,7 @@ imports libstratego-lib
 strategies
 
   mynestedtable-put(|keys, value) = 
-    let forward = try(?NewTable; !NestedTable(<new-hashtable>); !(<id>,<id>))
+    let forward = try(?NewTable(); !NestedTable(<new-hashtable>); !(<id>,<id>))
      in nestedtable-put(forward, id | keys, value)
     end
 

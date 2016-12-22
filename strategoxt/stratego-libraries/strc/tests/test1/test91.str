@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = <rewr> f(100, empty)
+  main = <rewr> f(100, empty())
 
 signature
   sorts Domain Range Map
@@ -21,7 +21,7 @@ signature
 
 rules
 
-  I : insert(D, R, empty) -> join(rel(D, R), empty)
+  I : insert(D, R, empty()) -> join(rel(D, R), empty())
 
   I : insert(D, R, join(rel(D', R'), rest)) ->
                    join(rel(D', R'), insert(D, R, rest)) 
@@ -33,7 +33,7 @@ rules
   I : lookup(join(rel(D, R), rest), D') -> lookup(rest, D') 
       where <not(eq)> (D, D')
 
-  I : lookup(empty, D) -> undefined
+  I : lookup(empty(), D) -> undefined()
 
   I : myadd(X, Y) -> <add>(X,Y)
 

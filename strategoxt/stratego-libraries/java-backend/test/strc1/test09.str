@@ -10,7 +10,7 @@ signature
 
 rules
 
-  A : Plus(Zero, x) -> x
+  A : Plus(Zero(), x) -> x
   B : Plus(Succ(x), y) -> Succ(Plus(x, y))
 
 strategies
@@ -28,9 +28,9 @@ strategies
     innermost(A + B)
 
   nat_nf = 
-    rec x(Succ(x) + Zero)
+    rec x(Succ(x) + Zero())
 
   main-test09 =  
-    !Plus(Succ(Plus(Succ(Zero), Succ(Zero))), Succ(Zero));
+    !Plus(Succ(Plus(Succ(Zero()), Succ(Zero()))), Succ(Zero()));
     eval;
     nat_nf

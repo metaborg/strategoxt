@@ -477,7 +477,7 @@ rules
     Match(t, Id("t"))
 
   TranslateStrat :
-    Match(Wld, trm) ->
+    Match(Wld(), trm) ->
     Compound([],[])
 
   TranslateStrat :

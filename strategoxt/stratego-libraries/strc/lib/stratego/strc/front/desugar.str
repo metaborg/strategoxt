@@ -192,9 +192,7 @@ rules
       sname := <name>
     ; x := <new>
     ; y := <new>
-    ; with := Strat |[
-        where( s <+ report-with-failure(| ~str:sname {^[]}) )
-      ]|
+    ; with := <with-strategy> (s,sname)
       <+ with := With(s) // <name> failed
 
   rule-traced-name:
@@ -215,15 +213,18 @@ strategies // "with" strategy
   ; rules(WithContext := <conc-strings> ("strategy '", f, "'"))
   
   Desugar:
-    With(s) ->
-    |[
-      where( s <+ report-with-failure(| ~str:sname {^[]}) )
-    ]|
+    With(s) -> <with-strategy> (s,sname)
     where
       x := <new>
       ; ( sname := <WithContext>
         <+sname := ""
         )
+
+  with-strategy:
+    (s,sname) ->
+    Strat |[
+      with( s | [ "Internal error: 'with' clause failed unexpectedly in " {^[]} | [ ~str:sname {^[]} | [] {^[]} ] {^[]} ] {^[]} )
+    ]|
 
 strategies // "with" in dynamic rules
 

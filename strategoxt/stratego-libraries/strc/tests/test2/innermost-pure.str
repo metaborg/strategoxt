@@ -8,7 +8,7 @@ signature
     Plus : Nat * Nat -> Nat
 rules
 
-  A : Plus(Zero, x) -> x
+  A : Plus(Zero(), x) -> x
 
   B : Plus(Succ(x), y) -> Succ(Plus(x, y))
 
@@ -39,6 +39,6 @@ strategies
   test1 = 
     apply-test(!"test1"
               , my-innermost(A + B)
-              ,!Plus(Succ(Plus(Succ(Zero),Succ(Zero))), Succ(Zero))
-              ,!Succ(Succ(Succ(Succ(Zero))))
+              ,!Plus(Succ(Plus(Succ(Zero()),Succ(Zero()))), Succ(Zero()))
+              ,!Succ(Succ(Succ(Succ(Zero()))))
               )

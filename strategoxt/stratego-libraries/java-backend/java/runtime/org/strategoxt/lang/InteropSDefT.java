@@ -191,7 +191,7 @@ public class InteropSDefT extends SDefT {
 			Context context = HybridInterpreter.getCompiledContext(env);
 			result = getStrategy().invokeDynamic(context, env.current(), sargs, targs);
 		} catch (StrategoErrorExit e) {
-			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
+			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e.getTrace(), e.getCause());
 		} catch (StrategoExit e) {
 			throw new InterpreterExit(e.getValue(), e);
 		} catch (MissingStrategyException e) {

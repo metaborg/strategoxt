@@ -23,7 +23,7 @@ strategies
 
 rules
 
-  A : Plus(Zero, x) -> x
+  A : Plus(Zero(), x) -> x
 
   B : Plus(Succ(x), y) -> Succ(Plus(x, z))
       where <id> y => z

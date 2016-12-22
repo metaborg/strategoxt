@@ -1,2 +1,4 @@
-	report_with_failure_0_1
+Internal error: 'with' clause failed unexpectedly in strategy 'main'
+	0
 	main_0_0
+	with_1_1 <==

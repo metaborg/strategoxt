@@ -70,7 +70,7 @@ public class StackSaver extends SRTS_all { // DEBUG: SRTS_all superclass
 			try {
 				throw e.getCause();
 			} catch (StrategoErrorExit f) {
-				throw new StrategoErrorExit(f.getMessage(), f.getTerm(), e.getCause());
+				throw new StrategoErrorExit(f.getMessage(), f.getTerm(), f.getTrace(), f.getCause());
 			} catch (StrategoExit f) {
 				throw new StrategoExit(f.getValue(), e.getCause());
 			} catch (StrategoException f) {

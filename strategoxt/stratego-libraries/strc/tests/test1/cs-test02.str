@@ -15,11 +15,11 @@ strategies
     , ?appl(
          prod(
            [ cf(sort("Id"))
-           , cf(opt(layout))
+           , cf(opt(layout()))
            , lit("(")
-           , cf(opt(layout))
+           , cf(opt(layout()))
            , cf(iter-star-sep(sort("Exp"),lit(",")))
-           , cf(opt(layout))
+           , cf(opt(layout()))
            , lit(")")
            ]
          , cf(sort("Exp")), attrs(_)

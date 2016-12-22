@@ -17,11 +17,11 @@ strategies
   test1 =
     apply-test(!"test1a"
 	, count-bottomup(?F(_,_)); ?(_,<id>)
-	, !F(A,G(F(B,A)))
+	, !F(A(),G(F(B(),A())))
 	, !2
 	);
     apply-test(!"test1b"
-	, count-bottomup(\ F(B,x) -> x \ )
-	, !F(A,G(F(B,A)))
-	, !(F(A,G(A)),1)
+	, count-bottomup(\ F(B(),x) -> x \ )
+	, !F(A(),G(F(B(),A())))
+	, !(F(A(),G(A())),1)
 	)

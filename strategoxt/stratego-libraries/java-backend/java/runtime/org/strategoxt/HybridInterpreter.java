@@ -45,7 +45,6 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
-import org.strategoxt.lang.parallel.stratego_parallel.ParallelContext;
 import org.strategoxt.strc.desugar_0_0;
 import org.strategoxt.strc.desugar_list_matching_0_0;
 import org.strategoxt.strc.pre_desugar_0_0;
@@ -441,7 +440,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			if (!loadedJars) init();
 			return super.invoke(name);
 		} catch (StrategoErrorExit e) {
-			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
+			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e.getTrace(), e.getCause());
         } catch (StrategoExit e) {
             throw new InterpreterExit(e.getValue(), e);
         } catch (MissingStrategyException e) {
@@ -602,7 +601,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 				invoke(strategy);
 				return current();
 			} catch (InterpreterErrorExit e) {
-				throw new StrategoErrorExit(e.getMessage(), e.getTerm(), e);
+				throw new StrategoErrorExit(e.getMessage(), e.getTerm(), e.getTrace(), e.getCause());
 			} catch (InterpreterExit e) {
 				throw new StrategoExit(e.getValue(), e);
 			} catch (UndefinedStrategyException e) {

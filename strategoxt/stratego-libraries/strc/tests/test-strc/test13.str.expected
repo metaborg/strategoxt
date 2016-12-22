@@ -1,6 +1,6 @@
 1
-Internal error: with clause failed unexpectedly in 'foo'
+Internal error: 'with' clause failed unexpectedly in 'foo'
 	0
-	report_with_failure_0_1
-	foo_0_0
 	main_0_0
+	foo_0_0
+	with_1_1 <==

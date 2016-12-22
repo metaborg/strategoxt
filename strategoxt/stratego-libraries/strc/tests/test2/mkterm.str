@@ -20,4 +20,4 @@ rules
 strategies
 
   main = 
-    <A; B; C; id#([id|id]); D> F(X,Y,Z) => ["c",X,Y,Z] 
+    <A; B; C; id#([id|id]); D> F(X(),Y(),Z()) => ["c",X(),Y(),Z()] 

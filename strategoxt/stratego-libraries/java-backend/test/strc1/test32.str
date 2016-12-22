@@ -10,7 +10,7 @@ signature
 strategies
 
   main-test32 = 
-    <reduce> Plus(Succ(Succ(Zero)), Succ(Zero))
+    <reduce> Plus(Succ(Succ(Zero())), Succ(Zero()))
 
   try(s) = s <+ id
 
@@ -18,7 +18,7 @@ strategies
 
   apply(f | x) = <f> x
 
-  A = ?Plus(Zero, y); a(|y)
+  A = ?Plus(Zero(), y); a(|y)
   B = ?Plus(Succ(x), y); b(|x, y)
 
   a(|y) = !y

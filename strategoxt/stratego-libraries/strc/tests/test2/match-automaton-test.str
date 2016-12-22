@@ -20,15 +20,15 @@ strategies
 
   failure-in-case1 =
     apply-test(!"failure-in-case1"
-              ,{x: ?F(A,x); !A} + {y: ?F(y,G(B,C)); !B}
-              ,!F(A,G(B,D))
-              ,!A
+              ,{x: ?F(A(),x); !A()} + {y: ?F(y,G(B(),C())); !B()}
+              ,!F(A(),G(B(),D()))
+              ,!A()
               )
 
   failure-in-case2 =
     apply-test(!"failure-in-case2"
-              ,{x: ?F(A,x); !A} + {y: ?F(y,B); !B}  
-              ,!F(A,D)
-              ,!A
+              ,{x: ?F(A(),x); !A()} + {y: ?F(y,B()); !B()}  
+              ,!F(A(),D())
+              ,!A()
               )
 

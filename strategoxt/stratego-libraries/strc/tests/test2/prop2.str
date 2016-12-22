@@ -11,7 +11,7 @@ strategies
     apply-test(!"test1"
               ,disj-nf
 
-              ,!And(And(Or(Or(Atom("d_0"),Atom("a")),Or(Or(Atom("c_0"),Atom("a")),False)),Atom("b")),And(And(Or(Or(Atom("b_0"),Atom("a")),Or(Or(Atom("a_0"),Atom("a")),False)),Atom("b")),True))
+              ,!And(And(Or(Or(Atom("d_0"),Atom("a")),Or(Or(Atom("c_0"),Atom("a")),False())),Atom("b")),And(And(Or(Or(Atom("b_0"),Atom("a")),Or(Or(Atom("a_0"),Atom("a")),False())),Atom("b")),True()))
 
               , import-term(./prop2.res)
               )
@@ -51,20 +51,20 @@ strategies
      T11 + T12 + T13 + T14 + T15 + T16 + T17 + T18 + T19
 rules
 
-  T1  : Not(True) -> False       T2  : Not(False) -> True
+  T1  : Not(True()) -> False()       T2  : Not(False()) -> True()
 
-  T3  : And(True, x) -> x        T5  : And(False, x) -> False  
-  T4  : And(x, True) -> x        T6  : And(x, False) -> False  
+  T3  : And(True(), x) -> x        T5  : And(False(), x) -> False()  
+  T4  : And(x, True()) -> x        T6  : And(x, False()) -> False()  
   
-  T7  : Or(True, x) -> True      T9  : Or(False, x) -> x
-  T8  : Or(x, True) -> True      T10 : Or(x, False) -> x
+  T7  : Or(True(), x) -> True()      T9  : Or(False(), x) -> x
+  T8  : Or(x, True()) -> True()      T10 : Or(x, False()) -> x
 
-  T11 : Impl(True, x) -> x       T14 : Impl(False, False) -> True
-  T12 : Impl(x, True) -> True    T15 : Impl(True, False) -> False
-  T13 : Impl(False, x) -> True
+  T11 : Impl(True(), x) -> x       T14 : Impl(False(), False()) -> True()
+  T12 : Impl(x, True()) -> True()    T15 : Impl(True(), False()) -> False()
+  T13 : Impl(False(), x) -> True()
 
-  T16 : Eq(False, x) -> Not(x)   T18 : Eq(True, x) -> x
-  T17 : Eq(x, False) -> Not(x)   T19 : Eq(x, True) -> x
+  T16 : Eq(False(), x) -> Not(x)   T18 : Eq(True(), x) -> x
+  T17 : Eq(x, False()) -> Not(x)   T19 : Eq(x, True()) -> x
 
 rules
 
@@ -79,8 +79,8 @@ rules
 
   IDA   : And(x, x) -> x
   IDO   : Or(x, x) -> x
-  IDI   : Impl(x, x) -> True
-  IDE   : Eq(x, x) -> True
+  IDI   : Impl(x, x) -> True()
+  IDE   : Eq(x, x) -> True()
 
   DAOL  : And(Or(x, y), z) -> Or(And(x, z), And(y, z))
   DAOR  : And(z, Or(x, y)) -> Or(And(z, x), And(z, y))
@@ -94,7 +94,7 @@ rules
   DMI   : Not(Impl(x, y)) -> And(x, Not(y))
   DME   : Not(Eq(x, y)) -> Or(And(Not(x), y), And(x, Not(y)))
 
-  DefN  : Not(x) -> Impl(x, False)
+  DefN  : Not(x) -> Impl(x, False())
   DefI  : Impl(x, y) -> Or(Not(x), y)
   DefE  : Eq(x, y) -> And(Impl(x, y), Impl(y, x))
   DefO1 : Or(x, y) -> Impl(Not(x), y)

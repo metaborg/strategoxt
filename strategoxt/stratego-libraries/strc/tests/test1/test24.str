@@ -11,7 +11,7 @@ signature
 
 overlays
 
-  F(x) = G(H(x),A)
+  F(x) = G(H(x),A())
 
 rules
 
@@ -22,9 +22,9 @@ rules
 strategies
 
   main =
-    !H(H(H(B)))
+    !H(H(H(B())))
     ; R2
-    ; ?I(G(H(B),A))
+    ; ?I(G(H(B()),A()))
 
   
 

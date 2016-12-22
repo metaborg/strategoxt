@@ -18,7 +18,7 @@ signature
 
 rules
 
-  A : Plus(Zero, x) -> x
+  A : Plus(Zero(), x) -> x
   B : Plus(Succ(x), y) -> Plus(x, Succ(y))
 
 strategies
@@ -32,11 +32,11 @@ strategies
 
   plus(|a, b) =
     !(a, b)
-    ; ({x: ?(Zero, x); !x}
+    ; ({x: ?(Zero(), x); !x}
       <+ {x, y: ?(Succ(x), y); plus(|x, Succ(y))})
     
 strategies
 
   main = 
-    !Plus(Succ(Succ(Zero)), Succ(Zero));
+    !Plus(Succ(Succ(Zero())), Succ(Zero()));
     eval
