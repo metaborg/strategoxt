@@ -28,10 +28,10 @@ strategies
   * The following defines the behaviour of catch-with on input term t:
   * 	
   * <s1> t if success(s1) or fail(s1)
-  * <s2> (t, trace) if withfail(s1)
+  * <s2> (message, t, trace) if withfail(s1)
   * 
   * @param a -> b
-  * @param (a, List(String)) -> c
+  * @param (String, a, List(String)) -> c
   * @type a -> b | c
   */
   catch-with(s1, s2) = prim("SSL_EXT_catch_with", s1, s2|)
