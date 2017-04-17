@@ -1,6 +1,7 @@
 package org.strategoxt.lang.parallel.stratego_parallel;
 
-import java.util.ArrayList;
+import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.DIAGNOSE_SYNCHRONOUS_OPERATIONS;
+
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -11,12 +12,6 @@ import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
-import org.strategoxt.lang.parallel.stratego_parallel.ParallelJob;
-import org.strategoxt.lang.parallel.stratego_parallel.ParallelJobAbortedException;
-import org.strategoxt.lang.parallel.stratego_parallel.ParallelJobExecutor;
-import org.strategoxt.lang.parallel.stratego_parallel.PureOperatorSet;
-
-import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.*;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -44,8 +39,7 @@ public class ParallelContext extends Context {
 	 *            non-whitelisted ones.
 	 */
 	public ParallelContext(Context context, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered) {
-		super(context.getFactory(), new HashMap<String, IOperatorRegistry>(context.getOperatorRegistryMap()), 
-				new ArrayList<IOperatorRegistry>(context.getOperatorRegistries()), true);
+		super(context.getFactory(), new HashMap<String, IOperatorRegistry>(context.getOperatorRegistries()), true);
 		this.innerContext = context;
 		this.job = job;
 		this.isAborted = aborted;

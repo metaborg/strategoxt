@@ -140,7 +140,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));
 		interpreter.init();
-		for (IOperatorRegistry registry : interpreter.getCompiledContext().getOperatorRegistries()) {
+		for (IOperatorRegistry registry : interpreter.getCompiledContext().getOperatorRegistries().values()) {
 			IOperatorRegistry existing = getContext().getOperatorRegistry(registry.getOperatorRegistryName());
 			if (existing == null || reusable.contains(registry.getOperatorRegistryName()))
 				addOperatorRegistry(registry);

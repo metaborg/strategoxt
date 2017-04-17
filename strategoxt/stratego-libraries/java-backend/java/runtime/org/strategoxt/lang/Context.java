@@ -3,10 +3,8 @@ package org.strategoxt.lang;
 import static org.strategoxt.lang.Term.NO_STRATEGIES;
 import static org.strategoxt.lang.Term.NO_TERMS;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 
@@ -16,6 +14,7 @@ import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.IOperatorRegistry;
+import org.spoofax.interpreter.library.PrimitiveCache;
 import org.spoofax.interpreter.library.java.JFFLibrary;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
@@ -37,9 +36,9 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
 	private final InteropContext interopContext = new InteropContext(this);
 
-    private final Map<String, IOperatorRegistry> operatorRegistryMap;
+    private final Map<String, IOperatorRegistry> operatorRegistries;
 
-    private final List<IOperatorRegistry> operatorRegistries;
+    private final PrimitiveCache operatorCache;
 
     private final CompatManager compat = new CompatManager(this);
 
@@ -51,10 +50,6 @@ public class Context extends StackTracer implements IAsyncCancellable {
     	new UncaughtExceptionHandler.Finalizer(exceptionHandler);
 
 	private ITermFactory factory;
-
-    private transient String lastPrimitiveName1, lastPrimitiveName2;
-
-    private transient AbstractPrimitive lastPrimitive1, lastPrimitive2;
 
 	private transient volatile boolean asyncCancelled;
 
@@ -68,8 +63,8 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
     public Context(ITermFactory factory, IOAgent ioAgent) {
     	this.factory = factory;
-    	this.operatorRegistryMap = new HashMap<String, IOperatorRegistry>();
-    	this.operatorRegistries = new ArrayList<IOperatorRegistry>();
+    	this.operatorRegistries = new HashMap<String, IOperatorRegistry>();
+        this.operatorCache = new PrimitiveCache(2, 16);
 
         addOperatorRegistry(new SSLLibrary());
         addOperatorRegistry(new JFFLibrary(factory));
@@ -79,10 +74,10 @@ public class Context extends StackTracer implements IAsyncCancellable {
         compat.init();
     }
 
-    protected Context(ITermFactory factory, Map<String, IOperatorRegistry> operatorRegistryMap, List<IOperatorRegistry> operatorRegistries, boolean skipCompat) {
+    protected Context(ITermFactory factory, Map<String, IOperatorRegistry> operatorRegistries, boolean skipCompat) {
     	this.factory = factory;
-    	this.operatorRegistryMap = operatorRegistryMap;
     	this.operatorRegistries = operatorRegistries;
+        this.operatorCache = new PrimitiveCache(2, 16);
     	if (!skipCompat) compat.init();
     }
 
@@ -95,12 +90,8 @@ public class Context extends StackTracer implements IAsyncCancellable {
 		this.factory = factory;
 	}
 
-	public List<IOperatorRegistry> getOperatorRegistries() {
+	public Map<String, IOperatorRegistry> getOperatorRegistries() {
 		return operatorRegistries;
-	}
-
-	public Map<String, IOperatorRegistry> getOperatorRegistryMap() {
-		return operatorRegistryMap;
 	}
 
 	public UncaughtExceptionHandler getExceptionHandler() {
@@ -136,20 +127,11 @@ public class Context extends StackTracer implements IAsyncCancellable {
 	}
 
 	public final IOperatorRegistry getOperatorRegistry(String domain) {
-		return operatorRegistryMap.get(domain);
+		return operatorRegistries.get(domain);
 	}
 
     public void addOperatorRegistry(IOperatorRegistry or) {
-        IOperatorRegistry previous = operatorRegistryMap.put(or.getOperatorRegistryName(), or);
-        if (previous == null) {
-        	operatorRegistries.add(or);
-        } else {
-        	int i = operatorRegistries.indexOf(previous);
-        	operatorRegistries.remove(previous);
-        	operatorRegistries.add(i, or);
-        }
-        lastPrimitiveName1 = null;
-        lastPrimitiveName2 = null;
+        operatorRegistries.put(or.getOperatorRegistryName(), or);
     }
 
     public void addConstructors(Collection<IStrategoConstructor> newConstructors) {
@@ -242,22 +224,18 @@ public class Context extends StackTracer implements IAsyncCancellable {
 	}
 
 	public AbstractPrimitive lookupPrimitive(String name) {
-		if (lastPrimitiveName1 == name) {
-			return lastPrimitive1;
-		} else if (lastPrimitiveName2 == name) {
-			return lastPrimitive2;
-		} else {
-			for (int i = 0, size = operatorRegistries.size(); i < size; i++) {
-	            AbstractPrimitive p = operatorRegistries.get(i).get(name);
-	            if (p != null) {
-	            	lastPrimitiveName2 = lastPrimitiveName1;
-	            	lastPrimitive2 = lastPrimitive1;
-	            	lastPrimitiveName1 = name;
-	                return lastPrimitive1 = p;
-	            }
-	        }
-	        return null;
-		}
+        if (asyncCancelled) cancel();
+        AbstractPrimitive p = null;
+        if((p = operatorCache.get(name)) != null) {
+            return p;
+        }
+        for(IOperatorRegistry or : operatorRegistries.values()) {
+            if((p = or.get(name)) != null) {
+                break;
+            }
+        }
+        operatorCache.put(name, p);
+        return p;
 	}
 
     public void asyncCancel() {

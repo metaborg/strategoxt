@@ -12,6 +12,9 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public abstract class Strategy {
+
+	private transient String name;
+
 	/**
 	 * Invoke this strategy using a dynamic number of arguments.
 	 * 
@@ -234,7 +237,10 @@ public abstract class Strategy {
 	}
 	
 	public String getName() {
-		return getClass().getSimpleName();
+		if(name == null) {
+			name = getClass().getSimpleName();
+		}
+		return name;
 	}
 	
 	@Override
