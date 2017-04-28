@@ -2,8 +2,13 @@
 
 set -eu
 
-SCRIPTDIR=$(dirname "$0")
-for DISTDIR in "$SCRIPTDIR"/../../buildpoms/build/target/dist "$SCRIPTDIR"/..; do
+SCRIPTFILE=${BASH_SOURCE[0]}
+SCRIPTDIR=$(dirname "$SCRIPTFILE")
+## We consider the case where the script was executed
+## - from the source repository, and we use the locally built jar;
+## - from the share directory, and we use the jar from there; or
+## - from the bin directory, and we use the jar from share
+for DISTDIR in "$SCRIPTDIR"/../../buildpoms/build/target/dist "$SCRIPTDIR"/../../.. "$SCRIPTDIR"/..; do
     STRDIR=$DISTDIR/share/strategoxt/strategoxt
     if [ -d "$STRDIR" ]; then
         echo $(cd "$STRDIR" && pwd -P)/strategoxt.jar
