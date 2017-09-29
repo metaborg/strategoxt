@@ -4,7 +4,7 @@ exports
   lexical syntax
     [\t\ \n\r]			-> Ws
 
-    "//" ~[\n]* ([\n] | Eof)	-> ShortCom
+    "//" ~[\n\r]* ([\n\r] | Eof)	-> ShortCom
     "/*" CommChar* "*/"	-> LongCom
 				-> Eof  
 
