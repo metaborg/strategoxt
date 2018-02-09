@@ -2,6 +2,7 @@
 
 module linearize
 imports Stratego
+	stratego/strc/lib/stratlib
 
 strategies
 
@@ -32,4 +33,4 @@ rules
   OldVar: 
     Pair(Var(x), (xs, ys, ts)) -> 
     Pair(Var(x), (xs, [y | ys], Seq(Assign(Var(x), Var(y)), ts)))
-    where <is-subterm> (x, xs); new => y
+    where <is-subterm> (x, xs); y := <conc-strings;tnewvar> ("linear_", x)

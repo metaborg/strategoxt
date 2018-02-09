@@ -170,11 +170,14 @@ rules
 
   JoinDefs2 : 
     defs @ [SDefT(f, xs1, xs2, s) | _] -> SDefT(f, ys1, ys2, <choices> ss)
-    where <map(VarDec(new,id))> xs1 => ys1
-	; <map(VarDec(new,id))> xs2 => ys2
+    where <map(VarDec(NewID,id))> xs1 => ys1
+	; <map(VarDec(NewID,id))> xs2 => ys2
 	; <map(\ VarDec(y, t) -> SVar(y) \ )> ys1 => ys1'
 	; <map(\ VarDec(y, t) -> Var(y) \ )> ys2 => ys2'
 	; <map(RenameDefinition(|ys1', ys2'))> defs => ss
+
+  NewID: ListVar(x) -> <tnewvar> x
+  NewID = is-string;tnewvar
 
   RenameDefinition(|ys1, ys2) :
     SDefT(_, xs1, xs2, s1) -> s3

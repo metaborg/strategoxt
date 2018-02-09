@@ -89,7 +89,7 @@ strategies
    */
 
   new-scoped-counter =
-    new; reset-scoped-counter(|<id>)
+    <newname> "scoped_counter"; reset-scoped-counter(|<id>)
 
   reset-scoped-counter(|c) =
     set-scoped-counter(|c,0)
