@@ -41,7 +41,13 @@ strategies
     SRTS-EXT-crush(nul, sum, s)
 
   override topdown(s) =
-    SRTS-EXT-topdown(s)
+    SRTS-EXT-downup(s, id)
+
+  override bottomup(s) =
+    SRTS-EXT-downup(id, s)
+
+  override downup(s1, s2) =
+    SRTS-EXT-downup(s1, s2)
 
   override foldr(nul, sum) =
     ?[_ | _] < SRTS-EXT-crush(nul, sum, id) + []; nul
@@ -68,7 +74,7 @@ strategies
 
   external SRTS-EXT-crush(nul, sum, s|)
 
-  external SRTS-EXT-topdown(s|)
+  external SRTS-EXT-downup(s1, s2|)
   
   external SRTS-EXT-filter(s|)
 

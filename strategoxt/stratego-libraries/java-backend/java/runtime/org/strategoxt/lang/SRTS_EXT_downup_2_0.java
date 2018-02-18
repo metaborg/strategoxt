@@ -7,12 +7,12 @@ import java.util.*;
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 
 /**
- * A Java call stack efficient version of topdown
+ * A Java call stack efficient version of downup_2_0
  *
  * @author Jeff Smits
  */
-public class SRTS_EXT_topdown_1_0 extends Strategy {
-    public static SRTS_EXT_topdown_1_0 instance = new SRTS_EXT_topdown_1_0();
+public class SRTS_EXT_downup_2_0 extends Strategy {
+    public static SRTS_EXT_downup_2_0 instance = new SRTS_EXT_downup_2_0();
 
     /*
     This implementation uses a stack with two different kinds of elements:
@@ -21,7 +21,7 @@ public class SRTS_EXT_topdown_1_0 extends Strategy {
     Once a visited term has been rebuilt with the visited children it goes onto the `built` list.
      */
     @Override
-    public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
+    public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2) {
         Deque<StackElem> stack = new ArrayDeque<>(); // stack
         stack.push(StackElem.visit(current));
 
@@ -32,11 +32,15 @@ public class SRTS_EXT_topdown_1_0 extends Strategy {
             switch (e.kind) {
                 case Visit:
                     IStrategoTerm tv = e.term;
-                    tv = s.invoke(context, tv);
+                    tv = s1.invoke(context, tv);
                     if (tv == null) {
                         return null;
                     }
                     if (tv.getSubtermCount() == 0) {
+                        tv = s2.invoke(context, tv);
+                        if (tv == null) {
+                            return null;
+                        }
                         built.add(tv);
                     } else {
                         stack.push(StackElem.build(tv));
@@ -50,7 +54,12 @@ public class SRTS_EXT_topdown_1_0 extends Strategy {
                 case Build:
                     IStrategoTerm tb = e.term;
                     IStrategoTerm[] newChildren = splitOffEnd(built, tb.getSubtermCount());
-                    built.add(buildTerm(context, tb, newChildren));
+                    tb = buildTerm(context, tb, newChildren);
+                    tb = s2.invoke(context, tb);
+                    if (tb == null) {
+                        return null;
+                    }
+                    built.add(tb);
                     break;
             }
         }
