@@ -41,7 +41,7 @@ strategies
     SRTS-EXT-crush(nul, sum, s)
 
   override topdown(s) =
-    rec rec(s; all(rec))
+    SRTS-EXT-topdown(s)
 
   override foldr(nul, sum) =
     ?[_ | _] < SRTS-EXT-crush(nul, sum, id) + []; nul
@@ -67,6 +67,8 @@ strategies
   external SRTS-EXT-string-replace(|s1, s2)
 
   external SRTS-EXT-crush(nul, sum, s|)
+
+  external SRTS-EXT-topdown(s|)
   
   external SRTS-EXT-filter(s|)
 
