@@ -112,3 +112,23 @@ strategies
                     <+ RnBinding(bndvars, paste);
                        DistBinding(x, boundin)))
 
+rules
+
+  RnBinding(bndvrs, paste : (term -> vars) * term -> term, newvar : term -> term) :
+    (t, env1) -> (<paste(!ys)> t, env1, env2)
+    where <bndvrs> t => xs; map(newvar) => ys; 
+          <conc>(<zip(id)>(xs,ys), env1) => env2
+
+strategies
+
+  rename(isvar : (name -> env) * name -> term
+        , bndvars
+        , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term
+        , paste : (term -> vars) * term -> term
+        , newvar : term -> term
+        )
+  = \ t -> (t, []) \ ;
+    rec x(env-alltd(RnVar(isvar)
+                    <+ RnBinding(bndvars, paste, newvar);
+                       DistBinding(x, boundin)))
+
