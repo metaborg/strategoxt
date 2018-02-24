@@ -159,7 +159,7 @@
 	<target name="test-interpreter" depends="antcontrib-load">
 		<subant inheritall="false">
 			<property name="strj-sut" value="${strj-sut}" />
-			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="test-interpreter" />
 		</subant>
