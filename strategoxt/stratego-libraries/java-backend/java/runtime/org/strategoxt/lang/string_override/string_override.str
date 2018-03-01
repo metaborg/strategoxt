@@ -1,0 +1,25 @@
+/**
+ * Overrides most string strategies from libstratego-lib
+ * for better stack behavior and performance.
+ * Focuses on avoiding explode-string/implode-string which goes between strings and lists of ints
+ *
+ * @author Jeff Smits <j.smits@tudelft.nl>
+ */
+module string_override
+
+imports libstratego-lib
+
+strategies
+
+  override string-replace(|s1, s2) =
+    SRTS-EXT-string-replace(|s1, s2)
+
+  external SRTS-EXT-string-replace(|s1, s2)
+
+  external SRTS-EXT-escape(|)
+
+  external SRTS-EXT-unescape(|)
+
+  external SRTS-EXT-cify(|)
+
+  external SRTS-EXT-uncify(|)

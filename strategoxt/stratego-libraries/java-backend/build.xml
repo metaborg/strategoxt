@@ -157,6 +157,15 @@
 		</strj-lib>
 
 
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/string_override" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/string_override/string_override.str" output="${bin.stratego}/org/strategoxt/lang/string_override/Main.java" package="org.strategoxt.lang.string_override">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+			</strjlibargs>
+		</strj-lib>
+
+
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance" />
 		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance/Main.java" package="org.strategoxt.lang.compat.override.gpp_performance">
 			<strjlibargs>

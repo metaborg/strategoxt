@@ -31,23 +31,11 @@ strategies
   
   // TODO: override collect-all (seems to inline crush!)
   
-  override string-replace(|s1, s2) =
-    SRTS-EXT-string-replace(|s1, s2)
-  
   override crush(nul, sum) =
     SRTS-EXT-crush(nul, sum, id)
   
   override crush(nul, sum, s) =
     SRTS-EXT-crush(nul, sum, s)
-
-//  override topdown(s) =
-//    SRTS-EXT-downup(s, id)
-//
-//  override bottomup(s) =
-//    SRTS-EXT-downup(id, s)
-//
-//  override downup(s1, s2) =
-//    SRTS-EXT-downup(s1, s2)
 
   override foldr(nul, sum) =
     ?[_ | _] < SRTS-EXT-crush(nul, sum, id) + []; nul
@@ -69,8 +57,6 @@ strategies
     
   override concat =
   	SRTS-EXT-concat
-
-  external SRTS-EXT-string-replace(|s1, s2)
 
   external SRTS-EXT-crush(nul, sum, s|)
 
