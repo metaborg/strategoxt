@@ -166,30 +166,36 @@ strategies
       // sglr settings
       ; <ps-set-filters> meta
       ; srt := <ps-get-sort> meta
+
+      // try to use the faster jsglr2
+      ( <parse-xtc-file-pt-jsglr2(|tbl, srt, path)> file
+
+      <+
     
-    ; <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
+      ; <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
 
-    ; if <ps-must-preserve-comments> meta then
-        asfix-anno-comments(| [ "ShortCom", "LongCom", "Comment" ] )
-      end
-  
-    ; if <ps-must-preserve-positions> meta then
-        asfix-anno-position-info(|"")
-      end
-      
-    ; if <ps-must-preserve-locations> meta then
-        asfix-anno-location
-      end
-        
-    ; if <ps-must-preserve-asfix-in-quotes> meta then
-        implode-asfix-skip-concrete-syntax
-      else
-        implode-asfix
-      end
+      ; if <ps-must-preserve-comments> meta then
+          asfix-anno-comments(| [ "ShortCom", "LongCom", "Comment" ] )
+        end
 
-    ; if <ps-must-yield-quotes> meta then
-        yield-asfix-quotes
-      end
+      ; if <ps-must-preserve-positions> meta then
+          asfix-anno-position-info(|"")
+        end
+
+      ; if <ps-must-preserve-locations> meta then
+          asfix-anno-location
+        end
+
+      ; if <ps-must-preserve-asfix-in-quotes> meta then
+          implode-asfix-skip-concrete-syntax
+        else
+          implode-asfix
+        end
+
+      ; if <ps-must-yield-quotes> meta then
+          yield-asfix-quotes
+        end
+      )
     
     ; if-keep1(where(write-to; copy-to(<guarantee-extension(|"atree")> base)))
 
@@ -207,6 +213,16 @@ strategies
 
     ; if <get-config> "--desugaring" => "on" then
         stratego-desugar
+      end
+
+  parse-xtc-file-pt-jsglr2(|tbl, start-symbol, path) =
+    where(<try(memo-open-parse-table)> tbl => ParseTable(internal-tbl))
+    ; let open-stream = ?FILE(<id>) < <fopen> (<id>, "r") + ?stdin(); stdin-stream
+      in open-stream => Stream(stream)
+       ; finally(
+           prim("STRSGLR_parse_stream_pt" | stream, internal-tbl, start-symbol, path)
+         , <fclose> stream
+         )
       end
 
 /**
