@@ -121,18 +121,21 @@ strategies
 
   AnnoCongDef =
     where(
-        f1 := <newname> "anno_cong_str_arg1_"
-      ; f2 := <newname> "anno_cong_str_arg2_"
+        f1 := <newname> "anno_cong_str_arg"
+      ; f2 := <newname> "anno_cong_str_arg"
       ; x1 := <newname> "anno_cong_term_m"
       ; x2 := <newname> "anno_cong_anno_m"
       ; y1 := <newname> "anno_cong_term_b"
       ; y2 := <newname> "anno_cong_anno_b"
+      ; z  := <newname> "where"
     )
     ; !|[ Anno_Cong__(f1 : ATerm -> ATerm, f2 : ATerm -> ATerm|) =
-            {x1, x2, y1, y2 :
-             ?x1{^x2}
+            {x1, x2, y1, y2, z :
+             ?z
+             ; ?x1{^x2}
              ; !x1; f1(|); ?y1
              ; !x2; f2(|); ?y2
+             ; !z
              ; !y1{^y2}
             }
        ]|
