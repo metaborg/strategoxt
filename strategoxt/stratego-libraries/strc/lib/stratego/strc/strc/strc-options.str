@@ -57,6 +57,7 @@ strategies
 
     ; <set-config> ("--dr", "new")
     ; <set-config> ("--cc", <xtc-find> "cc")
+    ; <set-config> ("--force-origin-tracking",1)
   )
 
   strc-post-process-strc-config =
@@ -225,6 +226,10 @@ strategies
   + ArgOption("-O",
         where(<set-config>("-O", <string-to-int; strc-set-opt-level> )); !(),
 	!"-O n               Optimization level (0 = no optimization)" )
+
+  + Option("--no-force-origin-tracking",
+	where(<set-config> ("--force-origin-tracking",0)); !(),
+	!"--no-force-origin-tracking      Use this flag to suppress global forced origin tracking, which may be inaccurate")
 
   + Option("--fusion",     
 	where(<toggle-config>("--fusion",())); !(),
