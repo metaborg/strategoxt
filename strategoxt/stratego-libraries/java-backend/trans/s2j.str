@@ -806,6 +806,7 @@ strategies
     CallT(SVar(x), s*, t*) ->
     bstm* |[
       bstm_init*
+      context.setCallingContext(e_context);
       term = e_instance.invokeDynamic(context, term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) 
         break Fail;
@@ -824,11 +825,18 @@ strategies
       ,
         ?bstm_init*
       )
+    with
+      if prim("SSL_EXT_origin_location_offset", <id>) => (filename, line, column, _, _)
+        then x_context := $[[filename]:[line]:[column]]
+           ; e_context := expr |[ "~x_context" ]|
+        else e_context := expr |[ null ]|
+      end
 
   translate-CallT:
     CallT(SVar(x), s*, t*) ->
     bstm* |[
       bstm_init*
+      context.setCallingContext(e_context);
       term = e_instance.invoke(context, term, e_s*, e_t*);
       if (term == null) 
         break Fail;
@@ -845,6 +853,12 @@ strategies
       ,
         ?bstm_init*
       )
+    with
+      if prim("SSL_EXT_origin_location_offset", <id>) => (filename, line, column, _, _)
+        then x_context := $[[filename]:[line]:[column]]
+           ; e_context := expr |[ "~x_context" ]|
+        else e_context := expr |[ null ]|
+      end
 
   translate-PrimT :
     CallDynamic(f, s*, t*) -> <fail>
@@ -863,6 +877,7 @@ strategies
     <java-check-unbound-args(|t*)>  
     bstm* |[
       bstm_init*
+      context.setCallingContext(e_context);
       term = context.invokePrimitive("~f", term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) break Fail;
     ]|
@@ -873,6 +888,12 @@ strategies
       ,
         ?bstm_init*
       )
+    with
+      if prim("SSL_EXT_origin_location_offset", <id>) => (filename, line, column, _, _)
+        then x_context := $[[filename]:[line]:[column]]
+           ; e_context := expr |[ "~x_context" ]|
+        else e_context := expr |[ null ]|
+      end
   
   lifted-decls-wrap(s, get-init-stms) =
     dr-ignore-states( // (hide and then scope these dyn. rules)
@@ -1104,8 +1125,14 @@ rules
        java-Cache 
     <+ java-ConstructAnnoVar
     <+ java-ConstructVar
-    <+ !(<id>, <java-ConstructTerm>)
+    <+ !(<id>, <java-ConstructTerm-track-origins>)
        ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd)
+
+  java-ConstructTerm-track-origins =
+    java-ConstructTerm
+    ; if not(?expr |[ termFactory.replaceTerm(~expr:_, ~expr:_) ]|); <get-config> "--force-origin-tracking" => 1
+      then \ e -> expr |[ termFactory.replaceTerm(e, term) ]| \
+      end//if
 
   java-CacheConstant-again :
     (t, e1 @ |[ x_constants.x_constant ]|) -> e1
@@ -1156,6 +1183,10 @@ strategies
 
   java-InitTermId :
     (x, e) -> bstm* |[ x = e; ]|
+  where <not(?expr |[ termFactory.replaceTerm(~expr:_, term) ]|)> e
+
+  java-InitTermId :
+    (x, expr |[ termFactory.replaceTerm(~expr:e, term) ]|) -> bstm* |[ x = e; ]|
 
   java-mk-int-const =
     !Lit(Deci(<try(int-to-string)>))
