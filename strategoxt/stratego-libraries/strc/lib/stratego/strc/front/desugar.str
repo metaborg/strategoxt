@@ -500,12 +500,11 @@ rules
 
   Desugar :
     ExplodeCong(s1, s2) -> 
-    |[ {x, x', y, y', z: (x#(y){^z} -> x'#(y'){^z} where <s1> x => x'; <s2> y => y')} ]|
+    |[ {x, x', y, y': (x#(y) -> x'#(y') where <s1> x => x'; <s2> y => y')} ]|
     where x := <newname> "expl_cong_cons_m"
         ; x' := <newname> "expl_cong_args_m"
         ; y := <newname> "expl_cong_cons_b"
         ; y' := <newname> "expl_cong_args_b"
-        ; z := <newname> "list_cong_annos"
 
   Desugar :
     ListCongNoTail(ts) -> <foldr(!|[ ?[] ]|, DesugarConsArgs)> ts
@@ -515,7 +514,14 @@ rules
   
   DesugarConsArgs:
     (s1, s2) -> // Call(SVar("Cons"),[t1,t2])
-    |[ {x, y, x', y', z: ([x | y]{^z} -> [x' | y']{^z} where <s1> x => x'; <s2> y => y')} ]|
+    |[
+      {x, y, x', y', z:
+       ?[x | y]{^z};
+       !x; s1; ?x';
+       !y; s2; ?y';
+       ![x' | y']{^z}
+      }
+    ]|
     where x := <newname> "list_cong_head_m"
         ; y := <newname> "list_cong_tail_m"
         ; x' := <newname> "list_cong_head_b"

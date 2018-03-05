@@ -966,17 +966,13 @@ strategies
     bstm* |[
       ~*decs
       ~*stms
-      term = e';
+      term = e;
     ]|
     where
       {| java-CheckBuild :
          <java-construct-term> t => e
        ; bagof-java-CheckBuild; unzip; (id, reverse; concat) => (decs, stms)
       |}
-    with if <get-config> "--force-origin-tracking" => 1
-      then e' := expr |[ termFactory.replaceTerm(e, term) ]|
-      else e' := e
-    end
   
   // these two strategies should be in libstratego-lib, but is not yet supported
   // by the c compiler due to usage of an older aterm library 

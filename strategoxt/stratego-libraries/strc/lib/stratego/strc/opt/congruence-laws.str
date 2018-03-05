@@ -17,17 +17,14 @@ rules
 
   TransformingCongruence :
     Cong(f, ss) -> 
-    Scope([a | <conc>(xs, ys)],
-      Seq(Match(Var(orig)),
-        Seq(Match(Anno(Op(f, xs'), Var(a))),
+    Scope([a | <conc>(xs, ys)], 
+          Seq(Match(Anno(Op(f, xs'), Var(a))),
           Seq(<seqs> ss',
-            Seq(Build(Var(orig)),
-              Build(Anno(Op(f, ys'), Var(a))))))))
-    where <map(<newname> "cong_param_m")> ss => xs
+              Build(Anno(Op(f, ys'), Var(a))))))
+    where <map(<newname> "trans_cong")> ss => xs
         ; <map(!Var(<id>))> xs => xs'
-        ; orig := <newname> "where"
-        ; a := <newname> "cong_annos"
-        ; <map(<newname> "cong_param_b")> ss => ys
+        ; a := <newname> "trans_cong"
+        ; <map(<newname> "trans_cong")> ss => ys
         ; <map(!Var(<id>))> ys => ys';
           <zip(\ ((x,y), s) -> 
 	         Seq(Build(Var(x)), 
@@ -35,17 +32,14 @@ rules
 
   TransformingAnnoCongruence :
     Call(SVar("Anno_Cong__"), [Cong(f, ss), s]) -> 
-    Scope([a, b | <conc>(xs,ys)],
-      Seq(Match(Var(orig)),
-        Seq(Match(Anno(Op(f, xs'), Var(a))),
+    Scope([a, b | <conc>(xs,ys)], 
+          Seq(Match(Anno(Op(f, xs'), Var(a))),
           Seq(<seqs> ss',
-            Seq(Build(Var(orig)),
-              Build(Anno(Op(f, ys'), Var(b))))))))
-    where <map(<newname> "cong_param_m")> [s | ss] => [a | xs]; map(!Var(<id>)) => xs';
-	  <map(<newname> "cong_param_b")> [s | ss] => [b | ys]; map(!Var(<id>)) => ys';
+              Build(Anno(Op(f, ys'), Var(b))))))
+    where <map(<newname> "trans_cong")> [s | ss] => [a | xs]; map(!Var(<id>)) => xs';
+	  <map(<newname> "trans_cong")> [s | ss] => [b | ys]; map(!Var(<id>)) => ys';
           <zip(\ ((x,y), s) -> Seq(Build(Var(x)), Seq(s, Match(Var(y)))) \ )> 
             (<zip(id)>(xs,ys), [s | ss]) => ss'
-        ; orig := <newname> "where"
 
 /*
   Canon :
