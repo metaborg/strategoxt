@@ -118,6 +118,7 @@ strategies
 
   parse-stratego-file =
     parse-stratego-trm(|["-i", <id>])
+  ; where(try(prim("SSL_EXT_origin_location_offset", <id>);debug))
 
   parse-stratego-trm(|args) = dbg(|["parse-stratego-trm"]); 
     where(id
