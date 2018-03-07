@@ -25,6 +25,7 @@ strategies
   ; <set-config> ("-I", [])
   ; <set-config> ("--no-concrete-syntax-externals", 1)
   ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib"])
+  ; <set-config> ("--force-origin-tracking",1)
  
   strj-parse-options =
     with(
@@ -106,6 +107,10 @@ strategies
     ArgOption("--cache-dir",
     where(<set-config> ("--cache-dir", <where(file-exists; filemode; isdir <+ mkdir)>)),
     !"--cache-dir <dir>  Maintain a compilation cache in <dir>")
+  <+
+    Option("--no-force-origin-tracking",
+	where(<set-config> ("--force-origin-tracking",0)); !(),
+	!"--no-force-origin-tracking      Use this flag to suppress global forced origin tracking, which may be inaccurate")
   <+
     Option("--fusion",     
     where(<toggle-config>("--fusion",())); !(),
