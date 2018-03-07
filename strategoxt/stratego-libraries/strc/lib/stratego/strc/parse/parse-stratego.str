@@ -118,7 +118,6 @@ strategies
 
   parse-stratego-file =
     parse-stratego-trm(|["-i", <id>])
-  ; where(try(prim("SSL_EXT_origin_location_offset", <id>);debug))
 
   parse-stratego-trm(|args) = dbg(|["parse-stratego-trm"]); 
     where(id
@@ -169,11 +168,11 @@ strategies
       ; srt := <ps-get-sort> meta
 
       // try to use the faster jsglr2
-      ( <parse-xtc-file-pt-jsglr2(|tbl, srt, path)> file
+      ; ( <parse-xtc-file-pt-jsglr2(|tbl, srt, path)> file
 
       <+
     
-      ; <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
+        <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
 
       ; if <ps-must-preserve-comments> meta then
           asfix-anno-comments(| [ "ShortCom", "LongCom", "Comment" ] )
@@ -221,7 +220,7 @@ strategies
     ; let open-stream = ?FILE(<id>) < <fopen> (<id>, "r") + ?stdin(); stdin-stream
       in open-stream => Stream(stream)
        ; finally(
-           prim("STRSGLR_parse_stream_pt" | stream, internal-tbl, start-symbol, path)
+           prim("STRSGLR2_parse_implode_stream_pt", stream, internal-tbl, start-symbol, path)
          , <fclose> stream
          )
       end
