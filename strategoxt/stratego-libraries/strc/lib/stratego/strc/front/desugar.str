@@ -46,7 +46,9 @@ strategies // Desugaring Strategies
   pre-desugar =
     downup(
         repeat(Desugar <+ VarToConst <+ DefDynRuleScope)
+  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["pre-desugar(1.1)"]))
         ; try(DesugarOnce)
+  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["pre-desugar(1.2)"]))
       , try(DefLRule <+ DefScopeDefault)
     )
 
