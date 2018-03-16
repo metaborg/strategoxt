@@ -560,6 +560,23 @@ rules
   Desugar :
     AnnoList(Tuple([AnnoList(t, t1*)]), t2*) -> AnnoList(t, t1*)
 
+  /* The following three rules handle a peculiarity in the Stratego syntax:
+   *   a prefer on As of sort Term over As of sort PreTerm.
+   * It's easier to handle here than in the syntax, which may have more far-ranging
+   * consequences.
+   * The minimal Stratego code that triggers this is `(a@b){c*})`.
+   */
+  Desugar :
+    AnnoList(Tuple([As(v, NoAnnoList(t))]), t*) -> As(v,AnnoList(t, t*))
+
+  Desugar :
+    AnnoList(Tuple([As(v, AnnoList(t, t1*))]), t2*) -> As(v,AnnoList(t, t1*))
+
+  Desugar :
+    AnnoList(Tuple([As(v, t)]), t*) -> As(v,AnnoList(t, t*))
+    where <not(NoAnnoList(id))> t
+        ; <not(AnnoList(id,id))> t
+
   Desugar :
     Tuple(ts) -> Op("", ts)
     where <not([id])> ts
