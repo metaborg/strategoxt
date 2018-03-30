@@ -17,22 +17,22 @@ strategies
       ; if-not-lib(m-add-main)
       ; m-add-anno-cong-def
       ; where(dr-constructors; map(m-add-constructor))
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4)"]))
 
       // desugar and check constructors
 
       ; m-transform-constructors(id
           ; pre-desugar
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.1)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.1)"]))
           ; try(DeclareVarToConst)
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.2)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.2)"]))
 	      ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.3)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.3)"]))
           ; (GenerateCheckRule <+ dbg(|"GenerateCheckRule fails: "))
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.4)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(4.4)"]))
           ; try(where(m-MkCongDef; m-add-def))
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(5)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(5)"]))
 
       // desugar and check overlays
 
@@ -41,7 +41,7 @@ strategies
           ; check-overlay
           ; try(DeclareVarToConst)
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(6)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(6)"]))
 
       ; m-transform-overlays(id
           ; m-variables-to-constructors-in-def
@@ -53,12 +53,12 @@ strategies
           ; DeclareExpandOverlay
           ; where(Overlay-to-Congdef; m-add-def)
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(7)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(7)"]))
 
       ; m-transform-overlays(
           not(check-constructors)
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(8)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(8)"]))
 
       // plug in dump of asts
       ; if <get-config> "--dump-aterms" then 
@@ -73,7 +73,7 @@ strategies
             ; <fclose> fp
           )
         end
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(9)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(9)"]))
 
       // transform and check local definitions
 
@@ -82,13 +82,13 @@ strategies
           ; pre-desugar		
           ; raise-annotations
         ))
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(10)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(10)"]))
 
       ; m-lift-dynamic-rules-from-spec
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(11)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(11)"]))
 
       ; check-calls
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(12)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(12)"]))
 
       ; m-transform-local-defs(
           map(id
@@ -105,13 +105,13 @@ strategies
             ; check-patterns
           )
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(13)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(13)"]))
 
       ; m-transform-local-defs(id
           ; ![<joindefs>] 
           ; [RenameSDef]
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(14)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(14)"]))
 
       ; m-transform-external-defs(id
           ; if ?[_,_|_] then
@@ -123,7 +123,7 @@ strategies
              ; strename
             ]
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(15)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(15)"]))
 
       ; m-transform-local-defs(
           [rename-calls
@@ -131,12 +131,12 @@ strategies
 	       ; define-congruences-def
           ]
         )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(16)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(16)"]))
               
       ; if-lib(remove-unused-external-defs, remove-unused-defs)
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(17)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(17)"]))
     )
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(18)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["frontend(18)"]))
     ; tfc1(|"Stratego-Core", "fe-cong")
 
 strategies

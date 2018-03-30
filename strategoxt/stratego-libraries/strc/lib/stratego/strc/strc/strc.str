@@ -43,9 +43,9 @@ strategies
       ; strc-pack-stratego-trm
       ; tfc1(|"Stratego-Sugar-Cong", "pack")
       ; strc-output-ast
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["strc-front-end(2)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["strc-front-end(2)"]))
       ; frontend
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["strc-front-end(3)"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["strc-front-end(3)"]))
     | "Front-end succeeded"
     , 1
     )

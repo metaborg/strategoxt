@@ -58,7 +58,7 @@ strategies
       ; strc-front-end
       )
     end
-  ; where((oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["strj"]))
+  ; where(not(oncetd(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_))) <+ (oncetd(where({?c;(?CallT(_,_,_) + ?Call(_,_) + ?CallNoArgs(_)); prim("SSL_EXT_origin_location_offset", c); dbg(|[c])})) < !"some origins found" + !"no origins found");dbg(|["strj"]))
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
   ; strc-export-external-defs
