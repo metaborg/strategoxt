@@ -175,7 +175,6 @@
 		<attribute name="language" />
 		<attribute name="main" />
 		<attribute name="outputmodule" />
-		<attribute name="nativepath" />
 		<element name="args" optional="true" />
 		<sequential>
 			<uptodate-io input="@{input}" output="@{output}" type="sdf2parenthesize">
@@ -193,7 +192,7 @@
 						<arg value="-o" />
 						<arg value="${basedir}/@{output}" />
 						<arg value="--nativepath" />
-						<arg value="@{nativepath}" />
+						<arg value="${nativepath}" />
 						<args />
 					</java>
 				</action>
