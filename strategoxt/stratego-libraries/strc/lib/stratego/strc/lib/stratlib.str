@@ -166,17 +166,17 @@ strategies
 
 strategies
 
-  tnewvar =
-    lower-case
-    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
-    ; newname
-    <+ new
+  tnewvar = new
+//    lower-case
+//    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
+//    ; newname
+//    <+ new
 
-  snewvar =
-    lower-case
-    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
-    ; newname
-    <+ new
+  snewvar = new
+//    lower-case
+//    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
+//    ; newname
+//    <+ new
 
   declared-vars =
     map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))
