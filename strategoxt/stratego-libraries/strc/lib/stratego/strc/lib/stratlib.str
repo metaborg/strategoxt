@@ -167,10 +167,16 @@ strategies
 strategies
 
   tnewvar =
-    lower-case ; string-replace(|"-","_") ; string-replace(|"'","q") ; string-replace(|"*","s") ; newname <+ new
+    lower-case
+    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
+    ; newname
+    <+ new
 
   snewvar =
-    lower-case ; string-replace(|"-","_") ; string-replace(|"'","q") ; newname <+ new
+    lower-case
+    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
+    ; newname
+    <+ new
 
   declared-vars =
     map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))
@@ -205,6 +211,7 @@ strategies
   ssubs = 
     substitute(IsSVar)
 
+// This should be in libstratego-lib, strategy/general/rename; but it's too much effort to bootstrap
 rules
 
   RnBinding(bndvrs, paste : (term -> vars) * term -> term, newvar : term -> term) :
