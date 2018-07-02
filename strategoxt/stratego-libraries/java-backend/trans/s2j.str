@@ -1130,9 +1130,17 @@ rules
 
   java-ConstructTerm-track-origins =
     java-ConstructTerm
-    ; if not(?expr |[ termFactory.replaceTerm(~expr:_, ~expr:_) ]|); <get-config> "--force-origin-tracking" => 1
-      then \ e -> expr |[ termFactory.replaceTerm(e, term) ]| \
+    ; if not(java-exprReplaceTerm); <get-config> "--force-origin-tracking" => 1
+      then java-mkReplaceTerm
       end//if
+
+  java-exprReplaceTerm =
+     ?expr |[ termFactory.replaceTerm(~expr:<id>, term) ]|
+  <+ ?expr |[ (x) termFactory.replaceTerm(~expr:<id>, term) ]|
+
+  java-mkReplaceTerm =
+     \ expr |[ (x) e ]| -> expr |[ (x) termFactory.replaceTerm(e, term) ]| \
+  <+ \ e -> expr |[ termFactory.replaceTerm(e, term) ]| \
 
   java-CacheConstant-again :
     (t, e1 @ |[ x_constants.x_constant ]|) -> e1
@@ -1183,10 +1191,11 @@ strategies
 
   java-InitTermId :
     (x, e) -> bstm* |[ x = e; ]|
-  where <not(?expr |[ termFactory.replaceTerm(~expr:_, term) ]|)> e
+  where <not(java-exprReplaceTerm)> e
 
   java-InitTermId :
-    (x, expr |[ termFactory.replaceTerm(~expr:e, term) ]|) -> bstm* |[ x = e; ]|
+    (x, expr) -> bstm* |[ x = e; ]|
+  where e := <java-exprReplaceTerm> expr
 
   java-mk-int-const =
     !Lit(Deci(<try(int-to-string)>))
@@ -1287,7 +1296,7 @@ rules
         ; if <not(Anno(is-ListOp,id))> t2 then 
             java-check-aterm-list 
           else
-              if ?|[ x_constants.x_constant ]| + ?expr |[ x ]| then
+              if ?|[ x_constants.x_constant ]| + ?expr |[ x ]| + java-exprReplaceTerm then
                 !|[ (IStrategoList) ~expr:<id> ]|
               else
                 try(java-UncastATerm)
