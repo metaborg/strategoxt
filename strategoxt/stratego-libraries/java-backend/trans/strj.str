@@ -43,8 +43,9 @@ strategies
   ; <exit> 1
   
   strj =
-    if FILE(get-extension => "ctree") then
-      xtc-ensure-file
+    if FILE(get-extension => "ctree") + (where(<get-config> "--single-strategy"); FILE(get-extension => "aterm")) then
+      ?file
+    ; xtc-ensure-file
     ; strc-get-infile
     ; read-from
     ; strc-output-ast
@@ -58,6 +59,9 @@ strategies
       ; strc-front-end
       )
     end
+  ; if <get-config> "--single-strategy" then
+      wrap-single-strategy
+    end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
   ; strc-export-external-defs
@@ -65,7 +69,10 @@ strategies
   ; s2j
   ; with(clean-output-dir)
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
-  
+
+  wrap-single-strategy:
+    d@SDefT(_,_,_,_) -> Specification([Signature([Constructors([])]), Strategies([d])])
+
   clean-output-dir =
     if <get-config> "--clean" then
       if <get-config> "-p" then

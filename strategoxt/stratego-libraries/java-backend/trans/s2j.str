@@ -77,7 +77,7 @@ rules
       )
     ; log-timed(
         java-relabel
-      ; if <get-config> "-p" then
+      ; if <get-config> "-p" + <get-config> "--single-strategy" then
           // Use multiple .java files for programs with a package name
           java-split-class
         ; if not(IsIncrementalCompilation) then

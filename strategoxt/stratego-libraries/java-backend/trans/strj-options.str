@@ -95,6 +95,10 @@ strategies
       where(<set-config>("-F",())); !(),
       !"-F                 Produce core after front-end"
     )
+  <+
+    Option("--single-strategy",
+    where(<set-config>("--single-strategy",())); !(),
+    !"--single-strategy    Generate from a single strategy definition")
   <+ 
     Option("--prefer-str",
     where(<set-config> ("--prefer-str", "")); !(),
