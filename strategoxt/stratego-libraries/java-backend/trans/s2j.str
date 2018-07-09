@@ -67,7 +67,12 @@ rules
       | "Backend preprocessing succeeded", 1
       )
     ; log-timed(
-        dr-scope-all-verbose(java-compile-spec)
+        dr-scope-all-verbose(
+          if <get-config> "--single-strategy"
+            then java-compile-spec-single
+            else java-compile-spec
+          end
+        )
       ; java-simplify
       | "Backend transformation succeeded", 1
       )
@@ -77,18 +82,21 @@ rules
       )
     ; log-timed(
         java-relabel
-      ; if <get-config> "-p" + <get-config> "--single-strategy" then
+      ; if <get-config> "-p" then
           // Use multiple .java files for programs with a package name
           java-split-class
-        ; if not(IsIncrementalCompilation) then
+        ; if not(IsIncrementalCompilation); not(<get-config> "--single-strategy") then
             java-add-alias-classes
+          end
+        ; if <get-config> "--single-strategy" then
+            Tl
           end
         else
           ![<id>]
         end
       | "Backend postprocessing succeeded", 1
       )
-  
+
   record-main-classname =
     (<get-config> "-o" <+ strc-getoutfile(!""))
   ; base-filename
@@ -213,6 +221,43 @@ rules
   ; def-inits     := <bagof-DefInit>
   ; cnst-decls    := <bagof-ConstDecl>
   ; cnst-inits    := <bagof-ConstInit; concat; reverse>
+  
+  java-compile-spec-single :
+    Specification([Signature([Constructors([])]), Strategies(defs)]) -> 
+    |[ 
+     ~package-dec?: pkgname
+
+     import org.strategoxt.lang.*;
+     import org.spoofax.interpreter.terms.*;
+     import static org.strategoxt.lang.Term.*;
+     import org.spoofax.interpreter.library.AbstractPrimitive;
+     import java.util.ArrayList;
+     import java.lang.ref.WeakReference;
+         
+     @SuppressWarnings("all")
+     public class x_name {
+     ~*constant-defs
+     ~*function-defs
+     ~*lifted-defs
+     }
+  ]|
+  with 
+      <list-loop(try(JavaTranslate))> defs
+    ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
+    ; x_name        := <MainClassName>
+    ; switch <get-config> "--stacktrace"
+        case 0: e_traces := |[ false ]|
+        case 1: e_traces := |[ true ]|
+        case 2: e_traces := |[ true ]|
+      end
+  with
+    rules(
+      CurrentLiftedFrame := None()
+    )
+  ; function-defs := <map(translate-outer-definition-top)> defs
+  ; add-default-constructors
+  ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
+  ; lifted-defs   := <bagof-LiftedDef>
   
   java-imports =
     <get-config> "-la"
@@ -890,7 +935,7 @@ strategies
     else
       // Lift definition and produce call
       with(
-        !SDefT(<newname => x> "jlifted", [], [], <id>)
+        !SDefT(<concat-strings;newname => x> [<ConstantContainerClass>, "_lifted"], [], [], <id>)
       ; rules(DefInit :+= <translate-inner-definition>)
       )
     ; <lifted-call-to-instance> CallT(SVar(x), [], [])
@@ -1101,11 +1146,18 @@ rules
 
   /** @type Term -> Exp */
   java-construct-term =
-       java-Cache 
+    where(not(<get-config> "--single-strategy"));
+     ( java-Cache 
     <+ java-ConstructAnnoVar
     <+ java-ConstructVar
     <+ !(<id>, <java-ConstructTerm>)
-       ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd)
+       ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd) )
+
+  java-construct-term =
+    where(<get-config> "--single-strategy");
+     ( java-ConstructAnnoVar
+    <+ java-ConstructVar
+    <+ java-ConstructTerm )
 
   java-CacheConstant-again :
     (t, e1 @ |[ x_constants.x_constant ]|) -> e1
@@ -1315,7 +1367,12 @@ strategies
     ; n' := <int-to-string> n
   
   java-ConstructorName-expr =
-    with(
+    where(<get-config> "--single-strategy")
+  ; JavaInitConstructorExpr
+  
+  java-ConstructorName-expr =
+    where(not(<get-config> "--single-strategy"))
+  ; with(
       IsLocalOpDecl
     <+
       // HACK: locally redefine external constructors to avoid ambiguous imports
@@ -1335,8 +1392,7 @@ strategies
   JavaInitConstructorQ :
     OpDecl(c, t) ->
     bstm |[
-      x = termFactory.makeConstructor("\"" + "~c'" + "\"", 
-                                      ~expr:<java-mk-int-const> ar);
+      x = ~expr:<JavaInitConstructorExpr> (<concat-strings> ["\\\"", c', "\\\""], ar);
     ]|
   where 
       <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
@@ -1346,12 +1402,16 @@ strategies
   JavaInitConstructor :
     OpDecl(c, t) ->
     bstm |[
-      x = termFactory.makeConstructor("~c", ~expr:<java-mk-int-const> ar);
+      x = ~expr:<JavaInitConstructorExpr> (c, ar);
     ]|
   where 
       ar := <Arity <+ is-int> t
     ; x  := <java-ConstructorName> (c, ar)
-  
+
+  JavaInitConstructorExpr:
+    (c, ar) ->
+    expr |[ termFactory.makeConstructor("~c", ~expr:<java-mk-int-const> ar) ]|
+
   /**
    * Locally redefines some standard list and Some/None constructors,
    * which appear in nearly every grammar.

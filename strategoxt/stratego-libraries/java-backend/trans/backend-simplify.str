@@ -22,7 +22,7 @@ strategies
       dollars-for-capitals-top
     ; split-large-strategies
     ; lift-definitions
-    ; canonicalize
+    ; canonicalize// TODO: Don't use "lifted" for anonymous strategies, base it off the strategy name
     ; simplify1
     ; mark-bound-unbound-vars
     ; escaping-variables
