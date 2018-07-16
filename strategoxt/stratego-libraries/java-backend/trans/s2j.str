@@ -61,6 +61,9 @@ rules
       with(
         s2j-init-options
       ; record-main-classname
+      ; if <get-config> "--single-strategy"
+          then <get-config;base-filename;remove-extension> "-i"; rules(SingleStrategy := <id>)
+        end
       )
     ; log-timed(
         backend-simplify

@@ -1,0 +1,63 @@
+module canonicalize2
+imports
+  Stratego-Core
+  libstratego-lib
+  libstrc
+
+// Copy of canonicalize-ng from strc, but with a configurable prefix for lifted names
+
+strategies
+
+  canonicalize2(|prefix) = //debug(!"in: "); (
+    canonicalize-sdef2(|prefix)
+    <+ canonicalize-let2(|prefix)
+    <+ ImplementTraversalOps; canonicalize2(|prefix)
+    <+ canonicalize-call2(|prefix); canonicalize2(|prefix)
+    <+ all(canonicalize2(|prefix))
+  //); debug(!"out: ")
+
+  canonicalize-sdef2(|prefix) :
+    |[ f(a1*|a2*) = s ]| -> |[ f(a1*|a2*) = s' ]|
+    where {| IsClosure
+           : where(<map(declare-closure)> a1* )
+           ; <canonicalize2(|prefix)> s => s'
+           |}
+
+  canonicalize-let2(|prefix) :
+    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
+    where {| IsClosure
+           : <map(try(declare-closure-def))> def1* 
+           ; <canonicalize2(|prefix)> def1* => def2*
+           ; <canonicalize2(|prefix)> s1 => s2
+           |}
+
+  canonicalize-call2(|prefix) :
+    |[ f(s1*|t*) ]| -> |[ let def* in f(s2*|t*) end ]|
+    where (def*, s2*) := <canonicalize-call-args2(|prefix)> s1*
+
+  canonicalize-call2(|prefix) :
+    |[ prim(str,s1*|t*) ]| -> |[ let def* in prim(str,s2*|t*) end ]|
+    where (def*, s2*) := <canonicalize-call-args2(|prefix)> s1*
+
+  canonicalize-call2(|prefix) :
+    |[ call(t|s1*|t*) ]| -> |[ let def* in call(t|s2*|t*) end ]|
+    where (def*, s2*) := <canonicalize-call-args2(|prefix)> s1*
+
+  canonicalize-call-args2(|prefix) =
+    map(canonicalize-call-arg2(|prefix))
+    ; unzip
+    ; (concat, id)
+    ; not(([],id))
+
+  canonicalize-call-arg2(|prefix) =
+    try(id-to-Id <+ fail-to-Fail)
+    //; debug(!"canonicalize-call-arg2(|prefix): ")
+    ; (IsClosure; !([],<id>) <+ lift-call-arg2(|prefix))
+    //; debug(!"canonicalized: ")
+
+  lift-call-arg2(|prefix) :
+    |[ s1 ]| -> ([|[ g~{t*}(|) = s2 ]|], |[ g(|) ]|)
+    where //debug(!"lift-call-arg2: ");
+      g  := <newname> $[[prefix]$lifted]
+    ; s2 := <canonicalize2(|prefix)> s1
+    ; t* := <is-just-closure-allocation <+ ![]> s2
