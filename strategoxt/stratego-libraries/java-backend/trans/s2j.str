@@ -73,7 +73,10 @@ rules
         dr-scope-all-verbose(
           if <get-config> "--single-strategy"
             then java-compile-spec-single
-            else java-compile-spec
+            else if <get-config> "--boilerplate"
+              then java-compile-spec-boilerplate
+              else java-compile-spec
+            end
           end
         )
       ; java-simplify
@@ -261,6 +264,100 @@ rules
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   ; lifted-defs   := <bagof-LiftedDef>
+  
+  java-compile-spec-boilerplate :
+    Specification([Signature([Constructors([])]), Strategies(defs)]) -> 
+    |[ 
+     ~package-dec?: pkgname
+     
+     ~import-dec*:imports
+
+     import org.strategoxt.lang.*;
+     import org.spoofax.interpreter.terms.*;
+     import static org.strategoxt.lang.Term.*;
+     import org.spoofax.interpreter.library.AbstractPrimitive;
+     import java.util.ArrayList;
+     import java.lang.ref.WeakReference;
+         
+     @SuppressWarnings("all")
+     public class x_name {
+
+     protected static final boolean TRACES_ENABLED = e_traces;
+     protected static ITermFactory constantFactory;
+     private static WeakReference<Context> initedContext;
+     private static boolean isIniting;
+
+     // ~*cnst-decls
+     // ~*cnstr-decls
+     
+     public static Context init(Context context) {
+       synchronized (x_name.class) {
+         if (isIniting) return null;
+         try {
+           isIniting = true;
+           ITermFactory termFactory = context.getFactory();
+           if (constantFactory == null) { // don't reinit constants by default
+             initConstructors(termFactory);
+             initConstants(termFactory);
+           }
+           if (initedContext == null || initedContext.get() != context) {
+             ~*import-inits
+             context.registerComponent("~x_name'");
+           }
+           initedContext = new WeakReference<Context>(context);
+           constantFactory = termFactory;
+         } finally {
+           isIniting = false;
+         }
+         return context;
+       }
+     }
+     
+     public static Context init() {
+       return init(new Context());
+     }
+
+     ~*main
+     
+     ~*<java-split-method> |[
+       public static void initConstructors(ITermFactory termFactory) {
+         // ~*cnstr-inits
+       }
+     ]|
+     
+     ~*<java-split-method> |[
+       public static void initConstants(ITermFactory termFactory) {
+         // ~*cnst-inits
+       }
+     ]|
+
+     ~*register
+     }
+  ]|
+  with id
+    // ; <list-loop(try(JavaTranslate))> ops
+    ; <list-loop(try(JavaTranslate))> defs
+    ; imports       := <java-imports>
+    ; import-inits  := <java-init-imports>
+    ; x_name        := <MainClassName>
+    ; x_name'       := <ApplicationName>
+    ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
+    ; main          := <java-main-methods>
+    ; register      := <java-interop-registerers> defs
+    ; switch <get-config> "--stacktrace"
+        case 0: e_traces := |[ false ]|
+        case 1: e_traces := |[ true ]|
+        case 2: e_traces := |[ x_name.class.desiredAssertionStatus() ]|
+      end
+  with
+    rules(
+      CurrentLiftedFrame := None()
+    )
+  // ; add-default-constructors
+  // ; cnstr-decls   := <bagof-ConstructorDecl>
+  // ; cnstr-inits   := <bagof-ConstructorInit>
+  // ; cnst-decls    := <bagof-ConstDecl>
+  // ; cnst-inits    := <bagof-ConstInit; concat; reverse>
   
   java-imports =
     <get-config> "-la"
