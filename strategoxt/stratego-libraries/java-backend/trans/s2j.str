@@ -230,6 +230,8 @@ rules
     Specification([Signature([Constructors([])]), Strategies(defs)]) -> 
     |[ 
      ~package-dec?: pkgname
+     
+     ~import-dec*:imports
 
      import org.strategoxt.lang.*;
      import org.spoofax.interpreter.terms.*;
@@ -247,6 +249,7 @@ rules
   ]|
   with 
       <list-loop(try(JavaTranslate))> defs
+    ; imports       := <java-imports>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; x_name        := <MainClassName>
     ; switch <get-config> "--stacktrace"
