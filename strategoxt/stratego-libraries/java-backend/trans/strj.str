@@ -64,6 +64,10 @@ strategies
   ; if not(<get-config> "--single-strategy")
       then strc-export-external-defs
          ; strc-output-frontend
+      else if (<get-config;string-ends-with(|"boilerplate.ctree")> "-i")
+        then err(|"File boilerplate.ctree should not be called with --single-strategy")
+           ; fail
+      end
     end
   ; s2j
   ; with(clean-output-dir)
