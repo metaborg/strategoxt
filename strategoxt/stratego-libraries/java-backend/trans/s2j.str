@@ -162,7 +162,6 @@ rules
            }
            if (initedContext == null || initedContext.get() != context) {
              ~*import-inits
-             ~*def-inits
              context.registerComponent("~x_name'");
            }
            initedContext = new WeakReference<Context>(context);
@@ -224,7 +223,6 @@ rules
   ; lifted-defs   := <bagof-LiftedDef>
   ; cnstr-decls   := <bagof-ConstructorDecl>
   ; cnstr-inits   := <bagof-ConstructorInit>
-  ; def-inits     := <bagof-DefInit>
   ; cnst-decls    := <bagof-ConstDecl>
   ; cnst-inits    := <bagof-ConstInit; concat; reverse>
   
@@ -611,14 +609,17 @@ rules
        private static final class x' extends x {
          // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
          // NOTE: this prevents multiple overrides of a strategy.
-         private static final x proceed = new x();
+         private static final x proceed;
+         static {
+           proceed = new x();
+           x.instance = new x'();
+         }
          ~(body)
          @Override public String getName() { return "~x"; }
        }
     ]|
     with
       x' := <conc-strings> (x, "_override")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       {| ProceedInvoke :
         e_s* := <translate-args> s*
@@ -634,14 +635,17 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        private static final class x' extends x {
-         private static final x proceed = x.instance;
+         private static final x proceed;
+         static {
+           proceed = x.instance;
+           x.instance = new x'();
+         }
          ~(body)
          @Override public String getName() { return "~x"; }
        }
     ]|
     with
       x' := <conc-strings> (x, "_extension")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       {| ProceedInvoke :
         e_s* := <translate-args> s*
