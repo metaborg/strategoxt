@@ -21,8 +21,11 @@ rules
           Seq(Match(Anno(Op(f, xs'), Var(a))),
           Seq(<seqs> ss',
               Build(Anno(Op(f, ys'), Var(a))))))
-    where <map(new)> ss => xs; <map(!Var(<id>))> xs => xs'; new => a;
-	  <map(new)> ss => ys; <map(!Var(<id>))> ys => ys';
+    where <map(<newname> "trans_cong")> ss => xs
+        ; <map(!Var(<id>))> xs => xs'
+        ; a := <newname> "trans_cong"
+        ; <map(<newname> "trans_cong")> ss => ys
+        ; <map(!Var(<id>))> ys => ys';
           <zip(\ ((x,y), s) -> 
 	         Seq(Build(Var(x)), 
 		 Seq(s, Match(Var(y)))) \ )> (<zip(id)>(xs,ys), ss) => ss'
@@ -33,8 +36,8 @@ rules
           Seq(Match(Anno(Op(f, xs'), Var(a))),
           Seq(<seqs> ss',
               Build(Anno(Op(f, ys'), Var(b))))))
-    where <map(new)> [s | ss] => [a | xs]; map(!Var(<id>)) => xs';
-	  <map(new)> [s | ss] => [b | ys]; map(!Var(<id>)) => ys';
+    where <map(<newname> "trans_cong")> [s | ss] => [a | xs]; map(!Var(<id>)) => xs';
+	  <map(<newname> "trans_cong")> [s | ss] => [b | ys]; map(!Var(<id>)) => ys';
           <zip(\ ((x,y), s) -> Seq(Build(Var(x)), Seq(s, Match(Var(y)))) \ )> 
             (<zip(id)>(xs,ys), [s | ss]) => ss'
 
@@ -50,5 +53,6 @@ rules
 
   ApplyStrat : 
     s -> ((x,y),Seq(Build(Var(x)), Seq(s, Match(Var(y)))))
-    where new => x; new => y
+    where x := <newname> "apply_b"
+        ; y := <newname> "apply_m"
 */

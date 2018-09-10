@@ -125,11 +125,11 @@ rules // other rules
 
   WhereSavesCurrentTerm :
     Where(s) -> Scope([x], Seq(Match(Var(x)), Seq(s, Build(Var(x)))))
-    where new => x
+    where x := <newname> "where"
 
   TestSavesCurrentTerm :
     Test(s) -> Scope([x], Seq(Match(Var(x)), Seq(s, Build(Var(x)))))
-    where new => x
+    where x := <newname> "test"
 
 rules
 

@@ -231,6 +231,9 @@
 				<log message="Testing @{test-source}" />
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
+				<copy toDir="${test-gen-bin}">
+					<fileset dir="${test-dir}" includes="test104.trm, Java-15.tbl" />
+				</copy>
 				<trycatch property="failure">
 					<try>
 						<!-- do the test -->
@@ -283,6 +286,9 @@
 				<log message="Testing @{test-source}" />
 				<mkdir dir="${test-gen}" />
 				<mkdir dir="${test-gen}/org/test" />
+				<copy toDir="${test-gen-bin}">
+					<fileset dir="${test-dir}" includes="prop2.res" />
+				</copy>
 				<trycatch property="failure">
 					<try>
 						<!-- do the test -->

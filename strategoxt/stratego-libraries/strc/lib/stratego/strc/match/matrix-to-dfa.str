@@ -42,7 +42,8 @@ rules
   RowLet(|ps) :
     Row(ts1, s) -> 
     ([SDefT(f, [], as, s)], Row([], ts1, CallT(SVar(f), [], ts2)))
-    where <not(simple-strategy)> s; new => f
+    where <not(simple-strategy)> s
+        ; f := <newname> "row_let"
         //; <debug(!"RowLet: ")> Row(ts1, s)
         ; < tvars-matrix
           ; <isect>(<id>, ps)
@@ -136,7 +137,7 @@ rules
 	//; debug(!"d: ")
 	; <default-state> rows => def
 	//; debug(!"e: ")
-	; new => label
+	; label := <newname> "mixture"
 	//; debug(!"f: ")
 	; rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
 

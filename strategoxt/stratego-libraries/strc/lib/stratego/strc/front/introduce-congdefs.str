@@ -95,7 +95,7 @@ rules
     where <length> ts => n
         ; <not(CongDefined)> (f, n)
         ; rules(CongDefined : (f, n) -> ())
-        ; <unzip(new; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
+        ; <unzip(<newname> "cong_arg"; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
 
   MkCongDefs : 
     Constructors(ods) -> <filter(MkCongDef)> ods
@@ -111,7 +111,7 @@ strategies
     SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
     where <length> ts => n
         ; <not(ModDefinition)> (f, n, 0)
-        ; <unzip(new; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
+        ; <unzip(<newname> "cong_arg"; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
 
 strategies
 
@@ -120,7 +120,14 @@ strategies
   // Congruence over annotation
 
   AnnoCongDef =
-    where(new => f1; new => f2; new => x1; new => x2; new => y1; new => y2)
+    where(
+        f1 := <newname> "anno_cong_str_arg1_"
+      ; f2 := <newname> "anno_cong_str_arg2_"
+      ; x1 := <newname> "anno_cong_term_m"
+      ; x2 := <newname> "anno_cong_anno_m"
+      ; y1 := <newname> "anno_cong_term_b"
+      ; y2 := <newname> "anno_cong_anno_b"
+    )
     ; !|[ Anno_Cong__(f1 : ATerm -> ATerm, f2 : ATerm -> ATerm|) =
             {x1, x2, y1, y2 :
              ?x1{^x2}

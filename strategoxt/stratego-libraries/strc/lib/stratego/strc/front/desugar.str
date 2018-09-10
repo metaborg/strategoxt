@@ -95,7 +95,8 @@ rules // Lift non-variable arguments to primitives.
 
   LiftPrimArg :
     t -> ([x], (Where(Seq(Build(t), Match(Var(x)))), Var(x)))
-    where <not(Var(id))> t; new => x
+    where <not(Var(id))> t
+        ; x := <newname> "prim_arg_m"
 
 
 /*
@@ -124,12 +125,12 @@ rules
 
   LiftBuildApp :
     Term|[ <s> t ]| -> Term|[ x ]|
-    where new => x
+    where x := <newname> "lift_app_in_build_m"
         ; rules( AddApp :+ s' -> |[ {x : where(<s> t => x); s'} ]| )
 
   LiftBuildApp :
     Term|[ <s> ]| -> Term|[ x ]|
-    where new => x
+    where x := <newname> "lift_app_in_build_m"
         ; rules( AddApp :+ s' -> |[ {x : where(s => x); s'} ]| )
 
   LiftTopLevelMatchApp :
@@ -144,12 +145,12 @@ rules
 
   LiftMatchApp :
     Term|[ <s> t ]| -> Term|[ x ]|
-    where new => x
+    where x := <newname> "lift_app_in_match_m"
         ; rules( AddApp :+ s' -> |[ {x : s'; !x; !t; s} ]| )
 
   LiftMatchApp :
     Term|[ <s> ]| -> Term|[ x ]|
-    where new => x
+    where x := <newname> "lift_app_in_match_m"
         ; rules( AddApp :+ s' -> |[ {x : s'; !x; s} ]| )
 
 strategies
@@ -190,8 +191,8 @@ rules
   CtoS(name) : [WithClause(s)  | cond*] -> Seq(with,      <CtoS(name)> cond*)
     where
       sname := <name>
-    ; x := <new>
-    ; y := <new>
+    ; x := <newname> "unused"
+    ; y := <newname> "unused"
     ; with := <with-strategy> (s,sname)
       <+ with := With(s) // <name> failed
 
@@ -215,7 +216,7 @@ strategies // "with" strategy
   Desugar:
     With(s) -> <with-strategy> (s,sname)
     where
-      x := <new>
+      x := <newname> "unused"
       ; ( sname := <WithContext>
         <+sname := ""
         )
@@ -317,7 +318,7 @@ rules
           ; w* := <filter(match-term-r)> names
             
   add-name: Var(n) -> (<id>, n)
-  add-name: _ -> (<id>, <new>)
+  add-name: _ -> (<id>, <get-constructor;snewvar>)
   transform-term: (_, n) -> DefaultVarDec(n)
   match-term: (t, n) -> Where(Assign(t, Var(n))) where <not(?Var(_))>t
   match-term-r: (t, n) -> WhereClause(Assign(t, Var(n))) where <not(?Var(_))>t
@@ -451,7 +452,7 @@ rules
   Desugar :
     SwitchChoice(s1, sc*, s2) -> |[ {x : where(s1 => x); s} ]|
     // |[ switch s1 sc* s2 end ]| -> |[ {x : where(s1 => x); s} ]|
-    where new => x
+    where x := <newname> "switch"
         ; <foldr(!s2, glchoice(|x))> sc* => s
 
   glchoice(|x) : 
@@ -463,7 +464,7 @@ rules
   Desugar :
     |[ where(s) ]| -> |[ {x: ?x; s; !x} ]|
     where <not(Id)> s
-    with x := <new>
+    with x := <newname> "where"
 
   Desugar :
     |[ where(id) ]| -> |[ id ]|
@@ -500,7 +501,10 @@ rules
   Desugar :
     ExplodeCong(s1, s2) -> 
     |[ {x, x', y, y': (x#(y) -> x'#(y') where <s1> x => x'; <s2> y => y')} ]|
-    where new => x; new => x'; new => y; new => y'
+    where x := <newname> "expl_cong_cons_m"
+        ; x' := <newname> "expl_cong_args_m"
+        ; y := <newname> "expl_cong_cons_b"
+        ; y' := <newname> "expl_cong_args_b"
 
   Desugar :
     ListCongNoTail(ts) -> <foldr(!|[ ?[] ]|, DesugarConsArgs)> ts
@@ -518,7 +522,11 @@ rules
        ![x' | y']{^z}
       }
     ]|
-    where new => x; new => y; new => x'; new => y'; new => z
+    where x := <newname> "list_cong_head_m"
+        ; y := <newname> "list_cong_tail_m"
+        ; x' := <newname> "list_cong_head_b"
+        ; y' := <newname> "list_cong_tail_b"
+        ; z := <newname> "list_cong_annos"
 
   Desugar :
     StrCong(x) -> Match(NoAnnoList(Str(x)))
@@ -551,6 +559,23 @@ rules
 
   Desugar :
     AnnoList(Tuple([AnnoList(t, t1*)]), t2*) -> AnnoList(t, t1*)
+
+  /* The following three rules handle a peculiarity in the Stratego syntax:
+   *   a prefer on As of sort Term over As of sort PreTerm.
+   * It's easier to handle here than in the syntax, which may have more far-ranging
+   * consequences.
+   * The minimal Stratego code that triggers this is `(a@b){c*})`.
+   */
+  Desugar :
+    AnnoList(Tuple([As(v, NoAnnoList(t))]), t*) -> As(v,AnnoList(t, t*))
+
+  Desugar :
+    AnnoList(Tuple([As(v, AnnoList(t, t1*))]), t2*) -> As(v,AnnoList(t, t1*))
+
+  Desugar :
+    AnnoList(Tuple([As(v, t)]), t*) -> As(v,AnnoList(t, t*))
+    where <not(NoAnnoList(id))> t
+        ; <not(AnnoList(id,id))> t
 
   Desugar :
     Tuple(ts) -> Op("", ts)

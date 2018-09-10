@@ -1,0 +1,48 @@
+module guarded-choice
+
+imports libstratego-lib
+
+strategies
+
+// Variable bindings from one branch of the guarded choice don't conflict with binding that variable in the other branch
+choice-success-strat = (!1; ?a; fail <+     !2; ?a); !a
+// But bindings do survive a failed branch of a guarded choice (even inside the other branch if you care to bypass the rudimentary static check)dd
+choice-success2-strat = (!1; ?a; ?c; fail <+ !2; ?a); !(a,c)
+// After the guarded choice, the variable bindings from the failure branch become conflicting
+choice-failure-strat = (!1; ?a; fail <+ id); !2; ?a
+// This also happens if the binding occurred in a closure
+choice-failure2-strat = !(1,2,3); (all(?a; fail) <+ id); !2; ?a
+
+main =
+  test-suite(!"guarded-choice",
+    choice-success;
+    choice-success2;
+    choice-failure;
+    choice-failure2
+  )
+
+  choice-success =
+    apply-test(!"choice-success"
+  , choice-success-strat
+  , !()
+  , !2
+  )
+
+  choice-success2 =
+    apply-test(!"choice-success2"
+  , choice-success2-strat
+  , !()
+  , !(2,1)
+  )
+
+  choice-failure =
+    apply-and-fail(!"choice-failure"
+  , choice-failure-strat
+  , !()
+  )
+
+  choice-failure2 =
+    apply-and-fail(!"choice-failure2"
+  , choice-failure2-strat
+  , !()
+  )

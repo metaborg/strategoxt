@@ -166,6 +166,18 @@ strategies
 
 strategies
 
+  tnewvar =
+    lower-case
+    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
+    ; newname
+    <+ new
+
+  snewvar =
+    lower-case
+    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
+    ; newname
+    <+ new
+
   declared-vars =
     map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))
 
@@ -176,10 +188,10 @@ strategies
     free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin)
 
   trename = 
-    rename(Var, Bind0 + Bind6 + Bind8 + Bind10, tboundin, tpaste)
+    rename(Var, Bind0 + Bind6 + Bind8 + Bind10, tboundin, tpaste, tnewvar)
 
   srename = 
-    rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin, spaste)
+    rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin, spaste, snewvar)
 
   svars-arity = 
     free-vars2(\CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
@@ -198,3 +210,24 @@ strategies
 
   ssubs = 
     substitute(IsSVar)
+
+// This should be in libstratego-lib, strategy/general/rename; but it's too much effort to bootstrap
+rules
+
+  RnBinding(bndvrs, paste : (term -> vars) * term -> term, newvar : term -> term) :
+    (t, env1) -> (<paste(!ys)> t, env1, env2)
+    where <bndvrs> t => xs; map(newvar) => ys;
+          <conc>(<zip(id)>(xs,ys), env1) => env2
+
+strategies
+
+  rename(isvar : (name -> env) * name -> term
+        , bndvars
+        , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term
+        , paste : (term -> vars) * term -> term
+        , newvar : term -> term
+        )
+  = \ t -> (t, []) \ ;
+    rec x(env-alltd(RnVar(isvar)
+                    <+ RnBinding(bndvars, paste, newvar);
+                       DistBinding(x, boundin)))

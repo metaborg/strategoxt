@@ -180,8 +180,15 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			System.err.println(e.getMessage());
 			System.exit(125);
 		} catch (InterpreterException e) {
-			e.printStackTrace();
-			System.exit(124);
+			/* Note that an InterpreterException may be wrapping the InterpreterExit when the
+			   org.spoofax.interpreter.core.Interpreter was calling into a primitive from the hybrid interpreter.
+			 */
+			if (e.getCause() instanceof InterpreterExit) {
+				System.exit(((InterpreterExit) e.getCause()).getValue());
+			} else {
+				e.printStackTrace();
+				System.exit(124);
+			}
 		}
 	}
 
