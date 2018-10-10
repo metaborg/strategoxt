@@ -8,6 +8,8 @@ imports
 
 strategies
 
+  canonicalize2 = alltd(canonicalize-sdef2)
+
   canonicalize2(|prefix) = //debug(!"in: "); (
     canonicalize-sdef2(|prefix)
     <+ canonicalize-let2(|prefix)
@@ -15,6 +17,13 @@ strategies
     <+ canonicalize-call2(|prefix); canonicalize2(|prefix)
     <+ all(canonicalize2(|prefix))
   //); debug(!"out: ")
+
+  canonicalize-sdef2:
+    |[ f(a1*|a2*) = s ]| -> |[ f(a1*|a2*) = s' ]|
+    where {| IsClosure
+           : where(<map(declare-closure)> a1* )
+           ; <canonicalize2(|f)> s => s'
+           |}
 
   canonicalize-sdef2(|prefix) :
     |[ f(a1*|a2*) = s ]| -> |[ f(a1*|a2*) = s' ]|

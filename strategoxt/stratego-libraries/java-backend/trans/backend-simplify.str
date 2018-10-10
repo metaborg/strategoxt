@@ -23,7 +23,7 @@ strategies
       dollars-for-capitals-top
     ; split-large-strategies
     ; lift-definitions
-    ; canonicalize2(|<MainClassName>)
+    ; canonicalize2
     ; simplify1
     ; mark-bound-unbound-vars
     ; escaping-variables

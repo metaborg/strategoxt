@@ -142,61 +142,61 @@ rules
      @SuppressWarnings("all")
      public class x_name {
 
-     protected static final boolean TRACES_ENABLED = e_traces;
-     protected static ITermFactory constantFactory;
-     private static WeakReference<Context> initedContext;
-     private static boolean isIniting;
-
-     ~*cnst-decls
-     ~*cnstr-decls
-     
-     public static Context init(Context context) {
-       synchronized (x_name.class) {
-         if (isIniting) return null;
-         try {
-           isIniting = true;
-           ITermFactory termFactory = context.getFactory();
-           if (constantFactory == null) { // don't reinit constants by default
-             initConstructors(termFactory);
-             initConstants(termFactory);
+       protected static final boolean TRACES_ENABLED = e_traces;
+       protected static ITermFactory constantFactory;
+       private static WeakReference<Context> initedContext;
+       private static boolean isIniting;
+  
+       ~*cnst-decls
+       ~*cnstr-decls
+       
+       public static Context init(Context context) {
+         synchronized (x_name.class) {
+           if (isIniting) return null;
+           try {
+             isIniting = true;
+             ITermFactory termFactory = context.getFactory();
+             if (constantFactory == null) { // don't reinit constants by default
+               initConstructors(termFactory);
+               initConstants(termFactory);
+             }
+             if (initedContext == null || initedContext.get() != context) {
+               ~*import-inits
+               ~*def-inits
+               context.registerComponent("~x_name'");
+             }
+             initedContext = new WeakReference<Context>(context);
+             constantFactory = termFactory;
+           } finally {
+             isIniting = false;
            }
-           if (initedContext == null || initedContext.get() != context) {
-             ~*import-inits
-             ~*def-inits
-             context.registerComponent("~x_name'");
-           }
-           initedContext = new WeakReference<Context>(context);
-           constantFactory = termFactory;
-         } finally {
-           isIniting = false;
+           return context;
          }
-         return context;
        }
-     }
-     
-     public static Context init() {
-       return init(new Context());
-     }
-
-     ~*main
-     
-     ~*<java-split-method> |[
-       public static void initConstructors(ITermFactory termFactory) {
-         ~*cnstr-inits
+       
+       public static Context init() {
+         return init(new Context());
        }
-     ]|
-     
-     ~*<java-split-method> |[
-       public static void initConstants(ITermFactory termFactory) {
-         ~*cnst-inits
-       }
-     ]|
-
-     ~*constant-defs
-     ~*function-defs
-     ~*lifted-defs
-
-     ~*register
+  
+       ~*main
+       
+       ~*<java-split-method> |[
+         public static void initConstructors(ITermFactory termFactory) {
+           ~*cnstr-inits
+         }
+       ]|
+       
+       ~*<java-split-method> |[
+         public static void initConstants(ITermFactory termFactory) {
+           ~*cnst-inits
+         }
+       ]|
+  
+       ~*constant-defs
+       ~*function-defs
+       ~*lifted-defs
+  
+       ~*register
      }
   ]|
   with 
@@ -244,9 +244,9 @@ rules
          
      @SuppressWarnings("all")
      public class x_name {
-     ~*constant-defs
-     ~*function-defs
-     ~*lifted-defs
+       ~*constant-defs
+       ~*function-defs
+       ~*lifted-defs
      }
   ]|
   with 
@@ -285,57 +285,57 @@ rules
      @SuppressWarnings("all")
      public class x_name {
 
-     protected static final boolean TRACES_ENABLED = e_traces;
-     protected static ITermFactory constantFactory;
-     private static WeakReference<Context> initedContext;
-     private static boolean isIniting;
-
-     // ~*cnst-decls
-     // ~*cnstr-decls
-     
-     public static Context init(Context context) {
-       synchronized (x_name.class) {
-         if (isIniting) return null;
-         try {
-           isIniting = true;
-           ITermFactory termFactory = context.getFactory();
-           if (constantFactory == null) { // don't reinit constants by default
-             initConstructors(termFactory);
-             initConstants(termFactory);
+       protected static final boolean TRACES_ENABLED = e_traces;
+       protected static ITermFactory constantFactory;
+       private static WeakReference<Context> initedContext;
+       private static boolean isIniting;
+  
+       // ~*cnst-decls
+       // ~*cnstr-decls
+       
+       public static Context init(Context context) {
+         synchronized (x_name.class) {
+           if (isIniting) return null;
+           try {
+             isIniting = true;
+             ITermFactory termFactory = context.getFactory();
+             if (constantFactory == null) { // don't reinit constants by default
+               initConstructors(termFactory);
+               initConstants(termFactory);
+             }
+             if (initedContext == null || initedContext.get() != context) {
+               ~*import-inits
+               ~*def-inits
+               context.registerComponent("~x_name'");
+             }
+             initedContext = new WeakReference<Context>(context);
+             constantFactory = termFactory;
+           } finally {
+             isIniting = false;
            }
-           if (initedContext == null || initedContext.get() != context) {
-             ~*import-inits
-             ~*def-inits
-             context.registerComponent("~x_name'");
-           }
-           initedContext = new WeakReference<Context>(context);
-           constantFactory = termFactory;
-         } finally {
-           isIniting = false;
+           return context;
          }
-         return context;
        }
-     }
-     
-     public static Context init() {
-       return init(new Context());
-     }
-
-     ~*main
-     
-     ~*<java-split-method> |[
-       public static void initConstructors(ITermFactory termFactory) {
-         // ~*cnstr-inits
+       
+       public static Context init() {
+         return init(new Context());
        }
-     ]|
-     
-     ~*<java-split-method> |[
-       public static void initConstants(ITermFactory termFactory) {
-         // ~*cnst-inits
-       }
-     ]|
-
-     ~*register
+  
+       ~*main
+       
+       ~*<java-split-method> |[
+         public static void initConstructors(ITermFactory termFactory) {
+           // ~*cnstr-inits
+         }
+       ]|
+       
+       ~*<java-split-method> |[
+         public static void initConstants(ITermFactory termFactory) {
+           // ~*cnst-inits
+         }
+       ]|
+  
+       ~*register
      }
   ]|
   with id
