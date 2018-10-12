@@ -115,6 +115,7 @@ strategies
     //     ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
     //     )
     //   else
+        ; log(|Info(), ["Writing file: ", name])
         ;  file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
         ; box  := <pp-java5-to-abox> ast
         ; <box2text-stream(|80, file)> box
