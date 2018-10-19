@@ -83,10 +83,18 @@ strategies
           )
         )
 
-        // We add a proxy definition with name *_0_0 that really takes more arguments if there is no
-        // *_0_0 defined. This is used in other modules where this strategy is used in
-        // strategy-argument-position, because we don't globally analyse when we compile, but just
-        // assume *_0_0
+        // We add a proxy definition with name *_0_0. This is used in other modules where this
+        // strategy is used in strategy-argument-position, because we don't globally analyse when
+        // we compile, but call *_0_0. *_0_0 will refer to the one version of the strategy that's
+        // defined or the *_0_0 already exists. In the third case (no *_0_0, multiple other
+        // definitions), the stratego editor should give an error during analysis, of the ambiguous
+        // reference. 
+        // Note that we can't call the definition something other than *_0_0 because for the
+        // standard library we don't generate the proxy classes.
+        // TODO: Change codegen: One class per strategy with method overloading for the different
+        //  argument versions. This will get rid of the whole problem. You still need proxy *_?_?
+        //  classes for backward compat though. Those can be empty subclasses. Only problem is it's
+        //  incompatible with older pre-compiled libs that use the extend/override mechanism.
       ; let
           sarg_call = \VarDec(name, _) -> CallT(SVar(name), [], [])\
           targ_call = \VarDec(name, _) -> Var(name)\
@@ -99,10 +107,11 @@ strategies
         in
           oncetd(SDefT(string-ends-with(|"_0_0"), id, id, id))
           <+ oncetd({
-            (  ?sdefts@[SDefT(name, sargs, targs, _) | _]
-            <+ ?sdefts@[AnnoDef(_, SDefT(name, sargs, targs, _)) | _])
+            (  ?sdefts@[SDefT(name, sargs, targs, _)]
+            <+ ?sdefts@[AnnoDef(_, SDefT(name, sargs, targs, _))])
           ; ![<buildSDefT(|sargs, targs)> name | sdefts]
           })
+          <+ id // can't proxy, use of this strategy without args in sarg-position is ambiguous
         end
     end
   ; strc-optimize
@@ -112,7 +121,7 @@ strategies
       else 
         where(<get-config> "-i"
              ; (string-ends-with(|"boilerplate.ctree")
-                < err(|"File should not be called with --single-strategy"); fail
+                < err(|"File should not be called with --single-strategy, call with --boilerplate instead"); fail
                 + id))
     end
   ; s2j

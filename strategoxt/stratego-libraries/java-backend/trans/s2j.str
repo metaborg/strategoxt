@@ -95,7 +95,7 @@ rules
             java-add-alias-classes
           end
         ; if <get-config> "--single-strategy" then
-            Tl
+            Tl // drop main class. Hard to remove in java-compile-spec-single, so removed here
           end
         else
           ![<id>]
@@ -289,9 +289,6 @@ rules
        protected static ITermFactory constantFactory;
        private static WeakReference<Context> initedContext;
        private static boolean isIniting;
-  
-       // ~*cnst-decls
-       // ~*cnstr-decls
        
        public static Context init(Context context) {
          synchronized (x_name.class) {
@@ -358,11 +355,6 @@ rules
       CurrentLiftedFrame := None()
     )
     ; def-inits := <filter(outer-definition-DefInit)> defs
-  // ; add-default-constructors
-  // ; cnstr-decls   := <bagof-ConstructorDecl>
-  // ; cnstr-inits   := <bagof-ConstructorInit>
-  // ; cnst-decls    := <bagof-ConstDecl>
-  // ; cnst-inits    := <bagof-ConstInit; concat; reverse>
   
   java-imports =
     <get-config> "-la"
