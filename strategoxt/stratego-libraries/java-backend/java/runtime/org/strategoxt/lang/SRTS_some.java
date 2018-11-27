@@ -17,10 +17,8 @@ public class SRTS_some extends Strategy {
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		int termType = current.getTermType();
 		
-		if (termType == LIST) {
-			final IStrategoList list = (IStrategoList) current;
-			return map1MaintainAnnos(context, list, s, false, SRTS_all.noAnnosTail(list));
-		}
+		if (termType == LIST)
+			return map1MaintainAnnos(context, (IStrategoList) current, s, false);
 		
 		boolean success = false;
 		IStrategoTerm[] results = null;
@@ -44,26 +42,23 @@ public class SRTS_some extends Strategy {
 		
 		switch (termType) {
 			case APPL:
-				return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), results, (IStrategoAppl) current);
-			case TUPLE:
-				return context.getFactory().replaceTuple(results, (IStrategoTuple) current);
-			default:
-				throw new IllegalStateException();
+    			return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), results, (IStrategoAppl) current);
+    		case TUPLE:
+    			return context.getFactory().replaceTuple(results, (IStrategoTuple) current);
+    		default:
+    			throw new IllegalStateException();
 		}
 	}
 	
-	private static IStrategoList map1MaintainAnnos(Context context, IStrategoList list, Strategy s, boolean foundSome, IStrategoList noAnnosTail) {
+	private static IStrategoList map1MaintainAnnos(Context context, IStrategoList list, Strategy s, boolean foundSome) {
 		if (list.isEmpty()) {
 			return foundSome ? list : null;
 		} else {
-			if(noAnnosTail == list) {
-				return mapTryIgnoreAnnos(context, list, s, foundSome);
-			}
 			IStrategoTerm head = list.head();
 			IStrategoTerm head2 = s.invoke(context, head);
 			if (head2 == null) {
 				IStrategoList tail = list.tail();
-				IStrategoList tail2 = map1MaintainAnnos(context, tail, s, foundSome, noAnnosTail);
+				IStrategoList tail2 = map1MaintainAnnos(context, tail, s, foundSome);
 				if (tail2 == null) {
 					return null;
 				} else if (tail2 == tail) {
@@ -71,9 +66,9 @@ public class SRTS_some extends Strategy {
 				} else {
 					return context.getFactory().replaceListCons(head, tail2, head, tail);
 				}
-			} else {
+			} else if (head2 == head) {
 				IStrategoList tail = list.tail();
-				IStrategoList tail2 = map1MaintainAnnos(context, tail, s, true, noAnnosTail);
+				IStrategoList tail2 = map1MaintainAnnos(context, tail, s, true);
 				if (tail2 == null) {
 					return null;
 				} else if (tail2 == tail) {
@@ -81,23 +76,23 @@ public class SRTS_some extends Strategy {
 				} else {
 					return context.getFactory().replaceListCons(head2, tail2, head, tail);
 				}
+			} else {
+				return mapTryIgnoreAnnos(context, head2, list, s);
 			}
 		}
 	}
-	
-   private static IStrategoList mapTryIgnoreAnnos(Context context, IStrategoList list, Strategy s, boolean foundSome) {
+
+	private static IStrategoList mapTryIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, Strategy s) {
 		IStrategoTerm[] items = list.getAllSubterms();
-		for (int i = 0; i < items.length; i++) {
+		items[0] = head2;
+		assert list.head() != head2;
+		for (int i = 1; i < items.length; i++) {
 			IStrategoTerm item = items[i];
 			IStrategoTerm item2 = s.invoke(context, item);
 			if (item != item2 && item2 != null) {
 				items[i] = item2;
-				foundSome = true;
 			}
 		}
-		if(!foundSome) {
-			return null;
-		}
 		return context.getFactory().replaceList(items, list);
-   }
+	}
 }
