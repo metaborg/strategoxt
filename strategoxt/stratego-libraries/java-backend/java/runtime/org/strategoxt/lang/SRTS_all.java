@@ -111,28 +111,32 @@ public class SRTS_all extends Strategy {
 		return result;
 	}
 
-	public static IStrategoList noAnnosTail(IStrategoList list) {
+	public static IStrategoList noAnnosTail(final IStrategoList list) {
 		IStrategoList result = list;
 		IStrategoList cursor = list;
+		// Check Cons parts of list. Set result to the latest Cons with annos.
 		for(int i = 0; i < list.size(); i++) {
-			IStrategoList annos = cursor.getAnnotations();
-			if(!(annos == null || annos.isEmpty())) {
+			if(hasAnnos(cursor)) {
 				result = cursor;
 			}
 			cursor = cursor.tail();
 		}
-		{
-			IStrategoList annos = cursor.getAnnotations();
-			if(!(annos == null || annos.isEmpty())) {
-				result = cursor;
-			}
+		// Check Nil. If Nil has annos: return null, there is no tail without annos.
+		if(hasAnnos(cursor)) {
+			return null;
 		}
-		if(result.isEmpty()) {
-			IStrategoList annos = result.getAnnotations();
-			if(annos == null || annos.isEmpty()) {
-				return null;
-			}
+		// If Nil didn't have annos, and the input list is Nil, return the input list.
+		if(list.isEmpty()) {
+			return list;
 		}
-		return result;
+		/* If Nil didn't have annos, and the input list is not Nil, result points to latest Cons 
+		 * with annos. Take its tail.
+		 */
+		return result.tail();
+	}
+	
+	private static boolean hasAnnos(final IStrategoList list) {
+		IStrategoList annos = list.getAnnotations();
+		return !(annos == null || annos.isEmpty());
 	}
 }

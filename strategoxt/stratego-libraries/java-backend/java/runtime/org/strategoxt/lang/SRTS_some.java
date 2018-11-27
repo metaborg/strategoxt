@@ -76,7 +76,7 @@ public class SRTS_some extends Strategy {
 				IStrategoList tail2 = map1MaintainAnnos(context, tail, s, true, noAnnosTail);
 				if (tail2 == null) {
 					return null;
-				} else if (tail2 == tail) {
+				} else if ((head2 == head || head2.match(head)) && tail2 == tail) {
 					return list;
 				} else {
 					return context.getFactory().replaceListCons(head2, tail2, head, tail);
@@ -90,9 +90,11 @@ public class SRTS_some extends Strategy {
 		for (int i = 0; i < items.length; i++) {
 			IStrategoTerm item = items[i];
 			IStrategoTerm item2 = s.invoke(context, item);
-			if (item != item2 && item2 != null) {
+			if (item2 != null) {
 				items[i] = item2;
 				foundSome = true;
+			} else {
+                items[i] = item;
 			}
 		}
 		if(!foundSome) {
