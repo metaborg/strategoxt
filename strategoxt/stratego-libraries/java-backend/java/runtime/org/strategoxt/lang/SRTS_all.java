@@ -18,7 +18,8 @@ public class SRTS_all extends Strategy {
 		int termType = current.getTermType();
 		
 		if (termType == LIST) {
-			return map(context, (IStrategoList) current, s);
+			IStrategoList list = (IStrategoList) current;
+			return mapMaintainAnnos(context, list, s, noAnnosTail(list));
 		} else {
 			IStrategoTerm[] inputs = current.getAllSubterms();
 			IStrategoTerm[] results = null;
@@ -52,14 +53,6 @@ public class SRTS_all extends Strategy {
 		}
 	}
 
-	private static IStrategoList map(Context context, IStrategoList list, Strategy s) {
-		if(list.isEmpty()) {
-			return list;
-		}
-		
-		return mapMaintainAnnos(context, list, s, noAnnosTail(list));
-	}
-
 	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoList list, Strategy s) {
 		IStrategoTerm[] inputs = list.getAllSubterms();
 		IStrategoTerm[] results = null;
@@ -81,6 +74,9 @@ public class SRTS_all extends Strategy {
 
 	private static IStrategoList mapMaintainAnnos(Context context, IStrategoList list, Strategy s,
 		IStrategoList noAnnosTail) {
+		if(list.isEmpty()) {
+			return list;
+		}
 		if(noAnnosTail == list) {
 			return mapIgnoreAnnos(context, list, s);
 		}
