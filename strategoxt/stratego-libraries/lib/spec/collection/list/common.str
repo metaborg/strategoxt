@@ -647,9 +647,9 @@ strategies
     \ [y|ys] -> <s2> (<f> y, <foldr(s1, s2, f)> ys) \
 
   /**
-   * Left folds a list. That is, the strategy sis applied as a 
+   * Left folds a list. That is, the strategy s is applied as a
    * binary operator between all adjacent elements in the list.
-   * foldr starts by applying s to b and the first element in
+   * foldl starts by applying s to b and the first element in
    * the list. b is therefore the starting point of the folding.
    *
    * Example: <foldl(add)> ([1,2,3,4], 0)
