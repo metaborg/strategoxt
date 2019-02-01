@@ -157,8 +157,10 @@ strategies
 
   /**
    * Return first list element for which s succeeds.
+   * The result is the application of s to this element.
    *
-   * @type  List(a) -> a
+   * @param a -> b
+   * @type  List(a) -> b
    * @inc   fetch-elem-test
    */
   fetch-elem(s) = 
