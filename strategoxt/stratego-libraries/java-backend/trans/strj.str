@@ -64,7 +64,29 @@ strategies
       then
         dr-scope-all-verbose(
           m-transform-no-overlays(id
+
+        // desugar and check overlays
+  
+        ; m-transform-overlays(id
+            ; pre-desugar
+            ; check-overlay
+            ; try(DeclareVarToConst)
+          )
+  
+        ; m-transform-overlays(id
+            ; m-variables-to-constructors-in-def
+            ; pre-desugar
+  // commented: Test whether all variables used in builds are matched before. But variables can be nullary constructors or overlays. Therefore needs global information
+  //          ; not(def-use-def)
+            ; not(check-where-with)
+            ; raise-annotations
+            ; GenerateCheckRule
+            ; DeclareExpandOverlay
+            ; where(Overlay-to-Congdef; m-add-def)
+          )
+          
           ; m-transform-local-defs(id
+              ; map(expand-overlays-in-def)
               ; ![<joindefs>]
               ; [RenameSDef]
             )
