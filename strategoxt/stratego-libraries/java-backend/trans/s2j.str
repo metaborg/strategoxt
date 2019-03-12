@@ -61,13 +61,24 @@ rules
       with(
         s2j-init-options
       ; record-main-classname
+      ; if <get-config> "--single-strategy"
+          then <get-config;base-filename;remove-extension> "-i"; rules(SingleStrategy := <id>)
+        end
       )
     ; log-timed(
         backend-simplify
       | "Backend preprocessing succeeded", 1
       )
     ; log-timed(
-        dr-scope-all-verbose(java-compile-spec)
+        dr-scope-all-verbose(
+          if <get-config> "--single-strategy"
+            then java-compile-spec-single
+            else if <get-config> "--boilerplate"
+              then java-compile-spec-boilerplate
+              else java-compile-spec
+            end
+          end
+        )
       ; java-simplify
       | "Backend transformation succeeded", 1
       )
@@ -77,18 +88,21 @@ rules
       )
     ; log-timed(
         java-relabel
-      ; if <get-config> "-p" + <get-config> "--single-strategy" then
+      ; if <get-config> "-p" then
           // Use multiple .java files for programs with a package name
           java-split-class
-        ; if not(IsIncrementalCompilation) then
+        ; if not(IsIncrementalCompilation); not(<get-config> "--single-strategy") then
             java-add-alias-classes
+          end
+        ; if <get-config> "--single-strategy" then
+            Tl // drop main class. Hard to remove in java-compile-spec-single, so removed here
           end
         else
           ![<id>]
         end
       | "Backend postprocessing succeeded", 1
       )
-  
+
   record-main-classname =
     (<get-config> "-o" <+ strc-getoutfile(!""))
   ; base-filename
@@ -128,61 +142,61 @@ rules
      @SuppressWarnings("all")
      public class x_name {
 
-     protected static final boolean TRACES_ENABLED = e_traces;
-     protected static ITermFactory constantFactory;
-     private static WeakReference<Context> initedContext;
-     private static boolean isIniting;
-
-     ~*cnst-decls
-     ~*cnstr-decls
-     
-     public static Context init(Context context) {
-       synchronized (x_name.class) {
-         if (isIniting) return null;
-         try {
-           isIniting = true;
-           ITermFactory termFactory = context.getFactory();
-           if (constantFactory == null) { // don't reinit constants by default
-             initConstructors(termFactory);
-             initConstants(termFactory);
+       protected static final boolean TRACES_ENABLED = e_traces;
+       protected static ITermFactory constantFactory;
+       private static WeakReference<Context> initedContext;
+       private static boolean isIniting;
+  
+       ~*cnst-decls
+       ~*cnstr-decls
+       
+       public static Context init(Context context) {
+         synchronized (x_name.class) {
+           if (isIniting) return null;
+           try {
+             isIniting = true;
+             ITermFactory termFactory = context.getFactory();
+             if (constantFactory == null) { // don't reinit constants by default
+               initConstructors(termFactory);
+               initConstants(termFactory);
+             }
+             if (initedContext == null || initedContext.get() != context) {
+               ~*import-inits
+               ~*def-inits
+               context.registerComponent("~x_name'");
+             }
+             initedContext = new WeakReference<Context>(context);
+             constantFactory = termFactory;
+           } finally {
+             isIniting = false;
            }
-           if (initedContext == null || initedContext.get() != context) {
-             ~*import-inits
-             ~*def-inits
-             context.registerComponent("~x_name'");
-           }
-           initedContext = new WeakReference<Context>(context);
-           constantFactory = termFactory;
-         } finally {
-           isIniting = false;
+           return context;
          }
-         return context;
        }
-     }
-     
-     public static Context init() {
-       return init(new Context());
-     }
-
-     ~*main
-     
-     ~*<java-split-method> |[
-       public static void initConstructors(ITermFactory termFactory) {
-         ~*cnstr-inits
+       
+       public static Context init() {
+         return init(new Context());
        }
-     ]|
-     
-     ~*<java-split-method> |[
-       public static void initConstants(ITermFactory termFactory) {
-         ~*cnst-inits
-       }
-     ]|
-
-     ~*constant-defs
-     ~*function-defs
-     ~*lifted-defs
-
-     ~*register
+  
+       ~*main
+       
+       ~*<java-split-method> |[
+         public static void initConstructors(ITermFactory termFactory) {
+           ~*cnstr-inits
+         }
+       ]|
+       
+       ~*<java-split-method> |[
+         public static void initConstants(ITermFactory termFactory) {
+           ~*cnst-inits
+         }
+       ]|
+  
+       ~*constant-defs
+       ~*function-defs
+       ~*lifted-defs
+  
+       ~*register
      }
   ]|
   with 
@@ -213,6 +227,134 @@ rules
   ; def-inits     := <bagof-DefInit>
   ; cnst-decls    := <bagof-ConstDecl>
   ; cnst-inits    := <bagof-ConstInit; concat; reverse>
+  
+  java-compile-spec-single :
+    Specification([Signature([Constructors([])]), Strategies(defs)]) -> 
+    |[ 
+     ~package-dec?: pkgname
+     
+     ~import-dec*:imports
+
+     import org.strategoxt.lang.*;
+     import org.spoofax.interpreter.terms.*;
+     import static org.strategoxt.lang.Term.*;
+     import org.spoofax.interpreter.library.AbstractPrimitive;
+     import java.util.ArrayList;
+     import java.lang.ref.WeakReference;
+         
+     @SuppressWarnings("all")
+     public class x_name {
+       ~*constant-defs
+       ~*function-defs
+       ~*lifted-defs
+     }
+  ]|
+  with 
+      <list-loop(try(JavaTranslate))> defs
+    ; imports       := <java-imports>
+    ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
+    ; x_name        := <MainClassName>
+    ; switch <get-config> "--stacktrace"
+        case 0: e_traces := |[ false ]|
+        case 1: e_traces := |[ true ]|
+        case 2: e_traces := |[ true ]|
+      end
+  with
+    rules(
+      CurrentLiftedFrame := None()
+    )
+  ; function-defs := <map(translate-outer-definition-top)> defs
+  ; add-default-constructors
+  ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
+  ; lifted-defs   := <bagof-LiftedDef>
+  
+  java-compile-spec-boilerplate :
+    Specification([Signature([Constructors([])]), Strategies(defs)]) -> 
+    |[ 
+     ~package-dec?: pkgname
+     
+     ~import-dec*:imports
+
+     import org.strategoxt.lang.*;
+     import org.spoofax.interpreter.terms.*;
+     import static org.strategoxt.lang.Term.*;
+     import org.spoofax.interpreter.library.AbstractPrimitive;
+     import java.util.ArrayList;
+     import java.lang.ref.WeakReference;
+         
+     @SuppressWarnings("all")
+     public class x_name {
+
+       protected static final boolean TRACES_ENABLED = e_traces;
+       protected static ITermFactory constantFactory;
+       private static WeakReference<Context> initedContext;
+       private static boolean isIniting;
+       
+       public static Context init(Context context) {
+         synchronized (x_name.class) {
+           if (isIniting) return null;
+           try {
+             isIniting = true;
+             ITermFactory termFactory = context.getFactory();
+             if (constantFactory == null) { // don't reinit constants by default
+               initConstructors(termFactory);
+               initConstants(termFactory);
+             }
+             if (initedContext == null || initedContext.get() != context) {
+               ~*import-inits
+               ~*def-inits
+               context.registerComponent("~x_name'");
+             }
+             initedContext = new WeakReference<Context>(context);
+             constantFactory = termFactory;
+           } finally {
+             isIniting = false;
+           }
+           return context;
+         }
+       }
+       
+       public static Context init() {
+         return init(new Context());
+       }
+  
+       ~*main
+       
+       ~*<java-split-method> |[
+         public static void initConstructors(ITermFactory termFactory) {
+           // ~*cnstr-inits
+         }
+       ]|
+       
+       ~*<java-split-method> |[
+         public static void initConstants(ITermFactory termFactory) {
+           // ~*cnst-inits
+         }
+       ]|
+  
+       ~*register
+     }
+  ]|
+  with id
+    // ; <list-loop(try(JavaTranslate))> ops
+    ; <list-loop(try(JavaTranslate))> defs
+    ; imports       := <java-imports>
+    ; import-inits  := <java-init-imports>
+    ; x_name        := <MainClassName>
+    ; x_name'       := <ApplicationName>
+    ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
+    ; main          := <java-main-methods>
+    ; register      := <java-interop-registerers> defs
+    ; switch <get-config> "--stacktrace"
+        case 0: e_traces := |[ false ]|
+        case 1: e_traces := |[ true ]|
+        case 2: e_traces := |[ x_name.class.desiredAssertionStatus() ]|
+      end
+  with
+    rules(
+      CurrentLiftedFrame := None()
+    )
+    ; def-inits := <filter(outer-definition-DefInit)> defs
   
   java-imports =
     <get-config> "-la"
@@ -473,7 +615,8 @@ rules
     ]|
     with
       x' := <conc-strings> (x, "_override")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
+    ; bstm_init := <outer-definition-DefInit(|x')> def
+    ; rules(DefInit :+= bstm_init)
     with
       {| ProceedInvoke :
         e_s* := <translate-args> s*
@@ -496,7 +639,8 @@ rules
     ]|
     with
       x' := <conc-strings> (x, "_extension")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
+    ; bstm_init := <outer-definition-DefInit(|x')> def
+    ; rules(DefInit :+= bstm_init)
     with
       {| ProceedInvoke :
         e_s* := <translate-args> s*
@@ -527,6 +671,16 @@ rules
     AnnoDef(a*, SDefT(x, _, _, _)) -> ()
     with
       fatal-err(|["conflicting annotations for strategy ", x])
+
+  outer-definition-DefInit(|x'): SDefT(x, _, _, _) -> bstm |[ x.instance = new x'(); ]|
+
+  outer-definition-DefInit: AnnoDef([Override()], SDefT(x, _, _, _)) -> bstm |[ x.instance = new x'(); ]|
+    with
+      x' := <conc-strings> (x, "_override")
+
+  outer-definition-DefInit: AnnoDef([Extend()], SDefT(x, _, _, _)) -> bstm |[ x.instance = new x'(); ]|
+    with
+      x' := <conc-strings> (x, "_extension")
 
   translate-inner-definition :
     SDefT(x, s*, t*, s) ->
@@ -890,8 +1044,8 @@ strategies
     else
       // Lift definition and produce call
       with(
-        !SDefT(<newname => x> "jlifted", [], [], <id>)
-      ; rules(DefInit :+= <translate-inner-definition>)
+        !SDefT(<concat-strings;newname => x> [<ConstantContainerClass>, "$lifted"], [], [], <id>)
+      ; rules(LiftedDef :+= <translate-inner-definition>)
       )
     ; <lifted-call-to-instance> CallT(SVar(x), [], [])
     end
@@ -1101,11 +1255,18 @@ rules
 
   /** @type Term -> Exp */
   java-construct-term =
-       java-Cache 
+    where(not(<get-config> "--single-strategy"));
+     ( java-Cache 
     <+ java-ConstructAnnoVar
     <+ java-ConstructVar
     <+ !(<id>, <java-ConstructTerm>)
-       ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd)
+       ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd) )
+
+  java-construct-term =
+    where(<get-config> "--single-strategy");
+     ( java-ConstructAnnoVar
+    <+ java-ConstructVar
+    <+ java-ConstructTerm )
 
   java-CacheConstant-again :
     (t, e1 @ |[ x_constants.x_constant ]|) -> e1
@@ -1315,7 +1476,12 @@ strategies
     ; n' := <int-to-string> n
   
   java-ConstructorName-expr =
-    with(
+    where(<get-config> "--single-strategy")
+  ; JavaInitConstructorExpr
+  
+  java-ConstructorName-expr =
+    where(not(<get-config> "--single-strategy"))
+  ; with(
       IsLocalOpDecl
     <+
       // HACK: locally redefine external constructors to avoid ambiguous imports
@@ -1335,8 +1501,7 @@ strategies
   JavaInitConstructorQ :
     OpDecl(c, t) ->
     bstm |[
-      x = termFactory.makeConstructor("\"" + "~c'" + "\"", 
-                                      ~expr:<java-mk-int-const> ar);
+      x = ~expr:<JavaInitConstructorExpr> (<concat-strings> ["\\\"", c', "\\\""], ar);
     ]|
   where 
       <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
@@ -1346,12 +1511,16 @@ strategies
   JavaInitConstructor :
     OpDecl(c, t) ->
     bstm |[
-      x = termFactory.makeConstructor("~c", ~expr:<java-mk-int-const> ar);
+      x = ~expr:<JavaInitConstructorExpr> (c, ar);
     ]|
   where 
       ar := <Arity <+ is-int> t
     ; x  := <java-ConstructorName> (c, ar)
-  
+
+  JavaInitConstructorExpr:
+    (c, ar) ->
+    expr |[ termFactory.makeConstructor("~c", ~expr:<java-mk-int-const> ar) ]|
+
   /**
    * Locally redefines some standard list and Some/None constructors,
    * which appear in nearly every grammar.

@@ -99,6 +99,10 @@ strategies
     Option("--single-strategy",
     where(<set-config>("--single-strategy",())); !(),
     !"--single-strategy    Generate from a single strategy definition")
+  <+
+    Option("--boilerplate",
+    where(<set-config>("--boilerplate",())); !(),
+    !"--boilerplate        Generate boilerplate (main/interopregister)")
   <+ 
     Option("--prefer-str",
     where(<set-config> ("--prefer-str", "")); !(),

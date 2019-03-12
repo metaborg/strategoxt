@@ -43,7 +43,7 @@ strategies
   ; <exit> 1
   
   strj =
-    if FILE(get-extension => "ctree") + (where(<get-config> "--single-strategy"); FILE(get-extension => "aterm")) then
+    if FILE(get-extension => "ctree") then
       ?file
     ; xtc-ensure-file
     ; strc-get-infile
@@ -59,19 +59,96 @@ strategies
       ; strc-front-end
       )
     end
-  ; if <get-config> "--single-strategy" then
-      wrap-single-strategy
-    end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
+  ; if <get-config> "--single-strategy" + <get-config> "--boilerplate"
+      then
+        dr-scope-all-verbose(
+          m-transform-no-overlays(id
+
+        // desugar and check overlays
+  
+        ; m-transform-overlays(id
+            ; pre-desugar
+            ; check-overlay
+            ; try(DeclareVarToConst)
+          )
+  
+        ; m-transform-overlays(id
+            ; m-variables-to-constructors-in-def
+            ; pre-desugar
+  // commented: Test whether all variables used in builds are matched before. But variables can be nullary constructors or overlays. Therefore needs global information
+  //          ; not(def-use-def)
+            ; not(check-where-with)
+            ; raise-annotations
+            ; GenerateCheckRule
+            ; DeclareExpandOverlay
+            ; where(Overlay-to-Congdef; m-add-def)
+          )
+          
+          ; m-transform-local-defs(id
+              ; map(expand-overlays-in-def)
+              ; ![<joindefs>]
+              ; [RenameSDef]
+            )
+
+          ; m-transform-external-defs(id
+              ; if ?[_,_|_] then
+                  warn(|"multiple external definitions with same signature")
+                ; [id | ![]] // Cannot reuse dyn rule when already used in library
+                end
+              ; [ id
+                ; RenameSDef
+                ; desugar-DefaultVarDec
+                ; strename
+                ]
+            )
+          )
+        )
+
+        // We add a proxy definition with name *_0_0. This is used in other modules where this
+        // strategy is used in strategy-argument-position, because we don't globally analyse when
+        // we compile, but call *_0_0. *_0_0 will refer to the one version of the strategy that's
+        // defined or the *_0_0 already exists. In the third case (no *_0_0, multiple other
+        // definitions), the stratego editor should give an error during analysis, of the ambiguous
+        // reference. 
+        // Note that we can't call the definition something other than *_0_0 because for the
+        // standard library we don't generate the proxy classes.
+        // TODO: Change codegen: One class per strategy with method overloading for the different
+        //  argument versions. This will get rid of the whole problem. You still need proxy *_?_?
+        //  classes for backward compat though. Those can be empty subclasses. Only problem is it's
+        //  incompatible with older pre-compiled libs that use the extend/override mechanism.
+      ; let
+          sarg_call = \VarDec(name, _) -> CallT(SVar(name), [], [])\
+          targ_call = \VarDec(name, _) -> Var(name)\
+          buildSDefT(|sargs, targs) = {suffix_length,length_to_take,name',body:
+            \name -> SDefT(name', sargs, targs, body)
+          with suffix_length := <strlen> $[_[<length> sargs]_[<length> targs]]
+             ; length_to_take := <subti>(<string-length> name, suffix_length)
+             ; name' := $[[<string-as-chars(take(|length_to_take))> name]_0_0]
+             ; body := CallT(SVar(name), <map(sarg_call)> sargs, <map(targ_call)> targs)\}
+        in
+          oncetd(SDefT(string-ends-with(|"_0_0"), id, id, id))
+          <+ oncetd({
+            (  ?sdefts@[SDefT(name, sargs, targs, _)]
+            <+ ?sdefts@[AnnoDef(_, SDefT(name, sargs, targs, _))])
+          ; ![<buildSDefT(|sargs, targs)> name | sdefts]
+          })
+          <+ id // can't proxy, use of this strategy without args in sarg-position is ambiguous
+        end
+    end
   ; strc-optimize
-  ; strc-export-external-defs
-  ; strc-output-frontend
+  ; if not(<get-config> "--single-strategy")
+      then strc-export-external-defs
+         ; strc-output-frontend
+      else 
+        where(<get-config> "-i"
+             ; (string-ends-with(|"boilerplate.ctree")
+                < err(|"File should not be called with --single-strategy, call with --boilerplate instead"); fail
+                + id))
+    end
   ; s2j
   ; with(clean-output-dir)
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
-
-  wrap-single-strategy:
-    d@SDefT(_,_,_,_) -> Specification([Signature([Constructors([])]), Strategies([d])])
 
   clean-output-dir =
     if <get-config> "--clean" then
@@ -114,6 +191,7 @@ strategies
     //     ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
     //     )
     //   else
+        ; log(|Info(), ["Writing file: ", name])
         ;  file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
         ; box  := <pp-java5-to-abox> ast
         ; <box2text-stream(|80, file)> box

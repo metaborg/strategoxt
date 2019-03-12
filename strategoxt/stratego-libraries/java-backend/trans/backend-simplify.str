@@ -6,6 +6,7 @@ imports
   
   lib/dr-scoping
   split-large-strategies
+  canonicalize2
   
 signature
  constructors
@@ -22,7 +23,7 @@ strategies
       dollars-for-capitals-top
     ; split-large-strategies
     ; lift-definitions
-    ; canonicalize
+    ; canonicalize2
     ; simplify1
     ; mark-bound-unbound-vars
     ; escaping-variables
