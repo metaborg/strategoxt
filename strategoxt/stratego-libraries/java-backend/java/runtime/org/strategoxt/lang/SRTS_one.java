@@ -41,11 +41,11 @@ public class SRTS_one extends Strategy {
 		
 		switch (termType) {
 			case APPL:
-    			return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), results, (IStrategoAppl) current);
-    		case TUPLE:
-    			return context.getFactory().replaceTuple(results, (IStrategoTuple) current);
-    		default:
-    			throw new IllegalStateException();
+				return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), results, (IStrategoAppl) current);
+			case TUPLE:
+				return context.getFactory().replaceTuple(results, (IStrategoTuple) current);
+			default:
+				throw new IllegalStateException();
 		}
 	}
 	
@@ -63,13 +63,17 @@ public class SRTS_one extends Strategy {
 				} else if (tail2 == tail) {
 					return current;
 				} else {
-					return context.getFactory().replaceListCons(head, tail2, head, tail);
+					final IStrategoList result = (IStrategoList) context.getFactory().makeListCons(head, tail2, current.getAnnotations());
+					context.getFactory().replaceTerm(result, current);
+					return result;
 				}
 			} else if (head2 == head) {
 				return current;
 			} else {
 				IStrategoList tail = current.tail();
-				return context.getFactory().replaceListCons(head2, tail, head, tail);
+				final IStrategoList result = (IStrategoList) context.getFactory().makeListCons(head2, tail, current.getAnnotations());
+				context.getFactory().replaceTerm(result, current);
+				return result;
 			}
 		}
 	}

@@ -18,7 +18,8 @@ public class SRTS_all extends Strategy {
 		int termType = current.getTermType();
 		
 		if (termType == LIST) {
-			return map(context, (IStrategoList) current, s);
+			IStrategoList list = (IStrategoList) current;
+			return mapMaintainAnnos(context, list, s, noAnnosTail(list));
 		} else {
 			IStrategoTerm[] inputs = current.getAllSubterms();
 			IStrategoTerm[] results = null;
@@ -52,90 +53,86 @@ public class SRTS_all extends Strategy {
 		}
 	}
 
-	private static IStrategoTerm map(Context context, IStrategoList list, Strategy s) {
-		if (list.getSubtermCount() == 0)
-			return list;
-
-		IStrategoTerm head = list.head();
-		IStrategoTerm head2 = s.invoke(context, head);
-		IStrategoList result;
-		
-		if (head2 == null) {
-			return null;
-		} else if (head2 == head || head2.match(head)) {
-			// Head remained the same; must do anno-preserving map
-			IStrategoList tail = list.tail();
-			IStrategoList tail2 = mapMaintainAnnos(context, tail, s);
-			if (tail2 == null) {
-				return null;
-			} else if (tail2 == tail) { // (match() not necessary because of recursion)
-				return list;
-			} else {
-				result = context.getFactory().replaceListCons(head, tail2, head, tail);
-			}
-		} else {
-			result = mapIgnoreAnnos(context, head2, list, s);
-		}
-		
-		context.getFactory().replaceTerm(result, list); // set origin for topmost Cons
-		return result;
-	}
-
 	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoList list, Strategy s) {
 		IStrategoTerm[] inputs = list.getAllSubterms();
 		IStrategoTerm[] results = null;
 
-		for (int i = 0; i < inputs.length; i++) {
+		for(int i = 0; i < inputs.length; i++) {
 			IStrategoTerm arg = inputs[i];
 			IStrategoTerm arg2 = s.invoke(context, arg);
-			if (arg2 != arg) {
-				if (arg2 == null)
+			if(arg2 != arg) {
+				if(arg2 == null)
 					return null;
-				if (results == null)
+				if(results == null)
 					results = inputs.clone();
 				results[i] = arg2;
 			}
 		}
-		
+
 		return results == null ? list : context.getFactory().replaceList(results, list);
 	}
 
-	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, Strategy s) {
-		IStrategoTerm[] items = list.getAllSubterms();
-		assert (items[0] = null) == null && list.head() != null && list.getSubterm(0) != null : "List implementation must not expose internal array";
-		items[0] = head2;
-		for (int i = 1; i < items.length; i++) {
-			IStrategoTerm item = items[i];
-			IStrategoTerm item2 = s.invoke(context, item);
-			if (item != item2) {
-				if (item2 == null)
-					return null;
-				items[i] = item2;
-			}
-		}
-		return context.getFactory().replaceList(items, list);
-	}
-
-	private static IStrategoList mapMaintainAnnos(Context context, IStrategoList list, Strategy s) {
-		if (list.isEmpty())
+	private static IStrategoList mapMaintainAnnos(Context context, IStrategoList list, Strategy s,
+		IStrategoList noAnnosTail) {
+		if(list.isEmpty()) {
 			return list;
-		
+		}
+		if(noAnnosTail == list) {
+			return mapIgnoreAnnos(context, list, s);
+		}
 		IStrategoTerm head = list.head();
 		IStrategoTerm head2 = s.invoke(context, head);
-		if (head2 == null) {
+		IStrategoList result;
+
+		if(head2 == null) {
 			return null;
-		} else if (head2 != head) {
-			return mapIgnoreAnnos(context, head2, list, s);
-		} else {
-			IStrategoList tail = list.tail();
-			IStrategoList tail2 = mapIgnoreAnnos(context, tail, s);
-			if (tail2 == null) {
-				return null;
-			} else if (tail2 != tail) { // (match() not necessary because of recursion)
-				return context.getFactory().replaceListCons(head, tail2, head, tail);
-			} else {
-				return list;
-			}
 		}
+		if(head2 == head || head2.match(head)) {
+			head2 = head;
+		}
+
+		IStrategoList tail = list.tail();
+		IStrategoList tail2 = mapMaintainAnnos(context, tail, s, noAnnosTail);
+
+		if(tail2 == null) {
+			return null;
+		}
+		if(head2 == head && tail2 == tail) { // (tail2.match(tail) not necessary because of recursion)
+			return list;
+		}
+
+		result = context.getFactory().makeListCons(head2, tail2, list.getAnnotations());
+		context.getFactory().replaceTerm(result, list); // set origin
+
+		return result;
+	}
+
+	public static IStrategoList noAnnosTail(final IStrategoList list) {
+		IStrategoList result = list;
+		IStrategoList cursor = list;
+		// Check Cons parts of list. Set result to the latest Cons with annos.
+		for(int i = 0; i < list.size(); i++) {
+			if(hasAnnos(cursor)) {
+				result = cursor;
+			}
+			cursor = cursor.tail();
+		}
+		// Check Nil. If Nil has annos: return null, there is no tail without annos.
+		if(hasAnnos(cursor)) {
+			return null;
+		}
+		// If Nil didn't have annos, and the input list is Nil, return the input list.
+		if(list.isEmpty()) {
+			return list;
+		}
+		/* If Nil didn't have annos, and the input list is not Nil, result points to latest Cons 
+		 * with annos. Take its tail.
+		 */
+		return result.tail();
+	}
+	
+	private static boolean hasAnnos(final IStrategoList list) {
+		IStrategoList annos = list.getAnnotations();
+		return !(annos == null || annos.isEmpty());
 	}
 }
