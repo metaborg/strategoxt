@@ -1153,8 +1153,8 @@ strategies
    *  - inlining a string could be an easy solution to inline it
    *    (minding the 32767 length limit)
    */
-  translate-ImportTerm :
-    ImportTerm(file) -> |[ term = x_constants.x_constant; ]|
+  translate-ImportTerm: 
+    ImportTerm(file) -> <translate-ImportTerm'> (inputfile, outputfile, pkgpath)
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
@@ -1176,6 +1176,15 @@ strategies
       else
         log(|Info(), ["Referenced imported term file ", file, "; exists in ", outputdir])
       end
+
+  translate-ImportTerm':
+    (_, outputfile, pkgpath) -> |[ term = new ImportTerm(termFactory, x_constants.class, "~pkgpath", "~outputfile"); ]|
+    where <get-config> "--single-strategy"
+    with x_constants   := <ConstantContainerClass>
+
+  translate-ImportTerm' :
+    (inputfile, outputfile, pkgpath) -> |[ term = x_constants.x_constant; ]|
+    where not(<get-config> "--single-strategy")
     with
       inputname     := <file-name-to-identifier> inputfile
     ; inputname'    := <not(IsImported) <+ newname> inputname
