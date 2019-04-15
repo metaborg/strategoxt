@@ -70,16 +70,16 @@ strategies
             )
 
             ; m-transform-local-defs(id
-              ; map(expand-overlays-in-def)
-              ; ![<joindefs>]
-              ; [RenameSDef]
+              ; joindefs
+              ; expand-overlays-in-def
               // We need to rename strategy calls that were given arity _0_0, if the strategy was
               //  not overloaded in arity and had a different arity. If so the packing tool added
               //  the renaming information in the annotations as pairs. 
-              ; [bottomup(try(
+              ; bottomup(try(
                   CallT(id, map(try(
                     CallT(SVar(\n -> <lookup> (n, amb-strat-map)\), ?[], ?[])
-                  )), id)))]
+                  )), id)))
+              ; ![<id>]
             )
           )
         )
