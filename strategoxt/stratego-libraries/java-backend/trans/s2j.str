@@ -244,7 +244,6 @@ rules
          
      @SuppressWarnings("all")
      public class x_name {
-       ~*constant-defs
        ~*function-defs
        ~*lifted-defs
      }
@@ -265,7 +264,6 @@ rules
     )
   ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
-  ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   ; lifted-defs   := <bagof-LiftedDef>
   
   java-compile-spec-boilerplate :
@@ -332,6 +330,8 @@ rules
          }
        ]|
   
+       ~*constant-defs
+  
        ~*register
      }
   ]|
@@ -354,6 +354,7 @@ rules
     rules(
       CurrentLiftedFrame := None()
     )
+    ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
     ; def-inits := <filter(outer-definition-DefInit)> defs
   
   java-imports =
