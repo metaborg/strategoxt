@@ -1265,7 +1265,7 @@ rules
 
   /** @type Term -> Exp */
   java-construct-term =
-    where(not(<get-config> "--single-strategy"));
+    where(not(<get-config> "--single-strategy" + <get-config> "--boilerplate"));
      ( java-Cache 
     <+ java-ConstructAnnoVar
     <+ java-ConstructVar
@@ -1273,7 +1273,7 @@ rules
        ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd) )
 
   java-construct-term =
-    where(<get-config> "--single-strategy");
+    where(<get-config> "--single-strategy" + <get-config> "--boilerplate");
      ( java-ConstructAnnoVar
     <+ java-ConstructVar
     <+ java-ConstructTerm )
