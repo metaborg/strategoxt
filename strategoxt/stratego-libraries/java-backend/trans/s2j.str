@@ -1637,7 +1637,8 @@ strategies
   where 
       <not(Wld())> pt2
   with
-      x    := <newname> "annos"
+      x    := <newname> "annos" // FIXME: this seems to not always return a truly unused name
+    ; if Var(x) := pt2 then <fatal-err> $[newname returned non-fresh name [x].] end
     ; stm0 := <translate-Match> Match(pt1, e)
     ; stm1 := <translate-Match> Match(pt2, ExprName(Id(x)))
 
