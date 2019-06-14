@@ -2,6 +2,7 @@ module match-to-matrix
 imports Stratego 
 	stratego/strc/match/matrix 
 	stratego/strc/front/desugar 
+  stratego/strc/lib/stratlib
 	stratego/strc/opt/stratego-laws
 
 strategies
@@ -34,7 +35,7 @@ rules
 
   ExpandId :
     Id() -> Scope([x], Seq(Match(Var(x)), Build(Var(x))))
-    where x := <newname> "id_strat"
+    where x := <def-local-newname> "id_strat"
 
   MatchToMatrix : 
     Match(t) -> <term-to-matrix> t

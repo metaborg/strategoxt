@@ -6,6 +6,7 @@ imports stratego/strc/match/matrix
 	stratego/strc/front/desugar 
 	stratego/strc/match/match-to-matrix 
 	stratego/strc/front/DefaultStrat
+	stratego/strc/lib/stratlib
 
 strategies
 
@@ -43,7 +44,7 @@ rules
     Row(ts1, s) -> 
     ([SDefT(f, [], as, s)], Row([], ts1, CallT(SVar(f), [], ts2)))
     where <not(simple-strategy)> s
-        ; f := <newname> "row_let"
+        ; f := <def-local-newname> "row_let"
         //; <debug(!"RowLet: ")> Row(ts1, s)
         ; < tvars-matrix
           ; <isect>(<id>, ps)
@@ -137,7 +138,7 @@ rules
 	//; debug(!"d: ")
 	; <default-state> rows => def
 	//; debug(!"e: ")
-	; label := <newname> "mixture"
+	; label := <def-local-newname> "mixture"
 	//; debug(!"f: ")
 	; rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
 

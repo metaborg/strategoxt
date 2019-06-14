@@ -95,7 +95,7 @@ rules
     where <length> ts => n
         ; <not(CongDefined)> (f, n)
         ; rules(CongDefined : (f, n) -> ())
-        ; <unzip(<newname> "cong_arg"; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
+        ; <map-with-index(Fst; !$[cong_arg_[<id>]]; !(VarDec(<id>, DefaultStrat()), <id>));unzip> ts => (xdecs, xs)
 
   MkCongDefs : 
     Constructors(ods) -> <filter(MkCongDef)> ods
@@ -111,7 +111,7 @@ strategies
     SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
     where <length> ts => n
         ; <not(ModDefinition)> (f, n, 0)
-        ; <unzip(<newname> "cong_arg"; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
+        ; <map-with-index(Fst; !$[cong_arg_[<id>]]; !(VarDec(<id>, DefaultStrat()), <id>));unzip> ts => (xdecs, xs)
 
 strategies
 
@@ -121,12 +121,12 @@ strategies
 
   AnnoCongDef =
     where(
-        f1 := <newname> "anno_cong_str_arg1_"
-      ; f2 := <newname> "anno_cong_str_arg2_"
-      ; x1 := <newname> "anno_cong_term_m"
-      ; x2 := <newname> "anno_cong_anno_m"
-      ; y1 := <newname> "anno_cong_term_b"
-      ; y2 := <newname> "anno_cong_anno_b"
+        f1 := "anno_cong_str_arg1"
+      ; f2 := "anno_cong_str_arg2"
+      ; x1 := "anno_cong_term_m"
+      ; x2 := "anno_cong_anno_m"
+      ; y1 := "anno_cong_term_b"
+      ; y2 := "anno_cong_anno_b"
     )
     ; !|[ Anno_Cong__(f1 : ATerm -> ATerm, f2 : ATerm -> ATerm|) =
             {x1, x2, y1, y2 :
