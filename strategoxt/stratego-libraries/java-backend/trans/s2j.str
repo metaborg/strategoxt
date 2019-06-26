@@ -244,7 +244,6 @@ rules
          
      @SuppressWarnings("all")
      public class x_name {
-       ~*constant-defs
        ~*function-defs
        ~*lifted-defs
      }
@@ -265,7 +264,6 @@ rules
     )
   ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
-  ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   ; lifted-defs   := <bagof-LiftedDef>
   
   java-compile-spec-boilerplate :
@@ -332,6 +330,8 @@ rules
          }
        ]|
   
+       ~*constant-defs
+  
        ~*register
      }
   ]|
@@ -354,6 +354,7 @@ rules
     rules(
       CurrentLiftedFrame := None()
     )
+    ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
     ; def-inits := <filter(outer-definition-DefInit)> defs
   
   java-imports =
@@ -1153,8 +1154,8 @@ strategies
    *  - inlining a string could be an easy solution to inline it
    *    (minding the 32767 length limit)
    */
-  translate-ImportTerm :
-    ImportTerm(file) -> |[ term = x_constants.x_constant; ]|
+  translate-ImportTerm: 
+    ImportTerm(file) -> <translate-ImportTerm'> (inputfile, outputfile, pkgpath)
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
@@ -1176,6 +1177,15 @@ strategies
       else
         log(|Info(), ["Referenced imported term file ", file, "; exists in ", outputdir])
       end
+
+  translate-ImportTerm':
+    (_, outputfile, pkgpath) -> |[ term = new ImportTerm(termFactory, x_constants.class, "~pkgpath", "~outputfile"); ]|
+    where <get-config> "--single-strategy"
+    with x_constants   := <ConstantContainerClass>
+
+  translate-ImportTerm' :
+    (inputfile, outputfile, pkgpath) -> |[ term = x_constants.x_constant; ]|
+    where not(<get-config> "--single-strategy")
     with
       inputname     := <file-name-to-identifier> inputfile
     ; inputname'    := <not(IsImported) <+ newname> inputname
@@ -1255,7 +1265,7 @@ rules
 
   /** @type Term -> Exp */
   java-construct-term =
-    where(not(<get-config> "--single-strategy"));
+    where(not(<get-config> "--single-strategy" + <get-config> "--boilerplate"));
      ( java-Cache 
     <+ java-ConstructAnnoVar
     <+ java-ConstructVar
@@ -1263,7 +1273,7 @@ rules
        ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd) )
 
   java-construct-term =
-    where(<get-config> "--single-strategy");
+    where(<get-config> "--single-strategy" + <get-config> "--boilerplate");
      ( java-ConstructAnnoVar
     <+ java-ConstructVar
     <+ java-ConstructTerm )
@@ -1627,7 +1637,8 @@ strategies
   where 
       <not(Wld())> pt2
   with
-      x    := <newname> "annos"
+      x    := <newname> "annos" // FIXME: this seems to not always return a truly unused name
+    ; if Var(x) := pt2 then <fatal-err> $[newname returned non-fresh name [x].] end
     ; stm0 := <translate-Match> Match(pt1, e)
     ; stm1 := <translate-Match> Match(pt2, ExprName(Id(x)))
 
