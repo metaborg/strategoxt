@@ -28,6 +28,14 @@ strategies
 
 strategies // strategy definitions
 
+  // m-add-def uses :+. Later bagof- gives a list in reverse insertion order,
+  // therefore we always reverse the list coming out of bagof before doing
+  // anything with it. Usually the list is used to then remove the key and
+  // add the list again later after a transformation on each definition.
+  // By always using this strategy, the order of insertion is always the same,
+  // and the list out of bagof- is always the reverse. 
+  bagof-ModDefinition-insertion-order = bagof-ModDefinition; reverse
+
   /**
    * Add mapping from a definition signature to the full definition,
    * and maintain a collection of all definitions, all external, and
@@ -100,15 +108,15 @@ strategies // strategy definitions
 
   m-get-all-definitions =
     dr-all-keys(|"ModDefinition")
-    ; filterconcat(bagof-ModDefinition)
+    ; filterconcat(bagof-ModDefinition-insertion-order)
 
   m-get-all-local-definitions =
     dr-all-keys(|"ModDefinition")    
-    ; filterconcat(IsLocal; bagof-ModDefinition)
+    ; filterconcat(IsLocal; bagof-ModDefinition-insertion-order)
 
   m-get-all-external-definitionss =
     dr-all-keys(|"ModDefinition")
-    ; filterconcat(IsExternal; bagof-ModDefinition)
+    ; filterconcat(IsExternal; bagof-ModDefinition-insertion-order)
 
   filterconcat(s) =
     mapconcat(s <+ ![])
@@ -253,7 +261,7 @@ strategies
 
   m-transform-def(s) =
     where(id
-    ; bagof-ModDefinition
+    ; bagof-ModDefinition-insertion-order
     ; [m-rm-def|id]
     ; s
     ; map(m-add-def)

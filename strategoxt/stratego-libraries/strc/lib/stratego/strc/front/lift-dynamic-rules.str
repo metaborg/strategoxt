@@ -82,7 +82,7 @@ strategies
   m-lift-dynamic-rules-from-spec = 
     let expand-def = {defs :
           \ [sig@(_,_,_) | xs] -> <conc>(defs, xs)
-            where defs := <bagof-ModDefinition> sig
+            where defs := <bagof-ModDefinition-insertion-order> sig
 		//; debug(!"expansion: ")
 	        ; <m-rm-def> sig \ }
 
