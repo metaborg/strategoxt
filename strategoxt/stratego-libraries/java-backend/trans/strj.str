@@ -50,10 +50,11 @@ strategies
     then dr-scope-all-verbose(
            Specification(
              remove-all(Overlays(map(DeclareExpandOverlay <+ debug(!"overlay map fail");fail)))
-           ; map(try(Strategies(map(SDefT(id, id, id, expand-overlays-in-def) <+ debug(!"sdeft map fail");fail); ![<joindefs>])))
+           ; map(try(Strategies(map(SDefT(id, id, id, expand-overlays-in-def) <+ debug(!"sdeft map fail");fail))))
            )
          )
     end
+  ; Specification(map(try(Strategies(![<joindefs>]))))
     // We need to rename strategy calls that were given arity _0_0, if the strategy was
     //  not overloaded in arity and had a different arity. If so the packing tool added
     //  the renaming information in the annotations as pairs.
