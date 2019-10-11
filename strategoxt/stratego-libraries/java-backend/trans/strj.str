@@ -49,8 +49,8 @@ strategies
   ; if Specification(mapconcat(?Overlays(<id>) <+ ![]);not(?[]))
     then dr-scope-all-verbose(
            Specification(
-             filter(Overlays(map(DeclareExpandOverlay <+ debug(!"overlay map fail");fail)) < fail + id)
-           ; map(try(Strategies(map(SDefT(id, id, id, expand-overlays-in-def) <+ debug(!"sdeft map fail");fail))))
+             remove-all(Overlays(map(DeclareExpandOverlay <+ debug(!"overlay map fail");fail)))
+           ; map(try(Strategies(map(SDefT(id, id, id, expand-overlays-in-def) <+ debug(!"sdeft map fail");fail); ![<joindefs>])))
            )
          )
     end
