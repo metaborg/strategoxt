@@ -202,12 +202,12 @@ strategies
   DesugarDynRuleDef :
     |[ rules( f(a1*|a2*) : t  ) ]| -> 
     |[ rules( f(a1*|a2*) : t' -> t' where id ) ]|
-    where <alltd(\ Wld() -> Var(<def-local-newname> "wld") \ )> t => t'
+    where <alltd(\ Wld() -> Var(<tnewvar> "wld") \ )> t => t'
 
   DesugarDynRuleDef :
     |[ rules( f(a1*|a2*).t1 : t2 ) ]| -> 
     |[ rules( f(a1*|a2*).t1 : t2' -> t2' where id ) ]|
-    where <alltd(\ Wld() -> Var(<def-local-newname> "wld") \ )> t2 => t2'
+    where <alltd(\ Wld() -> Var(<tnewvar> "wld") \ )> t2 => t2'
 
   // Dependent dynamic rules
 
@@ -237,13 +237,13 @@ strategies
                  })
          )
     ]|
-    where x := <def-local-newname> "dyn_rule_def"
-        ; x1 := <def-local-newname> "dyn_rule_def"
-        ; x2 := <def-local-newname> "dyn_rule_def"
-        ; y0 := <def-local-newname> "dyn_rule_def"
-        ; y1 := <def-local-newname> "dyn_rule_def"
-        ; y2 := <def-local-newname> "dyn_rule_def"
-        ; z := <def-local-newname> "dyn_rule_def"
+    where x := <tnewvar> "dyn_rule_def"
+        ; x1 := <tnewvar> "dyn_rule_def"
+        ; x2 := <tnewvar> "dyn_rule_def"
+        ; y0 := <tnewvar> "dyn_rule_def"
+        ; y1 := <tnewvar> "dyn_rule_def"
+        ; y2 := <tnewvar> "dyn_rule_def"
+        ; z := <tnewvar> "dyn_rule_def"
         ; <dummify> t2 => t2'
         ; create-new-strategy(|f)
         ; create-undefine-strategy(|f)
@@ -363,7 +363,7 @@ rules
 
         ; <create-aux-rule(|stdrule)> drd
 
-        ; x := <def-local-newname> "dyn_rule_where"
+        ; x := <tnewvar> "dyn_rule_where"
         ; <aux-call(|x)> drd => aux-call
         ; <lookup-key(|x)> t1 => t3
         ; <dr-rename-vars> t3 => stdkey
@@ -477,12 +477,12 @@ strategies
     ; if is-new(|f, g, stdrule) then
         <get-stamp> stdrule => stamp
         ; <closure> drd => t*
-        ; x := <def-local-newname> "dyn_rule_aux" // holding entire lhs
+        ; x := <tnewvar> "dyn_rule_aux" // holding entire lhs
         ; <tvars; map(!DefaultVarDec(<id>))> t1 => a3* // variables in lhs
         ; if AssumeSharedTerms => 1 then
             a3'* := a3*
           else
-            a3'* := <map(DefaultVarDec({ a: ?a; if <one(Var(?a))> t* then <def-local-newname> "dyn_rule_aux_v" end }))> a3* // ignore lhs vars
+            a3'* := <map(DefaultVarDec({ a: ?a; if <one(Var(?a))> t* then <tnewvar> "dyn_rule_aux_v" end }))> a3* // ignore lhs vars
           end
         ; add-def(||[ 
             g(a1*|a2*, a3'*, x) : (~str:stamp, t*) -> t2 where <s> x 
@@ -531,7 +531,7 @@ strategies
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
     ; _bagof(|f) => g1
     ; _reversebagof(|f) => g2
-    ; <def-local-newname> "tail" => x2
+    ; <snewvar> "tail" => x2
     ; if is-new(|f, g1, stdkey); try(is-new(|f, g1, ())) then
         add-def(||[ 
            g1(a1*|a2*) : 
@@ -617,7 +617,7 @@ strategies
     ; <concat-strings> [chain, "-", f] => g
     ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
         where(
-          y := <def-local-newname> "dyn_chain_rule"
+          y := <tnewvar> "dyn_chain_rule"
           ; <aux-call(|y)> drd => s1
           ; <tvars> t1 => x*
         )
@@ -656,10 +656,10 @@ strategies
     ; <concat-strings> [fold, "-", f] => g
     ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
         where(
-          y := <def-local-newname> "dyn_fold_rule"
+          y := <tnewvar> "dyn_fold_rule"
           ; <aux-call(|y)> drd => s1
           ; <tvars> t1 => x*
-          ; y' := <def-local-newname> "fold"
+          ; y' := <snewvar> "fold"
         )
         ; add-def(||[ 
             g(y' : (T -> T) * T -> T, a1*|a2*) =
@@ -682,7 +682,7 @@ strategies
           g1(a1*|a2*) =
             dr-break(|~str:f)
         ]|)
-        ; x1 := <def-local-newname> "dyn_break_rule"
+        ; x1 := <tnewvar> "dyn_break_rule"
         ; add-def(||[
             g2(a1*|a2*, x1) =
               dr-break(|~str:f, x1)
@@ -707,7 +707,7 @@ strategies
           g1(a1*|a2*) =
             dr-continue(|~str:f)
         ]|)
-        ; x1 := <def-local-newname> "dyn_cont_rule"
+        ; x1 := <tnewvar> "dyn_cont_rule"
         ; add-def(||[
             g2(a1*|a2*, x1) =
               dr-continue(|~str:f, x1)
@@ -718,8 +718,8 @@ strategies
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
     ; _throw(|f) => g
     ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
-        x1 := <def-local-newname> "dyn_throw_rule1_"
-        ; x2 := <def-local-newname> "dyn_throw_rule2_"
+        x1 := <snewvar> "dyn_throw_rule1_"
+        ; x2 := <tnewvar> "dyn_throw_rule2_"
         ; add-def(||[
             g(a1*, x1 | a2*, x2) =
               dr-throw(x1 | x2, ~str:f)
@@ -739,7 +739,7 @@ strategies
   create-innermost-scope-strategy(|f) =
     _innermost-scope(|f) => g
     ; if is-new(|f, g, ()) then
-        x := <def-local-newname> "dyn_inn_scope"
+        x := <snewvar> "dyn_inn_scope"
         ; add-def(||[ g(x|) = dr-get-first-scope-label(x| ~str:f) ]|)
       end
 

@@ -44,7 +44,7 @@ rules
     Row(ts1, s) -> 
     ([SDefT(f, [], as, s)], Row([], ts1, CallT(SVar(f), [], ts2)))
     where <not(simple-strategy)> s
-        ; f := <def-local-newname> "row_let"
+        ; f := <snewvar> "row_let"
         //; <debug(!"RowLet: ")> Row(ts1, s)
         ; < tvars-matrix
           ; <isect>(<id>, ps)
@@ -138,7 +138,7 @@ rules
 	//; debug(!"d: ")
 	; <default-state> rows => def
 	//; debug(!"e: ")
-	; label := <def-local-newname> "mixture"
+	; label := <tnewvar> "mixture"
 	//; debug(!"f: ")
 	; rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
 

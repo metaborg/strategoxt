@@ -35,7 +35,7 @@ rules
 
   ExpandId :
     Id() -> Scope([x], Seq(Match(Var(x)), Build(Var(x))))
-    where x := <def-local-newname> "id_strat"
+    where x := <tnewvar> "id_strat"
 
   MatchToMatrix : 
     Match(t) -> <term-to-matrix> t

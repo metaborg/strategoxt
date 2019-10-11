@@ -39,7 +39,7 @@ rules
 
   CreateDef2 :
     s -> (CallT(SVar(f),[],[]), [SDefT(f,[],[],s)])
-    where f := <def-local-newname> "canon_arg"
+    where f := <snewvar> "canon_arg"
 
   Canon :
     CallT(f, args1, args2) -> CallT(f, args1', args2)

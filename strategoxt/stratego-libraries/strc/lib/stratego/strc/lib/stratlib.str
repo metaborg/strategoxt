@@ -167,15 +167,15 @@ strategies
 strategies
 
   tnewvar =
-    lower-case
-    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
+    string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
     ; def-local-newname
+    ; lower-case
     <+ new
 
   snewvar =
-    lower-case
-    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
+    string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
     ; def-local-newname
+    ; lower-case
     <+ new
 
   declared-vars =

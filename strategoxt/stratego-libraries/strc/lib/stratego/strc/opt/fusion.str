@@ -58,7 +58,7 @@ strategies
     ?|[ innermost_1_0(s1|) ]| 
     ; log(|Notice(),"Application of innermost found")
 
-    ; where(x := <def-local-newname> "inn_fusion")
+    ; where(x := <snewvar> "inn_fusion")
     ; where(<seq-over-choice> Strategy|[ bottomup_1_0(x(|)|) ]|)
     ; where(<bottomup-to-var> Strategy|[ bottomup_1_0(x(|)|) ]|)
 
@@ -181,8 +181,8 @@ strategies // outermost fusion
     |[ outermost_1_0(s1|) ]| -> 
     |[ let f = repeat(rec x(s2 <+ s3)); all(f) in f end ]|
     where log(|Notice(),"Application of outermost found")
-	; x := <def-local-newname> "out_fusion_rec"
-	; f := <def-local-newname> "out_fusion_str"
+	; x := <snewvar> "out_fusion_rec"
+	; f := <snewvar> "out_fusion_str"
 	; <inline-rules> s1 => s2
         ; derive-hnf-traversal(|x) => s3
 
