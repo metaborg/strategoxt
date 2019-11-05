@@ -55,7 +55,7 @@ strategies
   local-newname: prefix -> $[[prefix][number]]
   where number := <LocalNew <+ !0> prefix
       ; number' := <int-add(|1)> number
-      ; rules(LocalNew: s -> number')
+      ; rules(LocalNew: prefix -> number')
 
   /**
    * Generates a locally unique new string of the form 'c_d',
