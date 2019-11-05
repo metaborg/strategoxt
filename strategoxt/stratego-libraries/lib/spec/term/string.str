@@ -22,12 +22,74 @@ imports
 strategies
 
   /**
+   * Scopes local-newname and local-new, which work by dynamic rule.
+   */
+  scope-local-new(s) = {| LocalNew, LocalNewAlpha : rules(LocalNewAlpha := 0);  s |}
+
+  /**
+   * Generates a locally unique new string with user-defined prefix
+   * the form 'sd', where s is a string and d is a positive integer.
+   * The produced string is *only* unique within the scope of
+   * scope-local-new, and only based on previous calls to
+   * local-newname/local-new. If you constructed a similar name by
+   * hand it will not be avoided.
+   *
+   * The prefix comes in front of an increasing number, which is
+   * separately maintained and started at 0 for each prefix.
+   *
+   * Examples (results are shown in comment)
+   *   scope-local-new(
+   *     <local-newname; debug> "a"        // produces "a0"
+   *   ; <local-newname; debug> "a"        // produces "a1"
+   *   ; <local-newname; debug> "a"        // produces "a2"
+   *   ; <local-newname; debug> "b"        // produces "b0"
+   *   ; <local-newname; debug> "b"        // produces "b1"
+   *   ; <local-newname; debug> "b_2"      // produces "b_20"
+   *   ; <local-newname; debug> "b_2"      // produces "b_21"
+   *   ; <local-newname; debug> "b_a"      // produces "b_a0"
+   *   ; <local-newname; debug> "b_a"      // produces "b_a1"
+   *   ; <local-newname; debug> "a_"       // produces "a_0"
+   *   ; <local-newname; debug> "a_1"      // produces "a_10"
+   *   )
+   */
+  local-newname: prefix -> $[[prefix][number]]
+  where number := <LocalNew <+ !0> prefix
+      ; number' := <int-add(|1)> number
+      ; rules(LocalNew: s -> number')
+
+  /**
+   * Generates a locally unique new string of the form 'c_d',
+   * where c is one char and d is a positive integer.
+   * The produced string is *only* unique within the scope of
+   * scope-local-new, and only based on previous calls to
+   * local-newname/local-new. If you constructed a similar name by
+   * hand it will not be avoided.
+   */
+  local-new =
+    ![<int-add(|<LocalNewAlpha>)> 'a', '_']
+  ; where(LocalNewAlpha; int-add(|1); if int-gt(|25) then !0 end; ?alpha; rules(LocalNewAlpha := alpha))
+  ; implode-string
+  ; local-newname
+
+  /**
+   * @deprecated: Please use locally scoped new/newname instead.
+   * This primitive is bad for deterministic and separate compilation
+   * and is very difficult and costly to support. Currently may break
+   * its uniqueness guarantee due to garbage collection on the JVM at
+   * and inopportune time.
+   *
    * Generates a unique new string of the form 'c_d',
    * where c is one char and d is a positive integer.
    */
   new = prim("SSL_new")
 
   /**
+   * @deprecated: Please use locally scoped new/newname instead.
+   * This primitive is bad for deterministic and separate compilation
+   * and is very difficult and costly to support. Currently may break
+   * its uniqueness guarantee due to garbage collection on the JVM at
+   * and inopportune time.
+   *
    * Generates a unique new string with user-defined prefix
    * the form 'sd', where s is a string and d is a positive integer.
    * The produced string is *always* unique across a program run.
