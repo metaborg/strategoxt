@@ -85,9 +85,13 @@ strategies
    * overlapping names within the same scope-local-new call.
    */
   local-new =
+    // use LocalNewAlpha to shift from ASCII character a to some letter in the alphabet
     ![<int-add(|<LocalNewAlpha>)> 'a', '_']
+    // Update LocalNewAlpha with increment modulo 26
   ; where(LocalNewAlpha; int-add(|1); if int-gt(|25) then !0 end; ?alpha; rules(LocalNewAlpha := alpha))
+    // implode the letter + underscore list of characters to a string
   ; implode-string
+    // apply local-newname to share information and not produce overlapping names between the two
   ; local-newname
 
   /**
