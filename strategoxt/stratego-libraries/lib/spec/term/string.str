@@ -64,6 +64,25 @@ strategies
    * scope-local-new, and only based on previous calls to
    * local-newname/local-new. If you constructed a similar name by
    * hand it will not be avoided.
+   *
+   * Examples (results are shown in comment)
+   *   scope-local-new(
+   *     <local-new; debug> "a"        // produces "a_0"
+   *   ; <local-new; debug> "a"        // produces "b_0"
+   *   ; <local-new; debug> "a"        // produces "c_0"
+   *   ; <local-new; debug> "b"        // produces "d_0"
+   *   ; <local-new; debug> "b"        // produces "e_0"
+   *   ; <local-new; debug> "b_2"      // produces "f_0"
+   *   ; <local-new; debug> "b_2"      // produces "g_0"
+   *   ; <local-new; debug> "b_a"      // produces "h_0"
+   *   ; <local-new; debug> "b_a"      // produces "i_0"
+   *   ; <local-new; debug> "a_"       // produces "j_0"
+   *   ; <local-new; debug> "a_1"      // produces "k_0"
+   *   ; <local-newname; debug> "f_"   // produces "f_1"
+   *   )
+   * Note how the input to local-new is ignored. It does share
+   * information with local-newname so the two don't generate
+   * overlapping names within the same scope-local-new call.
    */
   local-new =
     ![<int-add(|<LocalNewAlpha>)> 'a', '_']
