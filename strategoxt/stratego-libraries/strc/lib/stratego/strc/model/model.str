@@ -334,5 +334,10 @@ strategies
   overlay-to-model =
     m-add-overlay
 
+strategies
 
+  constr-sig-to-string = (is-string, is-int); !$[[<Fst>]_[<Snd>]]
+  constr-sig-to-string: (Q(c), len) -> $[[<escape> c]_[len]]
+  constr-sig-to-string: (Inj(), 0) -> <fail>
 
+  strategy-sig-to-string = !$[[<Fst;cify>]_[<Snd>]_[<Third>]]

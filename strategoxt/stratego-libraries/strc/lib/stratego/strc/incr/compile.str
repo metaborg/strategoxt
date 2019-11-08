@@ -1,0 +1,193 @@
+module compile
+
+imports
+  Stratego-Sugar
+  stratego/strc/model/model
+  stratego/strc/front/rename-defs
+
+  stratego/strc/incr/split-large-term-builds
+
+strategies
+
+  // The following are for compiling a single strategy/constructor/overlay
+  compile-top-level-def: ast ->
+      <MetaExplode;strip-annos;frontend-sep-comp> spec
+    with id
+      ; <set-config> ("--library", ())
+      ; spec := Specification(ast)
+
+  split-module: Module(m, defs) ->
+    (m, <concat> imps, strats', cons', olays')
+  with id
+    ; (imps, defs2) := <partition(?Imports(<id>))> defs
+    ; (cons, defs3) := <partition(?Signature(<id>); retain-all(?Constructors(<id>)); concat)> defs2
+    ; cons' := <concat;filter(split(m-constr-signature;constr-sig-to-string, !Signature([Constructors([<id>])])))> cons
+    ; (olays, defs4) := <partition(?Overlays(<id>))> defs3
+    ; olays' := <concat;map(split(m-overlay-signature;constr-sig-to-string, !Overlays([<id>])))> olays
+    ; strats := <mapconcat(?Rules(<id>) + ?Strategies(<id>))> defs4
+    ; strats' := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats
+
+strategies
+
+  frontend-sep-comp =
+    m-transform-split-definitions(id
+
+      // add some definitions and constructors
+
+      ; if-not-lib(m-add-main)
+      ; m-add-anno-cong-def
+      ; where(dr-constructors; map(m-add-constructor))
+
+      // desugar and check constructors
+
+      ; m-transform-constructors(id
+// commented: Don't add to VarToConst which is used in pre-desugar to turn variables into nullary constructors if the variable matches that nullary constructor name. 
+//          ; pre-desugar; try(DeclareVarToConst)
+          ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
+// commented: Used in check-constructors, which requires global info on constructors [DONE IN JAVA]
+//          ; (GenerateCheckRule <+ dbg(|"GenerateCheckRule fails: "))
+          // m-MkCongDef fails when the signature already exists (from a strategy), so we need to pass this info to Java to check if we should include this congruence
+          ; try(where(
+              m-MkCongDef
+            ; where({
+                sig@(name, n, m) := <m-def-signature>
+                // pre-renaming as RenameSDef2 will do, so it matches ModDefinition key when SepCompCong is queried at the end
+              ; renamed-sig := (<strategy-sig-to-string> sig, n, m)
+              ; rules(SepCompCong : renamed-sig -> name)
+            })
+            ; m-add-def
+          ))
+        )
+
+// commented: [MOVED TO BACKEND] where we have access to all overlays
+//      // desugar and check overlays
+//
+      ; m-transform-overlays(scope-def-local-newname(id
+          ; pre-desugar
+          ; check-overlay
+//          ; try(DeclareVarToConst)
+        /*)
+
+      ; m-transform-overlays(id*/
+//// commented: Nullary constructors feature, off in separate compilation
+////          ; m-variables-to-constructors-in-def; pre-desugar
+          ; not(def-use-def)
+          ; not(check-where-with)
+          ; raise-annotations
+//          ; GenerateCheckRule
+// commented: [MOVED TO BACKEND]
+//          ; DeclareExpandOverlay
+          // We don't register this as a SepCompCong, because it is unconditionally added whereas
+          //  m-MkCongDef fails when a definition of the same name already exists. 
+          ; where(Overlay-to-Congdef; m-add-def)
+        | <m-overlay-signature;constr-sig-to-string>))
+
+// commented: checks if used constructor with such an arity exists. Therefore needs global information [DONE IN JAVA]
+//      ; m-transform-overlays(
+//          not(check-constructors)
+//        )
+
+      // transform and check local definitions
+
+      ; m-transform-local-defs(map(scope-def-local-newname(id
+          ; m-repair-types
+          ; pre-desugar        
+          ; raise-annotations
+        | <m-def-signature;strategy-sig-to-string>)))
+
+      ; m-lift-dynamic-rules-from-spec
+
+// commented: checks if used strategy with such an arity exists. Therefore needs global information [DONE IN JAVA]
+//      ; check-calls
+
+      ; m-transform-local-defs(scope-def-local-newname(
+          map(id
+            ; stratego-desugar
+            ; raise-annotations
+            ; not(def-use-def)
+// commented: [DONE IN JAVA]
+//            ; not(check-constructors)
+// commented: [MOVED TO BACKEND]
+//            ; expand-overlays-in-def
+            ; rules-to-sdefs-def
+            ; desugar-list-matching
+            ; desugar-DefaultVarDec
+            ; strename
+            ; desugar-def
+            ; check-patterns
+            ; split-large-term-builds
+          )
+        ; save-def-count
+        /*)
+
+      ; m-transform-local-defs(id*/
+          ; joindefs
+          ; rename-sdef2
+          ; ![<id>]
+        | <?[<m-def-signature;strategy-sig-to-string>|_]>))
+
+// commented: [DONE IN JAVA]
+//      ; m-transform-external-defs(id
+//          ; if ?[_,_|_] then
+//              warn(|"multiple external definitions with same signature")
+//            ; [id | ![]] // Cannot reuse dyn rule when already used in library
+//            end
+//          ; [ id
+//             ; rename-sdef2
+//             ; desugar-DefaultVarDec
+//             ; strename
+//            ]
+//        )
+
+      ; m-transform-local-defs([scope-def-local-newname(id
+          ; rename-calls2
+          ; simplify
+          ; define-congruences-def
+        | <m-def-signature;Fst>)])
+
+// commented: Can't tell if unused without global information
+//      ; if-lib(remove-unused-external-defs, remove-unused-defs)
+    )
+// commented: based on command line flags that we don't use/set, does some kind of checks and prints intermediate results to files, so not really useful
+//    ; tfc1(|"Stratego-Core", "fe-cong")
+
+  frontend-sep-comp-lib =
+    m-transform-split-definitions(id)
+
+  m-transform-split-definitions(s) =
+    {| ModDefinition, ModConstructor, ModOverlay, IsExternal, IsLocal
+     : to-model
+     ; s
+     ; m-split-definitions
+     |}
+
+  m-split-definitions = id
+    ; where(id
+      ; m-get-all-local-definitions
+      ; filter(!(<m-def-signature;not(SepCompCong);Fst>, <id>))
+      ; ?localDef*
+    )
+    ; where(id
+      ; m-get-all-constructors
+      ; filter(!(<m-constr-signature;constr-sig-to-string>, <id>))
+      ; ?constr*
+    )
+    ; where(id
+      ; m-get-all-overlays
+      ; map(!(<m-overlay-signature;constr-sig-to-string>, <id>))
+      ; ?overlay*
+    )
+    ; where(id
+      ; dr-all-keys(|"SepCompCong")
+      ; map(!(<!(<SepCompCong>, <Snd>);constr-sig-to-string>, <bagof-ModDefinition;?[<id>]>))
+      ; ?cong*
+    )
+    ; where(id
+      ; dr-all-keys(|"DefCount")
+      ; map(Dupl;(id, DefCount))
+      ; ?defCount*
+    )
+    // TODO: export LeftHandSide dynamic rule for LHS check of dynamic rules
+    ; !(localDef*, constr*, overlay*, cong*, defCount*)
+
+  save-def-count = where(Dupl;(length, Hd;m-def-signature;strategy-sig-to-string);\(count, name) -> <rules(DefCount: name -> count)>\)
