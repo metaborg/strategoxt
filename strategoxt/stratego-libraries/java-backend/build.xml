@@ -208,6 +208,8 @@
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/" />
 		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/strc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/Main.java" package="org.strategoxt.lang.compat.override.strc_compat">
 			<strjlibargs>
+                                <arg value="-D" />
+                                <arg value="STRJ_VERSION_TERM=&quot;${version}&quot;" />
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 				<arg value="-la" />
