@@ -262,7 +262,7 @@ strategies
   m-transform-def(s) =
     where(id
     ; bagof-ModDefinition-insertion-order
-    ; [m-rm-def|id]
+    ; where(Hd;m-rm-def)
     ; s
     ; map(m-add-def)
     )
@@ -336,8 +336,16 @@ strategies
 
 strategies
 
-  constr-sig-to-string = (is-string, is-int); !$[[<Fst>]_[<Snd>]]
-  constr-sig-to-string: (Q(c), len) -> $[[<escape> c]_[len]]
+  constr-sig-to-string = (is-string, is-int); split(Fst, !$[[<Fst>]_[<Snd>]]); origin-set-relation
+  constr-sig-to-string: (Q(c), len) -> <origin-set-relation> (c, $[[<escape> c]_[len]])
   constr-sig-to-string: (Inj(), 0) -> <fail>
 
-  strategy-sig-to-string = !$[[<Fst;cify>]_[<Snd>]_[<Third>]]
+  strategy-sig-to-string = split(Fst, !$[[<Fst;cify>]_[<Snd>]_[<Third>]]); origin-set-relation
+
+  internal origin-track-forced(s) =
+    ![<id>]; all(s); ?[<id>]
+
+  internal origin-set-relation:
+    (origin-node, new-node) -> origin-tracked-node
+    where
+      origin-tracked-node := <!Some(<id>); all(!new-node); ?Some(<id>)> origin-node
