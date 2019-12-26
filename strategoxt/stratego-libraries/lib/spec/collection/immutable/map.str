@@ -1,0 +1,483 @@
+/**
+ * This module contains strategies for operating on immutable maps.
+ *
+ * Note that these maps do not support generic traversal. These are "blob" terms without children
+ * and need to be operated on through the strategies in this module. 
+ *
+ * @author Jeff Smits <mail@jeffsmits.net>
+ *
+ */
+module collection/immutable/set
+imports
+  collection/list/-
+
+signature
+  constructors
+    /**
+     * Represents a reference to a Set
+     */
+    ImmutableMap : ImplDep -> ImmutableMap
+
+/**
+ * Immutable set construction and deconstruction
+ */
+strategies
+
+/**
+ * Create an empty immutable map.
+ *
+ * @type _ -> ImmutableMap
+ */
+immap-new = prim("SSL_immutable_map"); !ImmutableMap(<id>)
+
+/**
+ * Create an immutable map from a list of pairs.
+ * If multiple keys map to the same value, the first one if kept, to mimic the behaviour of <lookup>
+ * on lists of pairs.
+ *
+ * @type List -> ImmutableMap
+ */
+immap-from-list = prim("SSL_immutable_map_from_list"); !ImmutableMap(<id>)
+
+/**
+ * Turn the immutable map into a list of pairs.
+ *
+ * @type ImmutableMap -> List
+ */
+immap-to-list = ?ImmutableMap(<id>); prim("SSL_immutable_map_elements")
+
+/**
+ * Elemental operations
+ */
+strategies
+
+/**
+ * Succeeds if the key is in the immutable map.
+ *
+ * @param k - the key
+ * @type ImmutableMap -?> ImmutableMap
+ */
+immap-contains-key(|k) = where(immap-get(|k))
+
+/**
+ * Succeeds if the key is in the immutable map.
+ * With a custom equality operator.
+ *
+ * @param eq: Term * Term -?>
+ * @param k - the key
+ * @type ImmutableMap -?> ImmutableMap
+ */
+immap-contains-key(eq|k) = where(immap-get(eq|k))
+
+/**
+ * Returns the associated value of the key in the immutable map,
+ * or fails if the key is not in the immutable map. 
+ *
+ * @param e - the key used to look up the value
+ * @type ImmutableMap -?> Term
+ */
+immap-get(|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get", k)
+
+/**
+ * Returns the associated value of the key in the immutable map,
+ * or fails if the key is not in the immutable map. 
+ * With a custom equality operator.
+ *
+ * @param eq: Term * Term -?>
+ * @param e - the key used to look up the value
+ * @type ImmutableMap -?> Term
+ */
+immap-get(eq|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get_eq", eq | k)
+
+/**
+ * Inserts an element in the immutable map. Returns a new set with the added element.
+ *
+ * @param e - the element that is inserted
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-put(|k, v) = where(?ImmutableMap(<id>); prim("SSL_immutable_map_put", k, v))
+
+/**
+ * Inserts an element in the immutable map. Returns a new set with the added element.
+ * With a custom equality operator.
+ *
+ * @param eq: Term * Term -?>
+ * @param e - the element that is inserted
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-put(eq|k, v) = where(?ImmutableMap(<id>); prim("SSL_immutable_map_put_eq", eq | k, v))
+
+/**
+ * Removes an element in the immutable map. Returns a new set without the removed element.
+ *
+ * @param e - the element that is removed
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-remove(|k) = where(?ImmutableMap(<id>); prim("SSL_immutable_map_remove", k))
+
+/**
+ * Removes an element in the immutable map. Returns a new set without the removed element.
+ * With a custom equality operator.
+ *
+ * @param eq: Term * Term -?>
+ * @param e - the element that is removed
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-remove(eq|k) = where(?ImmutableMap(<id>); prim("SSL_immutable_map_remove_eq", eq | k))
+
+/**
+ * Higher-order operations
+ */
+strategies
+
+/**
+ * Get all keys of the immutable map.
+ *
+ * @type ImmutableMap -> List
+ */
+immap-keys = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys")
+
+/**
+ * Get all keys of the immutable map as an immutable set.
+ *
+ * @type ImmutableMap -> List
+ */
+immap-keys-imset = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys_to_set"); !ImmutableSet(<id>)
+
+/**
+ * Get all values of the immutable map.
+ *
+ * @type ImmutableMap -> List
+ */
+immap-values = ?ImmutableMap(<id>); prim("SSL_immutable_map_values")
+
+/**
+ * Remove all pairs from the immutable map for which the filter strategy fails.
+ * Returns a new immutable map without the removed pairs.
+ * For pairs mapped to the same key the values are merged with the second parameter. 
+ * This version gives the merge function the key as well as the pair of values to merge. 
+ *
+ * @param s: Term * Term -?> Term * Term
+ * @param merge: Term * (Term * Term) -> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-filter'(s, merge) = ?ImmutableMap(<id>); prim("SSL_immutable_map_filter", s, merge|)
+
+/**
+ * Remove all pairs from the immutable map for which the filter strategy fails.
+ * Returns a new immutable map without the removed pairs.
+ * For pairs mapped to the same key the values are merged with the second parameter. 
+ *
+ * @param s: Term * Term -?> Term * Term
+ * @param merge: Term * Term -> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-filter(s, merge) = immap-filter'(s, ?(_, <merge>))
+
+/**
+ * Remove all pairs from the immutable map for which the filter strategy fails.
+ * Returns a new immutable map without the removed pairs.
+ * Pairs mapped to the same key keep one of the values arbitrarily. 
+ *
+ * @param s: Term * Term -?> Term * Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-filter(s) = immap-filter(s, ?(<id>, _))
+
+/**
+ * Remove all pairs from the immutable map for which the filter strategy fails on the key.
+ * Returns a new immutable map without the removed pairs.
+ *
+ * @param s: Term -?> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-filter-keys(s) = immap-filter((s, id))
+
+/**
+ * Remove all pairs from the immutable map for which the filter strategy fails on the value.
+ * Returns a new immutable map without the removed pairs.
+ *
+ * @param s: Term -?> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-filter-values(s) = immap-filter((id, s))
+
+/**
+ * Map all pairs from the immutable map.
+ * Returns a new immutable map with the mapped pairs.
+ * For pairs mapped to the same key the values are merged with the second parameter. 
+ * This version gives the merge function the key as well as the pair of values to merge. 
+ *
+ * @param s: Term * Term -?> Term * Term
+ * @param merge: Term * (Term * Term) -> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-map'(s, merge) = ?ImmutableMap(<id>); prim("SSL_immutable_map_map", s, merge|)
+
+/**
+ * Map all pairs from the immutable map.
+ * Returns a new immutable map with the mapped pairs.
+ * For pairs mapped to the same key the values are merged with the second parameter. 
+ *
+ * @param s: Term * Term -?> Term * Term
+ * @param merge: Term * Term -> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-map(s, merge) = immap-map'(s, ?(_, <merge>))
+
+/**
+ * Map all pairs from the immutable map.
+ * Returns a new immutable map with the mapped pairs.
+ * Pairs mapped to the same key keep one of the values arbitrarily. 
+ *
+ * @param s: Term -> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-map(s) = immap-map(s, ?(<id>, _))
+
+/**
+ * Map all keys from the immutable map.
+ * Returns a new immutable map with the mapped keys.
+ *
+ * @param s: Term -> Term
+ * @param merge: Term * Term -> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-map-keys(s, merge) = immap-map((s, id))
+
+/**
+ * Map all values from the immutable map.
+ * Returns a new immutable map with the mapped values.
+ *
+ * @param s: Term -> Term
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-map-values(s) = immap-map((id, s))
+
+/**
+ * Combining operations
+ */
+strategies
+
+/**
+ * Intersect with another immutable map.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new immutable map with the intersection.
+ *
+ * @param m: Term * Term -> Term
+ * @param other: ImmutableMap
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-intersect(m|ImmutableMap(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_intersect", m | other)
+
+/**
+ * Intersect two immutable maps.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new immutable map with the intersection.
+ *
+ * @param m: Term * Term -> Term
+ * @type ImmutableMap * ImmutableMap -> ImmutableMap
+ */
+immap-intersect(m) =
+  ?(l, r); <immap-intersect(m|r)> l
+
+/**
+ * Intersect with an immutable set.
+ * Returns a new immutable map with the pairs where the key was in the immutable set.
+ *
+ * @param other: ImmutableSet
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-intersect-set(|ImmutableSet(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_intersect_set" | other)
+
+/**
+ * Intersect the left immutable map with the right immutable set.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new immutable map with the intersection.
+ *
+ * @type ImmutableMap * ImmutableSet -> ImmutableMap
+ */
+immap-intersect-set =
+  ?(l, r); <immap-intersect-set(|r)> l
+
+/**
+ * Subtract another immutable map from the given one.
+ * Returns a new immutable map without the pairs where the key was a key in the immutable map.
+ *
+ * @param other: ImmutableMap - the map to remove from the current term immutable map
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-subtract(|ImmutableMap(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_subtract", other)
+
+/**
+ * Subtract the right immutable map from the left.
+ * Returns a new immutable map without the pairs where the key was a key in the immutable map.
+ *
+ * @type ImmutableMap * ImmutableMap -> ImmutableMap
+ */
+immap-subtract =
+  ?(l, r); <immap-subtract(|r)> l
+
+/**
+ * Subtract an immutable set from the immutable map.
+ * Returns a new immutable map without the pairs where the key was in the immutable set.
+ *
+ * @param other: ImmutableSet - the set to remove from the current term immutable map
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-subtract-set(|ImmutableSet(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_subtract_set", other)
+
+/**
+ * Subtract the right immutable set from the left immutable map.
+ * Returns a new immutable map without the pairs where the key was a key in the immutable map.
+ *
+ * @type ImmutableMap * ImmutableSet -> ImmutableMap
+ */
+immap-subtract-set =
+  ?(l, r); <immap-subtract(|r)> l
+
+/**
+ * Union with another immutable map.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new set with the union.
+ *
+ * @param m: Term * Term -> Term
+ * @param other: ImmutableMap - the set to remove from the current term immutable map
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-union(m|ImmutableMap(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_union", m | other)
+
+/**
+ * Union two immutable maps.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new set with the union.
+ *
+ * @param m: Term * Term -> Term
+ * @type ImmutableMap * ImmutableSet -> ImmutableMap
+ */
+immap-union(m) =
+  ?(l, r); <immap-union(m|r)> l
+
+/**
+ * Combining operations with custom equality operator (prefers the current/left elements)
+ */
+strategies
+
+/**
+ * Intersect with another immutable map.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new immutable map with the intersection.
+ *
+ * @param m: Term * Term -> Term
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableMap
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-intersect(m, eq|ImmutableMap(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_intersect_eq", m, eq | other)
+
+/**
+ * Intersect two immutable maps.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new immutable map with the intersection.
+ *
+ * @param m: Term * Term -> Term
+ * @param eq: Term * Term -?>
+ * @type ImmutableMap * ImmutableMap -> ImmutableMap
+ */
+immap-intersect(m, eq) =
+  ?(l, r); <immap-intersect(m, eq|r)> l
+
+/**
+ * Intersect with an immutable set.
+ * Returns a new immutable map with the pairs where the key was in the immutable set.
+ *
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableSet
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-intersect-set(eq|ImmutableSet(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_intersect_set_eq", eq | other)
+
+/**
+ * Intersect the left immutable map with the right immutable set.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new immutable map with the intersection.
+ *
+ * @param eq: Term * Term -?>
+ * @type ImmutableMap * ImmutableSet -> ImmutableMap
+ */
+immap-intersect-set(eq) =
+  ?(l, r); <immap-intersect-set(eq|r)> l
+
+/**
+ * Subtract another immutable map from the given one.
+ * Returns a new immutable map without the pairs where the key was a key in the immutable map.
+ *
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableMap - the map to remove from the current term immutable map
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-subtract(eq|ImmutableMap(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_subtract_eq", eq | other)
+
+/**
+ * Subtract the right immutable map from the left.
+ * Returns a new immutable map without the pairs where the key was a key in the immutable map.
+ *
+ * @param eq: Term * Term -?>
+ * @type ImmutableMap * ImmutableMap -> ImmutableMap
+ */
+immap-subtract(eq) =
+  ?(l, r); <immap-subtract(eq|r)> l
+
+/**
+ * Subtract an immutable set from the immutable map.
+ * Returns a new immutable map without the pairs where the key was in the immutable set.
+ *
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableSet - the set to remove from the current term immutable map
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-subtract-set(eq|ImmutableSet(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_subtract_set_eq", eq | other)
+
+/**
+ * Subtract the right immutable set from the left immutable map.
+ * Returns a new immutable map without the pairs where the key was a key in the immutable map.
+ *
+ * @param eq: Term * Term -?>
+ * @type ImmutableMap * ImmutableSet -> ImmutableMap
+ */
+immap-subtract-set(eq) =
+  ?(l, r); <immap-subtract(eq|r)> l
+
+/**
+ * Union with another immutable map.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new set with the union.
+ *
+ * @param m: Term * Term -> Term
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableMap - the set to remove from the current term immutable map
+ * @type ImmutableMap -> ImmutableMap
+ */
+immap-union(m, eq|ImmutableMap(other)) =
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_union_eq", m, eq | other)
+
+/**
+ * Union two immutable maps.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new set with the union.
+ *
+ * @param m: Term * Term -> Term
+ * @param eq: Term * Term -?>
+ * @type ImmutableMap * ImmutableSet -> ImmutableMap
+ */
+immap-union(m, eq) =
+  ?(l, r); <immap-union(m, eq|r)> l

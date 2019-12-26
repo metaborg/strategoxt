@@ -1,0 +1,266 @@
+/**
+ * This module contains strategies for operating on immutable sets.
+ *
+ * Note that these sets do not support generic traversal. These are "blob" terms without children
+ * and need to be operated on through the strategies in this module. 
+ *
+ * @author Jeff Smits <mail@jeffsmits.net>
+ *
+ */
+module collection/immutable/set
+imports
+  collection/list/-
+
+signature
+  constructors
+    /**
+     * Represents a reference to a Set
+     */
+    ImmutableSet : ImplDep -> ImmutableSet
+
+/**
+ * Immutable set construction and deconstruction
+ */
+strategies
+
+/**
+ * Create an empty immutable set.
+ *
+ * @type _ -> ImmutableSet
+ */
+imset-new = prim("SSL_immutable_set"); !ImmutableSet(<id>)
+
+/**
+ * Create an immutable set from a list.
+ *
+ * @type List -> ImmutableSet
+ */
+imset-from-list = prim("SSL_immutable_set_from_list"); !ImmutableSet(<id>)
+
+/**
+ * Turn the immutable set into a list.
+ *
+ * @type ImmutableSet -> List
+ */
+imset-to-list = imset-elements
+
+/**
+ * Elemental operations
+ */
+strategies
+
+/**
+ * Succeeds is element is in the immutable set.
+ *
+ * @param e - the element that containment is tested for
+ * @type ImmutableSet -?> ImmutableSet
+ */
+imset-contains(|e) = where(?ImmutableSet(<id>); prim("SSL_immutable_set_contains", e))
+
+/**
+ * Succeeds is element is in the immutable set.
+ * With a custom equality operator.
+ *
+ * @param eq: Term * Term -?>
+ * @param e - the element that containment is tested for
+ * @type ImmutableSet -?> ImmutableSet
+ */
+imset-contains(eq|e) = where(?ImmutableSet(<id>); prim("SSL_immutable_set_contains_eq", eq | e))
+
+/**
+ * Inserts an element in the immutable set. Returns a new set with the added element.
+ *
+ * @param e - the element that is inserted
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-insert(|e) = where(?ImmutableSet(<id>); prim("SSL_immutable_set_insert", e))
+
+/**
+ * Inserts an element in the immutable set. Returns a new set with the added element.
+ * With a custom equality operator.
+ *
+ * @param eq: Term * Term -?>
+ * @param e - the element that is inserted
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-insert(eq|e) = where(?ImmutableSet(<id>); prim("SSL_immutable_set_insert_eq", eq | e))
+
+/**
+ * Removes an element in the immutable set. Returns a new set without the removed element.
+ *
+ * @param e - the element that is removed
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-remove(|e) = where(?ImmutableSet(<id>); prim("SSL_immutable_set_remove", e))
+
+/**
+ * Removes an element in the immutable set. Returns a new set without the removed element.
+ * With a custom equality operator.
+ *
+ * @param eq: Term * Term -?>
+ * @param e - the element that is removed
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-remove(eq|e) = where(?ImmutableSet(<id>); prim("SSL_immutable_set_remove_eq", eq | e))
+
+/**
+ * Higher-order operations
+ */
+strategies
+
+/**
+ * Get all elements of the immutable set.
+ *
+ * @type ImmutableSet -> List
+ */
+imset-elements = ?ImmutableSet(<id>); prim("SSL_immutable_set_elements")
+
+/**
+ * Remove all elements from the immutable set for which the filter strategy fails.
+ * Returns a new set without the removed elements.
+ *
+ * @param s: Term -?> Term
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-filter(s) = ?ImmutableSet(<id>); prim("SSL_immutable_set_filter", s|)
+
+/**
+ * Map all elements from the immutable set.
+ * Returns a new set with the mapped elements.
+ *
+ * @param s: Term -> Term
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-map(s) = ?ImmutableSet(<id>); prim("SSL_immutable_set_map", s|)
+
+/**
+ * Combining operations
+ */
+strategies
+
+/**
+ * Intersect with another immutable set.
+ * Returns a new set with the intersection.
+ *
+ * @param other: ImmutableSet
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-intersect(|ImmutableSet(other)) =
+  ?ImmutableSet(<id>); prim("SSL_immutable_set_intersect", other)
+
+/**
+ * Intersect two immutable sets.
+ * Returns a new set with the intersection.
+ *
+ * @type ImmutableSet * ImmutableSet -> ImmutableSet
+ */
+imset-intersect =
+  ?(l, r); <imset-intersect(|r)> l
+
+/**
+ * Subtract another immutable set from the given one.
+ * Returns a new set without the elements from the immutable set in the term argument.
+ *
+ * @param other: ImmutableSet - the set to remove from the current term immutable set
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-subtract(|ImmutableSet(other)) =
+  ?ImmutableSet(<id>); prim("SSL_immutable_set_subtract", other)
+
+/**
+ * Subtract the right immutable set from the left.
+ * Returns a new set without the elements from the immutable set in the term argument.
+ *
+ * @type ImmutableSet * ImmutableSet -> ImmutableSet
+ */
+imset-subtract =
+  ?(l, r); <imset-subtract(|r)> l
+
+/**
+ * Union with another immutable set.
+ * Returns a new set with the union.
+ *
+ * @param other: ImmutableSet - the set to remove from the current term immutable set
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-union(|ImmutableSet(other)) =
+  ?ImmutableSet(<id>); prim("SSL_immutable_set_union", other)
+
+/**
+ * Union two immutable sets.
+ * Returns a new set with the union.
+ *
+ * @type ImmutableSet * ImmutableSet -> ImmutableSet
+ */
+imset-union =
+  ?(l, r); <imset-union(|r)> l
+
+/**
+ * Combining operations with custom equality operator (prefers the current/left elements)
+ */
+strategies
+
+/**
+ * Intersect with another immutable set.
+ * Returns a new set with the intersection.
+ *
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableSet
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-intersect(eq|ImmutableSet(other)) =
+  ?ImmutableSet(_); prim("SSL_immutable_set_intersect_eq", eq | other)
+
+/**
+ * Intersect two immutable sets.
+ * Returns a new set with the intersection.
+ *
+ * @param eq: Term * Term -?>
+ * @type ImmutableSet * ImmutableSet -> ImmutableSet
+ */
+imset-intersect(eq) =
+  ?(l, r); <imset-intersect(eq|r)> l
+
+/**
+ * Subtract another immutable set from the given one.
+ * Returns a new set without the elements from the immutable set in the term argument.
+ *
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableSet - the set to remove from the current term immutable set
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-subtract(eq|ImmutableSet(other)) =
+  ?ImmutableSet(<id>); prim("SSL_immutable_set_subtract_eq", eq | other)
+
+/**
+ * Subtract the right immutable set from the left.
+ * Returns a new set without the elements from the immutable set in the term argument.
+ *
+ * @param eq: Term * Term -?>
+ * @type ImmutableSet * ImmutableSet -> ImmutableSet
+ */
+imset-subtract(eq) =
+  ?(l, r); <imset-subtract(eq|r)> l
+
+/**
+ * Union with another immutable set.
+ * Returns a new set with the union.
+ *
+ * @param eq: Term * Term -?>
+ * @param other: ImmutableSet - the set to remove from the current term immutable set
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-union(eq|ImmutableSet(other)) =
+  ?ImmutableSet(<id>); prim("SSL_immutable_set_union_eq", eq | other)
+
+/**
+ * Union two immutable sets.
+ * Returns a new set with the union.
+ *
+ * @param eq: Term * Term -?>
+ * @type ImmutableSet * ImmutableSet -> ImmutableSet
+ */
+imset-union(eq) =
+  ?(l, r); <imset-union(eq|r)> l
+
+
