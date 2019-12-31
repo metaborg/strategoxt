@@ -22,7 +22,7 @@ public class StrategoStrategyRef extends StrategoAppl {
 	private final Strategy sref;
 
 	public StrategoStrategyRef(Strategy sref, ITermFactory factory) {
-		super(factory.makeConstructor("___StrategyReference___", 0), new IStrategoTerm[0], TermFactory.EMPTY_LIST, factory.getDefaultStorageType());
+		super(factory.makeConstructor("___StrategyReference___", 0), new IStrategoTerm[0], TermFactory.EMPTY_LIST);
 
 		this.sref = sref;
 	}
