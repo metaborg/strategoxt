@@ -53,11 +53,19 @@ strategies
    *   ; <local-newname; debug> "a_1"      // produces "a_10"
    *   )
    */
-  local-newname: prefix -> $[[prefix][number]]
-  where key := <lower-case> prefix
-      ; number := <LocalNew <+ !0> key
-      ; number' := <int-add(|1)> number
-      ; rules(LocalNew: key -> number')
+  local-newname = local-newname(|())
+
+  /**
+   * This version of local-newname uses the given context term as a "reentrant scope".
+   * When given the same context term and name (within the same `scope-local-new` call), new
+   * locally unique names are generated, but with a different context term the counter for the
+   * prefix resets. The default context used by `local-newname`/0 is `()`. 
+   */
+  local-newname(|context): prefix -> $[[prefix][number]]
+      where key := <lower-case> prefix
+          ; number := <LocalNew <+ !0> key
+          ; number' := <int-add(|1)> number
+          ; rules(LocalNew: (context, key) -> number')
 
   /**
    * Generates a locally unique new string of the form 'c_d',
@@ -86,7 +94,15 @@ strategies
    * information with local-newname so the two don't generate
    * overlapping names within the same scope-local-new call.
    */
-  local-new =
+  local-new = local-new(|())
+
+  /**
+   * This version of local-new uses the given context term as a "reentrant scope".
+   * When given the same context term (within the same `scope-local-new` call), new locally unique
+   * names are generated, but with a different context term the counter resets. The default context
+   * used by `local-newname`/0 is `()`. 
+   */
+  local-new(|context) =
     // use LocalNewAlpha to shift from ASCII character a to some letter in the alphabet
     ![<int-add(|<LocalNewAlpha>)> 'a', '_']
     // Update LocalNewAlpha with increment modulo 26
@@ -94,7 +110,7 @@ strategies
     // implode the letter + underscore list of characters to a string
   ; implode-string
     // apply local-newname to share information and not produce overlapping names between the two
-  ; local-newname
+  ; local-newname(|context)
 
   /**
    * @deprecated: Please use locally scoped new/newname instead.
