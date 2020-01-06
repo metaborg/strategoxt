@@ -290,7 +290,7 @@ immap-intersect(m) =
  * @type ImmutableMap -> ImmutableMap
  */
 immap-intersect-set(|ImmutableSet(other)) =
-  ?ImmutableMap(<id>); prim("SSL_immutable_map_intersect_set" | other)
+  ?ImmutableMap(<id>); prim("SSL_immutable_map_intersect_set", other)
 
 /**
  * Intersect the left immutable map with the right immutable set.
