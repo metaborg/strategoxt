@@ -100,7 +100,7 @@ strategies
    * This version of local-new uses the given context term as a "reentrant scope".
    * When given the same context term (within the same `scope-local-new` call), new locally unique
    * names are generated, but with a different context term the counter resets. The default context
-   * used by `local-newname`/0 is `()`. 
+   * used by `local-new`/0 is `()`. 
    */
   local-new(|context) =
     // use LocalNewAlpha to shift from ASCII character a to some letter in the alphabet
