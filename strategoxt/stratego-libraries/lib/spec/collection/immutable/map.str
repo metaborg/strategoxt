@@ -7,7 +7,7 @@
  * @author Jeff Smits <mail@jeffsmits.net>
  *
  */
-module collection/immutable/set
+module collection/immutable/map
 imports
   collection/list/-
 
@@ -44,7 +44,28 @@ immap-from-list = prim("SSL_immutable_map_from_list"); !ImmutableMap(<id>)
  *
  * @type ImmutableMap -> List
  */
-immap-to-list = ?ImmutableMap(<id>); prim("SSL_immutable_map_elements")
+immap-to-list = ?ImmutableMap(<id>); prim("SSL_immutable_map_to_list")
+
+/**
+ * Get all keys of the immutable map.
+ *
+ * @type ImmutableMap -> List
+ */
+immap-keys = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys")
+
+/**
+ * Get all keys of the immutable map as an immutable set.
+ *
+ * @type ImmutableMap -> List
+ */
+immap-keys-imset = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys_to_set"); !ImmutableSet(<id>)
+
+/**
+ * Get all values of the immutable map.
+ *
+ * @type ImmutableMap -> List
+ */
+immap-values = ?ImmutableMap(<id>); prim("SSL_immutable_map_values")
 
 /**
  * Elemental operations
@@ -131,27 +152,6 @@ immap-remove(eq|k) = where(?ImmutableMap(<id>); prim("SSL_immutable_map_remove_e
 strategies
 
 /**
- * Get all keys of the immutable map.
- *
- * @type ImmutableMap -> List
- */
-immap-keys = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys")
-
-/**
- * Get all keys of the immutable map as an immutable set.
- *
- * @type ImmutableMap -> List
- */
-immap-keys-imset = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys_to_set"); !ImmutableSet(<id>)
-
-/**
- * Get all values of the immutable map.
- *
- * @type ImmutableMap -> List
- */
-immap-values = ?ImmutableMap(<id>); prim("SSL_immutable_map_values")
-
-/**
  * Remove all pairs from the immutable map for which the filter strategy fails.
  * Returns a new immutable map without the removed pairs.
  * For pairs mapped to the same key the values are merged with the second parameter. 
@@ -177,7 +177,7 @@ immap-filter(s, merge) = immap-filter'(s, ?(_, <merge>))
 /**
  * Remove all pairs from the immutable map for which the filter strategy fails.
  * Returns a new immutable map without the removed pairs.
- * Pairs mapped to the same key keep one of the values arbitrarily. 
+ * Pairs mapped to the same key keep one of the values (chosen arbitrarily). 
  *
  * @param s: Term * Term -?> Term * Term
  * @type ImmutableMap -> ImmutableMap
@@ -228,7 +228,7 @@ immap-map(s, merge) = immap-map'(s, ?(_, <merge>))
 /**
  * Map all pairs from the immutable map.
  * Returns a new immutable map with the mapped pairs.
- * Pairs mapped to the same key keep one of the values arbitrarily. 
+ * Pairs mapped to the same key keep one of the values (chosen arbitrarily). 
  *
  * @param s: Term -> Term
  * @type ImmutableMap -> ImmutableMap

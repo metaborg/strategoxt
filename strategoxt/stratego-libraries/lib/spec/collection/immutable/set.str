@@ -45,6 +45,13 @@ imset-from-list = prim("SSL_immutable_set_from_list"); !ImmutableSet(<id>)
 imset-to-list = imset-elements
 
 /**
+ * Get all elements of the immutable set.
+ *
+ * @type ImmutableSet -> List
+ */
+imset-elements = ?ImmutableSet(<id>); prim("SSL_immutable_set_elements")
+
+/**
  * Elemental operations
  */
 strategies
@@ -107,13 +114,6 @@ imset-remove(eq|e) = where(?ImmutableSet(<id>); prim("SSL_immutable_set_remove_e
  * Higher-order operations
  */
 strategies
-
-/**
- * Get all elements of the immutable set.
- *
- * @type ImmutableSet -> List
- */
-imset-elements = ?ImmutableSet(<id>); prim("SSL_immutable_set_elements")
 
 /**
  * Remove all elements from the immutable set for which the filter strategy fails.
