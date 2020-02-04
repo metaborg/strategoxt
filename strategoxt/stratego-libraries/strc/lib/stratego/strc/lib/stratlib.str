@@ -168,14 +168,14 @@ strategies
 
   tnewvar =
     string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
-    ; def-local-newname
     ; lower-case
+    ; def-local-newname
     <+ new
 
   snewvar =
     string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
-    ; def-local-newname
     ; lower-case
+    ; def-local-newname
     <+ new
 
   declared-vars =
