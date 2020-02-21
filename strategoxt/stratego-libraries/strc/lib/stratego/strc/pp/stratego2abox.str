@@ -274,8 +274,6 @@ rules
     ListVar(name) -> name
 
 rules
-  
-  get-max-term-size-config = !15
 
   stratego-to-abox =
     ( ?Op(f,[x | xs]) + ?CongQ(f,[x | xs]) + ?OpQ(f,[x|xs]) )
@@ -1008,7 +1006,7 @@ rules
 rules
 
   worstcase-nicecase(worstcase,nicecase) =
-    where(<gt> (<term-size>, <get-max-term-size-config>))
+    where(<gt> (<term-size>, !15))
   < worstcase
   + nicecase
 
