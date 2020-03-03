@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.TermUtils;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
@@ -29,7 +30,7 @@ public class SRTS_EXT_flatten_list_0_0 extends Strategy {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 
-		if (current.getTermType() != IStrategoTerm.LIST) {
+		if (!TermUtils.isList(current)) {
 			return null;
 		}
 
@@ -41,7 +42,7 @@ public class SRTS_EXT_flatten_list_0_0 extends Strategy {
 		while (!stack.isEmpty()) {
 			current = stack.remove(stack.size() - 1);
 
-			if (current.getTermType() == IStrategoTerm.LIST) {
+			if (TermUtils.isList(current)) {
 				IStrategoList list = (IStrategoList)current;
 				final int oldsize = stack.size();
 				while (!list.isEmpty()) {

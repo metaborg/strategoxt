@@ -1,7 +1,6 @@
 package org.strategoxt.lang.compat;
 
-import static org.spoofax.interpreter.core.Tools.asJavaString;
-import static org.spoofax.interpreter.core.Tools.isTermString;
+import static org.spoofax.terms.util.TermUtils.*;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
@@ -50,8 +49,8 @@ public class report_failure_compat_1_0 extends report_failure_1_0 {
 				IStrategoTerm message = logIntercept.lastMessage.get();
 				IStrategoTerm term = logIntercept.lastTerm.get();
 				context.setTrace(trace);
-				if (message != null && isTermString(message)) {
-					throw new StrategoErrorExit(asJavaString(message), term);
+				if (message != null && isString(message)) {
+					throw new StrategoErrorExit(toJavaString(message), term);
 				} else {
 					throw new StrategoExit(e);
 				}

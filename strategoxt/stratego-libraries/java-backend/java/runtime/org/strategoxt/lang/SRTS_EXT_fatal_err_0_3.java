@@ -1,10 +1,11 @@
 package org.strategoxt.lang;
 
-import static org.spoofax.interpreter.core.Tools.*;
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
+import static org.spoofax.terms.util.TermUtils.*;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.TermUtils;
 import org.strategoxt.stratego_lib.concat_strings_0_0;
 
 /**
@@ -15,19 +16,19 @@ public class SRTS_EXT_fatal_err_0_3 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm message, IStrategoTerm term, IStrategoTerm trace) {
-		if (message.getTermType() == LIST)
+		if (TermUtils.isList(message))
 			message = concat_strings_0_0.instance.invoke(context, message);
-		if (message == null || message.getTermType() != STRING)
+		if (message == null || !isString(message))
 			return null;
 		
 		context.popOnExit(false);
-		if (term.getTermType() == TUPLE && term.getSubtermCount() == 0) {
-			throw new StrategoErrorExit(asJavaString(message));
+		if (isTuple(term) && term.getSubtermCount() == 0) {
+			throw new StrategoErrorExit(toJavaString(message));
 		} else {
-			if(trace.getTermType() == LIST){
-				throw new StrategoErrorExit(asJavaString(message), term, (IStrategoList) trace);
+			if(TermUtils.isList(trace)){
+				throw new StrategoErrorExit(toJavaString(message), term, toList(trace));
 			}else{
-				throw new StrategoErrorExit(asJavaString(message), term);
+				throw new StrategoErrorExit(toJavaString(message), term);
 			}
 		}
 	}

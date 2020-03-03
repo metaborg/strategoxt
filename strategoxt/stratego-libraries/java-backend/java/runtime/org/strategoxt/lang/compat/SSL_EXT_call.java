@@ -1,13 +1,4 @@
 package org.strategoxt.lang.compat;
-
-import static org.spoofax.interpreter.core.Tools.asJavaInt;
-import static org.spoofax.interpreter.core.Tools.asJavaString;
-import static org.spoofax.interpreter.core.Tools.isTermInt;
-import static org.spoofax.interpreter.core.Tools.isTermList;
-import static org.spoofax.interpreter.core.Tools.isTermString;
-import static org.spoofax.interpreter.core.Tools.isTermTuple;
-import static org.spoofax.interpreter.core.Tools.javaString;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -19,6 +10,8 @@ import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+
+import static org.spoofax.terms.util.TermUtils.*;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -39,21 +32,21 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			String program;
 			String[] environment = null;
 			
-			if (!isTermList(tvars[1])) 
+			if (!isList(tvars[1]))
 				return false;
-			if (isTermTuple(tvars[0])) {
-				if (tvars[0].getSubtermCount() != 2 || !isTermString(tvars[0].getSubterm(0)))
+			if (isTuple(tvars[0])) {
+				if (tvars[0].getSubtermCount() != 2 || !isString(tvars[0].getSubterm(0)))
 					return false;
-				program = asJavaString(tvars[0].getSubterm(0));
+				program = toJavaString(tvars[0].getSubterm(0));
 				environment = toEnvironment(tvars[0].getSubterm(1));
 				if (environment == null)
 					return false;
-			} else if (isTermString(tvars[0])) {
-				program = asJavaString(tvars[0]);
+			} else if (isString(tvars[0])) {
+				program = toJavaString(tvars[0]);
 			} else {
 				return false;
 			}
-			if (!isTermInt(tvars[3]) || !isTermInt(tvars[4]))
+			if (!isInt(tvars[3]) || !isInt(tvars[4]))
 				return false;
 			
 			String[] commandArgs = toCommandArgs(program, tvars[1].getAllSubterms());
@@ -65,8 +58,8 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			IOAgent io = op.getIOAgent();
 			File dir = io.openFile(io.getWorkingDir());
 			// TODO: stdin?
-			Writer stdout = io.getWriter(asJavaInt(tvars[3]));
-			Writer stderr = io.getWriter(asJavaInt(tvars[4]));
+			Writer stdout = io.getWriter(toJavaInt(tvars[3]));
+			Writer stderr = io.getWriter(toJavaInt(tvars[4]));
 			
 			// Invocation
 			int returnCode = caller.call(commandArgs, environment, dir, stdout, stderr);
@@ -87,9 +80,9 @@ public class SSL_EXT_call extends AbstractPrimitive {
 		results[0] = handleSpacesInPath(addExecutableExtension(program));
 		
 		for (int i = 0; i < args.length; i++) {
-			if (!isTermString(args[i]))
+			if (!isString(args[i]))
 				return null;
-			results[i+1] = handleSpacesInPath(javaString(args[i]));
+			results[i+1] = handleSpacesInPath(toJavaString(args[i]));
 		}
 		
 		return results;
@@ -116,12 +109,12 @@ public class SSL_EXT_call extends AbstractPrimitive {
 	}
 	
 	private String[] toEnvironment(IStrategoTerm env) {
-		if (!isTermList(env)) return null;
+		if (!isList(env)) return null;
 
 		String[] results = new String[env.getSubtermCount()];
 		for (int i = 0; i < results.length; i++) {
-			if (!isTermString(env.getSubterm(i))) return null;
-			results[i] = asJavaString(env.getSubterm(i));
+			if (!isString(env.getSubterm(i))) return null;
+			results[i] = toJavaString(env.getSubterm(i));
 		}
 		
 		return results;

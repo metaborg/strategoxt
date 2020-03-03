@@ -1,8 +1,8 @@
 package org.strategoxt.lang;
 
-import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.TermUtils;
 
 /**
  * Exception thrown when the application exits with an fatal error message.
@@ -47,14 +47,14 @@ public class StrategoErrorExit extends StrategoExit {
         final StringBuilder sb = new StringBuilder(super.getMessage());
         final IStrategoTerm term = getTerm();
         if (term != null) {
-            sb.append("\n\t" + term);
+            sb.append("\n\t").append(term);
         }
         if (trace != null) {
             final int depth = trace.getSubtermCount();
             for(int i = 0; i < depth; i++) {
                 final IStrategoTerm t = trace.getSubterm(depth - i - 1);
                 sb.append("\n\t");
-                sb.append(t.getTermType() == IStrategoTerm.STRING ? Tools.asJavaString(t) : t);
+                sb.append(TermUtils.isString(t) ? TermUtils.toJavaString(t) : t);
             }
         }
         return sb.toString();

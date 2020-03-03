@@ -2,6 +2,7 @@ package org.strategoxt.lang;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.TermUtils;
 
 /**
  * An implementation of filter(s), optimized for stack behavior
@@ -17,7 +18,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
-		if (current.getTermType() != IStrategoTerm.LIST)
+		if (!TermUtils.isList(current))
 			return null;
 		
 		IStrategoList list = (IStrategoList) current;

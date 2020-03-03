@@ -1,7 +1,7 @@
 package org.strategoxt.lang;
 
-import static org.spoofax.interpreter.core.Tools.asJavaString;
-import static org.spoofax.interpreter.core.Tools.isTermString;
+import static org.spoofax.terms.util.TermUtils.isString;
+import static org.spoofax.terms.util.TermUtils.toJavaString;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -17,8 +17,8 @@ public class SRTS_EXT_string_replace_0_2 extends Strategy {
 	public IStrategoTerm invoke(Context context, IStrategoTerm current,
 			IStrategoTerm before, IStrategoTerm after) {
 		
-		if (isTermString(current) && isTermString(before) && isTermString(after)) {
-			return invoke(context.getFactory(), current, asJavaString(before), asJavaString(after));
+		if (isString(current) && isString(before) && isString(after)) {
+			return invoke(context.getFactory(), current, toJavaString(before), toJavaString(after));
 		} else {
 			return null;
 		}
@@ -30,9 +30,9 @@ public class SRTS_EXT_string_replace_0_2 extends Strategy {
 			return current;
                 }
 		
-		String input = asJavaString(current);
+		String input = toJavaString(current);
 		String result = input.replace(before, after);
-		if (input == result) {
+		if (input.equals(result)) {
 			return current;
 		} else {
 			return factory.makeString(result);

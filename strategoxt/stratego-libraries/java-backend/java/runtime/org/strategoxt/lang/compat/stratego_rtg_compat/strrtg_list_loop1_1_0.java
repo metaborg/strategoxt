@@ -2,6 +2,7 @@ package org.strategoxt.lang.compat.stratego_rtg_compat;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.TermUtils;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
@@ -13,7 +14,7 @@ public class strrtg_list_loop1_1_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
-		if (current.getTermType() != IStrategoTerm.LIST)
+		if (!TermUtils.isList(current))
 			return null;
 		
 		boolean success = false;			

@@ -1,10 +1,10 @@
 package org.strategoxt.lang.compat;
 
-import static org.spoofax.interpreter.core.Tools.asJavaInt;
-import static org.spoofax.interpreter.core.Tools.asJavaString;
 import static org.spoofax.interpreter.terms.IStrategoTerm.APPL;
 import static org.spoofax.interpreter.terms.IStrategoTerm.INT;
 import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
+import static org.spoofax.terms.util.TermUtils.toJavaInt;
+import static org.spoofax.terms.util.TermUtils.toJavaString;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -14,6 +14,7 @@ import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.TermUtils;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -31,10 +32,10 @@ public class SSL_EXT_topdown_fputs extends AbstractPrimitive {
 		
 		IStrategoTerm streamTerm = tvars[0];
 
-		if (streamTerm.getTermType() != APPL || streamTerm.getSubtermCount() != 1 || streamTerm.getSubterm(0).getTermType() != INT)
+		if (!TermUtils.isAppl(streamTerm) || streamTerm.getSubtermCount() != 1 || !TermUtils.isInt(streamTerm.getSubterm(0)))
 			return false;
 		
-		int streamInt = asJavaInt(streamTerm.getSubterm(0)); 
+		int streamInt = toJavaInt(streamTerm.getSubterm(0));
 
 		SSLLibrary or = SSLLibrary.instance(env);
 		Writer writer = or.getIOAgent().getWriter(streamInt);
@@ -54,8 +55,8 @@ public class SSL_EXT_topdown_fputs extends AbstractPrimitive {
 			IStrategoTerm child = tree.getSubterm(i);
 			if (child.getSubtermCount() > 0) {
 				invoke(child, writer);
-			} else if (child.getTermType() == STRING) {
-				writer.write(asJavaString(child));
+			} else if (TermUtils.isString(child)) {
+				writer.write(toJavaString(child));
 			} 
 		}
 	}
