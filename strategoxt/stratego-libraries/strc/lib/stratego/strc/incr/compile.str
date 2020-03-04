@@ -127,17 +127,17 @@ strategies
         | <?[<m-def-signature;strategy-sig-to-string>|_]>))
 
 // commented: [DONE IN JAVA]
-//      ; m-transform-external-defs(id
-//          ; if ?[_,_|_] then
+      ; m-transform-external-defs(id
+          ; if ?[_,_|_] then
 //              warn(|"multiple external definitions with same signature")
-//            ; [id | ![]] // Cannot reuse dyn rule when already used in library
-//            end
-//          ; [ id
-//             ; rename-sdef2
-//             ; desugar-DefaultVarDec
-//             ; strename
-//            ]
-//        )
+              [id | ![]] // Cannot reuse dyn rule when already used in library
+            end
+          ; [ id
+             ; rename-sdef2
+             ; desugar-DefaultVarDec
+             ; strename
+            ]
+        )
 
       ; m-transform-local-defs([scope-def-local-newname(id
           ; rename-calls2
@@ -168,6 +168,11 @@ strategies
       ; ?localDef*
     )
     ; where(id
+      ; m-get-all-external-definitions
+      ; filter(!(<m-def-signature;Fst>, <id>))
+      ; ?extDef*
+    )
+    ; where(id
       ; m-get-all-constructors
       ; filter(!(<m-constr-signature;constr-sig-to-string>, <id>))
       ; ?constr*
@@ -188,6 +193,6 @@ strategies
       ; ?defCount*
     )
     // TODO: export LeftHandSide dynamic rule for LHS check of dynamic rules
-    ; !(localDef*, constr*, overlay*, cong*, defCount*)
+    ; !(localDef*, extDef*, constr*, overlay*, cong*, defCount*)
 
   save-def-count = where(Dupl;(length, Hd;m-def-signature;strategy-sig-to-string);\(count, name) -> <rules(DefCount: name -> count)>\)

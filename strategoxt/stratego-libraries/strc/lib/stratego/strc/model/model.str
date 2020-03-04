@@ -114,7 +114,7 @@ strategies // strategy definitions
     dr-all-keys(|"ModDefinition")    
     ; filterconcat(IsLocal; bagof-ModDefinition-insertion-order)
 
-  m-get-all-external-definitionss =
+  m-get-all-external-definitions =
     dr-all-keys(|"ModDefinition")
     ; filterconcat(IsExternal; bagof-ModDefinition-insertion-order)
 
