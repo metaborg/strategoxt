@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.terms.util.TermUtils;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.SRTS_all;
 import org.strategoxt.lang.StrategoException;
@@ -162,7 +161,7 @@ public class ParallelAll extends SRTS_all {
 			return null;
 		}
 		
-		assert TermUtils.isList(current);
+		assert current.getTermType() == LIST;
 		// TODO: return context.getFactory().replaceList(outputs, (IStrategoList) current);
 		return context.getFactory().makeList(outputs);
 	}
@@ -172,7 +171,7 @@ public class ParallelAll extends SRTS_all {
 	}
 	
 	protected boolean isCandidateTerm(Context context, IStrategoTerm term) {
-		if (TermUtils.isList(term)
+		if (term.getTermType() == LIST
 				&& term.getSubtermCount() >= subtermCountThreshold
 				&& getTermSize(term, 1) >= termSizeThreshold) {
 
@@ -207,7 +206,7 @@ public class ParallelAll extends SRTS_all {
 
 		int size = initialSize + subtermCount;
 		
-		if (TermUtils.isList(term)) {
+		if (term.getTermType() == LIST) {
 			for (IStrategoList cons = (IStrategoList) term; !cons.isEmpty(); cons = cons.tail()) {
 				IStrategoTerm subterm = cons.head();
 				size = getTermSize(subterm, size);

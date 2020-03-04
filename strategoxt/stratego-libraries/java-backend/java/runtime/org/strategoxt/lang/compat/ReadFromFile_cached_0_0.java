@@ -1,6 +1,7 @@
 package org.strategoxt.lang.compat;
 
-import static org.spoofax.terms.util.TermUtils.*;
+import static org.spoofax.interpreter.core.Tools.asJavaString;
+import static org.spoofax.interpreter.core.Tools.isTermString;
 
 import java.io.File;
 import java.util.Map;
@@ -44,10 +45,10 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm term) {
-		if (!isString(term))
+		if (!isTermString(term))
 			return super.invoke(context, term);
 		
-		File file = context.getIOAgent().openFile(toJavaString(term));
+		File file = context.getIOAgent().openFile(asJavaString(term));
 		if (!file.exists())
 			return super.invoke(context, term);
 		

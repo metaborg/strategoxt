@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.util.TermUtils;
 
 /**
  * A stack-efficient version of the concat strategy, which concatenates
@@ -27,7 +26,7 @@ public class SRTS_EXT_concat_0_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
-	    if (!TermUtils.isList(current)) {
+	    if (current.getTermType() != LIST) {
 	        return null;
 	    }
 	    ITermFactory factory = context.getFactory();
@@ -36,14 +35,16 @@ public class SRTS_EXT_concat_0_0 extends Strategy {
 	    
 	    // Build a doubly linked list with the terms. O(n)
 	    LinkedList<IStrategoTerm> tempList = new LinkedList<IStrategoTerm>();
-	    for (IStrategoTerm t : list.getSubterms()) {
-	    	if (!TermUtils.isList(t)) {
+	    for (IStrategoTerm t : list) {
+	    	if (t.getTermType() != LIST) {
 				// The term must be a list...
 				return null;
 	    	}
 	    	
 	        IStrategoList elem_list = (IStrategoList) t;
-			tempList.addAll(elem_list.getSubterms());
+            for (IStrategoTerm lt : elem_list) {
+            	tempList.add(lt);
+            }
 	    }
 	    
 	    // Build the Stratego list from tail to head. O(n)

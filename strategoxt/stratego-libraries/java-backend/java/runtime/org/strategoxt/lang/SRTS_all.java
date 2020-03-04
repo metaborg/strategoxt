@@ -6,7 +6,6 @@ import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
-import org.spoofax.terms.util.TermUtils;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -18,7 +17,7 @@ public class SRTS_all extends Strategy {
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		int termType = current.getTermType();
 		
-		if (TermUtils.isList(current)) {
+		if (termType == LIST) {
 			IStrategoList list = (IStrategoList) current;
 			return mapMaintainAnnos(context, list, s, noAnnosTail(list));
 		} else {

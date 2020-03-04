@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
+import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.terms.util.TermUtils;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -24,11 +24,11 @@ public class SSL_EXT_read_text_from_stream extends AbstractPrimitive {
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
 			throws InterpreterException {
 		
-        if(!TermUtils.isInt(tvars[0]))
+        if(!Tools.isTermInt(tvars[0]))
             return false;
         
         try {
-        	IStrategoString result = call(env, TermUtils.toJavaInt(tvars[0]));
+        	IStrategoString result = call(env, Tools.asJavaInt(tvars[0]));
 			env.setCurrent(result);
 			return true;
         } catch (IOException e) {

@@ -7,7 +7,6 @@ import org.spoofax.interpreter.library.ssl.SSL_hashtable_create;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.terms.util.TermUtils;
 import org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel;
 
 /**
@@ -22,9 +21,9 @@ public class ParallelSetCreate extends SSL_hashtable_create {
 			throws InterpreterException {
 		
 		if (!stratego_parallel.isActive()) {
-	        if (!(TermUtils.isInt(targs[0])))
+	        if (!(Tools.isTermInt(targs[0])))
 	            return false;
-	        if (!(TermUtils.isInt(targs[1])))
+	        if (!(Tools.isTermInt(targs[1])))
 	            return false;
 
 	        int initialSize = ((IStrategoInt) targs[0]).intValue();

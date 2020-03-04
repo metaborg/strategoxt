@@ -1,6 +1,8 @@
 package org.strategoxt;
 
-import static org.spoofax.terms.util.TermUtils.*;
+import static org.spoofax.interpreter.core.Tools.asJavaString;
+import static org.spoofax.interpreter.core.Tools.isTermAppl;
+import static org.spoofax.interpreter.core.Tools.termAt;
 
 import java.io.File;
 import java.io.IOException;
@@ -488,7 +490,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		s = (IStrategoAppl) new TermTransformer(factory, false) {
 				@Override
 				public IStrategoTerm preTransform(IStrategoTerm term) {
-					if (isAppl(term)) {
+					if (isTermAppl(term)) {
 						term = cifyAndAddParams(factory, callT, sdefT, (IStrategoAppl) term);
 					}
 					return term;
@@ -502,16 +504,16 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 		IStrategoConstructor cons = current.getConstructor();
 		if (cons == sdefT || cons == callT) {
-			IStrategoTerm s = current.getSubterm(1);
-			IStrategoTerm t = current.getSubterm(2);
+			IStrategoTerm s = termAt(current, 1);
+			IStrategoTerm t = termAt(current, 2);
 			if (cons == sdefT) {
-				IStrategoString name = toStringAt(current, 0);
-				name = factory.makeString(cify(toJavaString(name)) + "_" + s.getSubtermCount() + "_" + t.getSubtermCount());
-				current = factory.makeAppl(cons, name, s, t, current.getSubterm(3));
+				IStrategoString name = termAt(current, 0);
+				name = factory.makeString(cify(asJavaString(name)) + "_" + s.getSubtermCount() + "_" + t.getSubtermCount());
+				current = factory.makeAppl(cons, name, s, t, termAt(current, 3));
 			} else {
-				IStrategoAppl svar = toApplAt(current, 0);
-				IStrategoTerm name = svar.getSubterm( 0);
-				name = factory.makeString(cify(toJavaString(name)) + "_" + s.getSubtermCount() + "_" + t.getSubtermCount());
+				IStrategoAppl svar = termAt(current, 0);
+				IStrategoTerm name = termAt(svar, 0);
+				name = factory.makeString(cify(asJavaString(name)) + "_" + s.getSubtermCount() + "_" + t.getSubtermCount());
 				name = factory.makeAppl(svar.getConstructor(), name);
 				current = factory.makeAppl(cons, name, s, t);
 			}

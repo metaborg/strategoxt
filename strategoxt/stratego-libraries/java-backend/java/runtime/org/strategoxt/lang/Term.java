@@ -4,7 +4,6 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.TermFactory;
-import org.spoofax.terms.util.TermUtils;
 
 public class Term {
 	
@@ -15,7 +14,7 @@ public class Term {
 	private Term() {}
 	
 	public static IStrategoList checkListTail(IStrategoTerm t) {
-		if(!TermUtils.isList(t)) {
+		if(t.getTermType() != IStrategoTerm.LIST) {
 			System.err.println("Warning: trying to build list with illegal tail: " + t.toString());
 			    return null;
 		}
@@ -23,7 +22,7 @@ public class Term {
 	}
 
 	public static IStrategoList checkListAnnos(ITermFactory factory, IStrategoTerm annos) {
-		return !TermUtils.isList(annos)
+		return annos.getTermType() != IStrategoTerm.LIST
 			? factory.makeList(annos)
 			: (IStrategoList) annos;
 	}

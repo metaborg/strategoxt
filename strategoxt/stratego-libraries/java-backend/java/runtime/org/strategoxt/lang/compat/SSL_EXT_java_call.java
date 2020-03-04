@@ -1,5 +1,7 @@
 package org.strategoxt.lang.compat;
 
+import static org.spoofax.interpreter.core.Tools.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,8 +22,6 @@ import org.strategoxt.lang.InteropContext;
 import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.Strategy;
-
-import static org.spoofax.terms.util.TermUtils.*;
 
 /**
  * Calls another Java component, loaded using reflection.
@@ -61,8 +61,8 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 	public boolean call(IContext env, org.spoofax.interpreter.stratego.Strategy[] svars,
 			IStrategoTerm[] tvars) throws InterpreterException {
 		
-		if (!isString(tvars[0])) return false;
-		if (!isInt(tvars[2])) return false;
+		if (!isTermString(tvars[0])) return false;
+		if (!isTermInt(tvars[2])) return false;
 
 		String className = ((IStrategoString) tvars[0]).stringValue();
 		if (className.indexOf('/') != -1) return false;
