@@ -1003,10 +1003,14 @@ rules
     where
       <separate-by-comma> exprs => args
 
+overlays
+
+  MaxTermSize() = 15
+
 rules
 
   worstcase-nicecase(worstcase,nicecase) =
-    where(<gt> (<term-size>, !15))
+    where(<gt> (<term-size>, MaxTermSize()))
   < worstcase
   + nicecase
 
