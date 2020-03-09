@@ -91,7 +91,7 @@ public class InteropSDefT extends SDefT {
 		String name = getName();
 		int countEnd = name.lastIndexOf('_');
 		int countStart = name.lastIndexOf('_', countEnd - 1);
-		if (countStart == -1 || countEnd == -1) {
+		if (countStart == -1 || countEnd == -1 || name.contains("$lifted")) {
 			return NO_SVARS; // FIXME: properly handle "lifted" InteropSDefT strategies
 		}
 		int count = Integer.parseInt(name.substring(countStart + 1, countEnd));
