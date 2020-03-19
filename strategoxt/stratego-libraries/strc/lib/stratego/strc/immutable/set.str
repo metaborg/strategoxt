@@ -7,7 +7,7 @@
  * @author Jeff Smits <mail@jeffsmits.net>
  *
  */
-module collection/immutable/set
+module set
 imports
   libstratego-lib
 
@@ -28,28 +28,28 @@ strategies
  *
  * @type _ -> ImmutableSet
  */
-imset-new = prim("SSL_immutable_set"); !ImmutableSet(<id>)
+internal imset-new = prim("SSL_immutable_set"); !ImmutableSet(<id>)
 
 /**
  * Create an immutable set from a list.
  *
  * @type List -> ImmutableSet
  */
-imset-from-list = prim("SSL_immutable_set_from_list"); !ImmutableSet(<id>)
+internal imset-from-list = prim("SSL_immutable_set_from_list"); !ImmutableSet(<id>)
 
 /**
  * Turn the immutable set into a list.
  *
  * @type ImmutableSet -> List
  */
-imset-to-list = imset-elements
+internal imset-to-list = imset-elements
 
 /**
  * Get all elements of the immutable set.
  *
  * @type ImmutableSet -> List
  */
-imset-elements = ?ImmutableSet(<id>); prim("SSL_immutable_set_elements")
+internal imset-elements = ?ImmutableSet(<id>); prim("SSL_immutable_set_elements")
 
 /**
  * Elemental operations
@@ -61,7 +61,7 @@ strategies
  *
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-empty = equal(|<imset-new>)
+internal imset-empty = equal(|<imset-new>)
 
 /**
  * Succeeds if element is in the immutable set.
@@ -69,7 +69,7 @@ imset-empty = equal(|<imset-new>)
  * @param e - the element that containment is tested for
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-contains(|e) = ImmutableSet(prim("SSL_immutable_set_contains", e))
+internal imset-contains(|e) = ImmutableSet(prim("SSL_immutable_set_contains", e))
 
 /**
  * Succeeds is element is in the immutable set.
@@ -79,7 +79,7 @@ imset-contains(|e) = ImmutableSet(prim("SSL_immutable_set_contains", e))
  * @param e - the element that containment is tested for
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-contains(eq|e) = ImmutableSet(prim("SSL_immutable_set_contains_eq", eq | e))
+internal imset-contains(eq|e) = ImmutableSet(prim("SSL_immutable_set_contains_eq", eq | e))
 
 /**
  * Inserts an element in the immutable set. Returns a new set with the added element.
@@ -87,7 +87,7 @@ imset-contains(eq|e) = ImmutableSet(prim("SSL_immutable_set_contains_eq", eq | e
  * @param e - the element that is inserted
  * @type ImmutableSet -> ImmutableSet
  */
-imset-insert(|e) = ImmutableSet(prim("SSL_immutable_set_insert", e))
+internal imset-insert(|e) = ImmutableSet(prim("SSL_immutable_set_insert", e))
 
 /**
  * Inserts an element in the immutable set. Returns a new set with the added element.
@@ -97,7 +97,7 @@ imset-insert(|e) = ImmutableSet(prim("SSL_immutable_set_insert", e))
  * @param e - the element that is inserted
  * @type ImmutableSet -> ImmutableSet
  */
-imset-insert(eq|e) = ImmutableSet(prim("SSL_immutable_set_insert_eq", eq | e))
+internal imset-insert(eq|e) = ImmutableSet(prim("SSL_immutable_set_insert_eq", eq | e))
 
 /**
  * Removes an element in the immutable set. Returns a new set without the removed element.
@@ -105,7 +105,7 @@ imset-insert(eq|e) = ImmutableSet(prim("SSL_immutable_set_insert_eq", eq | e))
  * @param e - the element that is removed
  * @type ImmutableSet -> ImmutableSet
  */
-imset-remove(|e) = ImmutableSet(prim("SSL_immutable_set_remove", e))
+internal imset-remove(|e) = ImmutableSet(prim("SSL_immutable_set_remove", e))
 
 /**
  * Removes an element in the immutable set. Returns a new set without the removed element.
@@ -115,7 +115,7 @@ imset-remove(|e) = ImmutableSet(prim("SSL_immutable_set_remove", e))
  * @param e - the element that is removed
  * @type ImmutableSet -> ImmutableSet
  */
-imset-remove(eq|e) = ImmutableSet(prim("SSL_immutable_set_remove_eq", eq | e))
+internal imset-remove(eq|e) = ImmutableSet(prim("SSL_immutable_set_remove_eq", eq | e))
 
 /**
  * Higher-order operations
@@ -129,7 +129,7 @@ strategies
  * @param s: Term -?> Term
  * @type ImmutableSet -> ImmutableSet
  */
-imset-filter(s) = ImmutableSet(prim("SSL_immutable_set_filter", s|))
+internal imset-filter(s) = ImmutableSet(prim("SSL_immutable_set_filter", s|))
 
 /**
  * Map all elements from the immutable set.
@@ -138,7 +138,7 @@ imset-filter(s) = ImmutableSet(prim("SSL_immutable_set_filter", s|))
  * @param s: Term -> Term
  * @type ImmutableSet -> ImmutableSet
  */
-imset-map(s) = ImmutableSet(prim("SSL_immutable_set_map", s|))
+internal imset-map(s) = ImmutableSet(prim("SSL_immutable_set_map", s|))
 
 /**
  * Combining operations
@@ -152,7 +152,7 @@ strategies
  * @param other: ImmutableSet
  * @type ImmutableSet -> ImmutableSet
  */
-imset-intersect(|r) = where(ImmutableSet(other) := r);
+internal imset-intersect(|r) = where(ImmutableSet(other) := r);
   ImmutableSet(prim("SSL_immutable_set_intersect", other))
 
 /**
@@ -161,7 +161,7 @@ imset-intersect(|r) = where(ImmutableSet(other) := r);
  *
  * @type ImmutableSet * ImmutableSet -> ImmutableSet
  */
-imset-intersect =
+internal imset-intersect =
   ?(l, r); <imset-intersect(|r)> l
 
 /**
@@ -171,7 +171,7 @@ imset-intersect =
  * @param other: ImmutableSet - the set to remove from the current term immutable set
  * @type ImmutableSet -> ImmutableSet
  */
-imset-subtract(|r) = where(ImmutableSet(other) := r);
+internal imset-subtract(|r) = where(ImmutableSet(other) := r);
   ImmutableSet(prim("SSL_immutable_set_subtract", other))
 
 /**
@@ -180,7 +180,7 @@ imset-subtract(|r) = where(ImmutableSet(other) := r);
  *
  * @type ImmutableSet * ImmutableSet -> ImmutableSet
  */
-imset-subtract =
+internal imset-subtract =
   ?(l, r); <imset-subtract(|r)> l
 
 /**
@@ -190,7 +190,7 @@ imset-subtract =
  * @param other: ImmutableSet - the set to remove from the current term immutable set
  * @type ImmutableSet -> ImmutableSet
  */
-imset-union(|r) = where(ImmutableSet(other) := r);
+internal imset-union(|r) = where(ImmutableSet(other) := r);
   ImmutableSet(prim("SSL_immutable_set_union", other))
 
 /**
@@ -199,7 +199,7 @@ imset-union(|r) = where(ImmutableSet(other) := r);
  *
  * @type ImmutableSet * ImmutableSet -> ImmutableSet
  */
-imset-union =
+internal imset-union =
   ?(l, r); <imset-union(|r)> l
 
 /**
@@ -215,7 +215,7 @@ strategies
  * @param other: ImmutableSet
  * @type ImmutableSet -> ImmutableSet
  */
-imset-intersect(eq|r) = where(ImmutableSet(other) := r);
+internal imset-intersect(eq|r) = where(ImmutableSet(other) := r);
   ?ImmutableSet(_); prim("SSL_immutable_set_intersect_eq", eq | other)
 
 /**
@@ -225,7 +225,7 @@ imset-intersect(eq|r) = where(ImmutableSet(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableSet * ImmutableSet -> ImmutableSet
  */
-imset-intersect(eq) =
+internal imset-intersect(eq) =
   ?(l, r); <imset-intersect(eq|r)> l
 
 /**
@@ -236,7 +236,7 @@ imset-intersect(eq) =
  * @param other: ImmutableSet - the set to remove from the current term immutable set
  * @type ImmutableSet -> ImmutableSet
  */
-imset-subtract(eq|r) = where(ImmutableSet(other) := r);
+internal imset-subtract(eq|r) = where(ImmutableSet(other) := r);
   ImmutableSet(prim("SSL_immutable_set_subtract_eq", eq | other))
 
 /**
@@ -246,7 +246,7 @@ imset-subtract(eq|r) = where(ImmutableSet(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableSet * ImmutableSet -> ImmutableSet
  */
-imset-subtract(eq) =
+internal imset-subtract(eq) =
   ?(l, r); <imset-subtract(eq|r)> l
 
 /**
@@ -257,7 +257,7 @@ imset-subtract(eq) =
  * @param other: ImmutableSet - the set to remove from the current term immutable set
  * @type ImmutableSet -> ImmutableSet
  */
-imset-union(eq|r) = where(ImmutableSet(other) := r);
+internal imset-union(eq|r) = where(ImmutableSet(other) := r);
   ImmutableSet(prim("SSL_immutable_set_union_eq", eq | other))
 
 /**
@@ -267,7 +267,7 @@ imset-union(eq|r) = where(ImmutableSet(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableSet * ImmutableSet -> ImmutableSet
  */
-imset-union(eq) =
+internal imset-union(eq) =
   ?(l, r); <imset-union(eq|r)> l
 
 /**
@@ -282,7 +282,7 @@ strategies
  * @param other: ImmutableSet - the set to test if superset of current set
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-subset(|r) = where(ImmutableSet(other) := r);
+internal imset-subset(|r) = where(ImmutableSet(other) := r);
   ImmutableSet(prim("SSL_immutable_set_strict_subset", other))
 
 /**
@@ -291,7 +291,7 @@ imset-subset(|r) = where(ImmutableSet(other) := r);
  *
  * @type ImmutableSet * ImmutableSet -?> ImmutableSet * ImmutableSet
  */
-imset-subset =
+internal imset-subset =
   ?(l, r); where(<imset-subset(|r)> l)
 
 /**
@@ -301,7 +301,7 @@ imset-subset =
  * @param other: ImmutableSet - the set to test if subset of current set
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-superset(|r): l -> <imset-subset(|l);!l> r
+internal imset-superset(|r): l -> <imset-subset(|l);!l> r
 
 /**
  * Strict superset comparison between left and right immutable set.
@@ -309,7 +309,7 @@ imset-superset(|r): l -> <imset-subset(|l);!l> r
  *
  * @type ImmutableSet * ImmutableSet -?> ImmutableSet * ImmutableSet
  */
-imset-superset =
+internal imset-superset =
   ?(l, r); where(<imset-superset(|r)> l)
 
 /**
@@ -319,7 +319,7 @@ imset-superset =
  * @param other: ImmutableSet - the set to test if superset of current set
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-subset-eq(|r) = where(ImmutableSet(other) := r);
+internal imset-subset-eq(|r) = where(ImmutableSet(other) := r);
   ( ImmutableSet(prim("SSL_immutable_set_strict_subset", other))
   <+ ?ImmutableSet(r))
 
@@ -329,7 +329,7 @@ imset-subset-eq(|r) = where(ImmutableSet(other) := r);
  *
  * @type ImmutableSet * ImmutableSet -?> ImmutableSet * ImmutableSet
  */
-imset-subset-eq =
+internal imset-subset-eq =
   ?(l, r); where(<imset-subset-eq(|r)> l)
 
 /**
@@ -339,7 +339,7 @@ imset-subset-eq =
  * @param other: ImmutableSet - the set to test if subset of current set
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-superset-eq(|r): l -> <imset-subset-eq(|l);!l> r
+internal imset-superset-eq(|r): l -> <imset-subset-eq(|l);!l> r
 
 /**
  * Strict superset comparison between left and right immutable set.
@@ -347,7 +347,7 @@ imset-superset-eq(|r): l -> <imset-subset-eq(|l);!l> r
  *
  * @type ImmutableSet * ImmutableSet -?> ImmutableSet * ImmutableSet
  */
-imset-superset-eq =
+internal imset-superset-eq =
   ?(l, r); where(<imset-superset-eq(|r)> l)
 
 /**
@@ -363,7 +363,7 @@ strategies
  * @param other: ImmutableSet - the set to test if superset of current set
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-subset(eq|r) = where(ImmutableSet(other) := r);
+internal imset-subset(eq|r) = where(ImmutableSet(other) := r);
   ImmutableSet(prim("SSL_immutable_set_strict_subset_eq", eq | other))
 
 /**
@@ -373,7 +373,7 @@ imset-subset(eq|r) = where(ImmutableSet(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableSet * ImmutableSet -?> ImmutableSet * ImmutableSet
  */
-imset-subset(eq) =
+internal imset-subset(eq) =
   ?(l, r); where(<imset-subset(eq|r)> l)
 
 /**
@@ -384,7 +384,7 @@ imset-subset(eq) =
  * @param other: ImmutableSet - the set to test if subset of current set
  * @type ImmutableSet -?> ImmutableSet
  */
-imset-superset(eq|r): l -> <imset-subset(eq|l);!l> r
+internal imset-superset(eq|r): l -> <imset-subset(eq|l);!l> r
 
 /**
  * Strict superset comparison between left and right immutable set.
@@ -393,5 +393,5 @@ imset-superset(eq|r): l -> <imset-subset(eq|l);!l> r
  * @param eq: Term * Term -?>
  * @type ImmutableSet * ImmutableSet -?> ImmutableSet * ImmutableSet
  */
-imset-superset(eq) =
+internal imset-superset(eq) =
   ?(l, r); where(<imset-superset(eq|r)> l)

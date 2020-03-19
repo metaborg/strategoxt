@@ -16,6 +16,9 @@ imports
   collection/set/indexed
   collection/tuple/common
   collection/tuple/cons
+//  collection/immutable/map
+//  collection/immutable/rel
+//  collection/immutable/set
 
   lang/cong
   lang/dynamic-rules

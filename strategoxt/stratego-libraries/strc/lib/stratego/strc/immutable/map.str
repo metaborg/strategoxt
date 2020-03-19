@@ -7,11 +7,11 @@
  * @author Jeff Smits <mail@jeffsmits.net>
  *
  */
-module collection/immutable/map
+module map
 imports
   libstratego-lib
-  collection/immutable/set
-  collection/immutable/rel
+  stratego/strc/immutable/set
+  stratego/strc/immutable/rel
 
 signature
   constructors
@@ -30,7 +30,7 @@ strategies
  *
  * @type _ -> ImmutableMap
  */
-immap-new = prim("SSL_immutable_map"); !ImmutableMap(<id>)
+internal immap-new = prim("SSL_immutable_map"); !ImmutableMap(<id>)
 
 /**
  * Create an immutable map from a list of pairs.
@@ -38,7 +38,7 @@ immap-new = prim("SSL_immutable_map"); !ImmutableMap(<id>)
  *
  * @type List -> ImmutableMap
  */
-immap-from-list = immap-from-list(Fst)
+internal immap-from-list = immap-from-list(Fst)
 
 /**
  * Create an immutable map from a list of pairs.
@@ -48,49 +48,49 @@ immap-from-list = immap-from-list(Fst)
  * @param merge: Term * Term -> Term
  * @type List -> ImmutableMap
  */
-immap-from-list(merge) = prim("SSL_immutable_map_from_list", merge|); !ImmutableMap(<id>)
+internal immap-from-list(merge) = prim("SSL_immutable_map_from_list", merge|); !ImmutableMap(<id>)
 
 /**
  * Turn the immutable map into a list of pairs.
  *
  * @type ImmutableMap -> List
  */
-immap-to-list = ?ImmutableMap(<id>); prim("SSL_immutable_map_to_list")
+internal immap-to-list = ?ImmutableMap(<id>); prim("SSL_immutable_map_to_list")
 
 /**
  * Turn the immutable map into an immutable relation.
  *
  * @type ImmutableMap -> ImmutableRelation
  */
-immap-to-imrel = ?ImmutableMap(<id>); prim("SSL_immutable_map_to_relation"); !ImmutableRelation(<id>)
+internal immap-to-imrel = ?ImmutableMap(<id>); prim("SSL_immutable_map_to_relation"); !ImmutableRelation(<id>)
 
 /**
  * Get all keys of the immutable map.
  *
  * @type ImmutableMap -> List
  */
-immap-keys = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys")
+internal immap-keys = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys")
 
 /**
  * Get all keys of the immutable map as an immutable set.
  *
  * @type ImmutableMap -> List
  */
-immap-keys-imset = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys_to_set"); !ImmutableSet(<id>)
+internal immap-keys-imset = ?ImmutableMap(<id>); prim("SSL_immutable_map_keys_to_set"); !ImmutableSet(<id>)
 
 /**
  * Get all values of the immutable map.
  *
  * @type ImmutableMap -> List
  */
-immap-values = ?ImmutableMap(<id>); prim("SSL_immutable_map_values")
+internal immap-values = ?ImmutableMap(<id>); prim("SSL_immutable_map_values")
 
 /**
  * Get all values of the immutable map.
  *
  * @type ImmutableMap -> ImmutableSet
  */
-immap-values-imset = ?ImmutableMap(<id>); prim("SSL_immutable_map_values"); imset-from-list
+internal immap-values-imset = ?ImmutableMap(<id>); prim("SSL_immutable_map_values"); imset-from-list
 
 /**
  * Elemental operations
@@ -102,7 +102,7 @@ strategies
  *
  * @type ImmutableMap -?> ImmutableMap
  */
-immap-empty = equal(|<immap-new>)
+internal immap-empty = equal(|<immap-new>)
 
 /**
  * Succeeds if the key is in the immutable map.
@@ -110,7 +110,7 @@ immap-empty = equal(|<immap-new>)
  * @param k - the key
  * @type ImmutableMap -?> ImmutableMap
  */
-immap-contains-key(|k) = where(immap-get(|k))
+internal immap-contains-key(|k) = where(immap-get(|k))
 
 /**
  * Succeeds if the key is in the immutable map.
@@ -120,7 +120,7 @@ immap-contains-key(|k) = where(immap-get(|k))
  * @param k - the key
  * @type ImmutableMap -?> ImmutableMap
  */
-immap-contains-key(eq|k) = where(immap-get(eq|k))
+internal immap-contains-key(eq|k) = where(immap-get(eq|k))
 
 /**
  * Returns the associated value of the key in the immutable map,
@@ -129,7 +129,7 @@ immap-contains-key(eq|k) = where(immap-get(eq|k))
  * @param e - the key used to look up the value
  * @type ImmutableMap -?> Term
  */
-immap-get(|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get", k)
+internal immap-get(|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get", k)
 
 /**
  * Returns the associated value of the key in the immutable map,
@@ -140,7 +140,7 @@ immap-get(|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get", k)
  * @param e - the key used to look up the value
  * @type ImmutableMap -?> Term
  */
-immap-get(eq|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get_eq", eq | k)
+internal immap-get(eq|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get_eq", eq | k)
 
 /**
  * Inserts an element in the immutable map. Returns a new map with the added element.
@@ -148,7 +148,7 @@ immap-get(eq|k) = ?ImmutableMap(<id>); prim("SSL_immutable_map_get_eq", eq | k)
  * @param e - the element that is inserted
  * @type ImmutableMap -> ImmutableMap
  */
-immap-put(|k, v) = ImmutableMap(prim("SSL_immutable_map_put", k, v))
+internal immap-put(|k, v) = ImmutableMap(prim("SSL_immutable_map_put", k, v))
 
 /**
  * Inserts an element in the immutable map. Returns a new map with the added element.
@@ -158,7 +158,7 @@ immap-put(|k, v) = ImmutableMap(prim("SSL_immutable_map_put", k, v))
  * @param e - the element that is inserted
  * @type ImmutableMap -> ImmutableMap
  */
-immap-put(eq|k, v) = ImmutableMap(prim("SSL_immutable_map_put_eq", eq | k, v))
+internal immap-put(eq|k, v) = ImmutableMap(prim("SSL_immutable_map_put_eq", eq | k, v))
 
 /**
  * Removes an element in the immutable map. Returns a new map without the removed element.
@@ -166,7 +166,7 @@ immap-put(eq|k, v) = ImmutableMap(prim("SSL_immutable_map_put_eq", eq | k, v))
  * @param e - the element that is removed
  * @type ImmutableMap -> ImmutableMap
  */
-immap-remove(|k) = ImmutableMap(prim("SSL_immutable_map_remove", k))
+internal immap-remove(|k) = ImmutableMap(prim("SSL_immutable_map_remove", k))
 
 /**
  * Removes an element in the immutable map. Returns a new map without the removed element.
@@ -176,7 +176,7 @@ immap-remove(|k) = ImmutableMap(prim("SSL_immutable_map_remove", k))
  * @param e - the element that is removed
  * @type ImmutableMap -> ImmutableMap
  */
-immap-remove(eq|k) = ImmutableMap(prim("SSL_immutable_map_remove_eq", eq | k))
+internal immap-remove(eq|k) = ImmutableMap(prim("SSL_immutable_map_remove_eq", eq | k))
 
 /**
  * Higher-order operations
@@ -193,7 +193,7 @@ strategies
  * @param merge: Term * (Term * Term) -> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-filter'(s, merge) = ImmutableMap(prim("SSL_immutable_map_filter", s, merge|))
+internal immap-filter'(s, merge) = ImmutableMap(prim("SSL_immutable_map_filter", s, merge|))
 
 /**
  * Remove all pairs from the immutable map for which the filter strategy fails.
@@ -204,7 +204,7 @@ immap-filter'(s, merge) = ImmutableMap(prim("SSL_immutable_map_filter", s, merge
  * @param merge: Term * Term -> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-filter(s, merge) = immap-filter'(s, Snd;merge)
+internal immap-filter(s, merge) = immap-filter'(s, Snd;merge)
 
 /**
  * Remove all pairs from the immutable map for which the filter strategy fails.
@@ -214,7 +214,7 @@ immap-filter(s, merge) = immap-filter'(s, Snd;merge)
  * @param s: Term * Term -?> Term * Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-filter(s) = immap-filter(s, Fst)
+internal immap-filter(s) = immap-filter(s, Fst)
 
 /**
  * Remove all pairs from the immutable map for which the filter strategy fails on the key.
@@ -223,7 +223,7 @@ immap-filter(s) = immap-filter(s, Fst)
  * @param s: Term -?> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-filter-keys(s) = immap-filter((s, id))
+internal immap-filter-keys(s) = immap-filter((s, id))
 
 /**
  * Remove all pairs from the immutable map for which the filter strategy fails on the value.
@@ -232,7 +232,7 @@ immap-filter-keys(s) = immap-filter((s, id))
  * @param s: Term -?> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-filter-values(s) = immap-filter((id, s))
+internal immap-filter-values(s) = immap-filter((id, s))
 
 /**
  * Map all pairs from the immutable map.
@@ -244,7 +244,7 @@ immap-filter-values(s) = immap-filter((id, s))
  * @param merge: Term * (Term * Term) -> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-map'(s, merge) = ImmutableMap(prim("SSL_immutable_map_map", s, merge|))
+internal immap-map'(s, merge) = ImmutableMap(prim("SSL_immutable_map_map", s, merge|))
 
 /**
  * Map all pairs from the immutable map.
@@ -255,7 +255,7 @@ immap-map'(s, merge) = ImmutableMap(prim("SSL_immutable_map_map", s, merge|))
  * @param merge: Term * Term -> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-map(s, merge) = immap-map'(s, Snd;merge)
+internal immap-map(s, merge) = immap-map'(s, Snd;merge)
 
 /**
  * Map all pairs from the immutable map.
@@ -265,7 +265,7 @@ immap-map(s, merge) = immap-map'(s, Snd;merge)
  * @param s: Term -> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-map(s) = immap-map(s, Fst)
+internal immap-map(s) = immap-map(s, Fst)
 
 /**
  * Map all keys from the immutable map.
@@ -275,7 +275,7 @@ immap-map(s) = immap-map(s, Fst)
  * @param s: Term -> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-map-keys(s, merge) = immap-map((s, id), merge)
+internal immap-map-keys(s, merge) = immap-map((s, id), merge)
 
 /**
  * Map all values from the immutable map.
@@ -284,7 +284,7 @@ immap-map-keys(s, merge) = immap-map((s, id), merge)
  * @param s: Term -> Term
  * @type ImmutableMap -> ImmutableMap
  */
-immap-map-values(s) = immap-map((id, s))
+internal immap-map-values(s) = immap-map((id, s))
 
 /**
  * Combining operations
@@ -300,7 +300,7 @@ strategies
  * @param other: ImmutableMap
  * @type ImmutableMap -> ImmutableMap
  */
-immap-intersect(m|r) = where(ImmutableMap(other) := r);
+internal immap-intersect(m|r) = where(ImmutableMap(other) := r);
   ImmutableMap(prim("SSL_immutable_map_intersect", m | other))
 
 /**
@@ -311,7 +311,7 @@ immap-intersect(m|r) = where(ImmutableMap(other) := r);
  * @param m: Term * Term -> Term
  * @type ImmutableMap * ImmutableMap -> ImmutableMap
  */
-immap-intersect(m) =
+internal immap-intersect(m) =
   ?(l, r); <immap-intersect(m|r)> l
 
 /**
@@ -321,7 +321,7 @@ immap-intersect(m) =
  * @param other: ImmutableSet
  * @type ImmutableMap -> ImmutableMap
  */
-immap-intersect-set(|r) = where(ImmutableSet(other) := r);
+internal immap-intersect-set(|r) = where(ImmutableSet(other) := r);
   ImmutableMap(prim("SSL_immutable_map_intersect_set", other))
 
 /**
@@ -331,7 +331,7 @@ immap-intersect-set(|r) = where(ImmutableSet(other) := r);
  *
  * @type ImmutableMap * ImmutableSet -> ImmutableMap
  */
-immap-intersect-set =
+internal immap-intersect-set =
   ?(l, r); <immap-intersect-set(|r)> l
 
 /**
@@ -341,7 +341,7 @@ immap-intersect-set =
  * @param other: ImmutableMap - the map to remove from the current term immutable map
  * @type ImmutableMap -> ImmutableMap
  */
-immap-subtract(|r) = where(ImmutableMap(other) := r);
+internal immap-subtract(|r) = where(ImmutableMap(other) := r);
   ImmutableMap(prim("SSL_immutable_map_subtract", other))
 
 /**
@@ -350,7 +350,7 @@ immap-subtract(|r) = where(ImmutableMap(other) := r);
  *
  * @type ImmutableMap * ImmutableMap -> ImmutableMap
  */
-immap-subtract =
+internal immap-subtract =
   ?(l, r); <immap-subtract(|r)> l
 
 /**
@@ -360,7 +360,7 @@ immap-subtract =
  * @param other: ImmutableSet - the set to remove from the current term immutable map
  * @type ImmutableMap -> ImmutableMap
  */
-immap-subtract-set(|r) = where(ImmutableSet(other) := r);
+internal immap-subtract-set(|r) = where(ImmutableSet(other) := r);
   ImmutableMap(prim("SSL_immutable_map_subtract_set", other))
 
 /**
@@ -369,7 +369,7 @@ immap-subtract-set(|r) = where(ImmutableSet(other) := r);
  *
  * @type ImmutableMap * ImmutableSet -> ImmutableMap
  */
-immap-subtract-set =
+internal immap-subtract-set =
   ?(l, r); <immap-subtract(|r)> l
 
 /**
@@ -381,7 +381,7 @@ immap-subtract-set =
  * @param other: ImmutableMap - the map to remove from the current term immutable map
  * @type ImmutableMap -> ImmutableMap
  */
-immap-union(m|r) = where(ImmutableMap(other) := r);
+internal immap-union(m|r) = where(ImmutableMap(other) := r);
   ImmutableMap(prim("SSL_immutable_map_union", m | other))
 
 /**
@@ -392,7 +392,7 @@ immap-union(m|r) = where(ImmutableMap(other) := r);
  * @param m: Term * Term -> Term
  * @type ImmutableMap * ImmutableSet -> ImmutableMap
  */
-immap-union(m) =
+internal immap-union(m) =
   ?(l, r); <immap-union(m|r)> l
 
 /**
@@ -410,7 +410,7 @@ strategies
  * @param other: ImmutableMap
  * @type ImmutableMap -> ImmutableMap
  */
-immap-intersect(m, eq|r) = where(ImmutableMap(other) := r);
+internal immap-intersect(m, eq|r) = where(ImmutableMap(other) := r);
   ImmutableMap(prim("SSL_immutable_map_intersect_eq", m, eq | other))
 
 /**
@@ -422,7 +422,7 @@ immap-intersect(m, eq|r) = where(ImmutableMap(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableMap * ImmutableMap -> ImmutableMap
  */
-immap-intersect(m, eq) =
+internal immap-intersect(m, eq) =
   ?(l, r); <immap-intersect(m, eq|r)> l
 
 /**
@@ -433,7 +433,7 @@ immap-intersect(m, eq) =
  * @param other: ImmutableSet
  * @type ImmutableMap -> ImmutableMap
  */
-immap-intersect-set(eq|r) = where(ImmutableSet(other) := r);
+internal immap-intersect-set(eq|r) = where(ImmutableSet(other) := r);
   ImmutableMap(prim("SSL_immutable_map_intersect_set_eq", eq | other))
 
 /**
@@ -444,7 +444,7 @@ immap-intersect-set(eq|r) = where(ImmutableSet(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableMap * ImmutableSet -> ImmutableMap
  */
-immap-intersect-set(eq) =
+internal immap-intersect-set(eq) =
   ?(l, r); <immap-intersect-set(eq|r)> l
 
 /**
@@ -455,7 +455,7 @@ immap-intersect-set(eq) =
  * @param other: ImmutableMap - the map to remove from the current term immutable map
  * @type ImmutableMap -> ImmutableMap
  */
-immap-subtract(eq|r) = where(ImmutableMap(other) := r);
+internal immap-subtract(eq|r) = where(ImmutableMap(other) := r);
   ImmutableMap(prim("SSL_immutable_map_subtract_eq", eq | other))
 
 /**
@@ -465,7 +465,7 @@ immap-subtract(eq|r) = where(ImmutableMap(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableMap * ImmutableMap -> ImmutableMap
  */
-immap-subtract(eq) =
+internal immap-subtract(eq) =
   ?(l, r); <immap-subtract(eq|r)> l
 
 /**
@@ -476,7 +476,7 @@ immap-subtract(eq) =
  * @param other: ImmutableSet - the set to remove from the current term immutable map
  * @type ImmutableMap -> ImmutableMap
  */
-immap-subtract-set(eq|r) = where(ImmutableSet(other) := r);
+internal immap-subtract-set(eq|r) = where(ImmutableSet(other) := r);
   ImmutableMap(prim("SSL_immutable_map_subtract_set_eq", eq | other))
 
 /**
@@ -486,7 +486,7 @@ immap-subtract-set(eq|r) = where(ImmutableSet(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableMap * ImmutableSet -> ImmutableMap
  */
-immap-subtract-set(eq) =
+internal immap-subtract-set(eq) =
   ?(l, r); <immap-subtract(eq|r)> l
 
 /**
@@ -499,7 +499,7 @@ immap-subtract-set(eq) =
  * @param other: ImmutableMap - the map to remove from the current term immutable map
  * @type ImmutableMap -> ImmutableMap
  */
-immap-union(m, eq|r) = where(ImmutableMap(other) := r);
+internal immap-union(m, eq|r) = where(ImmutableMap(other) := r);
   ImmutableMap(prim("SSL_immutable_map_union_eq", m, eq | other))
 
 /**
@@ -511,5 +511,5 @@ immap-union(m, eq|r) = where(ImmutableMap(other) := r);
  * @param eq: Term * Term -?>
  * @type ImmutableMap * ImmutableSet -> ImmutableMap
  */
-immap-union(m, eq) =
+internal immap-union(m, eq) =
   ?(l, r); <immap-union(m, eq|r)> l

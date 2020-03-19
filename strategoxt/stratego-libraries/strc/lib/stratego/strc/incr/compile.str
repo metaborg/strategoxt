@@ -7,6 +7,13 @@ imports
 
   stratego/strc/incr/split-large-term-builds
 
+signature constructors
+  DefHasType : Id * SFunType -> Def
+
+  FunNoArgsType   : Type * Type -> SFunType
+  FunType         : List(SType) * Type * Type -> SFunType
+  FunTType        : List(SType) * List(Type) * Type * Type -> SFunType
+
 strategies
 
   // The following are for compiling a single strategy/constructor/overlay
@@ -17,15 +24,21 @@ strategies
       ; spec := Specification(ast)
 
   split-module: Module(m, defs) ->
-    (m, <concat> imps, strats', cons', olays')
+    (m, <concat> imps, strats3, cons', olays', defTypes)
   with id
     ; (imps, defs2) := <partition(?Imports(<id>))> defs
     ; (cons, defs3) := <partition(?Signature(<id>); retain-all(?Constructors(<id>)); concat)> defs2
     ; cons' := <concat;filter(split(m-constr-signature;constr-sig-to-string, !Signature([Constructors([<id>])])))> cons
     ; (olays, defs4) := <partition(?Overlays(<id>))> defs3
     ; olays' := <concat;map(split(m-overlay-signature;constr-sig-to-string, !Overlays([<id>])))> olays
-    ; strats := <mapconcat(?Rules(<id>) + ?Strategies(<id>))> defs4
-    ; strats' := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats
+    ; strats1 := <mapconcat(?Rules(<id>) + ?Strategies(<id>))> defs4
+    ; (defTypes, strats2) := <filter(split(def-type-signature, ?DefHasType(_, _)))> strats1
+    ; strats3 := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats2
+
+  def-type-signature: DefHasType(name, FunNoArgsType(_, _)) -> $[name_0_0]
+  def-type-signature: DefHasType(name, FunType(sarg*, _, _)) -> $[name_[<length> sarg*]_0]
+  def-type-signature: DefHasType(name, FunTType(sarg*, targ*, _, _)) ->
+    $[name_[<length> sarg*]_[<length> targ*]]
 
 strategies
 
