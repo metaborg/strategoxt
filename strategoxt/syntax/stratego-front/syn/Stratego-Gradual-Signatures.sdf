@@ -1,0 +1,31 @@
+module Stratego-Gradual-Signatures
+imports Stratego-Core-Identifiers
+
+exports
+  sorts Type SortT Dyn ConstrType
+
+  context-free syntax
+    "?"                    -> Dyn   {cons("Dyn")}
+    Dyn                    -> Type  {cons("DynT")}
+    "str"                  -> Type  {cons("StringT")}
+    "int"                  -> Type  {cons("IntT")}
+    "real"                 -> Type  {cons("RealT")}
+    Type "*" Type          -> Type  {cons("TupleT"), right}
+    SortT                  -> Type  
+    Id "(" {Type ","}* ")" -> SortT {cons("Sort")}
+    UCID                   -> SortT {cons("SortNoArgs")}
+    LCID                   -> SortT {cons("SortVar"), avoid}
+
+  sorts SType SFunType
+
+  context-free syntax
+    "?"                                                 -> SType    {cons("SDyn")}
+    SFunType                                            -> SType    
+    Type "->" Type                                      -> SFunType {cons("FunNoArgsType")}
+    "(" {SType ","}* ")" Type "->" Type                 -> SFunType {cons("FunType")}
+    "(" {SType ","}* "|" {Type ","}* ")" Type "->" Type -> SFunType {cons("FunTType")}
+
+  context-free syntax
+    "str"  -> Sort {cons("StringT"), avoid}
+    "int"  -> Sort {cons("IntT"), avoid}
+    "real" -> Sort {cons("RealT"), avoid}

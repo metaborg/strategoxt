@@ -1,0 +1,26 @@
+module Stratego-Gradual-Strategies
+imports Stratego-Gradual-Signatures Stratego-Core-Identifiers Stratego-Core-Strategies
+
+exports
+  sorts Strategy Coercion Proxy
+
+  context-free syntax
+    "cast" "(" Coercion ")"                                                                   -> Strategy  {cons("Cast")}
+    "fail"                                                                                    -> Coercion  {cons("Fail")}
+    "id"                                                                                      -> Coercion  {cons("Id")}
+    Type                                                                                      -> Coercion  {cons("RuntimeCheck")}
+    "id"                                                                                      -> SCoercion {cons("SId")}
+    Type                                                                                      -> SCoercion {cons("SRuntimeCheck")}
+    SortT "." Id                                                                              -> TypedId   {cons("TypedId")}
+    Proxy                                                                                     -> Strategy  
+    "proxy" "(" Coercion "," Coercion ")(" SVar ")"                                           -> Proxy     {cons("Proxy")}
+    "proxy" "(" {SCoercion ","}* "|" {Coercion ","}* ")(" Coercion "," Coercion ")(" SVar ")" -> Proxy     {cons("ProxyT")}
+
+  lexical syntax
+    "cast"  -> Id {reject}
+    "fail"  -> Id {reject}
+    "id"    -> Id {reject}
+    "proxy" -> Id {reject}
+
+  lexical restrictions
+    "cast" "fail" "id" "proxy" -/- [a-zA-Z0-9\'\-\_]
