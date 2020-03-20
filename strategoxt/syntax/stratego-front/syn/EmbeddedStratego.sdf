@@ -12,8 +12,8 @@ exports
               "|[" Opdecl "]|" -> E1 {cons("ToTerm")}
     "Constr"  "|[" Opdecl "]|" -> E1 {cons("ToTerm")}
 
-              "|[" Type   "]|" -> E1 {cons("ToTerm")}
-    "Type"    "|[" Type   "]|" -> E1 {cons("ToTerm")}
+              "|[" OldType   "]|" -> E1 {cons("ToTerm")}
+    "Type"    "|[" OldType   "]|" -> E1 {cons("ToTerm")}
 
     "Sort"    "|[" Sort   "]|" -> E1 {cons("ToTerm")}
 
@@ -66,7 +66,7 @@ exports
     "~*"  E2 -> Def+      {cons("FromTerm")}
 
     "~*"  E2 -> Opdecl+      {cons("FromTerm")}
-    "~*"  E2 -> {Type "*"}+  {cons("FromTerm")}
+    "~*"  E2 -> {OldType "*"}+  {cons("FromTerm")}
 
     "~*"          E2 -> {Typedid ","}+   {cons("FromTerm")}
     "~typed-id*:" E2 -> {Typedid ","}+   {cons("FromTerm")}
@@ -133,8 +133,8 @@ exports
     "a"[0-9\']*   "*"     -> {Typedid ","}+ {prefer}
     "as"[0-9\']*          -> {Typedid ","}+ {prefer,obsolete}
 
-    "tp"[0-9\']*          -> Type 
-    "tp"[0-9\']*  "*"     -> {Type "*"}+  
+    "tp"[0-9\']*          -> OldType 
+    "tp"[0-9\']*  "*"     -> {OldType "*"}+  
 
     "srt" [0-9\']*        -> Sort         {prefer}
     "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
