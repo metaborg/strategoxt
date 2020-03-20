@@ -8,8 +8,6 @@
  *
  */
 module set
-imports
-  libstratego-lib
 
 signature
   constructors

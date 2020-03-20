@@ -9,7 +9,6 @@
  */
 module collection/immutable/map
 imports
-  libstratego-lib
   collection/immutable/set
   collection/immutable/rel
 

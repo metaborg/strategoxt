@@ -9,7 +9,6 @@
  */
 module rel
 imports
-  libstratego-lib
   stratego/strc/immutable/set
 
 signature
@@ -161,7 +160,7 @@ internal imrel-get(|k) = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_
  * @param e - the element that is inserted
  * @type ImmutableRelation -> ImmutableRelation
  */
-internal imrel-put(|k, v) = ImmutableRelation(prim("SSL_immutable_relation_put", k, v))
+internal imrel-insert(|k, v) = ImmutableRelation(prim("SSL_immutable_relation_insert", k, v))
 
 /**
  * Removes an element in the immutable relation. Returns a new relation without the removed element.
