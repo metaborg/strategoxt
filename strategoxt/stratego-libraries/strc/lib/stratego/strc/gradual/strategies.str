@@ -1,0 +1,583 @@
+module stratego/strc/gradual/strategies
+
+imports
+
+stratego/strc/gradual/utils
+stratego/strc/gradual/environment
+stratego/strc/gradual/signatures
+stratego/strc/gradual/defs
+stratego/strc/gradual/terms
+stratego/strc/gradual/main
+stratego/strc/immutable/map
+stratego/strc/immutable/set
+
+strategies // Strategy (core)
+
+insertCasts-Strategy(|e1, st1) = otf12(insertCasts-Strategy-(|e1, st1))
+
+// insertCasts-Strategy- :: (|Environment, Store) Strategy -> (Strategy, Store)
+insertCasts-Strategy-(|e1, st1):
+  Let(d1*, s1) -> (Let(d2*, s2), st3)
+  with
+    e2 := <strat-merge-env(keep-right)> (e1, <getDefTypes> d1*)
+  ; (d2*, st2) := <thread-map(insertCasts-StrategyDef(|e2))> (d1*, st1)
+  ; (s2, st3) := <insertCasts-Strategy(|e2, <current-type(|<current-type> st1)> st2)> s1
+
+insertCasts-Strategy(|e1, st1):
+  c@CallT(SVar(x), s*, t*) -> result
+  with
+    if t1 := <strat-lookup(|x{}, <length> s*, <length> t*)> e1
+      then
+        result := <insertCasts-CallT(|e1, st1)> (c, t1)
+      else
+        <report-Err> (x, UnresolvedStrategy(<length> s*, <length> t*))
+      ; result := (c, <current-type(|ErrT())> st1)
+    end
+
+insertCasts-CallT(|e1, st1) = otf22(insertCasts-CallT-(|e1, st1))
+
+insertCasts-CallT-(|e1, st1):
+  (c1@CallT(v, s1*, t1*), FunTType(st*, tt*, t1, t2)) -> (c3, st4)
+  with
+    s2* := <zip> (s1*, st*)
+  ; t2* := <zip> (t1*, tt*)
+  ; t3 := <current-type> st1
+  ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
+  ; (t3*, st3) := <thread-map(insertCasts-Targ(|e1))> (t2*, st2)
+  ; st4 := <current-type(|t2)> st3
+  ; c2 := <otf(!CallT(v, s3*, t3*))> c1
+  ; c3 := <insertCastBefore(|t3, t1)> c2
+
+insertCasts-CallT(|e1, st1):
+  (call, SDyn()) -> (call, <current-type(|DynT())> st1)
+
+insertCasts-Strategy-(|e1, st1):
+  c1@CallDynamic(trm1, s1*, t1*) -> (CallDynamic(trm3, s3*, t3*), st6)
+  with
+    (trm2, st2) := <insertCasts-BuildTerm(|e1, st1)> trm1
+  ; t1 := <current-type> st2
+  ; (trm3, st3) := <insertCastApp(|t1, StringT())> (trm2, st2)
+  ; s2* := <map(!(<id>, SDyn()))> s1*
+  ; t2* := <map(!(<id>, DynT()))> t1*
+  ; (s3*, st4) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st3)
+  ; (t3*, st5) := <thread-map(insertCasts-Targ(|e1))> (t1*, st4)
+  ; st6 := <current-type(|DynT())> st5
+  ; <report-Err> (c1, CallDynamicNotSupported())
+
+insertCasts-Strategy(|e1, st1):
+  s@Fail() -> (s, <current-type(|FailT())> st1)
+
+insertCasts-Strategy(|e1, st1):
+  s@Id() -> (s, st1)
+
+insertCasts-Strategy-(|e1, st1):
+  p@ProceedT(s1*, t1*) -> (call, st4)
+  with
+    if FunTType(st*, tt*, t1, t2) := <strat-lookup(|ProceedNoArgs(), <length> s1*, <length> t1*)> e1
+    then
+      s2* := <zip> (s1*, st*)
+    ; t2* := <zip> (t1*, tt*)
+    ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
+    ; (t3*, st3) := <thread-map(insertCasts-Targ(|e1))> (t2*, st2)
+    ; st4 := <current-type(|t2)> st3
+    ; call := <insertCastBefore(|<current-type> st1, t1)> <otf(!ProceedT(s3*, t3*))> p
+    else
+      <report-Err> (p, ProceedInNonExtendStrategy())
+    ; s2* := <map(!ErrT())> s1*
+    ; t2* := <map(!ErrT())> t1*
+    ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
+    ; (t3*, st3) := <thread-map(insertCasts-Targ(|e1))> (t2*, st2)
+    ; call := ProceedT(s3*, t3*)
+    ; st4 := <current-type(|ErrT())> st3
+    end
+
+insertCasts-Strategy-(|e1, st1):
+  p@ProceedNoArgs() -> (call, st2)
+  with
+    if FunTType(st*, tt*, t1, t2) := <strat-lookup(|ProceedNoArgs(), 0, 0)> e1
+    then
+      if not([] := st*; [] := tt*)
+        then <report-Err> (p, ProceedWrongNumberOfArguments(<length> st*, <length> tt*))
+      end
+    ; st2 := <current-type(|t2)> st1
+    ; call := <insertCastBefore(|<current-type> st1, t1)> p
+    else
+      <report-Err> (p, ProceedInNonExtendStrategy())
+    ; st2 := <current-type(|ErrT())> st1
+    ; call := p
+    end
+
+insertCasts-Strategy-(|e1, st1):
+  Match(trm1) -> (<seqs> [Match(trm2) | s*], st2)
+  with
+    (trm2, (st2, s*)) := <insertCasts-MatchTerm(|e1, st1)> trm1
+
+insertCasts-Strategy-(|e1, st1):
+  Build(trm1) -> (Build(trm2), st2)
+  with
+    (trm2, st2) := <insertCasts-BuildTerm(|e1, st1)> trm1
+
+insertCasts-Strategy-(|e1, st1):
+  Scope(x*, s1) -> (Scope(x*, s2), st4)
+  with
+    // TODO: support type annotations on local variables
+    new := <map(!(<id>, DynT())); immap-from-list> x*
+  ; orig := <term-env;immap-intersect(keep-left|new)> st1
+  ; st2 := <term-merge-env(keep-right)> (st1, new)
+  ; (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1
+  ; st4 := <term-env(immap-subtract(|new);immap-union(fail|orig))> st3
+
+insertCasts-Strategy-(|e1, st1):
+  Seq(s1, s2) -> (Seq(s3, s4), st3)
+  with
+    (s3, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (s4, st3) := <insertCasts-Strategy(|e1, st2)> s2
+
+insertCasts-Strategy-(|e1, st1):
+  GuardedLChoice(s1, s2, s3) -> (GuardedLChoice(s4, s5, s6), st5)
+  with
+    (s4, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (s5, st3) := <insertCasts-Strategy(|e1, st2)> s2
+  ; (s6, st4) := <insertCasts-Strategy(|e1, st1)> s3
+  ; st5 := <st-merge(LUB <+ !DynT())> (st3, st4)
+
+insertCasts-Strategy-(|e1, st1):
+  PrimT(x, s1*, t1*) -> (PrimT(x, s2*, t2*), st4)
+  with
+    (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, SDyn()))> (s1*, st1)
+  ; (t2*, st3) := <thread-map(insertCasts-Targ(|e1))> (t1*, st2)
+  ; st4 := <current-type(|DynT())> st3
+
+insertCasts-Strategy-(|e1, st1):
+  Some(s1) -> (Some(s2), <current-type(|DynT())> st1)
+  with
+    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, SDyn())
+
+insertCasts-Strategy-(|e1, st1):
+  One(s1) -> (One(s2), <current-type(|DynT())> st1)
+  with
+    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, SDyn())
+
+insertCasts-Strategy-(|e1, st1):
+  All(s1) -> (All(s2), <current-type(|DynT())> st1)
+  with
+    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, SDyn())
+
+insertCasts-Strategy(|e1, st1):
+  s@ImportTerm(_) -> (s, <current-type(|DynT())> st1)
+
+insertCasts-Sarg(|e1):
+  (b, st1) -> <insertCasts-Sarg(|e1, st1)> b
+
+insertCasts-Sarg-Type(|e1, t):
+  (trm, st1) -> <insertCasts-Sarg(|e1, st1)> (trm, t)
+
+insertCasts-Sarg(|e1, st1):
+  (c@CallT(v@SVar(x), [], []), t1@FunTType(st*, tt*, _, _)) -> (s, st1)
+  with
+    t2 := <strat-lookup(|x{}, 0, 0)> e1
+  ; s := <insertCasts-Sarg-CallNoArgs> (v, t1, t2)
+
+insertCasts-Sarg(|e1, st1):
+  (c@Call(v@SVar(x), []), t1@FunTType(st*, tt*, _, _)) -> (s, st1)
+  with
+    t2 := <strat-lookup(|x{}, 0, 0)> e1
+  ; s := <insertCasts-Sarg-CallNoArgs> (v, t1, t2)
+
+insertCasts-Sarg(|e1, st1):
+  (c@CallNoArgs(v@SVar(x)), t1@FunTType(st*, tt*, _, _)) -> (s, st1)
+  with
+    t2 := <strat-lookup(|x{}, 0, 0)> e1
+  ; s := <insertCasts-Sarg-CallNoArgs> (v, t1, t2)
+
+insertCasts-Sarg(|e1, st1):
+  (s1, t1@FunTType(st*, tt*, t2, t3)) -> (s2, st2)
+with
+  (s2, st2) := <insertCasts-Strategy(|e1, <current-type(|t2)> st1)> s1
+; if not([] := st*; [] := tt*)
+    then <report-Err> (s1, CallStrategyArgumentTakesParameters(t1))
+  end
+; s3 := <rm-redundant-proxy> Proxy(Id(), <computeCoercion(|<current-type> st2, t3)>, s2)
+
+insertCasts-Sarg(|e1, st1):
+  (s1, SDyn()) -> (s2, st2)
+  with (s2, st2) := <insertCasts-Strategy(|e1, <current-type(|DynT())> st1)> s1
+
+insertCasts-Sarg-CallNoArgs = otf31(insertCasts-Sarg-CallNoArgs-)
+
+/**
+ * t1 is the expected type of the sarg, t4 is the actual type. Build a proxy that turns the input
+ *  types from t1 (as it will be used) into the t4 types, output type the other way around.
+ */
+insertCasts-Sarg-CallNoArgs-:
+  (v, t1@FunTType(st1*, tt1*, t2, t3), t4@FunTType(st2*, tt2*, t5, t6)) ->
+    <rm-redundant-proxy> ProxyT(sc*, tc*, c1, c2, v)
+  with
+    if not(<eq> (<length> st1*, <length> st2*); <eq> (<length> tt1*, <length> tt2*))
+      then <report-Err> (v, TypeMismatch(t1, t4))
+    end
+  ; sc* := <zip(computeSCoercion)> (st1*, st2*)
+  ; tc* := <zip(computeCoercion)> (tt1*, tt2*)
+  ; c1 := <computeCoercion(|t2, t5)>
+  ; c2 := <computeCoercion(|t6, t3)>
+
+insertCasts-Sarg-CallNoArgs-:
+  (v, FunTType(st*, tt*, t1, t2), SDyn()) -> <rm-redundant-proxy> ProxyT(sc*, tc*, Id(), c, v)
+  with
+    sc* := <map(!SId())> st*
+  ; tc* := <map(!Id())> tt*
+  ; c := <computeCoercion(|DynT(), t2)>
+
+rm-redundant-proxy =
+     ?Proxy(Id(){^_}, Id(){^_}, <!CallNoArgs(<id>)>)
+  <+ ProxyT(map(?SId(){^_}), map(?Id(){^_}), ?Id(){^_}, ?Id(){^_}, ?v);!CallNoArgs(v)
+  <+ id
+
+insertCasts-Targ(|e1):
+  ((trm1, t1), st1) -> <insertCasts-BuildTerm(|e1, st1, t1)> trm1
+
+strategies // Strategy (sugar)
+
+insertCasts-Strategy-(|e1, st1):
+  c@Call(SVar(x), s*) -> result
+  with
+    if t1 := <strat-lookup(|x{}, <length> s*, 0)> e1
+      then
+        result := <insertCasts-Call(|e1, st1)> (c, t1)
+      else
+        <report-Err> (x, UnresolvedStrategy(<length> s*, 0))
+      ; result := (c, <current-type(|ErrT())> st1)
+    end
+
+insertCasts-Call(|e1, st1) = otf22(insertCasts-Call-(|e1, st1))
+
+insertCasts-Call-(|e1, st1):
+  (c@Call(s, s1*), FunTType(st*, tt*, t1, t2)) -> (call, st3)
+  with
+    (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (<zip> (s1*, st*), st1)
+  ; st3 := <current-type(|t2)> st2
+  ; call := <insertCastBefore(|<current-type> st1, t1)> <otf(!Call(s, s3*))> c
+
+insertCasts-Call(|e1, st1):
+  (call, SDyn()) -> (call, <current-type(|DynT())> st1)
+
+insertCasts-Strategy-(|e1, st1):
+  ScopeDefault(s1) -> (ScopeDefault(s2), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, <new-st;current-type(|<current-type> st1)>)> s1
+    // Note how we only preserve the current type of st2 here 
+  ; st3 := <current-type(|<current-type> st2)> st1
+
+insertCasts-Strategy-(|e1, st1):
+  BA(s1, trm1) -> (BA(s2, trm2), st3)
+  with
+    (trm2, st2) := <insertCasts-BuildTerm(|e1, st1)> trm1
+  ; (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1
+
+insertCasts-Strategy-(|e1, st1):
+  LChoice(s1, s2) -> (LChoice(s3, s4), st4)
+  with
+    (s3, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (s4, st3) := <insertCasts-Strategy(|e1, st1)> s2
+  ; st4 := <st-merge(LUB <+ !DynT())> (st2, st3)
+
+insertCasts-Strategy-(|e1, st1):
+  Rec(x, s1) -> (Rec(x, s2), st2)
+  with
+    e2 := <strat-merge-env(keep-right)> (e1, <immap-from-list> [(x{}, FunTType())])
+  ; (s2, st2) := <insertCasts-Strategy(|e2, st1)> s1
+
+insertCasts-Strategy-(|e1, st1):
+  Not(s1) -> (Not(s2), st2)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+
+insertCasts-Strategy-(|e1, st1):
+  Where(s1) -> (Where(s2), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; st3 := <current-type(|st1)> st2
+
+insertCasts-Strategy-(|e1, st1):
+  With(s1) -> (With(s2), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; st3 := <current-type(|st1)> st2
+
+insertCasts-Strategy-(|e1, st1):
+  Test(s1) -> (Test(s2), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; st3 := <current-type(|st1)> st2
+
+insertCasts-Strategy-(|e1, st1):
+  Test(s1) -> (Test(s2), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; st3 := <current-type(|st1)> st2
+
+insertCasts-Strategy(|e1, st1):
+  s@PrimNoArgs(_) -> (s, <current-type(|DynT())> st1)
+
+insertCasts-Strategy-(|e1, st1):
+  Prim(x, t1*) -> (Prim(x, t2*), st3)
+  with
+    (t2*, st2) := <thread-map(insertCasts-Targ(|e1))> (<map(!(<id>, DynT()))> t1*, st1)
+  ; st3 := <current-type(|DynT())> st2
+
+
+litCongruence(|st1, t1) = otf12(litCongruence-(|st1, t1))
+
+litCongruence-(|st1, t1):
+  s -> (<insertCastBefore(|t2, t1)> s, st2)
+  with
+    t2 := <current-type> st1
+  ; st2 := <current-type(|t1)> st1
+
+insertCasts-Strategy(|e1, st1):
+  s@StrCong(_) -> <litCongruence(|st1, StringT())> s
+
+insertCasts-Strategy(|e1, st1):
+  s@IntCong(_) -> <litCongruence(|st1, IntT())> s
+
+insertCasts-Strategy(|e1, st1):
+  s@RealCong(_) -> <litCongruence(|st1, RealT())> s
+
+insertCasts-Strategy(|e1, st1):
+  s@CharCong(_) -> <litCongruence(|st1, IntT())> s
+
+insertCasts-Strategy-(|e1, st1):
+  CongQ(x, s1*) -> (s, st3)
+  with
+    t1 := <current-type> st1
+  ; t* := <constr-lookup(|x, <length> s1*)> e1
+  ; if [ConstrType(t1*, t2)] := t*
+    then
+      if DynT() := t1
+        then t2* := <map(!DynT())> t1*
+        else t2* := t1*
+      end
+    ; (s2*, st2) := <thread-map(insertCasts-Sarg(|e1))> (<zip> (s1*, t2*), st1)
+    // We cannot assume correct output as congruences can be extended arbitrarily by users
+    ; st3 := <current-type(|DynT())> st2
+    ; s := <insertCastBefore(|t1, t2)> CongQ(x, s2*)
+    else if [] := t*
+        then err := UnresolvedConstructor(<length> s1*, DynT())
+        else err := AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*)
+      end
+    ; <report-Err> (x, err)
+    ; (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, ErrT()))> (s1*, st1)
+    ; st3 := <current-type(|ErrT())> st1
+    ; s := CongQ(x, s1*)
+    end
+
+insertCasts-Strategy(|e1, st1):
+  s@EmptyTupleCong() -> <litCongruence(|st1, TupleT([]))> s
+
+insertCasts-Strategy-(|e1, st1):
+  TupleCong(s1, s1*) -> (CongQ(s2, s2*), st4)
+  with
+    t1 := <current-type> st1
+  ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, DynT())
+  ; (s2*, st3) := <thread-map(insertCasts-Sarg-Type(|e1, SDyn()))> (s1*, st2)
+  ; st4 := <current-type(|TupleT(<map(!DynT())> [s1 | s1*]))> st3
+
+// TODO: extract type of elements of list from current-type, and use in insertCasts
+insertCasts-Strategy-(|e1, st1):
+  s1@ListCongNoTail(s1*) -> (s3, st3)
+  with
+    (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, FunTType()))> (s1*, st1)
+  ; t2 := <current-type> st1
+  ; s2 := <otf(!ListCongNoTail(s2*))> s1
+  ; s3 := <insertCastBefore(|t2, ListT())> s2
+  ; st3 := <current-type(|ListT())> st2
+
+// TODO: extract type of elements of list from current-type, and use in insertCasts
+insertCasts-Strategy-(|e1, st1):
+  s1@ListCong(s1*, s2) -> (s5, st4)
+  with
+    (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, FunTType()))> (s1*, st1)
+  ; (s3, st3) := <insertCasts-Sarg(|e1, st2)> (s2, FunTType(ListT()))
+  ; t2 := <current-type> st1
+  ; s4 := <otf(!ListCong(s2*, s3))> s1
+  ; s5 := <insertCastBefore(|t2, ListT())> s4
+  ; st4 := <current-type(|ListT())> st3
+
+insertCasts-Strategy-(|e1, st1):
+  ExplodeCong(s1, s2) -> (ExplodeCong(s3, s4), st4)
+  with
+    // Note that constructors can be strings (in case of applications and tuples) or the empty list (in case of a list)
+    (s3, st2) := <insertCasts-Sarg(|e1, st1)> (s1, DynT())
+  ; (s4, st3) := <insertCasts-Sarg(|e1, st2)> (s2, FunTType(ListT()))
+  ; st4 := <current-type(|DynT())> st3
+
+insertCasts-Strategy-(|e1, st1):
+  AM(s1, trm1) -> (<seqs> [AM(s2, trm2) | s*], st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (trm2, (st3, s*)) := <insertCasts-MatchTerm(|e1, st2)> trm1
+
+insertCasts-Strategy-(|e1, st1):
+  Assign(trm1, trm2) -> (<seqs> [Assign(trm3, trm4) | s*], st3)
+  with
+    (trm4, st2) := <insertCasts-BuildTerm(|e1, st1)> trm2
+  ; (trm3, (st3, s*)) := <insertCasts-MatchTerm(|e1, st2)> trm1
+
+insertCasts-Strategy-(|e1, st1):
+  AnnoCong(s1, s2) -> (AnnoCong(s3, s4), st4)
+  with
+    (s3, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
+  ; (s4, st3) := <insertCasts-Sarg(|e1, st2)> (s2, FunTType(ListT()))
+  ; st4 := <current-type(|DynT())> st3
+
+
+insertCasts-Strategy-(|e1, st1):
+  c@CallNoArgs(SVar(x)) -> result
+  with
+    if t1 := <strat-lookup(|x{}, 0, 0)> e1
+      then
+        if SDyn() := t1
+          then result := (c, <current-type(|DynT())> st1)
+          else
+            FunTType([], [], t2, t3) := t1
+          ; result := (<insertCastBefore(|<current-type> st1, t2)> c, <current-type(|t3)> st1)
+        end
+      else
+        <report-Err> (x, UnresolvedStrategy(0, 0))
+      ; result := (c, <current-type(|ErrT())> st1)
+    end
+
+insertCasts-Rule(|e1, st1) = otf12(insertCasts-Rule-(|e1, st1))
+
+insertCasts-Rule-(|e1, st1):
+  Rule(trm1, trm2, cs1) -> (Rule(trm3, trm4, cs3), st4)
+  with
+    (trm3, (st2, s*)) := <insertCasts-MatchTerm(|e1, st1)> trm1
+  ; (cs2, st3)  := <thread-map(insertCasts-RuleCond(|e1))> (cs1, st2)
+  ; cs3 := <RuleDef-after-match> (s*, cs2)
+  ; (trm4, st4) := <insertCasts-BuildTerm(|e1, st3)> trm2
+
+insertCasts-Strategy-(|e1, st1):
+  LRule(r1@Rule(trm, _, _)) -> (LRule(r2), st4)
+  with
+    new := <collect-all(?Var(<id>));map(!(<id>, DynT()));immap-from-list> trm
+  ; orig := <term-env;immap-intersect(keep-left|new)> st1
+  ; st2 := <term-merge-env(keep-right)> (st1, new)
+  ; (r2, st3) := <insertCasts-Rule(|e1, st2)> r1
+  ; st4 := <term-env(immap-subtract(|new);immap-union(fail|orig))> st3
+
+insertCasts-Strategy-(|e1, st1):
+  SRule(r1) -> (LRule(r2), st2)
+  with
+    (r2, st2) := <insertCasts-Rule(|e1, st1)> r1
+
+insertCasts-Strategy-(|e1, st1):
+  Choice(s1, s2) -> (Choice(s3, s4), st4)
+  with
+    (s3, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (s4, st3) := <insertCasts-Strategy(|e1, st1)> s2
+  ; st4 := <st-merge(LUB <+ !DynT())> (st2, st3)
+
+insertCasts-Strategy-(|e1, st1):
+  RChoice(s1, s2) -> (RChoice(s3, s4), st4)
+  with
+    (s3, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (s4, st3) := <insertCasts-Strategy(|e1, st1)> s2
+  ; st4 := <st-merge(LUB <+ !DynT())> (st2, st3)
+
+insertCasts-Strategy-(|e1, st1):
+  p@Proceed(s1*) -> (call, st4)
+  with
+    FunTType(st*, [], t1, t2) := <strat-lookup(|ProceedNoArgs(), <length> s1*, 0)> e1
+  ; s2* := <zip> (s1*, st*)
+  ; t := <current-type> st1
+  ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
+  ; st4 := <current-type(|t2)> st2
+  ; call := <insertCastBefore(|<current-type> st1, t1)> <otf(!Proceed(s3*))> p
+
+insertCasts-Strategy-(|e1, st1):
+  CondChoice(s1, s2, s3) -> (CondChoice(s4, s5, s6), st5)
+  with
+    (s4, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (s5, st3) := <insertCasts-Strategy(|e1, <current-type(|<current-type> st1)> st2)> s2
+  ; (s6, st4) := <insertCasts-Strategy(|e1, st1)> s3
+  ; st5 := <st-merge(LUB <+ !DynT())> (st3, st4)
+
+insertCasts-Strategy-(|e1, st1):
+  IfThen(s1, s2) -> (IfThen(s3, s4), st3)
+  with
+    (s3, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; (s4, st3) := <insertCasts-Strategy(|e1, <current-type(|<current-type> st1)> st2)> s2
+
+insertCasts-Strategy-(|e1, st1):
+  SwitchChoiceNoOtherwise(s1, sc1*) -> (SwitchChoiceNoOtherwise(s2, sc2*), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; t1 := <current-type> st1
+  ; t2 := <current-type> st2
+  ; (sc2*, _, st3) := <map-LUB(insertCasts-SwitchCase(|e1, t1, t2))> (sc1*, st2)
+
+insertCasts-Strategy-(|e1, st1):
+  SwitchChoice(s1, sc1*, s2) -> (SwitchChoice(s3, sc2*, s4), st4)
+  with
+    (s3, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; t1 := <current-type> st1
+  ; t2 := <current-type> st2
+  ; (sc2*, _, st3) := <map-LUB(insertCasts-SwitchCase(|e1, t1, t2))> (sc1*, st2)
+  ; (s4, st4) := <insertCasts-Strategy(|e1, <current-type(|t1)> st3)> s1
+
+insertCasts-SwitchCase(|e1, t1, t2) = otf22(insertCasts-SwitchCase-(|e1, t1, t2))
+
+insertCasts-SwitchCase-(|e1, t1, t2):
+  (SwitchCase(s1, s2), st1) -> (SwitchCase(s3, s4), st3)
+  with
+    (s3, st2) := <insertCasts-Strategy(|e1, <current-type(|t2)> st1)> s1
+  ; (s4, st3) := <insertCasts-Strategy(|e1, <current-type(|t1)> st2)> s2
+
+//insertCasts-Strategy-(|e1, st1):
+//  TypedCong(t@TypedId(x1, x2), s1*) -> (s, st3)
+//  with 
+//    t1 := <current-type> st1
+//  ; t* := <constr-lookup(|x2, <length> s1*, <desugar-Type> x1)> e1
+//  ; if [ConstrType(t1*, t2)] := t*
+//    then
+//      (s2*, st2) := <thread-map(insertCasts-Sarg(|e1))> (<zip> (s1*, <map(!FunTType(<id>))> t1*), st1)
+//    ; st3 := <current-type(|t2)> st2
+//    ; s := <insertCastBefore(|t1, t2)> Call(SVar(x2), s2*)
+//    else if [] := t*
+//        then err := UnresolvedConstructor(<length> s1*, x1)
+//        else err := AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*)
+//      end
+//    ; <report-Err> (t, err)
+//    ; (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, SDyn()))> (s1*, st1)
+//    ; st3 := <current-type(|ErrT())> st1
+//    ; s := Call(SVar(x2), s2*)
+//    end
+
+strategies // The Cast & Proxy extension
+
+insertCasts-Strategy(|e1, st1):
+  s@Cast(Fail()) -> (s, st2)
+  with
+    st2 := <current-type(|ErrT())> st1
+
+insertCasts-Strategy(|e1, st1):
+  s@Cast(Id()) -> (s, st1)
+
+insertCasts-Strategy(|e1, st1):
+  s@Cast(RuntimeCheck(t)) -> (s, st2)
+  with
+    st2 := <current-type(|t)> st1
+
+insertCasts-Strategy(|e1, st1):
+  Proxy(c1, c2, s1) -> (Proxy(c1, c2, s2), st2)
+  with
+    (_, st2) := <insertCasts-Strategy(|e1, st1)> Cast(c1)
+  ; (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1
+  ; (_, st4) := <insertCasts-Strategy(|e1, st3)> Cast(c2)
+
+insertCasts-Strategy(|e1, st1):
+  s1@ProxyT(sc1*, tc1*, c1, c2, SVar(x)) -> (s1, st1)
+  with
+    t1 := <strat-lookup(|x{}, 0, 0)> e1
+    // TODO: check that t1 corresponds to the coercions in the ProxyT

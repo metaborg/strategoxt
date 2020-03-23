@@ -1,0 +1,41 @@
+module internal-sig
+
+// For bootstrapping purposes, should come from the grammar later
+
+signature
+  sorts
+    Type ConstrType ErrorDesc MessageType
+
+  constructors
+    MTError                              : MessageType
+    MTWarning                            : MessageType
+    MTNote                               : MessageType
+    IllFormedTermT                       : Id * List(Type) -> Type
+    ErrT                                 : Type
+    FailT                                : Type
+    ConstrType                           : List(Type) * Type -> ConstrType
+    CallDynamicNotSupported              : ErrorDesc
+    TermVariableTypedWithStrategyType    : ErrorDesc
+    StrategyVariableTypedWithTermType    : ErrorDesc
+    DuplicateTypeDefinition              : ErrorDesc
+    MissingDefinitionForTypeDefinition   : ErrorDesc
+    ProceedWrongNumberOfArguments        : Int * Int -> ErrorDesc
+    ProceedInNonExtendStrategy           : ErrorDesc
+    CallStrategyArgumentTakesParameters  : SFunType -> ErrorDesc
+    NoInjectionBetween                   : Type * Type -> ErrorDesc
+    VariableBoundToIncompatibleType      : Type * Type -> ErrorDesc
+    TypeMismatch                         : Type * Type -> ErrorDesc
+    STypeMismatch                        : SType * SType -> ErrorDesc
+    UnresolvedLocal                      : ErrorDesc
+    UnresolvedConstructor                : Int * Type -> ErrorDesc
+    UnresolvedStrategy                   : Int * Int -> ErrorDesc
+    AmbiguousConstructorUse              : List(Type) -> ErrorDesc
+    AsInBuildTerm                        : ErrorDesc
+    WldInBuildTerm                       : ErrorDesc
+    BuildDefaultInBuildTerm              : ErrorDesc
+    BuildDefaultInMatchTerm              : ErrorDesc
+    StringQuotationInMatchTerm           : ErrorDesc
+    NonStringOrListInExplodeConsPosition : Type -> ErrorDesc
+    NonListInAnno                        : Type -> ErrorDesc
+    MultipleAppsInMatch                  : ErrorDesc
+    BuildUnboundTerm                     : ErrorDesc

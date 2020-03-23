@@ -1,0 +1,136 @@
+module defs
+
+imports
+
+stratego/strc/gradual/utils
+stratego/strc/gradual/environment
+stratego/strc/gradual/signatures
+stratego/strc/gradual/strategies
+stratego/strc/gradual/terms
+stratego/strc/immutable/map
+stratego/strc/immutable/set
+
+strategies // Def
+
+insertCasts-StrategyDef(|e1, st1) = otf12(insertCasts-StrategyDef-(|e1, st1))
+
+insertCasts-StrategyDef(|e1):
+  (d, st1) -> <insertCasts-StrategyDef(|e1, st1)> d
+
+insertCasts-Def(|e1, st1) = otf(insertCasts-Def-(|e1, st1))
+
+// insertCasts-Def :: (|Environment, Store) Def -> Def
+insertCasts-Def-(|e1, st1):
+  AnnoDef(annos, sr) -> AnnoDef(annos, s')
+  with
+    (n, sn, tn) := <nameOf-StrategyDef-RuleDef> sr
+  ; if <fetch(?Extend() + ?Override())> annos
+      // Leaving this in the env for ProceedT/2 and ProceedNoArgs/0 handling
+      then e2 := <strat-copy-type(|n, sn, tn, ProceedNoArgs())> e1
+      else e2 := e1
+    end
+  ; (s', _) := <insertCasts-StrategyDef(|e2, st1) <+ insertCasts-RuleDef(|e2, st1)> sr
+
+insertCasts-Def-(|e1, st1) = ?AnnoDef(_, ExtSDef(_, _, _))
+
+insertCasts-Def-(|e1, st1) = insertCasts-StrategyDef(|e1, st1);Fst
+
+insertCasts-Def-(|e1, st1) = insertCasts-RuleDef(|e1, st1);Fst
+insertCasts-Def-(|e1, st1) = ?DefHasType(_, _)
+
+strategies // StrategyDef
+
+// insertCasts-StrategyDef :: (|Environment, Store) Decl -> (Decl, Store)
+insertCasts-StrategyDef-(|e1, st1):
+  SDefT(x, s1*, t1*, s1) -> (SDefT(x, s1*, t1*, s3), st3)
+  with
+    FunTType(st*, tt*, t1, t2) := <strat-lookup(|x{}, <length> s1*, <length> t1*)> e1
+  ; s2* := <map(?DefaultVarDec(<id>) <+ ?VarDec(<id>, _))> s1*
+  ; t2* := <map(?DefaultVarDec(<id>) <+ ?VarDec(<id>, _))> t1*
+  ; e2 := <strat-merge-env(keep-right)> (e1, <strat-zip-new-env> (s2*, st*))
+  ; st2 := <term-merge-env(keep-right);current-type(|t1)> (st1, <term-zip-new-env> (t2*, tt*))
+  ; (s2, st3) := <insertCasts-Strategy(|e2, st2)> s1
+  ; s3 := <insertCastAfter(|<current-type> st3, t2)> s2
+
+insertCasts-StrategyDef-(|e1, st1):
+  SDef(x, s1*, s1) -> (SDef(x, s1*, s3), st3)
+  with
+    FunTType(st*, [], t1, t2) := <strat-lookup(|x{}, <length> s1*, 0)> e1
+  ; s2* := <map(?DefaultVarDec(<id>) <+ ?VarDec(<id>, _))> s1*
+  ; e2 := <strat-merge-env(keep-right)> (e1, <strat-zip-new-env> (s2*, st*))
+  ; st2 := <current-type(|t1)> st1
+  ; (s2, st3) := <insertCasts-Strategy(|e2, st2)> s1
+  ; s3 := <insertCastAfter(|<current-type> st3, t2)> s2
+
+insertCasts-StrategyDef-(|e1, st1):
+  SDefNoArgs(x, s1) -> (SDefNoArgs(x, s3), st3)
+  with
+    FunTType([], [], t1, t2) := <strat-lookup(|x{}, 0, 0)> e1
+  ; st2 := <current-type(|t1)> st1
+  ; (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1
+  ; s3 := <insertCastAfter(|<current-type> st3, t2)> s2
+
+insertCasts-StrategyDef-(|e1, st1) =
+    \ExtSDefInl(name, sargs, targs, body) -> SDefT(name, sargs, targs, body)\
+  ; insertCasts-StrategyDef(|e1, st1)
+  ; (\SDefT(name, sargs, targs, body) -> ExtSDefInl(name, sargs, targs, body)\, id, id)
+
+insertCasts-StrategyDef-(|e1, st1):
+  d@ExtSDef(_, _, _) -> (d, st1)
+
+strategies // RuleDef
+
+insertCasts-RuleDef(|e1, st1) = otf12(insertCasts-RuleDef-(|e1, st1))
+
+insertCasts-RuleDef-(|e1, st1):
+  RDefNoArgs(x, Rule(trm1, trm2, cs1)) -> (RDefNoArgs(x, Rule(trm3, trm4, cs3)), st4)
+  with
+    FunTType([], [], t1, t2) := <strat-lookup(|x{}, 0, 0)> e1
+  ; (trm3, (st2, s*)) := <insertCasts-MatchTerm(|e1, <current-type(|t1)> st1)> trm1
+  ; t3 := <current-type> st2
+  ; (trm4, st3) := <insertCasts-BuildTerm(|e1, st2, t2)> trm2
+  ; (cs2, st4)  := <thread-map(insertCasts-RuleCond(|e1))> (cs1, <current-type(|t3)> st3)
+  ; cs3 := <RuleDef-after-match> (s*, cs2)
+
+insertCasts-RuleDef-(|e1, st1):
+  RDef(x, s1*, Rule(trm1, trm2, cs1)) -> (RDef(x, s1*, Rule(trm3, trm4, cs3)), st4)
+  with
+    FunTType(st*, [], t1, t2) := <strat-lookup(|x{}, <length> s1*, 0)> e1
+  ; s2* := <map(?DefaultVarDec(<id>) <+ ?VarDec(<id>, _))> s1*
+  ; e2 := <strat-merge-env(keep-right)> (e1, <strat-zip-new-env> (s2*, st*))
+  ; (trm3, (st2, s*)) := <insertCasts-MatchTerm(|e2, <current-type(|t1)> st1)> trm1
+  ; t3 := <current-type> st2
+  ; (trm4, st3) := <insertCasts-BuildTerm(|e2, st2, t2)> trm2
+  ; (cs2, st4)  := <thread-map(insertCasts-RuleCond(|e2))> (cs1, <current-type(|t3)> st3)
+  ; cs3 := <RuleDef-after-match> (s*, cs2)
+
+insertCasts-RuleDef-(|e1, st1):
+  RDefT(x, s1*, t1*, Rule(trm1, trm2, cs1)) -> (RDefT(x, s1*, t1*, Rule(trm3, trm4, cs3)), st5)
+  with
+    FunTType(st*, tt*, t1, t2) := <strat-lookup(|x{}, <length> s1*, <length> t1*)> e1
+  ; s2* := <map(?DefaultVarDec(<id>) <+ ?VarDec(<id>, _))> s1*
+  ; t2* := <map(?DefaultVarDec(<id>) <+ ?VarDec(<id>, _))> t1*
+  ; e2 := <strat-merge-env(keep-right)> (e1, <strat-zip-new-env> (s2*, st*))
+  ; st2 := <term-merge-env(keep-right)> (st1, <term-zip-new-env> (t2*, tt*))
+  ; (trm3, (st3, s*)) := <insertCasts-MatchTerm(|e2, <current-type(|t1)> st2)> trm1
+  ; t3 := <current-type> st3
+  ; (trm4, st4) := <insertCasts-BuildTerm(|e2, st3, t2)> trm2
+  ; (cs2, st5)  := <thread-map(insertCasts-RuleCond(|e2))> (cs1, <current-type(|t3)> st4)
+  ; cs3 := <RuleDef-after-match> (s*, cs2)
+
+RuleDef-after-match: ([], cs) -> cs
+RuleDef-after-match: (s*, cs) -> [WhereClause(<seqs> s*) | cs]
+
+insertCasts-RuleCond(|e1) = otf22(insertCasts-RuleCond-(|e1))
+
+insertCasts-RuleCond-(|e1):
+  (WhereClause(s1), st1) -> (WhereClause(s2), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; st3 := <current-type(|<current-type> st1)> st2
+
+insertCasts-RuleCond-(|e1):
+  (WithClause(s1), st1) -> (WithClause(s2), st3)
+  with
+    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
+  ; st3 := <current-type(|<current-type> st1)> st2

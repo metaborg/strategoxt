@@ -1,0 +1,100 @@
+module environment
+
+imports
+
+stratego/strc/gradual/utils
+stratego/strc/gradual/signatures
+stratego/strc/immutable/map
+stratego/strc/immutable/rel
+
+signature constructors
+
+//    strategies                        constructors
+Env : Map/*(str * int * int, SType)*/ * Rel/*(str * int, OpType)*/ -> Environment
+//   local variables     currentTermType
+St : Map/*(str, Type)*/ * Type -> Store
+//            local variables      currentTermType outputTermType strategiesAfterMatch
+StMatchTerm : Map/*(str, Type)*/ * Type *          Option(Type) * List/*(Strategy)*/ -> Store
+//            local variables      currentTermType inputTermType
+StBuildTerm : Map/*(str, Type)*/ * Type *          Type -> Store
+
+strategies
+
+new-env: (strats, constrs) -> Env(strats, constrs)
+new-st = !St(<immap-new>, DynT())
+stMatchTerm-from-st: St(te, t) -> StMatchTerm(te, t, None(), [])
+stBuildTerm-from-st: St(te, t) -> StBuildTerm(te, t, t)
+st-from-stMatchTerm: StMatchTerm(te, _, Some(t), s*) -> (St(te, t), s*)
+st-from-stMatchTerm: StMatchTerm(te, t, None(), s*) -> (St(te, t), s*)
+st-from-stBuildTerm: StBuildTerm(te, t, _) -> St(te, t)
+
+st-from-stBuildTerm-input: StBuildTerm(te, _, t) -> St(te, t)
+
+strat-env = ?Env(<id>, _)
+strat-env(s) = Env(s, id)
+
+// Note that this also tries to find a congruence if it fails to find a strategy
+strat-lookup(|name, snum, tnum) =
+  strat-env; immap-get(|(name, snum, tnum))
+  <+ where(0 := tnum); constr-lookup(|name, snum); not(imset-empty); !FunTType(<range;map(!SDyn())> snum, [], DynT(), DynT())
+strat-put(|name, snum, tnum, value) = strat-env(immap-put(|(name, snum, tnum), value))
+strat-merge-env(s): (e, se) -> <strat-env(immap-union(s|se))> e
+strat-copy-type(|name, snum, tnum, as) = strat-env(env-copy-type(|(name, snum, tnum), as))
+strat-zip-new-env: (names, types) -> <zip-new-env> (names-arities, types)
+where if <map(is-string)> names
+  then names-arities := <zip(\(n, FunTType(st*, tt*, _, _)) -> (n, <length> st*, <length> tt*)\)> (names, types)
+  else names-arities := names
+end
+
+constr-env = ?Env(_, <id>)
+constr-env(s) = Env(id, s)
+
+// N.B. this returns an imset. Use constr-lookup/3 from main.str to filter on sort of the
+//       constructor and receive a list.
+constr-lookup(|name, arity) = constr-env; imrel-get(|(name, arity))
+constr-put(|name, arity, value) = constr-env(imrel-insert(|(name, arity), value))
+constr-merge-env: (e, ce) -> <constr-env(imrel-union(|ce))> e
+
+term-env = ?St(<id>, _)
+term-env = ?StMatchTerm(<id>, _, _, _)
+term-env = ?StBuildTerm(<id>, _, _)
+term-env(s) = St(s, id)
+term-env(s) = StMatchTerm(s, id, id, id)
+term-env(s) = StBuildTerm(s, id, id)
+
+term-lookup(|name) = term-env; immap-get(|name)
+term-put(|name, value) = term-env(immap-put(|name, value))
+term-merge-env(s): (e, te) -> <term-env(immap-union(s|te))> e
+term-zip-new-env = zip-new-env
+
+current-type = ?St(_, <id>)
+current-type = ?StMatchTerm(_, <id>, _, _)
+current-type = ?StBuildTerm(_, <id>, _)
+current-type(|t) = St(id, !t)
+current-type(|t) = StMatchTerm(id, !t, id, id)
+current-type(|t) = StBuildTerm(id, !t, id)
+
+st-merge(s): (St(terms1, type1), St(terms2, type2)) -> St(terms3, type3)
+  with
+    terms3 := <immap-union(s|terms2)> terms1
+  ; type3 := <s> (type1, type2)
+
+st-merge(s): (StBuildTerm(terms1, type1, input), StBuildTerm(terms2, type2, input)) -> StBuildTerm(terms3, type3, input)
+  with St(terms3, type3) := <st-merge(s)> (St(terms1, type1), St(terms2, type2))
+
+output-type(|t) = StMatchTerm(id, id, \None() -> Some(t)\, id)
+after-match(|s) = StMatchTerm(id, id, id, ![s | <id>])
+after-match = ?StMatchTerm(_, _, _, <id>)
+
+strategies
+
+/**
+ * Copy type of `name` and bind it to the new name (`as`) as well. 
+ */
+env-copy-type(|name, as): env -> <immap-put(|as, <immap-get(|name)> env)> env
+
+zip-new-env = zip;immap-from-list
+zip-new-env = zip;immap-from-list
+
+keep-left = Fst
+keep-right = Snd

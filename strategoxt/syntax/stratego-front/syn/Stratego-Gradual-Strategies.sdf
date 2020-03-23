@@ -17,10 +17,7 @@ exports
     "proxy" "(" {SCoercion ","}* "|" {Coercion ","}* ")(" Coercion "," Coercion ")(" SVar ")" -> Proxy     {cons("ProxyT")}
 
   lexical syntax
-    "cast"  -> Id {reject}
-    "fail"  -> Id {reject}
-    "id"    -> Id {reject}
-    "proxy" -> Id {reject}
+    "cast"  -> SVar {reject}
 
   lexical restrictions
     "cast" "fail" "id" "proxy" -/- [a-zA-Z0-9\'\-\_]

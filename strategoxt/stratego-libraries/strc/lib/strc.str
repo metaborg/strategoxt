@@ -99,3 +99,5 @@ imports
   stratego/strc/immutable/rel
   stratego/strc/immutable/map
   stratego/strc/immutable/set
+
+  stratego/strc/gradual/main

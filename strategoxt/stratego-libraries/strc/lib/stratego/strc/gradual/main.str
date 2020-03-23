@@ -1,0 +1,64 @@
+module main
+
+imports
+
+stratego/strc/gradual/utils
+stratego/strc/gradual/environment
+stratego/strc/gradual/signatures
+stratego/strc/gradual/defs
+stratego/strc/gradual/internal-sig
+stratego/strc/immutable/map
+stratego/strc/immutable/set
+stratego/strc/immutable/rel
+
+strategies // entry-points from Java
+
+/**
+ * insert-casts/0 inserts casts into a Stratego strategy/rule definition based on a gradual type system.
+ * strats: map of top-level-definition names to the type description of the strategy
+ * constrs: map of constructor definition names to type description
+ * injection-closure: map of injections from one type to another (the transitive closure)
+ * lub-map: map representing the least-upper-bound of the type lattice
+ * ast: the stratego strategy/rule ast
+ */
+// insert-casts :: Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type) * Def -> (Def, List(Message))
+insert-casts: (strats, constrs, injection-closure, lub-map, ast) -> (ast', errs, warns, notes)
+  with {| CanCoerce, LUB, Message:
+    ast' := <insertCasts(|strats, constrs, injection-closure, lub-map)> ast
+    ; msg* := <bagof-Message>
+    ; errs := <filter(?(MTError(), <id>))> msg*
+    ; warns := <filter(?(MTWarning(), <id>))> msg*
+    ; notes := <filter(?(MTNote(), <id>))> msg*
+  |}
+
+// insertCasts :: (|Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type)) Def -> Def
+insertCasts(|strats, constrs, injection-closure, lub-map): ast -> ast'
+  with
+    rules(CanCoerce: (from, to) -> <id>
+      where <can-coerce(|injection-closure)> (from, to))
+  ; rules(LUB: pair -> <lub(|lub-map)> pair)
+  ; ast' := <insertCasts-Def(|<new-env> (strats, constrs), <new-st>)> ast
+
+can-coerce(|injection-closure) = ?(ErrT(), _)
+can-coerce(|injection-closure) = ?(_, ErrT())
+can-coerce(|injection-closure) = ?(FailT(), _)
+//can-coerce(|injection-closure) = ?(_, Dyn())
+can-coerce(|injection-closure) = ?(_, DynT())
+// We assume co-variant type parameters
+can-coerce(|injection-closure): (Sort(x, t1*), Sort(x, t2*)) -> <id>
+  where
+    <zip(CanCoerce)> (t1*, t2*)
+can-coerce(|injection-closure) = eq
+can-coerce(|injection-closure): (from, to) -> <imrel-contains(|from, to)> injection-closure
+
+lub(|lub-map): (x, x) -> x
+lub(|lub-map): (ErrT(), x) -> x
+lub(|lub-map): (x, ErrT()) -> x
+lub(|lub-map): (FailT(), x) -> x
+lub(|lub-map): (x, FailT()) -> x
+lub(|lub-map): pair -> <immap-get(|pair) <+ immap-get(|<Swap> pair)> lub-map
+
+constr-lookup(|name, arity, t1) =
+    constr-lookup(|name, arity)
+  ; imset-filter(where(\ConstrType(_, t2) -> <CanCoerce> (t2, t1)\))
+  ; imset-to-list
