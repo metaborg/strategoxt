@@ -32,7 +32,7 @@ strategies
     ; (olays, defs4) := <partition(?Overlays(<id>))> defs3
     ; olays' := <concat;map(split(m-overlay-signature;constr-sig-to-string, !Overlays([<id>])))> olays
     ; strats1 := <mapconcat(?Rules(<id>) + ?Strategies(<id>))> defs4
-    ; (defTypes, strats2) := <filter(split(def-type-signature, ?DefHasType(_, _)))> strats1
+    ; (defTypes, strats2) := <partition(split(def-type-signature, ?DefHasType(_, _)))> strats1
     ; strats3 := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats2
 
   def-type-signature: DefHasType(name, FunNoArgsType(_, _)) -> $[name_0_0]
