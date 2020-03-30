@@ -24,7 +24,7 @@ strategies
       ; spec := Specification(ast)
 
   split-module: Module(m, defs) ->
-    (m, <concat> imps, strats3, cons', olays', defTypes)
+    (m, <concat> imps, strats3, cons', olays', defTypes, dynRuleNames)
   with id
     ; (imps, defs2) := <partition(?Imports(<id>))> defs
     ; (cons, defs3) := <partition(?Signature(<id>); retain-all(?Constructors(<id>)); concat)> defs2
@@ -34,11 +34,16 @@ strategies
     ; strats1 := <mapconcat(?Rules(<id>) + ?Strategies(<id>))> defs4
     ; (defTypes, strats2) := <partition(split(def-type-signature, ?DefHasType(_, _)))> strats1
     ; strats3 := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats2
+    ; dynRuleNames := <collect-om(dyn-rule-sig)> strats1
 
   def-type-signature: DefHasType(name, FunNoArgsType(_, _)) -> $[name_0_0]
   def-type-signature: DefHasType(name, FunType(sarg*, _, _)) -> $[name_[<length> sarg*]_0]
   def-type-signature: DefHasType(name, FunTType(sarg*, targ*, _, _)) ->
     $[name_[<length> sarg*]_[<length> targ*]]
+
+  dyn-rule-sig: RDecNoArgs(name) -> (name, 0, 0)
+  dyn-rule-sig: RDec(name, sarg*) -> (name, <length> sarg*, 0)
+  dyn-rule-sig: RDecT(name, sarg*, targ*) -> (name, <length> sarg*, <length> targ*)
 
 strategies
 
@@ -48,7 +53,9 @@ strategies
       // add some definitions and constructors
 
       ; if-not-lib(m-add-main)
+      // TODO: remove this congruence once bootstrapped (it's in the standard library now)
       ; m-add-anno-cong-def
+      // TODO: remove these constructors once bootstrapped (they're in the standard library now)
       ; where(dr-constructors; map(m-add-constructor))
 
       // desugar and check constructors
