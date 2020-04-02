@@ -244,3 +244,77 @@ map-st-LUB(s): (trm1*@[_ | _], st1) -> (trm2*, t*, st2)
 
 // Incremental compiler needs updated static check to allow local override with internal keyword
 //internal seqs(|) = foldr1(Hd, \(s1, s2) -> Seq(s1, s2)\)
+
+strategies
+
+  def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ($[name_0_0], <desugar-Type> t)
+  def-type-pair: DefHasType(name, t@FunType(sarg*, _, _)) -> ($[name_[<length> sarg*]_0], <desugar-Type> t)
+  def-type-pair: DefHasType(name, t@FunTType(sarg*, targ*, _, _)) ->
+    ($[name_[<length> sarg*]_[<length> targ*]], <desugar-Type> t)
+
+strategies
+
+extract-constr:
+  OpDecl(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  OpDeclQ(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  OpDecl(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>))> t1*
+
+extract-constr:
+  OpDeclQ(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>))> t1*
+
+extract-constr:
+  OpDeclInj(FunType(t1*@[_, _ | _], ConstType(t1))) -> (("", <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>))> t1*
+
+// TODO: allow type definition?
+extract-constr:
+  OverlayNoArgs(c, _) -> ((c,0), ConstrType([], DynT()))
+
+extract-constr:
+  Overlay(c, t*, _) -> ((c, <length> t*), ConstrType(<map(!DynT())> t*, DynT()))
+
+extract-constr:
+  ExtOpDecl(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  ExtOpDeclQ(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  ExtOpDecl(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>))> t1*
+
+extract-constr:
+  ExtOpDeclQ(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>))> t1*
+
+extract-constr:
+  ExtOpDeclInj(FunType(t1*@[_, _ | _], ConstType(t1))) -> (("", <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>))> t1*
+
+extract-inj:
+  OpDeclInj(FunType([ConstType(from)], ConstType(to))) -> (<desugar-Type> from, <desugar-Type> to)
+
+extract-inj:
+  ExtOpDeclInj(FunType([ConstType(from)], ConstType(to))) -> (<desugar-Type> from, <desugar-Type> to)

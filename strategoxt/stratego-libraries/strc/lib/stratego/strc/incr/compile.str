@@ -6,13 +6,7 @@ imports
   stratego/strc/front/rename-defs
 
   stratego/strc/incr/split-large-term-builds
-
-signature constructors
-  DefHasType : Id * SFunType -> Def
-
-  FunNoArgsType   : Type * Type -> SFunType
-  FunType         : List(SType) * Type * Type -> SFunType
-  FunTType        : List(SType) * List(Type) * Type * Type -> SFunType
+  stratego/strc/gradual/utils
 
 strategies
 
@@ -24,7 +18,7 @@ strategies
       ; spec := Specification(ast)
 
   split-module: Module(m, defs) ->
-    (m, <concat> imps, strats3, cons', olays', defTypes, dynRuleNames)
+    (m, <concat> imps, strats3, cons', olays', defTypes, dynRuleNames, constrTypes, injTypes)
   with id
     ; (imps, defs2) := <partition(?Imports(<id>))> defs
     ; (cons, defs3) := <partition(?Signature(<id>); retain-all(?Constructors(<id>)); concat)> defs2
@@ -32,14 +26,10 @@ strategies
     ; (olays, defs4) := <partition(?Overlays(<id>))> defs3
     ; olays' := <concat;map(split(m-overlay-signature;constr-sig-to-string, !Overlays([<id>])))> olays
     ; strats1 := <mapconcat(?Rules(<id>) + ?Strategies(<id>))> defs4
-    ; (defTypes, strats2) := <partition(split(def-type-signature, ?DefHasType(_, _)))> strats1
+    ; (defTypes, strats2) := <partition(def-type-pair)> strats1
     ; strats3 := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats2
     ; dynRuleNames := <collect-om(dyn-rule-sig)> strats1
-
-  def-type-signature: DefHasType(name, FunNoArgsType(_, _)) -> $[name_0_0]
-  def-type-signature: DefHasType(name, FunType(sarg*, _, _)) -> $[name_[<length> sarg*]_0]
-  def-type-signature: DefHasType(name, FunTType(sarg*, targ*, _, _)) ->
-    $[name_[<length> sarg*]_[<length> targ*]]
+    ; (constrTypes, injTypes) := <conc;partition(extract-constr, extract-inj)> (cons, olays)
 
   dyn-rule-sig: RDecNoArgs(name) -> (name, 0, 0)
   dyn-rule-sig: RDec(name, sarg*) -> (name, <length> sarg*, 0)

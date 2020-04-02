@@ -56,6 +56,8 @@ lub(|lub-map): (ErrT(), x) -> x
 lub(|lub-map): (x, ErrT()) -> x
 lub(|lub-map): (FailT(), x) -> x
 lub(|lub-map): (x, FailT()) -> x
+// pointwise lift LUB over type parameters
+lub(|lub-map): (Sort(x, t1*), Sort(x, t2*)) -> Sort(x, <zip(lub(|lub-map))> (t1*, t2*))
 lub(|lub-map): pair -> <immap-get(|pair) <+ immap-get(|<Swap> pair)> lub-map
 
 constr-lookup(|name, arity, t1) =
