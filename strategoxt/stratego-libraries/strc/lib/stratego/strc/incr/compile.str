@@ -18,18 +18,20 @@ strategies
       ; spec := Specification(ast)
 
   split-module: Module(m, defs) ->
-    (m, <concat> imps, strats3, cons', olays', defTypes, dynRuleNames, constrTypes, injTypes)
+    (m, <concat> imps, strats3, cons3, olays3, defTypes, dynRuleNames, constrTypes, injTypes)
   with id
     ; (imps, defs2) := <partition(?Imports(<id>))> defs
-    ; (cons, defs3) := <partition(?Signature(<id>); retain-all(?Constructors(<id>)); concat)> defs2
-    ; cons' := <concat;filter(split(m-constr-signature;constr-sig-to-string, !Signature([Constructors([<id>])])))> cons
-    ; (olays, defs4) := <partition(?Overlays(<id>))> defs3
-    ; olays' := <concat;map(split(m-overlay-signature;constr-sig-to-string, !Overlays([<id>])))> olays
+    ; (cons1, defs3) := <partition(?Signature(<id>); retain-all(?Constructors(<id>)); concat)> defs2
+    ; cons2 := <concat> cons1
+    ; cons3 := <filter(split(m-constr-signature;constr-sig-to-string, !Signature([Constructors([<id>])])))> cons2
+    ; (olays1, defs4) := <partition(?Overlays(<id>))> defs3
+    ; olays2 := <concat> olays1
+    ; olays3 := <map(split(m-overlay-signature;constr-sig-to-string, !Overlays([<id>])))> olays2
     ; strats1 := <mapconcat(?Rules(<id>) + ?Strategies(<id>))> defs4
     ; (defTypes, strats2) := <partition(def-type-pair)> strats1
     ; strats3 := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats2
     ; dynRuleNames := <collect-om(dyn-rule-sig)> strats1
-    ; (constrTypes, injTypes) := <conc;partition(extract-constr, extract-inj)> (cons, olays)
+    ; (constrTypes, injTypes) := <conc;partition(extract-constr, extract-inj)> (cons2, olays2)
 
   dyn-rule-sig: RDecNoArgs(name) -> (name, 0, 0)
   dyn-rule-sig: RDec(name, sarg*) -> (name, <length> sarg*, 0)
