@@ -140,6 +140,7 @@
               <executable>mkdir</executable>
               <arguments>
                 <argument>-p</argument>
+                <!--suppress UnresolvedMavenProperty -->
                 <argument>${strjOutputDir}/${strjPackageDir}</argument>
               </arguments>
             </configuration>
@@ -180,6 +181,7 @@
                 <argument>-i</argument>
                 <argument>${strjCTreeFile}</argument>
                 <argument>-o</argument>
+                <!--suppress UnresolvedMavenProperty -->
                 <argument>${strjOutputDir}/${strjPackageDir}/Main.java</argument>
               </arguments>
             </configuration>
