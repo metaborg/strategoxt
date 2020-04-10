@@ -16,11 +16,9 @@
     <strjInputDir>${project.basedir}/src/main/strategies</strjInputDir>
     <strjOutputDir>${project.build.directory}/generated-sources/strj</strjOutputDir>
     <strjPackage>org.strategoxt.stratego_lib</strjPackage>
-    <strjPackageDir>${strjOutputDir}/org/strategoxt/stratego_lib</strjPackageDir>
-    <strjJar>${project.build.directory}/dependency/strategoxt-jar.jar</strjJar>
     <strjInputFile>${strjInputDir}/stratego-lib-posix-xsi.str</strjInputFile>
     <strjCTreeFile>${project.build.outputDirectory}/stratego-lib-posix-xsi.ctree</strjCTreeFile>
-    <strjRTreeFile>${project.build.outputDirectory}/stratego-lib-posix-xsi.rtree</strjRTreeFile>
+    <!-- Can be adapted to do bootstrap build hopefully -->
     <strjVersion>${metaborg-version}</strjVersion>
   </properties>
 
@@ -45,6 +43,24 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package name to dir</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>strjPackageDir</name>
+              <value>${strjPackage}</value>
+              <regex>\.</regex>
+              <replacement>/</replacement>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.metaborg</groupId>
         <artifactId>spoofax-maven-plugin</artifactId>
@@ -124,7 +140,7 @@
               <executable>mkdir</executable>
               <arguments>
                 <argument>-p</argument>
-                <argument>${strjPackageDir}</argument>
+                <argument>${strjOutputDir}/${strjPackageDir}</argument>
               </arguments>
             </configuration>
           </execution>
@@ -164,7 +180,7 @@
                 <argument>-i</argument>
                 <argument>${strjCTreeFile}</argument>
                 <argument>-o</argument>
-                <argument>${strjPackageDir}/Main.java</argument>
+                <argument>${strjOutputDir}/${strjPackageDir}/Main.java</argument>
               </arguments>
             </configuration>
           </execution>
@@ -182,4 +198,3 @@
     </plugins>
   </build>
 </project>
-
