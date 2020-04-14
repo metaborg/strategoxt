@@ -19,12 +19,12 @@ strategies // entry-points from Java
  * constrs: map of constructor definition names to type description
  * injection-closure: map of injections from one type to another (the transitive closure)
  * lub-map: map representing the least-upper-bound of the type lattice
- * ast: the stratego strategy/rule ast
+ * ast: the stratego strategy/rule asts
  */
 // insert-casts :: Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type) * Def -> (Def, List(Message))
-insert-casts: (strats, constrs, injection-closure, lub-map, ast) -> (ast', errs, warns, notes)
+insert-casts: (strats, constrs, injection-closure, lub-map, asts) -> (ast', errs, warns, notes)
   with {| CanCoerce, LUB, Message:
-    ast' := <insertCasts(|strats, constrs, injection-closure, lub-map)> ast
+    ast' := <map(insertCasts(|strats, constrs, injection-closure, lub-map))> asts
     ; msg* := <bagof-Message>
     ; errs := <filter(?(MTError(), <id>))> msg*
     ; warns := <filter(?(MTWarning(), <id>))> msg*
@@ -56,6 +56,8 @@ lub(|lub-map): (ErrT(), x) -> x
 lub(|lub-map): (x, ErrT()) -> x
 lub(|lub-map): (FailT(), x) -> x
 lub(|lub-map): (x, FailT()) -> x
+lub(|lub-map): (DynT(), x) -> DynT()
+lub(|lub-map): (x, DynT()) -> DynT()
 // pointwise lift LUB over type parameters
 lub(|lub-map): (Sort(x, t1*), Sort(x, t2*)) -> Sort(x, <zip(lub(|lub-map))> (t1*, t2*))
 lub(|lub-map): pair -> <immap-get(|pair) <+ immap-get(|<Swap> pair)> lub-map

@@ -31,7 +31,7 @@ strategies
     ; (defTypes, strats2) := <partition(def-type-pair)> strats1
     ; strats3 := <map(split(m-def-signature;strategy-sig-to-string, !Strategies([<id>])))> strats2
     ; dynRuleNames := <collect-om(dyn-rule-sig)> strats1
-    ; (constrTypes, injTypes) := <conc;partition(extract-constr, extract-inj)> (cons2, olays2)
+    ; (constrTypes, injTypes) := <conc;partition(extract-constr);(id,filter(extract-inj <+ (debug(!"Injection not recognised");fail)))> (cons2, olays2)
 
   dyn-rule-sig: RDecNoArgs(name) -> (name, 0, 0)
   dyn-rule-sig: RDec(name, sarg*) -> (name, <length> sarg*, 0)

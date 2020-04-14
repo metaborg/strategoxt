@@ -30,8 +30,9 @@ insertCasts-StMatchTerm(|e1, st1):
   with
     t1 := <current-type> st1
   ; if t2 := <term-lookup(|v{})> st1
-      then if not(st2 := <term-put(|v{}, <LUB> (t1, t2))> st1)
-        then
+      then if t3 := <LUB> (t1, t2)
+        then st2 := <term-put(|v{}, t3)> st1
+        else
           <report-Err> (v, VariableBoundToIncompatibleType(t2, t1))
         ; st2 := st1
         end // TODO: do this for both unresolved names and unbound names
@@ -84,21 +85,21 @@ insertCasts-StMatchTerm-(|e1, st1):
     then
       if not(<CanCoerce> (t2, t1))
         then <report-Err> (cnstr, TypeMismatch(t2, t1))
+        else if DynT() := t1
+          then t2* := <map(!DynT(<id>))> t1*
+          else t2* := t1*
+        end
       end
-    ; if DynT() := t1
-        then t2* := <map(!DynT(<id>))> t1*
-        else t2* := t1*
-      end
+    ; t3 := t2 // workaround for backtracking issue in strj
     else if [] := t*
-        then err := UnresolvedConstructor(<length> trm1*, t1)
-        else err := AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*)
+        then <report-Err> (cnstr, UnresolvedConstructor(<length> trm1*, t1))
+        else <report-Warn> (cnstr, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
       end
-    ; <report-Err> (cnstr, err)
-    ; t2 := ErrT()
+    ; t3 := ErrT() // workaround for backtracking issue in strj
     ; t2* := <map(!ErrT())> trm1*
     end
   ; (trm2*, st2) := <thread-map(insertCasts-StMatchTerm-Type(|e1))> (<zip> (trm1*, t2*), st1)
-  ; st3 := <current-type(|t2)> st2
+  ; st3 := <current-type(|t3)> st2
 
 insertCasts-StMatchTerm(|e1, st1) =
     otf(\OpQ(c, c*) -> Op(c, c*)\)
@@ -201,29 +202,30 @@ insertCasts-StBuildTerm-(|e1, st1):
     t1 := <current-type> st1
   ; t* := <constr-lookup(|cnstr, <length> trm1*, t1)> e1
   ; if [ConstrType(t1*, t2)] := t*
-    then id
+    then
+      t2* := t1*
+    ; t3 := t2  // workaround for backtracking issue in strj
     else if [] := t*
-        then err := UnresolvedConstructor(<length> trm1*, DynT())
-        else err := AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*)
+        then <report-Err> (cnstr, UnresolvedConstructor(<length> trm1*, DynT(Dyn())))
+        else <report-Warn> (cnstr, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
       end
-    ; <report-Err> (cnstr, err)
-    ; t2 := ErrT()
-    ; t1* := <map(!ErrT())> trm1*
+    ; t3 := ErrT() // workaround for backtracking issue in strj
+    ; t2* := <map(!ErrT())> trm1*
     end
-  ; b* := <zip> (trm1*, t1*)
+  ; b* := <zip> (trm1*, t2*)
   ; if DynT() := t1
     then
       let
         set-type(|t) = current-type(|DynT(t))
-      in (trm2*, t2*, st2) := <map-st-LUB(StBuildTerm-Op-threader(set-type|e1))> (b*, st1)
-      ; switch <StBuildTerm-Op-type-relation> (t2*, t1*)
+      in (trm2*, t3*, st2) := <map-st-LUB(StBuildTerm-Op-threader(set-type|e1))> (b*, st1)
+      ; switch <StBuildTerm-Op-type-relation> (t3*, t1*)
           case ?AllCanCoerce():
-            st3 := <current-type(|t2)> st2
+            st3 := <current-type(|t3)> st2
           ; trm2 := Op(cnstr, trm2*)
           case ?SomeDyn():
-            (trm2, st3) := <insertCastApp(|DynT(t2), t1)> (<otf(!Op(cnstr, trm2*))> trm1, st2)
+            (trm2, st3) := <insertCastApp(|DynT(t3), t1)> (<otf(!Op(cnstr, trm2*))> trm1, st2)
           case ?Unrelated():
-            st3 := <current-type(|IllFormedTermT(cnstr, t2*))> st2
+            st3 := <current-type(|IllFormedTermT(cnstr, t3*))> st2
           ; trm2 := Op(cnstr, trm2*)
         end
       end
