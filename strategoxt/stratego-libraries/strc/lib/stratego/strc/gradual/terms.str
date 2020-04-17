@@ -426,7 +426,7 @@ insertCasts-StBuildTerm-(|e1, st1):
   List(trm1*) -> (List(trm2*), st3)
   with
     (trm2*, t*, st2) := <thread-map-LUB(insertCasts-StBuildTerm-Type(|e1, DynT()))> (trm1*, st1)
-  ; t1 := ListT(<foldr1(?[<id>], LUB <+ !DynT())> t*)
+  ; t1 := ListT(<foldr1(?[<id>], LUB <+ !DynT()) <+ !DynT()> t*)
   ; st3 := <current-type(|t1)> st2
 
 // TODO: extract types from expected type to support the type parameters properly here
