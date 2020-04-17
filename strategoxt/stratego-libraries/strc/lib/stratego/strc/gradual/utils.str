@@ -247,10 +247,10 @@ map-st-LUB(s): (trm1*@[_ | _], st1) -> (trm2*, t*, st2)
 
 strategies
 
-  def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ($[name_0_0], <desugar-Type> t)
-  def-type-pair: DefHasType(name, t@FunType(sarg*, _, _)) -> ($[name_[<length> sarg*]_0], <desugar-Type> t)
+  def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ((name, 0, 0), <desugar-Type> t)
+  def-type-pair: DefHasType(name, t@FunType(sarg*, _, _)) -> ((name, <length> sarg*, 0), <desugar-Type> t)
   def-type-pair: DefHasType(name, t@FunTType(sarg*, targ*, _, _)) ->
-    ($[name_[<length> sarg*]_[<length> targ*]], <desugar-Type> t)
+    ((name, <length> sarg*, <length> targ*), <desugar-Type> t)
 
 strategies
 
