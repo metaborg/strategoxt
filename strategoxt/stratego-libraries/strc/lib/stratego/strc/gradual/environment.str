@@ -37,12 +37,13 @@ strat-env(s) = Env(s, id)
 strat-lookup(|name, snum, tnum) =
   strat-env; immap-get(|(name, snum, tnum))
   <+ where(0 := tnum); constr-lookup(|name, snum); not(imset-empty); !FunTType(<range;map(!SDyn())> snum, [], DynT(), DynT())
+  <+ strat-env; immap-get(|(name, 0, 0)); ?SDyn()
 strat-put(|name, snum, tnum, value) = strat-env(immap-put(|(name, snum, tnum), value))
 strat-merge-env(s): (e, se) -> <strat-env(immap-union(s|se))> e
 strat-copy-type(|name, snum, tnum, as) = strat-env(env-copy-type(|(name, snum, tnum), as))
 strat-zip-new-env: (names, types) -> <zip-new-env> (names-arities, types)
-where if <map(is-string)> names
-  then names-arities := <zip(\(n, FunTType(st*, tt*, _, _)) -> (n, <length> st*, <length> tt*)\)> (names, types)
+where if <map(not(is-tuple))> names
+  then names-arities := <zip(\(n, FunTType(st*, tt*, _, _)) -> (n, <length> st*, <length> tt*)\ <+ \(n, SDyn()) -> (n, 0, 0)\)> (names, types)
   else names-arities := names
 end
 
