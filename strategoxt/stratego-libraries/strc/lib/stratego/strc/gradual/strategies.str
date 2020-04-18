@@ -378,7 +378,7 @@ insertCasts-Strategy-(|e1, st1):
   TupleCong(s1, s1*) -> (CongQ(s2, s2*), st4)
   with
     t1 := <current-type> st1
-  ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, DynT())
+  ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
   ; (s2*, st3) := <thread-map(insertCasts-Sarg-Type(|e1, SDyn()))> (s1*, st2)
   ; st4 := <current-type(|TupleT(<map(!DynT())> [s1 | s1*]))> st3
 
@@ -407,7 +407,7 @@ insertCasts-Strategy-(|e1, st1):
   ExplodeCong(s1, s2) -> (ExplodeCong(s3, s4), st4)
   with
     // Note that constructors can be strings (in case of applications and tuples) or the empty list (in case of a list)
-    (s3, st2) := <insertCasts-Sarg(|e1, st1)> (s1, DynT())
+    (s3, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
   ; (s4, st3) := <insertCasts-Sarg(|e1, st2)> (s2, FunTType(ListT()))
   ; st4 := <current-type(|DynT())> st3
 
