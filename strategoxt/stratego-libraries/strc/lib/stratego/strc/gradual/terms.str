@@ -85,6 +85,7 @@ insertCasts-StMatchTerm-(|e1, st1):
     then
       if not(<CanCoerce> (t2, t1))
         then <report-Err> (cnstr, TypeMismatch(t2, t1))
+           ; t2* := <map(!ErrT())> trm1*
         else if DynT() := t1
           then t2* := <map(!DynT(<id>))> t1*
           else t2* := t1*
@@ -218,7 +219,7 @@ insertCasts-StBuildTerm-(|e1, st1):
       let
         set-type(|t) = current-type(|DynT(t))
       in (trm2*, t3*, st2) := <map-st-LUB(StBuildTerm-Op-threader(set-type|e1))> (b*, st1)
-      ; switch <StBuildTerm-Op-type-relation> (t3*, t1*)
+      ; switch <StBuildTerm-Op-type-relation> (t3*, t2*)
           case ?AllCanCoerce():
             st3 := <current-type(|t3)> st2
           ; trm2 := Op(cnstr, trm2*)
@@ -234,7 +235,7 @@ insertCasts-StBuildTerm-(|e1, st1):
         // defined to disambiguate between current-type/0/0 and current-type/0/1
         set-type(|t) = current-type(|t)
       in (trm2*, _, st2) := <map-st-LUB(StBuildTerm-Op-threader(set-type|e1))> (b*, st1)
-      ; st3 := <current-type(|t2)> st2
+      ; st3 := <current-type(|t3)> st2
       ; trm2 := Op(cnstr, trm2*)
       end
     end
