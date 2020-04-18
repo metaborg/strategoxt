@@ -28,7 +28,17 @@ st-from-stMatchTerm: StMatchTerm(te, _, Some(t), s*) -> (St(te, t), s*)
 st-from-stMatchTerm: StMatchTerm(te, t, None(), s*) -> (St(te, t), s*)
 st-from-stBuildTerm: StBuildTerm(te, t, _) -> St(te, t)
 
-st-from-stBuildTerm-input: StBuildTerm(te, _, t) -> St(te, t)
+stMatchTerm-as-st(s|msg): StMatchTerm(te1, t1, ot1, s*) -> StMatchTerm(te1, t2, ot2, s*)
+  where
+    St(_, t2) := <s> St(te1, t1)
+  ; if(None() := ot1)
+      then ot2 := Some(t2)
+      else ot2 := ot1; <report-Warn> msg
+    end
+stBuildTerm-as-st(s): StBuildTerm(te1, t1, t2) -> StBuildTerm(te2, t3, t2)
+  where
+    // note we're using the inputtype here, not the current type
+    St(te2, t3) := <s> St(te1, t2)
 
 strat-env = ?Env(<id>, _)
 strat-env(s) = Env(s, id)

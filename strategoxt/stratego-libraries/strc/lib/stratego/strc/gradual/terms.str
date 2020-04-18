@@ -302,25 +302,21 @@ insertCasts-StMatchTerm-(|e1, st1):
 insertCasts-StMatchTerm-(|e1, st1):
   App(s1, trm1) -> (App(s2, trm2), st5)
   with
-    (trm2, st2) := <insertCasts-BuildTerm(|e1, st1)> trm1
-  ; (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1
-  ; st4 := <term-env(<term-env> st3)> st1
-  ; if not(st5 := <output-type(|<current-type> st3)> st4)
-      then
-          <report-Warn> (s1, MultipleAppsInMatch())
-        ; st5 := st4
-    end
+    !st1
+  ; stMatchTerm-as-st(\st2 -> st4 where
+        (trm2, st3) := <insertCasts-BuildTerm(|e1, st2)> trm1
+      ; (s2, st4) := <insertCasts-Strategy(|e1, st3)> s1\
+    | (s1, MultipleAppsInMatch()))
+  ; ?st5
 
 insertCasts-StMatchTerm-(|e1, st1):
   RootApp(s1) -> (RootApp(s2), st4)
   with
-    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
-  ; st3 := <term-env(<term-env> st2)> st1
-  ; if not(st4 := <output-type(|<current-type> st2)> st3)
-      then
-          <report-Warn> (s1, MultipleAppsInMatch())
-        ; st4 := st3
-    end
+    !st1
+  ; stMatchTerm-as-st(\st2 -> st3 where
+      (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1\
+    | (s1, MultipleAppsInMatch()))
+  ; ?st4
 
 insertCasts-StMatchTerm(|e1, st1):
   Char(_) -> <insertCasts-StMatchTerm-Lit(|e1, st1, IntT())>
@@ -398,17 +394,19 @@ insertCasts-StBuildTerm-(|e1, st1):
 insertCasts-StBuildTerm-(|e1, st1):
   App(s1, trm1) -> (App(s2, trm2), st5)
   with
-    st2 := <st-from-stBuildTerm-input> st1
-  ; (trm2, st3) := <insertCasts-BuildTerm(|e1, st2)> trm1
-  ; (s2, st4) := <insertCasts-Strategy(|e1, st3)> s1
-  ; st5 := <term-env(<term-env> st4);current-type(|<current-type> st4)> st1
+    !st1
+  ; stBuildTerm-as-st(\st2 -> st4 where
+      (trm2, st3) := <insertCasts-BuildTerm(|e1, st2)> trm1
+    ; (s2, st4) := <insertCasts-Strategy(|e1, st3)> s1\)
+  ; ?st5
 
 insertCasts-StBuildTerm-(|e1, st1):
   RootApp(s1) -> (RootApp(s2), st4)
   with
-    st2 := <st-from-stBuildTerm-input> st1
-  ; (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1
-  ; st4 := <term-env(<term-env> st3);current-type(|<current-type> st3)> st1
+    !st1
+  ; stBuildTerm-as-st(\st2 -> st3 where
+      (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1\)
+  ; ?st4
 
 insertCasts-StBuildTerm(|e1, st1):
   trm@Char(_) -> <insertCasts-StBuildTerm-Lit(|st1, IntT())>
