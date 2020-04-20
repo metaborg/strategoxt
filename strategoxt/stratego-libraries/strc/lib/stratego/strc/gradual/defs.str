@@ -12,16 +12,14 @@ stratego/strc/immutable/set
 
 strategies // Def
 
-insertCasts-StrategyDef(|e1, st1) = otf12(insertCasts-StrategyDef-(|e1, st1))
+insertCasts-Def(|e1):
+  (d, st1) -> <insertCasts-Def(|e1, st1)> d
 
-insertCasts-StrategyDef(|e1):
-  (d, st1) -> <insertCasts-StrategyDef(|e1, st1)> d
-
-insertCasts-Def(|e1, st1) = otf(insertCasts-Def-(|e1, st1))
+insertCasts-Def(|e1, st1) = otf12(insertCasts-Def-(|e1, st1))
 
 // insertCasts-Def :: (|Environment, Store) Def -> Def
 insertCasts-Def-(|e1, st1):
-  AnnoDef(annos, sr) -> AnnoDef(annos, s')
+  AnnoDef(annos, sr) -> (AnnoDef(annos, s'), st2)
   with
     (n, sn, tn) := <nameOf-StrategyDef-RuleDef> sr
   ; if <fetch(?Extend() + ?Override())> annos
@@ -29,16 +27,20 @@ insertCasts-Def-(|e1, st1):
       then e2 := <strat-copy-type(|n, sn, tn, ProceedNoArgs())> e1
       else e2 := e1
     end
-  ; (s', _) := <insertCasts-StrategyDef(|e2, st1) <+ insertCasts-RuleDef(|e2, st1)> sr
+  ; (s', st2) := <insertCasts-Def(|e2, st1)> sr
 
-insertCasts-Def-(|e1, st1) = ?AnnoDef(_, ExtSDef(_, _, _))
+insertCasts-Def-(|e1, st1):
+  d@AnnoDef(_, ExtSDef(_, _, _)) -> (d, st1)
 
-insertCasts-Def-(|e1, st1) = insertCasts-StrategyDef(|e1, st1);Fst
+insertCasts-Def-(|e1, st1) = insertCasts-StrategyDef(|e1, st1)
 
-insertCasts-Def-(|e1, st1) = insertCasts-RuleDef(|e1, st1);Fst
-insertCasts-Def-(|e1, st1) = ?DefHasType(_, _)
+insertCasts-Def-(|e1, st1) = insertCasts-RuleDef(|e1, st1)
+insertCasts-Def-(|e1, st1):
+  d@DefHasType(_, _) -> (d, st1)
 
 strategies // StrategyDef
+
+insertCasts-StrategyDef(|e1, st1) = otf12(insertCasts-StrategyDef-(|e1, st1))
 
 // insertCasts-StrategyDef :: (|Environment, Store) Decl -> (Decl, Store)
 insertCasts-StrategyDef-(|e1, st1):

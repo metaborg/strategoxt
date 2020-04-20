@@ -19,7 +19,7 @@ strategies // entry-points from Java
  * constrs: map of constructor definition names to type description
  * injection-closure: map of injections from one type to another (the transitive closure)
  * lub-map: map representing the least-upper-bound of the type lattice
- * ast: the stratego strategy/rule asts
+ * asts: the stratego strategy/rule asts
  */
 // insert-casts :: Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type) * Def -> (Def, List(Message))
 insert-casts: (strats, constrs, injection-closure, lub-map, asts) -> (ast', errs, warns, notes)
@@ -46,12 +46,11 @@ insertCasts(|strats, constrs, injection-closure, lub-map): ast -> ast'
     rules(CanCoerce: (from, to) -> <id>
       where <can-coerce(|injection-closure)> (from, to))
   ; rules(LUB: pair -> <lub(|lub-map)> pair)
-  ; ast' := <insertCasts-Def(|<new-env> (strats, constrs), <new-st>)> ast
+  ; (ast', _) := <insertCasts-Def(|<new-env> (strats, constrs), <new-st>)> ast
 
 can-coerce(|injection-closure) = ?(ErrT(), _)
 can-coerce(|injection-closure) = ?(_, ErrT())
 can-coerce(|injection-closure) = ?(FailT(), _)
-//can-coerce(|injection-closure) = ?(_, Dyn())
 can-coerce(|injection-closure) = ?(_, DynT())
 // We assume co-variant type parameters
 can-coerce(|injection-closure): (Sort(x, t1*), Sort(x, t2*)) -> <id>
@@ -65,8 +64,8 @@ lub(|lub-map): (ErrT(), x) -> x
 lub(|lub-map): (x, ErrT()) -> x
 lub(|lub-map): (FailT(), x) -> x
 lub(|lub-map): (x, FailT()) -> x
-lub(|lub-map): (DynT(), x) -> DynT()
-lub(|lub-map): (x, DynT()) -> DynT()
+lub(|lub-map): (DynT(), _) -> DynT()
+lub(|lub-map): (_, DynT()) -> DynT()
 // pointwise lift LUB over type parameters
 lub(|lub-map): (Sort(x, t1*), Sort(x, t2*)) -> Sort(x, <zip(lub(|lub-map))> (t1*, t2*))
 lub(|lub-map): pair -> <immap-get(|pair) <+ immap-get(|<Swap> pair)> lub-map

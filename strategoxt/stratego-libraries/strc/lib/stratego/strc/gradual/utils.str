@@ -242,6 +242,9 @@ map-st-LUB(s): (trm1*@[_ | _], st1) -> (trm2*, t*, st2)
   ; st2 := <foldl(st-merge(LUB <+ !DynT()))> (st*, st)
   ; t* := <map(current-type)> [st | st*]
 
+map-pair-left(|l) = map(split(!l, id))
+map-pair-right(|r) = map(split(id, !r))
+
 // Incremental compiler needs updated static check to allow local override with internal keyword
 //internal seqs(|) = foldr1(Hd, \(s1, s2) -> Seq(s1, s2)\)
 
