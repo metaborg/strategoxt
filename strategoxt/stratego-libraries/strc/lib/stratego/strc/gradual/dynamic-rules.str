@@ -1,25 +1,15 @@
-module analysis/dynamic-rules
+module dynamic-rules
 
 imports
 
-libstratego-lib
-libstrc
+stratego/strc/gradual/internal-sig
 
-libspoofax/term/annotation
-libspoofax/stratego/debug
-
-signatures/strategoGT-sig
-signatures/sugar/modules-sig
-signatures/gradual-types/signatures-sig
-signatures/gradual-types/strategies-sig
-signatures/gradual-types/internal-sig
-
-analysis/utils
-analysis/environment
-analysis/signatures
-analysis/strategies
-analysis/terms
-analysis/main
+stratego/strc/gradual/utils
+stratego/strc/gradual/environment
+stratego/strc/gradual/signatures
+stratego/strc/gradual/strategies
+stratego/strc/gradual/terms
+stratego/strc/gradual/main
 
 strategies // Strategy (dynamic-rules)
 

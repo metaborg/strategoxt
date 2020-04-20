@@ -7,6 +7,7 @@ stratego/strc/gradual/environment
 stratego/strc/gradual/signatures
 stratego/strc/gradual/defs
 stratego/strc/gradual/internal-sig
+stratego/strc/gradual/dynamic-rules
 stratego/strc/immutable/map
 stratego/strc/immutable/set
 stratego/strc/immutable/rel
