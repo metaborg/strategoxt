@@ -71,7 +71,16 @@ lub(|lub-map): (_, DynT()) -> DynT()
 lub(|lub-map): (Sort(x, t1*), Sort(x, t2*)) -> Sort(x, <zip(lub(|lub-map))> (t1*, t2*))
 lub(|lub-map): pair -> <immap-get(|pair) <+ immap-get(|<Swap> pair)> lub-map
 
-constr-lookup(|name, arity, t1) =
-    constr-lookup(|name, arity)
+constr-lookup-from(|name, arity, t1) =
+    constr-env
+  ; imrel-get(|(name, arity))
+  ; if not(DynT(_) := t1)
+      then imset-filter(where(\ConstrType(_, t2) -> <CanCoerce> (t1, t2)\))
+    end
+  ; imset-to-list
+
+constr-lookup-to(|name, arity, t1) =
+    constr-env
+  ; imrel-get(|(name, arity))
   ; imset-filter(where(\ConstrType(_, t2) -> <CanCoerce> (t2, t1)\))
   ; imset-to-list

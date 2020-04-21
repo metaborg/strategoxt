@@ -384,7 +384,7 @@ insertCasts-Strategy-(|e1, st1):
   CongQ(x, s1*) -> (s, st3)
   with
     t1 := <current-type> st1
-  ; t* := <constr-lookup(|x, <length> s1*)> e1
+  ; t* := <constr-lookup-from(|x, <length> s1*, t1)> e1
   ; if [ConstrType(t1*, t2)] := t*
     then
       if DynT() := t1
@@ -396,10 +396,9 @@ insertCasts-Strategy-(|e1, st1):
     ; st3 := <current-type(|DynT())> st2
     ; s := <insertCastBefore(|t1, t2)> CongQ(x, s2*)
     else if [] := t*
-        then err := UnresolvedConstructor(<length> s1*, DynT())
-        else err := AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*)
+        then <report-Err> (x, UnresolvedConstructor(<length> s1*, DynT()))
+        else <report-Warn> (x, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
       end
-    ; <report-Err> (x, err)
     ; (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, ErrT()))> (s1*, st1)
     ; st3 := <current-type(|ErrT())> st1
     ; s := CongQ(x, s1*)

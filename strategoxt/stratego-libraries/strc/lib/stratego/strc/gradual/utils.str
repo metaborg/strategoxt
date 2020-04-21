@@ -245,15 +245,12 @@ map-st-LUB(s): (trm1*@[_ | _], st1) -> (trm2*, t*, st2)
 map-pair-left(|l) = map(split(!l, id))
 map-pair-right(|r) = map(split(id, !r))
 
-// Incremental compiler needs updated static check to allow local override with internal keyword
-//internal seqs(|) = foldr1(Hd, \(s1, s2) -> Seq(s1, s2)\)
-
 strategies
 
-  def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ((name, 0, 0), <desugar-Type> t)
-  def-type-pair: DefHasType(name, t@FunType(sarg*, _, _)) -> ((name, <length> sarg*, 0), <desugar-Type> t)
-  def-type-pair: DefHasType(name, t@FunTType(sarg*, targ*, _, _)) ->
-    ((name, <length> sarg*, <length> targ*), <desugar-Type> t)
+def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ((name, 0, 0), <desugar-Type> t)
+def-type-pair: DefHasType(name, t@FunType(sarg*, _, _)) -> ((name, <length> sarg*, 0), <desugar-Type> t)
+def-type-pair: DefHasType(name, t@FunTType(sarg*, targ*, _, _)) ->
+  ((name, <length> sarg*, <length> targ*), <desugar-Type> t)
 
 strategies
 

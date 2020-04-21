@@ -80,7 +80,7 @@ insertCasts-StMatchTerm-(|e1, st1):
   Op(cnstr, trm1*) -> (Op(cnstr, trm2*), st3)
   with
     t1 := <current-type> st1
-  ; t* := <constr-lookup(|cnstr, <length> trm1*, t1)> e1
+  ; t* := <constr-lookup-to(|cnstr, <length> trm1*, t1)> e1
   ; if [ConstrType(t1*, t2)] := t*
     then
       if not(<CanCoerce> (t2, t1))
@@ -201,13 +201,14 @@ insertCasts-StBuildTerm-(|e1, st1):
   trm1@Op(cnstr, trm1*) -> (trm2, st3)
   with
     t1 := <current-type> st1
-  ; t* := <constr-lookup(|cnstr, <length> trm1*, t1)> e1
+  // In a top-level term e.g. in Build(Op(..., ...)) the current term type in DynT().
+  ; t* := <constr-lookup-from(|cnstr, <length> trm1*, t1)> e1
   ; if [ConstrType(t1*, t2)] := t*
     then
       t2* := t1*
     ; t3 := t2  // workaround for backtracking issue in strj
     else if [] := t*
-        then <report-Err> (cnstr, UnresolvedConstructor(<length> trm1*, DynT(Dyn())))
+        then <report-Err> (cnstr, UnresolvedConstructor(<length> trm1*, t1))
         else <report-Warn> (cnstr, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
       end
     ; t3 := ErrT() // workaround for backtracking issue in strj
@@ -266,11 +267,11 @@ insertCasts-StBuildTerm-(|e1, st1):
   ; (trm4, st3) := <insertCasts-StBuildTerm(|e1, st2)> trm2
   ; t1 := <current-type> st2
     // Note that constructors can be strings (in case of applications and tuples) or the empty list (in case of a list)
-  ; if not(<CanCoerce> (t1, StringT()) + <CanCoerce> (t1, ListT()))
+  ; if not(DynT() := t1 + <CanCoerce> (t1, StringT()) + <CanCoerce> (t1, ListT()))
       then <report-Err> (trm1, NonStringOrListInExplodeConsPosition(<current-type> st2))
     end
     // TODO: support cast to string-or-list for the constructor
-  ; (trm5, st4) := <insertCastApp(|<current-type> st3, ListT())> (trm4, st3)
+  ; (trm5, st4) := <insertCastApp(|<current-type> st3, StringT())> (trm4, st3)
   ; st5 := <current-type(|DynT())> st4
 
 strategies // Terms in match position (sugar)
@@ -584,6 +585,7 @@ insertCasts-StBuildTerm-(|e1, st1):
       then <report-Err> (trm1, TypeMismatch(t2, t3))
     end
   ; (trm3, st2) := <insertCasts-StBuildTerm(|e1, <current-type(|t2)> st1)> trm2
+// TODO: Was this cast insertion supposed to go into the if-then-else?
 //  ; (trm4, st3) := <insertCastApp(|<current-type> st2, t2)> (trm3, st2)
   ; if not(<CanCoerce> (t2, <current-type> st2) + DynT() := t2)
       then

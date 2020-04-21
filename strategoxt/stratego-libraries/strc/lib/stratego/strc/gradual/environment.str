@@ -23,7 +23,7 @@ strategies
 new-env: (strats, constrs) -> Env(strats, constrs)
 new-st = !St(<immap-new>, DynT())
 stMatchTerm-from-st: St(te, t) -> StMatchTerm(te, t, None(), [])
-stBuildTerm-from-st: St(te, t) -> StBuildTerm(te, t, t)
+stBuildTerm-from-st: St(te, t) -> StBuildTerm(te, DynT(), t)
 st-from-stMatchTerm: StMatchTerm(te, _, Some(t), s*) -> (St(te, t), s*)
 st-from-stMatchTerm: StMatchTerm(te, t, None(), s*) -> (St(te, t), s*)
 st-from-stBuildTerm: StBuildTerm(te, t, _) -> St(te, t)
@@ -60,9 +60,9 @@ end
 constr-env = ?Env(_, <id>)
 constr-env(s) = Env(id, s)
 
-// N.B. this returns an imset. Use constr-lookup/3 from main.str to filter on sort of the
-//       constructor and receive a list.
-constr-lookup(|name, arity) = constr-env; imrel-get(|(name, arity))
+// N.B. Use constr-lookup-to/3 & constr-lookup-from/3 from main.str to filter on sort of the
+//  constructor.
+constr-lookup(|name, arity) = constr-env; imrel-get(|(name, arity)); imset-to-list
 constr-put(|name, arity, value) = constr-env(imrel-insert(|(name, arity), value))
 constr-merge-env: (e, ce) -> <constr-env(imrel-union(|ce))> e
 
