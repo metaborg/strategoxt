@@ -565,7 +565,7 @@ insertCasts-Strategy-(|e1, st1):
   ; t1 := <current-type> st1
   ; t2 := <current-type> st2
   ; (sc2*, _, st3) := <map-LUB(insertCasts-SwitchCase(|e1, t1, t2))> (sc1*, st2)
-  ; (s4, st4) := <insertCasts-Strategy(|e1, <current-type(|t1)> st3)> s1
+  ; (s4, st4) := <insertCasts-Strategy(|e1, <current-type(|t1)> st3)> s2
 
 insertCasts-SwitchCase(|e1, t1, t2) = otf22(insertCasts-SwitchCase-(|e1, t1, t2))
 
