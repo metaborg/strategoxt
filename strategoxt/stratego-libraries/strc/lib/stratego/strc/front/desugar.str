@@ -680,7 +680,8 @@ rules // varyadic operators
 
   MkSeq : (s1, s2) -> Seq(s1, s2)
 
-  seqs = foldr(!Id(), MkSeq)
+  // defined in stratlib (slightly smarter with foldr1)
+  // seqs = foldr(!Id(), MkSeq)
 
 
 rules // variable declarations

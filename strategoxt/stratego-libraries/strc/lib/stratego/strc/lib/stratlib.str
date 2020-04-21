@@ -12,11 +12,11 @@ imports libstratego-lib Stratego-Sugar
 
 strategies
 
-  seqs = 
-    foldr(!Id(), \ (s1, s2) -> Seq(s1, s2) \ )
+  seqs =
+    \[] -> Id()\ <+ foldr1(Hd, \(s1, s2) -> Seq(s1, s2)\)
 
   lchoices = 
-    foldr(!Fail(), \ (s1, s2) -> LChoice(s1, s2) \ )
+    \[] -> Fail()\ <+ foldr1(Hd, \(s1, s2) -> LChoice(s1, s2)\)
 
 strategies
 
