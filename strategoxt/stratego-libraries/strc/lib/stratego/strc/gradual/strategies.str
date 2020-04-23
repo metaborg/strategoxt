@@ -396,7 +396,7 @@ insertCasts-Strategy-(|e1, st1):
     ; st3 := <current-type(|DynT())> st2
     ; s := <insertCastBefore(|t1, t2)> CongQ(x, s2*)
     else if [] := t*
-        then <report-Err> (x, UnresolvedConstructor(<length> s1*, DynT()))
+        then <report-Err> (x, UnresolvedConstructor(<length> s1*, t1))
         else <report-Warn> (x, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
       end
     ; (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, ErrT()))> (s1*, st1)
