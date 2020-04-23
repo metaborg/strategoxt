@@ -476,6 +476,15 @@ insertCasts-StMatchTerm(|e1, st1) =
 
 insertCasts-Match-StringQuotedPart(|e1) = otf22(insertCasts-Match-StringQuotedPart-(|e1))
 
+insertCasts-Match-StringQuotedPart(|e1):
+  (sqp@QStr(_), st1) -> (sqp, st1)
+
+insertCasts-Match-StringQuotedPart(|e1):
+  (sqp@QDollar(_), st1) -> (sqp, st1)
+
+insertCasts-Match-StringQuotedPart(|e1):
+  (sqp@QBr(_), st1) -> (sqp, st1)
+
 insertCasts-Match-StringQuotedPart-(|e1):
   (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm2), st2)
   with
@@ -530,6 +539,15 @@ insertCasts-StBuildTerm(|e1, st1) =
     , \StringQuotation1(p, sqp*) -> StringQuotation4(p, sqp*)\)
 
 insertCasts-Build-StringQuotedPart(|e1) = otf22(insertCasts-Build-StringQuotedPart-(|e1))
+
+insertCasts-Build-StringQuotedPart(|e1):
+  (sqp@QStr(_), st1) -> (sqp, st1)
+
+insertCasts-Build-StringQuotedPart(|e1):
+  (sqp@QDollar(_), st1) -> (sqp, st1)
+
+insertCasts-Build-StringQuotedPart(|e1):
+  (sqp@QBr(_), st1) -> (sqp, st1)
 
 insertCasts-Build-StringQuotedPart-(|e1):
   (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm3), st4)
