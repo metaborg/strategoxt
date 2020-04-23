@@ -37,7 +37,7 @@ insertCasts-Strategy(|e1, st1):
 insertCasts-CallT(|e1, st1) = otf22(insertCasts-CallT-(|e1, st1))
 
 insertCasts-CallT-(|e1, st1):
-  (c1@CallT(v, s1*, t1*), FunTType(st*, tt*, t1, t2)) -> (c3, st4)
+  (c1@CallT(v, s1*, t1*), FunTType(st*, tt*, t1, t2)) -> (c2, st4)
   with
     s2* := <zip> (s1*, st*)
   ; t2* := <zip> (t1*, tt*)
@@ -45,11 +45,10 @@ insertCasts-CallT-(|e1, st1):
   ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
   ; (t3*, st3) := <thread-map(insertCasts-Targ(|e1))> (t2*, st2)
   ; st4 := <current-type(|t2)> st3
-  ; c2 := <otf(!CallT(v, s3*, t3*))> c1
-  ; c3 := <insertCastBefore(|t3, t1)> c2
+  ; c2 := <insertCastBefore(|t3, t1)> <otf(!CallT(v, s3*, t3*))> c1
 
 insertCasts-CallT-(|e1, st1):
-  (c1@CallT(v, s1*, t1*), SDyn()) -> (c2, st4)
+  (c1@CallT(v, s1*, t1*), SDyn()) -> (CallT(v, s3*, t3*), st4)
   with
     s2* := <map-pair-right(|SDyn())> s1*
   ; t2* := <map-pair-right(|DynT())> t1*
@@ -57,7 +56,6 @@ insertCasts-CallT-(|e1, st1):
   ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
   ; (t3*, st3) := <thread-map(insertCasts-Targ(|e1))> (t2*, st2)
   ; st4 := <current-type(|DynT())> st3
-  ; c2 := <otf(!CallT(v, s3*, t3*))> c1
 
 insertCasts-Strategy-(|e1, st1):
   c1@CallDynamic(trm1, s1*, t1*) -> (CallDynamic(trm3, s3*, t3*), st6)
@@ -159,17 +157,17 @@ insertCasts-Strategy-(|e1, st1):
 insertCasts-Strategy-(|e1, st1):
   Some(s1) -> (Some(s2), <current-type(|DynT())> st1)
   with
-    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, SDyn())
+    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
 
 insertCasts-Strategy-(|e1, st1):
   One(s1) -> (One(s2), <current-type(|DynT())> st1)
   with
-    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, SDyn())
+    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
 
 insertCasts-Strategy-(|e1, st1):
   All(s1) -> (All(s2), <current-type(|DynT())> st1)
   with
-    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, SDyn())
+    (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
 
 insertCasts-Strategy(|e1, st1):
   s@ImportTerm(_) -> (s, <current-type(|DynT())> st1)
@@ -281,19 +279,18 @@ insertCasts-Strategy-(|e1, st1):
 
 insertCasts-Call(|e1, st1) = otf22(insertCasts-Call-(|e1, st1))
 
-insertCasts-Call-(|e1, st1):
+insertCasts-Call(|e1, st1):
   (c@Call(s, s1*), FunTType(st*, tt*, t1, t2)) -> (call, st3)
   with
     (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (<zip> (s1*, st*), st1)
   ; st3 := <current-type(|t2)> st2
   ; call := <insertCastBefore(|<current-type> st1, t1)> <otf(!Call(s, s3*))> c
 
-insertCasts-Call(|e1, st1):
-  (c@Call(s, s1*), SDyn()) -> (call, st3)
+insertCasts-Call-(|e1, st1):
+  (c@Call(s, s1*), SDyn()) -> (Call(s, s3*), st3)
   with
     (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (<map-pair-right(|SDyn())> s1*, st1)
   ; st3 := <current-type(|DynT())> st2
-  ; call := <otf(!Call(s, s3*))> c
 
 insertCasts-Strategy-(|e1, st1):
   ScopeDefault(s1) -> (ScopeDefault(s2), st3)
@@ -362,8 +359,11 @@ insertCasts-Strategy-(|e1, st1):
 
 litCongruence(|st1, t1) = otf12(litCongruence-(|st1, t1))
 
+// Note how we don't add a cast here. Literal congruences are allow to fail based on wrong type, we
+//  don't want them to crash instead.
+// TODO: Give a warning when it's guaranteed to fail based on type.
 litCongruence-(|st1, t1):
-  s -> (<insertCastBefore(|t2, t1)> s, st2)
+  s -> (s, st2)
   with
     t2 := <current-type> st1
   ; st2 := <current-type(|t1)> st1
@@ -412,28 +412,26 @@ insertCasts-Strategy-(|e1, st1):
   with
     t1 := <current-type> st1
   ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
-  ; (s2*, st3) := <thread-map(insertCasts-Sarg-Type(|e1, SDyn()))> (s1*, st2)
+  ; (s2*, st3) := <thread-map(insertCasts-Sarg-Type(|e1, FunTType()))> (s1*, st2)
   ; st4 := <current-type(|TupleT(<map(!DynT())> [s1 | s1*]))> st3
 
 // TODO: extract type of elements of list from current-type, and use in insertCasts
+// TODO: Give a warning when it's guaranteed to fail based on type.
 insertCasts-Strategy-(|e1, st1):
-  s1@ListCongNoTail(s1*) -> (s3, st3)
+  s1@ListCongNoTail(s1*) -> (ListCongNoTail(s2*), st3)
   with
     (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, FunTType()))> (s1*, st1)
   ; t2 := <current-type> st1
-  ; s2 := <otf(!ListCongNoTail(s2*))> s1
-  ; s3 := <insertCastBefore(|t2, ListT())> s2
   ; st3 := <current-type(|ListT())> st2
 
 // TODO: extract type of elements of list from current-type, and use in insertCasts
+// TODO: Give a warning when it's guaranteed to fail based on type.
 insertCasts-Strategy-(|e1, st1):
-  s1@ListCong(s1*, s2) -> (s5, st4)
+  s1@ListCong(s1*, s2) -> (ListCong(s2*, s3), st4)
   with
     (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, FunTType()))> (s1*, st1)
   ; (s3, st3) := <insertCasts-Sarg(|e1, st2)> (s2, FunTType(ListT()))
   ; t2 := <current-type> st1
-  ; s4 := <otf(!ListCong(s2*, s3))> s1
-  ; s5 := <insertCastBefore(|t2, ListT())> s4
   ; st4 := <current-type(|ListT())> st3
 
 insertCasts-Strategy-(|e1, st1):
@@ -531,8 +529,8 @@ insertCasts-Strategy-(|e1, st1):
       <report-Err> (p, ProceedInNonExtendStrategy())
     ; s2* := <map-pair-right(|SDyn())> s1*
     ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
-    ; call := <otf(!Proceed(s3*))> p
     ; st3 := <current-type(|ErrT())> st2
+    ; call := Proceed(s3*)
     end
 
 insertCasts-Strategy-(|e1, st1):
