@@ -185,10 +185,10 @@ insertCasts-StBuildTerm(|e1, st1):
   trm@Str(_) -> <insertCasts-StBuildTerm-Lit(|st1, StringT())>
 
 insertCasts-StBuildTerm-Lit(|st1, t1):
-  trm1 -> (trm2, st2)
+  trm1 -> (trm1, st1)
   with
     t2 := <current-type> st1
-  ; (trm2, st2) := <insertCastApp(|t1, t2)> (trm1, st1)
+// TODO: Give a warning when it's guaranteed to fail based on type: t1 -> t2
 
 signature constructors
   AllCanCoerce : OpTypeRelation
@@ -225,6 +225,7 @@ insertCasts-StBuildTerm-(|e1, st1):
             st3 := <current-type(|t3)> st2
           ; trm2 := Op(cnstr, trm2*)
           case ?SomeDyn():
+            // insertCastApp here only generates warnings, not casts, because DynT(_) := t1
             (trm2, st3) := <insertCastApp(|DynT(t3), t1)> (<otf(!Op(cnstr, trm2*))> trm1, st2)
           case ?Unrelated():
             st3 := <current-type(|IllFormedTermT(cnstr, t3*))> st2
@@ -261,7 +262,7 @@ insertCasts-StBuildTerm(|e1, st1) =
   ; (otf(\Op(c, c*) -> OpQ(c, c*)\), id)
 
 insertCasts-StBuildTerm-(|e1, st1):
-  Explode(trm1, trm2) -> (Explode(trm3, trm5), st5)
+  Explode(trm1, trm2) -> (Explode(trm3, trm4), st4)
   with
     (trm3, st2) := <insertCasts-StBuildTerm(|e1, st1)> trm1
   ; (trm4, st3) := <insertCasts-StBuildTerm(|e1, st2)> trm2
@@ -271,8 +272,8 @@ insertCasts-StBuildTerm-(|e1, st1):
       then <report-Err> (trm1, NonStringOrListInExplodeConsPosition(<current-type> st2))
     end
     // TODO: support cast to string-or-list for the constructor
-  ; (trm5, st4) := <insertCastApp(|<current-type> st3, StringT())> (trm4, st3)
-  ; st5 := <current-type(|DynT())> st4
+    // TODO: Give a warning when it's guaranteed to fail based on type. (constructor is not string or list)
+  ; st4 := <current-type(|DynT())> st3
 
 strategies // Terms in match position (sugar)
 
@@ -431,7 +432,7 @@ insertCasts-StBuildTerm-(|e1, st1):
 
 // TODO: extract types from expected type to support the type parameters properly here
 insertCasts-StBuildTerm-(|e1, st1):
-  ListTail(trm1*, trm1) -> (ListTail(trm2*, trm3), st5)
+  ListTail(trm1*, trm1) -> (ListTail(trm2*, trm2), st4)
   with
     (trm2*, t*, st2) := <thread-map-LUB(insertCasts-StBuildTerm-Type(|e1, DynT()))> (trm1*, st1)
   ; (trm2, st3) := <insertCasts-StBuildTerm(|e1, st2)> trm1
@@ -439,8 +440,8 @@ insertCasts-StBuildTerm-(|e1, st1):
   // Cannot use the same as before. <current-type> st3 must be a list and cast to it if DynT().
   // But if not <CanCoerce> (<current-type> st3, t1), current-type in st4 should be ListT()
   ; t1 := ListT() //<foldr1(?[<id>], LUB <+ !DynT())> t*
-  ; (trm3, st4) := <insertCastApp(|<current-type> st3, t1)> (trm2, st3)
-  ; st5 := <current-type(|t1)> st4
+  // TODO: Give a warning when it's guaranteed to fail based on type. <local-current-type> st3 -> t1
+  ; st4 := <current-type(|t1)> st3
 
 insertCasts-StBuildTerm-(|e1, st1):
   trm@BuildDefaultPT(trm1) -> (BuildDefaultPT(trm2), st2)
@@ -550,11 +551,11 @@ insertCasts-Build-StringQuotedPart(|e1):
   (sqp@QBr(_), st1) -> (sqp, st1)
 
 insertCasts-Build-StringQuotedPart-(|e1):
-  (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm3), st4)
+  (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm2), st3)
   with
     (trm2, st2) := <insertCasts-StBuildTerm(|e1, st1)> trm1
-  ; (trm3, st3) := <insertCastApp(|<current-type> st2, StringT())> (trm2, st2)
-  ; st4 := <current-type(|<current-type> st2)> st3
+// TODO: Give a warning when it's guaranteed to fail based on type: <current-type> st2 -> StringT()
+  ; st3 := <current-type(|<current-type> st2)> st2
 
 insertCasts-Build-StringQuotedPart(|e1) =
   otf22-sugar(
