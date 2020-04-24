@@ -11,6 +11,7 @@ imports
   stratego/strc/lib/stratlib
   stratego/strc/front/DefaultStrat
   stratego/strc/front/desugar-string-quotations
+  stratego/strc/gradual/utils
 
 signature
 	constructors
@@ -324,9 +325,8 @@ rules
   match-term-r: (t, n) -> WhereClause(Assign(t, Var(n))) where <not(?Var(_))>t
   seqs(|s) = foldr(!s, MkSeq)
 
-  
-  
-  
+  Desugar:
+    DefHasType(f, sfuntype) -> DefHasType(f, <desugar-SType> sfuntype)
 
 // dynamic rules
 
