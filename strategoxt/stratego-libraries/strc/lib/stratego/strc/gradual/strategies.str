@@ -361,11 +361,12 @@ litCongruence(|st1, t1) = otf12(litCongruence-(|st1, t1))
 
 // Note how we don't add a cast here. Literal congruences are allow to fail based on wrong type, we
 //  don't want them to crash instead.
-// TODO: Give a warning when it's guaranteed to fail based on type.
 litCongruence-(|st1, t1):
   s -> (s, st2)
   with
     t2 := <current-type> st1
+  // Give a warning when it's guaranteed to fail based on type.
+  ; _ := <computeCoercion(|t2, t1)> s
   ; st2 := <current-type(|t1)> st1
 
 insertCasts-Strategy(|e1, st1):
@@ -416,23 +417,27 @@ insertCasts-Strategy-(|e1, st1):
   ; st4 := <current-type(|TupleT(<map(!DynT())> [s1 | s1*]))> st3
 
 // TODO: extract type of elements of list from current-type, and use in insertCasts
-// TODO: Give a warning when it's guaranteed to fail based on type.
 insertCasts-Strategy-(|e1, st1):
   s1@ListCongNoTail(s1*) -> (ListCongNoTail(s2*), st3)
   with
     (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, FunTType()))> (s1*, st1)
-  ; t2 := <current-type> st1
-  ; st3 := <current-type(|ListT())> st2
+  ; t1 := <current-type> st1
+  ; t2 := ListT()
+  // Give a warning when it's guaranteed to fail based on type.
+  ; _ := <computeCoercion(|t1, t2)> s1
+  ; st3 := <current-type(|t2)> st2
 
 // TODO: extract type of elements of list from current-type, and use in insertCasts
-// TODO: Give a warning when it's guaranteed to fail based on type.
 insertCasts-Strategy-(|e1, st1):
   s1@ListCong(s1*, s2) -> (ListCong(s2*, s3), st4)
   with
     (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, FunTType()))> (s1*, st1)
   ; (s3, st3) := <insertCasts-Sarg(|e1, st2)> (s2, FunTType(ListT()))
-  ; t2 := <current-type> st1
-  ; st4 := <current-type(|ListT())> st3
+  ; t1 := <current-type> st1
+  ; t2 := ListT()
+  // Give a warning when it's guaranteed to fail based on type.
+  ; _ := <computeCoercion(|t1, t2)> s1
+  ; st4 := <current-type(|t2)> st3
 
 insertCasts-Strategy-(|e1, st1):
   ExplodeCong(s1, s2) -> (ExplodeCong(s3, s4), st4)

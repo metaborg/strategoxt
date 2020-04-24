@@ -15,8 +15,8 @@ Env : Map/*(str * int * int, SType)*/ * Rel/*(str * int, OpType)*/ -> Environmen
 St : Map/*(str, Type)*/ * Type -> Store
 //            local variables      currentTermType outputTermType strategiesAfterMatch
 StMatchTerm : Map/*(str, Type)*/ * Type *          Option(Type) * List/*(Strategy)*/ -> Store
-//            local variables      currentTermType inputTermType
-StBuildTerm : Map/*(str, Type)*/ * Type *          Type -> Store
+//            local variables      (expected) currentTermType inputTermType
+StBuildTerm : Map/*(str, Type)*/ * Type *                     Type -> Store
 
 strategies
 

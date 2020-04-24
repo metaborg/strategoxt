@@ -137,7 +137,11 @@ insertCasts-StBuildTerm-(|e1, st1):
     t1 := <current-type> st1
   ; if t2 := <term-lookup(|v{})> st1
       then st2 := st1
-      else
+      else // We put the expected type here if the var is not found as this call may be in a
+           //  top-level defined rule with a type. In that case we infer the types of local
+           //  variables from the tld type before checking the whereclause(s).
+           // This _does_ mean we cannot give a warning or error here when a variable is built
+           //  but unbound.
         st2 := <term-put(|v{}, t1)> st1
       ; t2 := t1
     end
@@ -185,10 +189,11 @@ insertCasts-StBuildTerm(|e1, st1):
   trm@Str(_) -> <insertCasts-StBuildTerm-Lit(|st1, StringT())>
 
 insertCasts-StBuildTerm-Lit(|st1, t1):
-  trm1 -> (trm1, st1)
+  trm1 -> (trm1, st2)
   with
-    t2 := <current-type> st1
-// TODO: Give a warning when it's guaranteed to fail based on type: t1 -> t2
+    st2 := <current-type(|t1)> st1
+  ; t2 := <current-type> st1
+  ; _ := <computeCoercion(|t2, t1)> trm1
 
 signature constructors
   AllCanCoerce : OpTypeRelation
@@ -268,11 +273,13 @@ insertCasts-StBuildTerm-(|e1, st1):
   ; (trm4, st3) := <insertCasts-StBuildTerm(|e1, st2)> trm2
   ; t1 := <current-type> st2
     // Note that constructors can be strings (in case of applications and tuples) or the empty list (in case of a list)
-  ; if not(DynT() := t1 + <CanCoerce> (t1, StringT()) + <CanCoerce> (t1, ListT()))
-      then <report-Err> (trm1, NonStringOrListInExplodeConsPosition(<current-type> st2))
+  ; if DynT(t2) := t1
+    then if not(<CanCoerce> (t2, StringT()) + <CanCoerce> (t2, ListT()))
+      then <report-Warn> (trm1, NonStringOrListInExplodeConsPosition(<current-type> st2))
     end
-    // TODO: support cast to string-or-list for the constructor
-    // TODO: Give a warning when it's guaranteed to fail based on type. (constructor is not string or list)
+    else if not(<CanCoerce> (t1, StringT()) + <CanCoerce> (t1, ListT()))
+      then <report-Err> (trm1, NonStringOrListInExplodeConsPosition(<current-type> st2))
+    end end
   ; st4 := <current-type(|DynT())> st3
 
 strategies // Terms in match position (sugar)
@@ -414,20 +421,20 @@ insertCasts-StBuildTerm-(|e1, st1):
 insertCasts-StBuildTerm(|e1, st1):
   trm@Char(_) -> <insertCasts-StBuildTerm-Lit(|st1, IntT())>
 
-// TODO: extract types from expected type to support the type parameters properly here
 insertCasts-StBuildTerm-(|e1, st1):
-  Tuple(trm1*) -> (Tuple(trm2*), st3)
+  trm1@Tuple(trm1*) -> (Tuple(trm2*), st3)
   with
     (trm2*, t*, st2) := <thread-map-LUB(insertCasts-StBuildTerm-Type(|e1, DynT()))> (trm1*, st1)
   ; t1 := TupleT(t*)
+  ; _ := <computeCoercion(|<current-type> st1, t1)> trm1
   ; st3 := <current-type(|t1)> st2
 
-// TODO: extract types from expected type to support the type parameters properly here
 insertCasts-StBuildTerm-(|e1, st1):
-  List(trm1*) -> (List(trm2*), st3)
+  trm1@List(trm1*) -> (List(trm2*), st3)
   with
     (trm2*, t*, st2) := <thread-map-LUB(insertCasts-StBuildTerm-Type(|e1, DynT()))> (trm1*, st1)
   ; t1 := ListT(<foldr1(?[<id>], LUB <+ !DynT()) <+ !DynT()> t*)
+  ; _ := <computeCoercion(|<current-type> st1, t1)> trm1
   ; st3 := <current-type(|t1)> st2
 
 // TODO: extract types from expected type to support the type parameters properly here
@@ -440,7 +447,7 @@ insertCasts-StBuildTerm-(|e1, st1):
   // Cannot use the same as before. <current-type> st3 must be a list and cast to it if DynT().
   // But if not <CanCoerce> (<current-type> st3, t1), current-type in st4 should be ListT()
   ; t1 := ListT() //<foldr1(?[<id>], LUB <+ !DynT())> t*
-  // TODO: Give a warning when it's guaranteed to fail based on type. <local-current-type> st3 -> t1
+  ; _ := <computeCoercion(|<current-type> st3, t1)> trm1
   ; st4 := <current-type(|t1)> st3
 
 insertCasts-StBuildTerm-(|e1, st1):
@@ -554,8 +561,9 @@ insertCasts-Build-StringQuotedPart-(|e1):
   (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm2), st3)
   with
     (trm2, st2) := <insertCasts-StBuildTerm(|e1, st1)> trm1
-// TODO: Give a warning when it's guaranteed to fail based on type: <current-type> st2 -> StringT()
-  ; st3 := <current-type(|<current-type> st2)> st2
+  ; t1 := <current-type> st2
+  ; _ := <computeCoercion(|t1, StringT())> trm1
+  ; st3 := <current-type(|StringT())> st2
 
 insertCasts-Build-StringQuotedPart(|e1) =
   otf22-sugar(
@@ -596,7 +604,7 @@ insertCasts-StMatchTerm-(|e1, st1):
     end
 
 insertCasts-StBuildTerm-(|e1, st1):
-  trm1@TypeAscription(trm2, t1) -> (trm3, st2)
+  trm1@TypeAscription(trm2, t1) -> (trm3, st3)
   with
     t2 := <desugar-Type> t1
   ; t3 := <current-type> st1
@@ -604,12 +612,5 @@ insertCasts-StBuildTerm-(|e1, st1):
       then <report-Err> (trm1, TypeMismatch(t2, t3))
     end
   ; (trm3, st2) := <insertCasts-StBuildTerm(|e1, <current-type(|t2)> st1)> trm2
-// TODO: Was this cast insertion supposed to go into the if-then-else?
-//  ; (trm4, st3) := <insertCastApp(|<current-type> st2, t2)> (trm3, st2)
-  ; if not(<CanCoerce> (t2, <current-type> st2) + DynT() := t2)
-      then
-        st3 := <current-type(|t2)> st2
-      else
-        st3 := <current-type(|t2)> st2
-    end
+  ; st3 := <current-type(|t2)> st2
 
