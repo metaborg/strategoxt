@@ -92,3 +92,6 @@ imports
   stratego/strc/pp/pp-stratego
   stratego/strc/pp/stratego-parenthesize
   stratego/strc/pp/stratego2abox
+
+  stratego/strc/incr/compile
+  stratego/strc/incr/split-large-term-builds

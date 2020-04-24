@@ -17,6 +17,7 @@ imports
   strj-options
   s2j
   lib/dr-scoping
+  fast-print/main
 
 strategies
 
@@ -48,11 +49,12 @@ strategies
   ; if Specification(mapconcat(?Overlays(<id>) <+ ![]);not(?[]))
     then dr-scope-all-verbose(
            Specification(
-             filter(Overlays(map(DeclareExpandOverlay <+ debug(!"overlay map fail");fail)) < fail + id)
+             remove-all(Overlays(map(DeclareExpandOverlay <+ debug(!"overlay map fail");fail)))
            ; map(try(Strategies(map(SDefT(id, id, id, expand-overlays-in-def) <+ debug(!"sdeft map fail");fail))))
            )
          )
     end
+  ; Specification(map(try(Strategies(![<joindefs>]))))
     // We need to rename strategy calls that were given arity _0_0, if the strategy was
     //  not overloaded in arity and had a different arity. If so the packing tool added
     //  the renaming information in the annotations as pairs.
@@ -178,23 +180,18 @@ strategies
     ast -> name
     with
       name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
-      // UNDONE. VladVergu. FastPretty printing only available in C, no more C backend.
-    // ; if FastPrettyPrinting then
-    //     if-c-platform(
-    //       <parenthesize-Java5; pp-java-native> ast
-    //     ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
-    //     )
-    //   else
-        ; log(|Info(), ["Writing file: ", name])
-        ;  file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
-        ; box  := <pp-java5-to-abox> ast
-        ; <box2text-stream(|80, file)> box
-        ; <fclose> file
-      // end
+    ; log(|Info(), ["Writing file: ", name])
+    ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
+    ; if PrettyPrintJava then
+         box  := <pp-java5-to-abox> ast
+       ; <box2text-stream(|80, file)> box
+      else
+        string := <parenthesize-Java5; java-to-string> ast
+      ; <fputs> (string, file)
+      end
+    ; <fclose> file
     <+
       output-java-error
-       
-   external pp-java-native(|)
 
    // TODO: Override .dep file location
    

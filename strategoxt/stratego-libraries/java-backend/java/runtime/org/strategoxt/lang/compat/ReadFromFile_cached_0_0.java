@@ -2,7 +2,6 @@ package org.strategoxt.lang.compat;
 
 import static org.spoofax.interpreter.core.Tools.asJavaString;
 import static org.spoofax.interpreter.core.Tools.isTermString;
-import static org.spoofax.interpreter.terms.IStrategoTerm.MUTABLE;
 
 import java.io.File;
 import java.util.Map;
@@ -72,10 +71,8 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 				&& cachedDate.accessed > fileDate + FILE_TIME_GRANULARITY
 				&& cachedDate.file.equals(file)) {
 			
-			if (cachedTerm.getStorageType() == MUTABLE) {
-				cachedTerm = TermConverter.convert(context.getFactory(), cachedTerm);
-				putCache(file, now, cachedTerm);
-			}
+			cachedTerm = TermConverter.convert(context.getFactory(), cachedTerm);
+			putCache(file, now, cachedTerm);
 			return cachedTerm;
 		} else {
 			IStrategoTerm result = super.invoke(context, term);

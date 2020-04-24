@@ -96,7 +96,7 @@ rules // Lift non-variable arguments to primitives.
   LiftPrimArg :
     t -> ([x], (Where(Seq(Build(t), Match(Var(x)))), Var(x)))
     where <not(Var(id))> t
-        ; x := <newname> "prim_arg_m"
+        ; x := <tnewvar> "prim_arg_m"
 
 
 /*
@@ -125,12 +125,12 @@ rules
 
   LiftBuildApp :
     Term|[ <s> t ]| -> Term|[ x ]|
-    where x := <newname> "lift_app_in_build_m"
+    where x := <tnewvar> "lift_app_in_build_m"
         ; rules( AddApp :+ s' -> |[ {x : where(<s> t => x); s'} ]| )
 
   LiftBuildApp :
     Term|[ <s> ]| -> Term|[ x ]|
-    where x := <newname> "lift_app_in_build_m"
+    where x := <tnewvar> "lift_app_in_build_m"
         ; rules( AddApp :+ s' -> |[ {x : where(s => x); s'} ]| )
 
   LiftTopLevelMatchApp :
@@ -145,12 +145,12 @@ rules
 
   LiftMatchApp :
     Term|[ <s> t ]| -> Term|[ x ]|
-    where x := <newname> "lift_app_in_match_m"
+    where x := <tnewvar> "lift_app_in_match_m"
         ; rules( AddApp :+ s' -> |[ {x : s'; !x; !t; s} ]| )
 
   LiftMatchApp :
     Term|[ <s> ]| -> Term|[ x ]|
-    where x := <newname> "lift_app_in_match_m"
+    where x := <tnewvar> "lift_app_in_match_m"
         ; rules( AddApp :+ s' -> |[ {x : s'; !x; s} ]| )
 
 strategies
@@ -191,8 +191,8 @@ rules
   CtoS(name) : [WithClause(s)  | cond*] -> Seq(with,      <CtoS(name)> cond*)
     where
       sname := <name>
-    ; x := <newname> "unused"
-    ; y := <newname> "unused"
+    ; x := <tnewvar> "unused"
+    ; y := <tnewvar> "unused"
     ; with := <with-strategy> (s,sname)
       <+ with := With(s) // <name> failed
 
@@ -216,7 +216,7 @@ strategies // "with" strategy
   Desugar:
     With(s) -> <with-strategy> (s,sname)
     where
-      x := <newname> "unused"
+      x := <tnewvar> "unused"
       ; ( sname := <WithContext>
         <+sname := ""
         )
@@ -318,7 +318,7 @@ rules
           ; w* := <filter(match-term-r)> names
             
   add-name: Var(n) -> (<id>, n)
-  add-name: _ -> (<id>, <get-constructor;snewvar>)
+  add-name: _ -> (<id>, <get-constructor;tnewvar>)
   transform-term: (_, n) -> DefaultVarDec(n)
   match-term: (t, n) -> Where(Assign(t, Var(n))) where <not(?Var(_))>t
   match-term-r: (t, n) -> WhereClause(Assign(t, Var(n))) where <not(?Var(_))>t
@@ -348,11 +348,11 @@ rules
 
   Desugar :
     |[ rules( dr := t ) ]| -> |[ where({y : !t; ?y; rules( dr : _ -> y )}) ]| 
-    where y := <newname> "globvar"
+    where y := <tnewvar> "globvar"
 
   Desugar :
     |[ rules( dr :+= t ) ]| -> |[ where({y : !t; ?y; rules( dr :+ _ -> y )}) ]| 
-    where y := <newname> "globvar"
+    where y := <tnewvar> "globvar"
 
   Desugar :
     DynRuleIntersectFix(rulenames, s) -> 
@@ -452,7 +452,7 @@ rules
   Desugar :
     SwitchChoice(s1, sc*, s2) -> |[ {x : where(s1 => x); s} ]|
     // |[ switch s1 sc* s2 end ]| -> |[ {x : where(s1 => x); s} ]|
-    where x := <newname> "switch"
+    where x := <tnewvar> "switch"
         ; <foldr(!s2, glchoice(|x))> sc* => s
 
   glchoice(|x) : 
@@ -464,7 +464,7 @@ rules
   Desugar :
     |[ where(s) ]| -> |[ {x: ?x; s; !x} ]|
     where <not(Id)> s
-    with x := <newname> "where"
+    with x := <tnewvar> "where"
 
   Desugar :
     |[ where(id) ]| -> |[ id ]|
@@ -501,10 +501,10 @@ rules
   Desugar :
     ExplodeCong(s1, s2) -> 
     |[ {x, x', y, y': (x#(y) -> x'#(y') where <s1> x => x'; <s2> y => y')} ]|
-    where x := <newname> "expl_cong_cons_m"
-        ; x' := <newname> "expl_cong_args_m"
-        ; y := <newname> "expl_cong_cons_b"
-        ; y' := <newname> "expl_cong_args_b"
+    where x := <tnewvar> "expl_cong_cons_m"
+        ; x' := <tnewvar> "expl_cong_args_m"
+        ; y := <tnewvar> "expl_cong_cons_b"
+        ; y' := <tnewvar> "expl_cong_args_b"
 
   Desugar :
     ListCongNoTail(ts) -> <foldr(!|[ ?[] ]|, DesugarConsArgs)> ts
@@ -522,11 +522,11 @@ rules
        ![x' | y']{^z}
       }
     ]|
-    where x := <newname> "list_cong_head_m"
-        ; y := <newname> "list_cong_tail_m"
-        ; x' := <newname> "list_cong_head_b"
-        ; y' := <newname> "list_cong_tail_b"
-        ; z := <newname> "list_cong_annos"
+    where x := <tnewvar> "list_cong_head_m"
+        ; y := <tnewvar> "list_cong_tail_m"
+        ; x' := <tnewvar> "list_cong_head_b"
+        ; y' := <tnewvar> "list_cong_tail_b"
+        ; z := <tnewvar> "list_cong_annos"
 
   Desugar :
     StrCong(x) -> Match(NoAnnoList(Str(x)))
@@ -659,7 +659,7 @@ strategies
     + Op(RemoveLeadingPrime,id)
 
   RemoveLeadingPrime :
-    x -> x'
+    x -> <origin-set-relation> (x,x')
     where <explode-string> x => [39 | cs]
         ; <implode-string> cs => x'
 

@@ -17,7 +17,7 @@ strategies
       ; <diff> (x*, x1*) => x2*
       ; <map(!VarDec(<id>, ConstType(Sort("ATerm", []))))> x1* => a3*
       ; <conc>(a2*, a3*) => a4*
-      ; g := <newname> "worker_wrapper"
+      ; g := <snewvar> "worker_wrapper"
       ; <map(\ VarDec(x, _) -> CallT(SVar(x),[],[]) \ )> a1* => s*
       ; <map(\ VarDec(x, _) -> Var(x) \ )> a4* => t*
      

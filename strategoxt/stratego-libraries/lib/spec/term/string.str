@@ -22,12 +22,115 @@ imports
 strategies
 
   /**
+   * Scopes local-newname and local-new, which work by dynamic rule.
+   */
+  scope-local-new(s) = {| LocalNew, LocalNewAlpha : rules(LocalNewAlpha := 0);  s |}
+
+  /**
+   * Generates a locally unique new string with user-defined prefix
+   * the form 's_d', where s is a string and d is a positive integer.
+   * The produced string is *only* unique within the scope of
+   * scope-local-new, and only based on previous calls to
+   * local-newname/local-new. If you constructed a similar name by
+   * hand it will not be avoided.
+   *
+   * The prefix comes in front of an increasing number, which is
+   * separately maintained and started at 0 for each prefix.
+   * The numbering is case-insensitive on the prefix. 
+   *
+   * Examples (results are shown in comment)
+   *   scope-local-new(
+   *     <local-newname; debug> "a"        // produces "a_0"
+   *   ; <local-newname; debug> "a"        // produces "a_1"
+   *   ; <local-newname; debug> "A"        // produces "A_2"
+   *   ; <local-newname; debug> "b"        // produces "b_0"
+   *   ; <local-newname; debug> "b"        // produces "b_1"
+   *   ; <local-newname; debug> "b_2"      // produces "b_2_0"
+   *   ; <local-newname; debug> "b_2"      // produces "b_2_1"
+   *   ; <local-newname; debug> "b_a"      // produces "b_a_0"
+   *   ; <local-newname; debug> "b_a"      // produces "b_a_1"
+   *   ; <local-newname; debug> "a_"       // produces "a__0"
+   *   ; <local-newname; debug> "a_1"      // produces "a_1_0"
+   *   )
+   */
+  local-newname = local-newname(|())
+
+  /**
+   * This version of local-newname uses the given context term as a "reentrant scope".
+   * When given the same context term and name (within the same `scope-local-new` call), new
+   * locally unique names are generated, but with a different context term the counter for the
+   * prefix resets. The default context used by `local-newname`/0 is `()`. 
+   */
+  local-newname(|context): prefix -> $[[prefix]_[number]]
+      where key := (context, <lower-case> prefix)
+          ; number := <LocalNew <+ !0> key
+          ; number' := <int-add(|1)> number
+          ; rules(LocalNew: key -> number')
+
+  /**
+   * Generates a locally unique new string of the form 'c_d',
+   * where c is one char and d is a positive integer.
+   * The produced string is *only* unique within the scope of
+   * scope-local-new, and only based on previous calls to
+   * local-newname/local-new. If you constructed a similar name by
+   * hand it will not be avoided.
+   *
+   * Examples (results are shown in comment)
+   *   scope-local-new(
+   *     <local-new; debug>          // produces "a_0"
+   *   ; <local-new; debug>          // produces "b_0"
+   *   ; <local-new; debug>          // produces "c_0"
+   *   ; <local-new; debug>          // produces "d_0"
+   *   ; <local-new; debug>          // produces "e_0"
+   *   ; <local-new; debug>          // produces "f_0"
+   *   ; <local-new; debug>          // produces "g_0"
+   *   ; <local-new; debug>          // produces "h_0"
+   *   ; <local-new; debug>          // produces "i_0"
+   *   ; <local-new; debug>          // produces "j_0"
+   *   ; <local-new; debug>          // produces "k_0"
+   *   ; <local-newname; debug> "f"  // produces "f_1"
+   *   )
+   * Note how the input to local-new is ignored. It does share
+   * information with local-newname so the two don't generate
+   * overlapping names within the same scope-local-new call.
+   */
+  local-new = local-new(|())
+
+  /**
+   * This version of local-new uses the given context term as a "reentrant scope".
+   * When given the same context term (within the same `scope-local-new` call), new locally unique
+   * names are generated, but with a different context term the counter resets. The default context
+   * used by `local-new`/0 is `()`. 
+   */
+  local-new(|context) =
+    // use LocalNewAlpha to shift from ASCII character a to some letter in the alphabet
+    ![<int-add(|<LocalNewAlpha>)> 'a']
+    // Update LocalNewAlpha with increment modulo 26
+  ; where(LocalNewAlpha; int-add(|1); if int-gt(|25) then !0 end; ?alpha; rules(LocalNewAlpha := alpha))
+    // implode the letter + underscore list of characters to a string
+  ; implode-string
+    // apply local-newname to share information and not produce overlapping names between the two
+  ; local-newname(|context)
+
+  /**
+   * @deprecated: Please use locally scoped new/newname instead.
+   * This primitive is bad for deterministic and separate compilation
+   * and is very difficult and costly to support. Currently may break
+   * its uniqueness guarantee due to garbage collection on the JVM at
+   * and inopportune time.
+   *
    * Generates a unique new string of the form 'c_d',
    * where c is one char and d is a positive integer.
    */
   new = prim("SSL_new")
 
   /**
+   * @deprecated: Please use locally scoped new/newname instead.
+   * This primitive is bad for deterministic and separate compilation
+   * and is very difficult and costly to support. Currently may break
+   * its uniqueness guarantee due to garbage collection on the JVM at
+   * and inopportune time.
+   *
    * Generates a unique new string with user-defined prefix
    * the form 'sd', where s is a string and d is a positive integer.
    * The produced string is *always* unique across a program run.

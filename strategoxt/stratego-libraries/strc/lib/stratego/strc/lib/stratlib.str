@@ -167,15 +167,17 @@ strategies
 strategies
 
   tnewvar =
-    lower-case
-    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
-    ; newname
+    string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\ + \'*' -> 's'\) ])
+    ; lower-case
+    ; def-local-newname
+    ; lower-case
     <+ new
 
   snewvar =
-    lower-case
-    ; string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
-    ; newname
+    string-as-chars([ is-alpha + ?'_' | map(is-alphanum + ?'_' + \'-' -> '_'\ + \'\'' -> 'q'\) ])
+    ; lower-case
+    ; def-local-newname
+    ; lower-case
     <+ new
 
   declared-vars =
@@ -231,3 +233,15 @@ strategies
     rec x(env-alltd(RnVar(isvar)
                     <+ RnBinding(bndvars, paste, newvar);
                        DistBinding(x, boundin)))
+
+rules
+
+  scope-def-local-newname(s|defname) = {| LocalDefName:
+      rules(LocalDefName := defname)
+    ; s
+    ; rules(LocalDefName :- defname)
+  |}
+
+  def-local-newname =
+    try(!$[[<LocalDefName>]_[<id>]])
+  ; newname

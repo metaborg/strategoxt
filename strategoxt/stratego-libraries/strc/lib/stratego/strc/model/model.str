@@ -28,6 +28,14 @@ strategies
 
 strategies // strategy definitions
 
+  // m-add-def uses :+. Later bagof- gives a list in reverse insertion order,
+  // therefore we always reverse the list coming out of bagof before doing
+  // anything with it. Usually the list is used to then remove the key and
+  // add the list again later after a transformation on each definition.
+  // By always using this strategy, the order of insertion is always the same,
+  // and the list out of bagof- is always the reverse. 
+  bagof-ModDefinition-insertion-order = bagof-ModDefinition; reverse
+
   /**
    * Add mapping from a definition signature to the full definition,
    * and maintain a collection of all definitions, all external, and
@@ -100,15 +108,15 @@ strategies // strategy definitions
 
   m-get-all-definitions =
     dr-all-keys(|"ModDefinition")
-    ; filterconcat(bagof-ModDefinition)
+    ; filterconcat(bagof-ModDefinition-insertion-order)
 
   m-get-all-local-definitions =
     dr-all-keys(|"ModDefinition")    
-    ; filterconcat(IsLocal; bagof-ModDefinition)
+    ; filterconcat(IsLocal; bagof-ModDefinition-insertion-order)
 
-  m-get-all-external-definitionss =
+  m-get-all-external-definitions =
     dr-all-keys(|"ModDefinition")
-    ; filterconcat(IsExternal; bagof-ModDefinition)
+    ; filterconcat(IsExternal; bagof-ModDefinition-insertion-order)
 
   filterconcat(s) =
     mapconcat(s <+ ![])
@@ -253,8 +261,8 @@ strategies
 
   m-transform-def(s) =
     where(id
-    ; bagof-ModDefinition
-    ; [m-rm-def|id]
+    ; bagof-ModDefinition-insertion-order
+    ; where(Hd;m-rm-def)
     ; s
     ; map(m-add-def)
     )
@@ -326,5 +334,18 @@ strategies
   overlay-to-model =
     m-add-overlay
 
+strategies
 
+  constr-sig-to-string = (is-string, is-int); split(Fst, !$[[<Fst>]_[<Snd>]]); origin-set-relation
+  constr-sig-to-string: (Q(c), len) -> <origin-set-relation> (c, $[[<escape> c]_[len]])
+  constr-sig-to-string: (Inj(), 0) -> <fail>
 
+  strategy-sig-to-string = split(Fst, !$[[<Fst;cify>]_[<Snd>]_[<Third>]]); origin-set-relation
+
+  internal origin-track-forced(s) =
+    ![<id>]; all(s); ?[<id>]
+
+  internal origin-set-relation:
+    (origin-node, new-node) -> origin-tracked-node
+    where
+      origin-tracked-node := <!Some(<id>); all(!new-node); ?Some(<id>)> origin-node

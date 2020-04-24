@@ -1,0 +1,45 @@
+module split-large-term-builds
+
+overlays
+
+LARGE_TERM_SIZE() = 1000
+
+rules
+
+split-large-term-builds = alltd(split-large-term-builds')
+
+split-large-term-builds': Build(t) -> Scope(names, t'')
+where <gti> (<term-size> t, LARGE_TERM_SIZE())
+with {| NameToTerm:
+         let termToName = {\
+           t@Anno(_,_) -> Var(n)
+             where n := <newname> "large_term_fragment"
+                 ; rules(NameToTerm: n -> t)
+         \}
+         in
+           t' := <split-at-size(termToName|LARGE_TERM_SIZE())> t
+         ; names := <dr-all-keys(|"NameToTerm")>
+         ; pairs := <filter(!(<id>, <NameToTerm>))> names
+         ; t'' := <foldr(!Build(t'), \((n, t), acc) -> Seq(Build(t), Seq(Match(Var(n)), acc))\)> pairs
+         end
+     |}
+
+split-at-size(s|size) = bottomup-at-large-terms'(s|size); Fst
+
+bottomup-at-large-terms'(s|large-size):
+  t -> (t'', size')
+with
+  t'-and-sizes := <all(bottomup-at-large-terms'(s|large-size))>
+; t'           := <all(Fst)> t'-and-sizes
+; size         := <crush(!1, add, Snd)> t'-and-sizes
+with
+  ?SDefT(_, _, _, _) // don't count definitions
+; t''   := t'
+; size' := 0
+<+
+  <gti> (size, large-size)
+; t''   := <s> t'
+; size' := 0
+<+
+  t''   := t'
+; size' := size

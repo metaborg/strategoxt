@@ -78,19 +78,16 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 	private final ConstructorRecordingTermFactory recordingFactory;
 
+	private final ArrayList<URLClassLoader> classLoaders = new ArrayList<>();
+
 	private static class ConstructorRecordingTermFactory extends AbstractWrappedTermFactory {
 
 		private final Collection<IStrategoConstructor> constructors = new ArrayList<IStrategoConstructor>();
 		private final ITermFactory theBaseFactory;
 
 		public ConstructorRecordingTermFactory(ITermFactory baseFactory) {
-			super(IStrategoTerm.MUTABLE, baseFactory);
+			super(baseFactory);
 			theBaseFactory = baseFactory;
-		}
-
-		public ITermFactory getFactoryWithStorageType(int storageType) {
-			assert getDefaultStorageType() <= storageType;
-			return this;
 		}
 
 		@Override
@@ -289,6 +286,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			throws SecurityException, NoInteropRegistererJarException, IncompatibleJarException, IOException {
 
 		URLClassLoader classLoader = new URLClassLoader(jars, parentClassLoader);
+		classLoaders.add(classLoader);
 		boolean foundRegisterer = false;
 		loadedJars = true;
 
@@ -390,6 +388,15 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		SSLLibrary lib = SSLLibrary.instance(getContext());
 		if (lib != null)
 			lib.getIOAgent().closeAllFiles();
+		try {
+			for(URLClassLoader classLoader : classLoaders) {
+				classLoader.close();
+			}
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			classLoaders.clear();
+		}
 	}
 
 	/**

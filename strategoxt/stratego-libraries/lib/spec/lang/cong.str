@@ -1,0 +1,7 @@
+module lang/cong
+
+strategies
+
+Anno_Cong__(termStrat, annoStrat): term{^annos} -> term'{^annos'}
+  where term'  := <termStrat> term
+      ; annos' := <annoStrat> annos

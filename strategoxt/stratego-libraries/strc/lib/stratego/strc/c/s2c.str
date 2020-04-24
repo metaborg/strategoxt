@@ -323,7 +323,7 @@ strategies
 	; <map(TranslateVarDec)> a1* => args1
         ; <map(TranslateVarDec)> a2* => args2
 	; <conc>(args1, args2) => args
-	; <newname> "fail" => F
+	; <tnewvar> "fail" => F
 	; {| InnerFunction 
            : rules( InnerFunction : _)
            ; <translate-strat(|Next, F)>s => stm
@@ -345,7 +345,7 @@ strategies
 	; <map(TranslateVarDec)> a1* => args1
         ; <map(TranslateVarDec)> a2* => args2
 	; <conc>(args1, args2) => args
-	; <newname> "fail" => F
+	; <tnewvar> "fail" => F
 	; {| InnerFunction 
            : rules( InnerFunction : _)
            ; <translate-strat(|Next, F)> s => stm
@@ -741,7 +741,7 @@ rules
     where <(Op(id, map(Cache)); proper-list 
 	    + Anno(Cache, Cache) 
 	    + Int(id) + Str(id) + Real(id) /* + BuildDefault(id) */)> t
-        ; <newname> "term" => x
+        ; <tnewvar> "term" => x
         ; !Id(x) => e2
         ; rules( Cache : t -> e2 )
         ; !(x, e1)
