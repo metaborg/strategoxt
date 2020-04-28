@@ -270,7 +270,7 @@ insertCasts-StBuildTerm-(|e1, st1):
   Explode(trm1, trm2) -> (Explode(trm3, trm4), st4)
   with
     (trm3, st2) := <insertCasts-StBuildTerm(|e1, st1)> trm1
-  ; (trm4, st3) := <insertCasts-StBuildTerm(|e1, st2)> trm2
+  ; (trm4, st3) := <insertCasts-StBuildTerm(|e1, <current-type(|ListT())> st2)> trm2
   ; t1 := <current-type> st2
     // Note that constructors can be strings (in case of applications and tuples) or the empty list (in case of a list)
   ; if DynT(t2) := t1
