@@ -24,6 +24,8 @@ imports
   backend-simplify
   s2j-options
   lib/dr-scoping
+  signatures-sig
+  strategies-sig
 
 signature
   constructors 
@@ -133,10 +135,12 @@ rules
      ~import-dec*:imports
 
      import org.strategoxt.lang.*;
+     import org.strategoxt.lang.gradual.*;
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
+     import java.util.Arrays;
      import java.lang.ref.WeakReference;
          
      @SuppressWarnings("all")
@@ -208,7 +212,7 @@ rules
     ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
-    ; register      := <java-interop-registerers> defs
+    ; register      := <java-interop-registerers> (defs, ops)
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
@@ -236,10 +240,12 @@ rules
      ~import-dec*:imports
 
      import org.strategoxt.lang.*;
+     import org.strategoxt.lang.gradual.*;
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
+     import java.util.Arrays;
      import java.lang.ref.WeakReference;
          
      @SuppressWarnings("all")
@@ -267,17 +273,19 @@ rules
   ; lifted-defs   := <bagof-LiftedDef>
   
   java-compile-spec-boilerplate :
-    Specification([Signature([Constructors([])]), Strategies(defs)]) -> 
+    Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
     |[ 
      ~package-dec?: pkgname
      
      ~import-dec*:imports
 
      import org.strategoxt.lang.*;
+     import org.strategoxt.lang.gradual.*;
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
+     import java.util.Arrays;
      import java.lang.ref.WeakReference;
          
      @SuppressWarnings("all")
@@ -336,7 +344,7 @@ rules
      }
   ]|
   with id
-    // ; <list-loop(try(JavaTranslate))> ops
+    ; <list-loop(try(JavaTranslate))> ops
     ; <list-loop(try(JavaTranslate))> defs
     ; imports       := <java-imports>
     ; import-inits  := <java-init-imports>
@@ -344,7 +352,7 @@ rules
     ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
-    ; register      := <java-interop-registerers> defs
+    ; register      := <java-interop-registerers> (defs, ops)
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
@@ -450,7 +458,7 @@ rules
   // TODO: do interop strategy additions in a fully on-demand fashion?
   //       (need to adapt VarScope class to do so)
   java-interop-registerers : 
-    defs ->
+    (defs, sigs) ->
     class-body-dec* |[
       public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
         new InteropRegisterer().registerLazy(context, compiledContext, InteropRegisterer.class.getClassLoader());
@@ -474,6 +482,7 @@ rules
             compiledContext.registerComponent("~x_name");
             x_name.init(compiledContext);
             bstm1*
+            bstm3*
           }
         ]|
         
@@ -482,6 +491,7 @@ rules
             compiledContext.registerComponent("~x_name");
             x_name.init(compiledContext);
             bstm2*
+            bstm3*
           }
         ]|
       }
@@ -490,6 +500,7 @@ rules
       // HACK: non-lazy defs are used only to trick javac to compile everything atm
       bstm1* := <filter(java-register-strategy)> defs
     ; bstm2* := <filter(java-register-strategy-lazy)> defs
+    ; bstm3* := <filter(java-register-signature)> sigs
     ; x_name := <ApplicationName>
 
   java-register-strategy :
@@ -507,6 +518,31 @@ rules
       y := <conc-strings> (<get-config> "-p", ".", x)
     <+
       y := <conc-strings> (<ApplicationName>, "$", x)
+
+  java-register-signature:
+    OpDecl(str, optype) ->
+    bstm |[ compiledContext.typeInfo.registerConstructor(e_sort, e_str, Arrays.asList(e_ty*)); ]|
+  with
+    (e_sort, e_ty*) := <java-reg-optype> optype
+  ; e_str := Lit(String([Chars(str)]))
+
+  java-register-signature:
+    OpDeclInj(FunType([from], to)) ->
+    bstm |[ compiledContext.typeInfo.registerInjection(e_from, e_to); ]|
+  with
+    e_from := <?ConstType(<translate-Type>)> from
+  ; e_to := <?ConstType(<translate-Type>)> to
+
+  // TODO: write java-register-signature for other OpDeclInj which are injections from TupleType to a Sort? 
+
+  java-reg-optype:
+    ConstType(sort) -> (<translate-Type> sort, [])
+
+  java-reg-optype:
+    FunType(ty*, sort) -> (e_sort, e_ty*)
+  with
+    e_sort := <?ConstType(<translate-Type>)> sort
+  ; e_ty* := <map(?ConstType(<translate-Type>))> ty*
 
 rules
 
@@ -920,8 +956,10 @@ strategies
   translate-strategy = 
        ( 
        translate-Platform
+    <+ translate-Cast
     <+ translate-CallT-dynamic
     <+ translate-CallT
+    <+ translate-ProxyT
     <+ translate-Build
     <+ translate-Seq
     <+ translate-PrimT-constant
@@ -956,7 +994,7 @@ strategies
       ; rules(InnerDefinition: x' -> def)
       /* This forces LiftedTVars and LiftedSVars to be populated before translating the bodies
        * of the definitions. `lifted-call-to-instance-with-args` is sometimes used in the bodies.
-       * These can be executed before seeing the definitions if they are in the wrong order order
+       * These can be executed before seeing the definitions if they are in the wrong order or
        * mutually dependent.
        */
       ; <collect-lifted-tvars> def
@@ -1008,6 +1046,95 @@ strategies
         ?bstm_init*
       )
 
+  translate-ProxyT:
+    ProxyT(s*, t*, i, o, SVar(x)) ->
+    bstm* |[
+      bstm_init*
+      Proxy x_proxy = new Proxy(context, e_coercion, e_instance);
+      term = x_proxy.invoke(context, term);
+      if (term == null) 
+        break Fail;
+    ]|
+    with
+      x_proxy := <concat-strings;newname> ["proxy_", x]
+    ; e_coercion := <translate-FunTCoercion> (s*, t*, i, o)
+    ; lifted-decls-wrap(
+        e_instance := <lifted-call-to-instance> CallT(SVar(x), [], [])
+      ,
+        ?bstm_init*
+      )
+
+  translate-FunTCoercion:
+    (s*, t*, i, o) ->
+    |[ new FunTCoercion(Arrays.asList(e_s*), Arrays.asList(e_t*), e_i, e_o) ]|
+  with
+    e_s* := <map(translate-SCoercion)> s*
+  ; e_t* := <map(translate-Coercion)> t*
+  ; e_i := <translate-Coercion> i
+  ; e_o := <translate-Coercion> o
+
+  translate-Coercion:
+    Id() -> |[ IdCoercion.INSTANCE ]|
+
+  translate-Coercion:
+    RuntimeCheck(type) -> |[ new TypeCoercion(e_type) ]|
+  with
+    e_type := <translate-Type> type
+
+  translate-Type:
+    StringT() -> |[ StringT.INSTANCE ]|
+
+  translate-Type:
+    IntT() -> |[ IntT.INSTANCE ]|
+
+  translate-Type:
+    RealT() -> |[ RealT.INSTANCE ]|
+
+  translate-Type:
+    t@TupleT(_, _) -> |[ new TupleT(Arrays.asList(e_ty*)) ]|
+  with
+    e_ty* := <translate-TupleType> t
+
+  translate-TupleType:
+    TupleT(ty1, ty2) -> [<translate-Type> ty1 | <translate-TupleType> ty2]
+
+  translate-TupleType = ![<translate-Type>]
+
+  translate-Type:
+    Sort(str, args) -> |[ new Sort(e_str, Arrays.asList(e_ty*)) ]|
+  with
+    e_ty* := <map(translate-Type)> args
+  ; e_str := Lit(String([Chars(str)]))
+
+  translate-Type:
+    SortVar(str) -> |[ new SortVar(e_str) ]|
+  with
+    e_str := Lit(String([Chars(str)]))
+
+  translate-SCoercion:
+    SId() -> |[ FunTCoercion.ID ]|
+
+  translate-SCoercion:
+    SRuntimeCheck(funttype) ->
+    <translate-SType> funttype
+
+  translate-SType:
+    FunTType(s*, t*, i, o) ->
+    |[ new FunTCoercion(Arrays.asList(e_s*), Arrays.asList(e_t*), e_i, e_o) ]|
+  with
+    e_s* := <map(translate-SType)> s*
+  ; e_t* := <map(!RuntimeCheck(<id>);translate-Coercion)> t*
+  ; e_i := <translate-Coercion> RuntimeCheck(i)
+  ; e_o := <translate-Coercion> RuntimeCheck(o)
+
+  translate-Cast:
+    Cast(type) ->
+    bstm* |[
+      Cast.check(context, term, e_type);
+    ]|
+    with
+      e_type := <translate-Type> type
+
   translate-PrimT :
     CallDynamic(f, s*, t*) -> <fail>
     with
@@ -1046,7 +1173,7 @@ strategies
     )
   
   lifted-strategy-to-instance =
-    if ?CallT(_, _, _) then
+    if ?CallT(_, _, _) + ?ProxyT(_, _, _, _, _) then
       // Pass (potentially parameterizable) svar calls as-is
       lifted-call-to-instance
     else
