@@ -97,7 +97,7 @@ rules // Lift non-variable arguments to primitives.
   LiftPrimArg :
     t -> ([x], (Where(Seq(Build(t), Match(Var(x)))), Var(x)))
     where <not(Var(id))> t
-        ; x := <tnewvar> "prim_arg_m"
+        ; x := <tnewvar> "arg_m"
 
 
 /*

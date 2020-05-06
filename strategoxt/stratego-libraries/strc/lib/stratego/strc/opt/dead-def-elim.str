@@ -49,7 +49,7 @@ strategies
     DefNeeded 
     <+ ?f; rules( DefNeeded : f -> f )
         ; NameToDefinition
-        ; rec x(alltd(CallT(SVar(mark-needed-defs),x,x)))
+        ; rec x(alltd(CallT(SVar(mark-needed-defs),x,x) <+ ProxyT(id, id, id, id, SVar(mark-needed-defs))))
 
 strategies 
   

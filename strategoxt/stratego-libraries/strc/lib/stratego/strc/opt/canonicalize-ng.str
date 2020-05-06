@@ -6,6 +6,8 @@ imports
 	// C 
 	stratego/strc/opt/stratego-laws 
 	stratego/strc/c/frames
+  stratego/strc/gradual/strategies-sig
+  stratego/strc/gradual/signatures-sig
 
 strategies
 
@@ -73,7 +75,7 @@ strategies
     //; debug(!"canonicalized: ")
 
   lift-call-arg :
-    |[ s1 ]| -> ([|[ g~{t*}(|) = s2 ]|], |[ g(|) ]|)
+    |[ s1 ]| -> ([ |[ g~{t*}(|) = s2 ]| ], |[ g(|) ]|)
     where //debug(!"lift-call-arg: ");
 	  g  := <snewvar> "lifted"
 	; s2 := <canonicalize> s1
@@ -81,6 +83,9 @@ strategies
 
   is-just-closure-allocation :
     |[ f~{t*}(|) ]| -> [ClosureAlloc()]
+
+  is-just-closure-allocation :
+    ProxyT(_, _, _, _, f{t*}) -> [ClosureAlloc()]
 
   id-to-Id :
     |[ id ]| -> |[ _Id(|) ]|

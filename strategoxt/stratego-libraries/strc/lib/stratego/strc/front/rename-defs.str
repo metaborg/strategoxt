@@ -69,6 +69,12 @@ rules
         ; <length> ts => m
         ; ( <RenameVar> (x,(n,m)) => y <+ <HoArg> x => y )
 
+  RenameCall : 
+    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
+    where <length> ss => n
+        ; <length> ts => m
+        ; ( <RenameVar> (x,(n,m)) => y <+ <HoArg> x => y )
+
 
 // The next version of rename is used in incremental compilation
 
@@ -138,16 +144,27 @@ rules
       ; <length> ts => m
       ; <strategy-sig-to-string>(x, n, m) => y
 
+  RenameCall2 : 
+    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
+    where id
+      ; not(<get-annotation(?LocalArg())> x)
+      ; <length> ss => n
+      ; <length> ts => m
+      ; <strategy-sig-to-string>(x, n, m) => y
 
-  annotate-local-args(rename-local|larg*,letdef*) = alltd(preserve-annos(annotate-local-arg(rename-local|larg*,letdef*)))
 
-  annotate-local-arg(rename-local|larg*,letdef*): Rec(name, body) -> Rec(name', body')
+  annotate-local-args(rename-local|larg*,letdef*) =
+    alltd(preserve-annos(annotate-local-arg(rename-local|larg*,letdef*)))
+
+  annotate-local-arg(rename-local|larg*,letdef*):
+    Rec(name, body) -> Rec(name', body')
   with id
     ; name' := <rename-local> name
     ; letdef'* := [(name, name')|letdef*]
     ; body' := <annotate-local-args(rename-local|larg*, letdef'*)> body
 
-  annotate-local-arg(rename-local|larg*,letdef*): Let(sdeft*, body) -> Let(sdeft'*, body')
+  annotate-local-arg(rename-local|larg*,letdef*):
+    Let(sdeft*, body) -> Let(sdeft'*, body')
   with id
     ; def* := <map(?SDefT(<id>, _, _, _);split(rm-annotations, rename-local))> sdeft*
     ; letdef'* := [def*,letdef*]
@@ -157,11 +174,24 @@ rules
       ; where(arg* := <map(?VarDec(<id>,_))> args1)
       ; SDefT(id, id, id, annotate-local-args(rename-local|[larg*, arg*], letdef'*))})> sdeft*
 
-  annotate-local-arg(rename-local|larg*,letdef*): CallT(SVar(x), ss, ts) -> CallT(SVar(y), ss, ts)
+  annotate-local-arg(rename-local|larg*,letdef*):
+    CallT(SVar(x), ss, ts) -> CallT(SVar(y), ss, ts)
   where id
     ; <getfirst(?x)> larg*
     ; y := <add-annotation(|LocalArg())> x
 
-  annotate-local-arg(rename-local|larg*,letdef*): CallT(SVar(x), ss, ts) -> CallT(SVar(y), ss, ts)
+  annotate-local-arg(rename-local|larg*,letdef*):
+    CallT(SVar(x), ss, ts) -> CallT(SVar(y), ss, ts)
+  where id
+    ; y := <lookup;add-annotation(|LocalArg())> (x{}, letdef*)
+
+  annotate-local-arg(rename-local|larg*,letdef*):
+    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
+  where id
+    ; <getfirst(?x)> larg*
+    ; y := <add-annotation(|LocalArg())> x
+
+  annotate-local-arg(rename-local|larg*,letdef*):
+    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
   where id
     ; y := <lookup;add-annotation(|LocalArg())> (x{}, letdef*)
