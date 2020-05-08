@@ -270,7 +270,7 @@ insertCasts-StBuildTerm(|e1, st1) =
 insertCasts-StBuildTerm-(|e1, st1):
   Explode(trm1, trm2) -> (Explode(trm3, trm4), st4)
   with
-    (trm3, st2) := <local-insertCasts-StBuildTerm(|e1, <local-current-type(|DynT())> st1)> trm1
+    (trm3, st2) := <insertCasts-StBuildTerm(|e1, <current-type(|DynT())> st1)> trm1
   ; (trm4, st3) := <insertCasts-StBuildTerm(|e1, <current-type(|ListT())> st2)> trm2
   ; t1 := <current-type> st2
     // Note that constructors can be strings (in case of applications and tuples) or the empty list (in case of a list)
@@ -435,7 +435,7 @@ insertCasts-StBuildTerm-(|e1, st1):
   with
     (trm2*, t*, st2) := <thread-map-LUB(insertCasts-StBuildTerm-Type(|e1, DynT()))> (trm1*, st1)
   ; t1 := ListT(<foldr1(?[<id>], LUB <+ !DynT()) <+ !DynT()> t*)
-  ; _ := <computeCoercion(|t1, <local-current-type> st1)> trm1
+  ; _ := <computeCoercion(|t1, <current-type> st1)> trm1
   ; st3 := <current-type(|t1)> st2
 
 // TODO: extract types from expected type to support the type parameters properly here
@@ -448,7 +448,7 @@ insertCasts-StBuildTerm-(|e1, st1):
   // Cannot use the same as before. <current-type> st3 must be a list and cast to it if DynT().
   // But if not <CanCoerce> (<current-type> st3, t1), current-type in st4 should be ListT()
   ; t1 := ListT() //<foldr1(?[<id>], LUB <+ !DynT())> t*
-  ; _ := <computeCoercion(|t1, <local-current-type> st3)> trm1
+  ; _ := <computeCoercion(|t1, <current-type> st3)> trm1
   ; st4 := <current-type(|t1)> st3
 
 insertCasts-StBuildTerm-(|e1, st1):
@@ -561,7 +561,7 @@ insertCasts-Build-StringQuotedPart(|e1):
 insertCasts-Build-StringQuotedPart-(|e1):
   (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm2), st2)
   with
-    (trm2, st2) := <local-insertCasts-StBuildTerm(|e1, <local-current-type(|StringT())> st1)> trm1
+    (trm2, st2) := <insertCasts-StBuildTerm(|e1, <current-type(|StringT())> st1)> trm1
 
 insertCasts-Build-StringQuotedPart(|e1) =
   otf22-sugar(
