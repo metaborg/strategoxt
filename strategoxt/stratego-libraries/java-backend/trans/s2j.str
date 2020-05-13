@@ -1128,7 +1128,7 @@ strategies
   ; e_o := <translate-Coercion> RuntimeCheck(o)
 
   translate-Cast:
-    Cast(type) ->
+    Cast(RuntimeCheck(type)) ->
     bstm* |[
       Cast.check(context, term, e_type);
     ]|
