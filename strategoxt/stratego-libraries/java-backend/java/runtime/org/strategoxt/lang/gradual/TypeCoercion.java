@@ -38,6 +38,9 @@ public class TypeCoercion implements Coercion {
         }
         if(coercion instanceof TypeCoercion) {
             TypeCoercion typeCoercion = (TypeCoercion) coercion;
+            if(type == DynT.INSTANCE) {
+                return typeCoercion;
+            }
             if(typeInfo.typeIsA(type, typeCoercion.type)) {
                 return this;
             } else {

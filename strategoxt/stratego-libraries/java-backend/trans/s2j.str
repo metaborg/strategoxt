@@ -1111,6 +1111,9 @@ strategies
   with
     e_str := Lit(String([Chars(str)]))
 
+  translate-Type:
+    DynT(_) -> |[ DynT.INSTANCE ]|
+
   translate-SCoercion:
     SId() -> |[ FunTCoercion.ID ]|
 

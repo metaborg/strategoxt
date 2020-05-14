@@ -19,7 +19,39 @@ public class TypeInfo {
     private final Map<TypedConstructor, Type> consSorts = new HashMap<>();
 
     public boolean typeIsA(Type currentType, Type type) {
-        return injections.containsEntry(currentType, type);
+        // TODO: Handle `type instanceof SortVar`
+        if(type == DynT.INSTANCE) {
+            // TODO: what relation is this? Is currentType == DynT.INSTANCE also ok?
+            return true;
+        }
+        if(injections.containsEntry(currentType, type)) {
+            return true;
+        }
+        if(currentType instanceof Sort && type instanceof Sort) {
+            final Sort currentSort = (Sort) currentType;
+            final Sort sort = (Sort) type;
+            if(currentSort.sort.equals(sort.sort)) {
+                return typeIsA(currentSort.types, sort.types);
+            }
+        }
+        if(currentType instanceof TupleT && type instanceof TupleT) {
+            final TupleT currentTupleT = (TupleT) currentType;
+            final TupleT tupleT = (TupleT) type;
+            return typeIsA(currentTupleT.childTypes, tupleT.childTypes);
+        }
+        return false;
+    }
+
+    public boolean typeIsA(Collection<Type> currentTypes, Collection<Type> types) {
+        if(currentTypes.size() == types.size()) {
+            for(Iterator<Type> ctIter = currentTypes.iterator(), tIter = types.iterator(); ctIter.hasNext();) {
+                if(!typeIsA(ctIter.next(), tIter.next())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public Type leastUpperBound(List<Type> subTermTypes) {
