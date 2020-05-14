@@ -409,7 +409,7 @@ insertCasts-Strategy(|e1, st1):
   s@EmptyTupleCong() -> <litCongruence(|st1, TupleT([]))> s
 
 insertCasts-Strategy-(|e1, st1):
-  TupleCong(s1, s1*) -> (CongQ(s2, s2*), st4)
+  TupleCong(s1, s1*) -> (TupleCong(s2, s2*), st4)
   with
     t1 := <current-type> st1
   ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType())
