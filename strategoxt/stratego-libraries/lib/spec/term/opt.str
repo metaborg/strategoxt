@@ -13,4 +13,4 @@ strategies
  /**
   * Filters a strategy over an optional term.
   */
- filter-opt(s) = Some(<s> x) <+ !None()
+ filter-opt(s) = Some(s) <+ !None()
