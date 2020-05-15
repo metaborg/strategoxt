@@ -51,7 +51,6 @@ insertCasts(|strats, constrs, injection-closure, lub-map): ast -> ast'
 
 can-coerce(|injection-closure) = ?(ErrT(), _)
 can-coerce(|injection-closure) = ?(_, ErrT())
-can-coerce(|injection-closure) = ?(FailT(), _)
 can-coerce(|injection-closure) = ?(_, DynT())
 // We assume co-variant type parameters
 can-coerce(|injection-closure): (Sort(x, t1*), Sort(x, t2*)) -> <id>
@@ -63,8 +62,6 @@ can-coerce(|injection-closure): (from, to) -> <imrel-contains(|from, to)> inject
 lub(|lub-map): (x, x) -> x
 lub(|lub-map): (ErrT(), x) -> x
 lub(|lub-map): (x, ErrT()) -> x
-lub(|lub-map): (FailT(), x) -> x
-lub(|lub-map): (x, FailT()) -> x
 lub(|lub-map): (DynT(), _) -> DynT()
 lub(|lub-map): (_, DynT()) -> DynT()
 // pointwise lift LUB over type parameters

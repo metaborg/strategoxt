@@ -71,7 +71,7 @@ insertCasts-Strategy-(|e1, st1):
   ; <report-Err> (c1, CallDynamicNotSupported())
 
 insertCasts-Strategy(|e1, st1):
-  s@Fail() -> (s, <current-type(|FailT())> st1)
+  s@Fail() -> (s, <current-type(|ErrT())> st1)
 
 insertCasts-Strategy(|e1, st1):
   s@Id() -> (s, st1)
