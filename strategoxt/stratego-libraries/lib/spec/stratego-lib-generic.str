@@ -53,6 +53,7 @@ imports
   term/annotation
   term/common
   term/integer
+  term/opt
   term/placeholder
   term/properties
   term/share
