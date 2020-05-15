@@ -443,7 +443,7 @@ insertCasts-StBuildTerm-(|e1, st1):
   ListTail(trm1*, trm1) -> (ListTail(trm2*, trm2), st4)
   with
     (trm2*, t*, st2) := <thread-map-LUB(insertCasts-StBuildTerm-Type(|e1, DynT()))> (trm1*, st1)
-  ; (trm2, st3) := <insertCasts-StBuildTerm(|e1, st2)> trm1
+  ; (trm2, st3) := <insertCasts-StBuildTerm(|e1, <current-type(|ListT())> st2)> trm1
   // TODO: Use returned current types to inform list type
   // Cannot use the same as before. <current-type> st3 must be a list and cast to it if DynT().
   // But if not <CanCoerce> (<current-type> st3, t1), current-type in st4 should be ListT()

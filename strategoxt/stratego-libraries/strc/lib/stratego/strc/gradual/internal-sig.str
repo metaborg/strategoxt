@@ -12,7 +12,6 @@ signature
     MTNote                               : MessageType
     IllFormedTermT                       : Id * List(Type) -> Type
     ErrT                                 : Type
-    FailT                                : Type
     ConstrType                           : List(Type) * Type -> ConstrType
     CallDynamicNotSupported              : ErrorDesc
     TermVariableTypedWithStrategyType    : ErrorDesc

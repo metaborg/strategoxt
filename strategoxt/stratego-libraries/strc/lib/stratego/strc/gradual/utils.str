@@ -96,6 +96,7 @@ computeCoercion(|subj): (_, from, DynT(to)) -> Id(){t}
         else t := DynT(to)
       end
     end
+computeCoercion(|subj): (_, _, ErrT()) -> Id(){ErrT()}
 computeCoercion(|subj): (MTError(), DynT(), to) -> RuntimeCheck(to){to}
 computeCoercion(|subj): (_, DynT(from), to) -> Id(){to}
   where
@@ -107,7 +108,7 @@ computeCoercion(|subj): (lvl, from, to) -> coercion
     then coercion := Id(){from}
     else <report> (lvl, subj, NoInjectionBetween(from, to))
        ; if MTError() := lvl
-           then coercion := Fail(){FailT()}
+           then coercion := Fail(){ErrT()}
            else coercion := Id(){to}
          end
   end
