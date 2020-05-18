@@ -47,7 +47,8 @@ public class TypeAttachment extends AbstractTermAttachment {
     private static Type computeType(TypeInfo typeInfo, IStrategoTerm current) {
         final List<Type> subTermTypes = new ArrayList<>(current.getSubtermCount());
         for(IStrategoTerm subTerm : current) {
-            subTermTypes.add(getOrComputeType(typeInfo, subTerm));
+            final Type subTermType = getOrComputeType(typeInfo, subTerm);
+            subTermTypes.add(subTermType);
         }
         switch(current.getTermType()) {
             case INT:
@@ -60,7 +61,8 @@ public class TypeAttachment extends AbstractTermAttachment {
                 final IStrategoAppl appl = TermUtils.toAppl(current);
                 return typeInfo.typeOf(appl.getName(), subTermTypes);
             case LIST:
-                return new ListT(typeInfo.leastUpperBound(subTermTypes));
+                final Type leastUpperBound = typeInfo.leastUpperBound(subTermTypes);
+                return new ListT(leastUpperBound);
             case TUPLE:
                 return new TupleT(subTermTypes);
             default:

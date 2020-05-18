@@ -19,7 +19,7 @@ public class TypeInfo {
     private final Map<TypedConstructor, Type> consSorts = new HashMap<>();
 
     public boolean typeIsA(Type currentType, Type type) {
-        // TODO: Handle `type instanceof SortVar`
+        // TODO: Handle `type instanceof SortVar`, pass an bindings state object
         if(type == DynT.INSTANCE) {
             // TODO: what relation is this? Is currentType == DynT.INSTANCE also ok?
             return true;
@@ -55,6 +55,8 @@ public class TypeInfo {
     }
 
     public Type leastUpperBound(List<Type> subTermTypes) {
+        // TODO: how does this interact with IllFormedTermT?
+        // TODO: And SortVar? Pass around the environment everywhere? Need bounds instead of binding
         if(subTermTypes.isEmpty()) {
             throw new IllegalArgumentException("least upper bound of empty list is undefined");
         }
@@ -70,7 +72,11 @@ public class TypeInfo {
                 final Set<Type> upperBounds = new HashSet<>();
                 upperBounds.addAll(injections.get(lub));
                 upperBounds.retainAll(injections.get(next));
-                lub = lowestType(upperBounds);
+                if(upperBounds.isEmpty()) {
+                    // lub = new Alternative(lub, next); // Breaks assumptions. should be `new Alternatives(...);` constructed at the end.
+                } else {
+                    lub = lowestType(upperBounds);
+                }
                 // TODO: cache found LUB?
             }
         }
@@ -90,8 +96,13 @@ public class TypeInfo {
         return lowestType;
     }
 
-    public Type typeOf(String name, List<Type> subTermTypes) {
-        return consSorts.get(new TypedConstructor(name, subTermTypes));
+    public Type typeOf(String constructorName, List<Type> subTermTypes) {
+        final /* @Nullable */ Type type =
+            consSorts.get(new TypedConstructor(constructorName, subTermTypes));
+        if(type != null) {
+            return type;
+        }
+        return new IllFormedTermT(constructorName, subTermTypes);
     }
 
     public void registerConstructor(Type sort, String name, List<Type> subTermTypes) {
