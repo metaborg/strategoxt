@@ -1091,16 +1091,6 @@ strategies
     RealT() -> |[ RealT.INSTANCE ]|
 
   translate-Type:
-    t@TupleT(_, _) -> |[ new TupleT(Arrays.asList(e_ty*)) ]|
-  with
-    e_ty* := <translate-TupleType> t
-
-  translate-TupleType:
-    TupleT(ty1, ty2) -> [<translate-Type> ty1 | <translate-TupleType> ty2]
-
-  translate-TupleType = ![<translate-Type>]
-
-  translate-Type:
     Sort(str, args) -> |[ new Sort(e_str, Arrays.asList(e_ty*)) ]|
   with
     e_ty* := <map(translate-Type)> args
