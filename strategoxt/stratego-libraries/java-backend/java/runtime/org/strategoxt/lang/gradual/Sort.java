@@ -1,5 +1,6 @@
 package org.strategoxt.lang.gradual;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class Sort implements Type {
@@ -32,5 +33,19 @@ public class Sort implements Type {
         if(!types.equals(other.types))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder typesStringBuilder = new StringBuilder();
+        for(Iterator<Type> iterator = types.iterator();;) {
+            typesStringBuilder.append(iterator.next().toString());
+            if(iterator.hasNext()) {
+                typesStringBuilder.append(" * ");
+            } else {
+                break;
+            }
+        }
+        return sort + "(" + typesStringBuilder.toString() + ")";
     }
 }

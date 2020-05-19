@@ -8,6 +8,7 @@ import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
 import static org.spoofax.interpreter.terms.IStrategoTerm.TUPLE;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.spoofax.interpreter.terms.IStrategoAppl;
@@ -61,10 +62,13 @@ public class TypeAttachment extends AbstractTermAttachment {
                 final IStrategoAppl appl = TermUtils.toAppl(current);
                 return typeInfo.typeOf(appl.getName(), subTermTypes);
             case LIST:
+                if(subTermTypes.isEmpty()) {
+                    return new Sort("List", Collections.singletonList(DynT.INSTANCE));
+                }
                 final Type leastUpperBound = typeInfo.leastUpperBound(subTermTypes);
-                return new ListT(leastUpperBound);
+                return new Sort("List", Collections.singletonList(leastUpperBound));
             case TUPLE:
-                return new TupleT(subTermTypes);
+                return new Sort("Tuple", subTermTypes);
             default:
                 throw new StrategoTypeException(current);
         }

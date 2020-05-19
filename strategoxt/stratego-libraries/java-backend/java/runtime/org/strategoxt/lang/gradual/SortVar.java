@@ -27,4 +27,9 @@ public class SortVar implements Type {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

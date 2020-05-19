@@ -3,18 +3,18 @@ package org.strategoxt.lang.gradual;
 import java.util.List;
 
 public class TypedConstructor {
-    public final String name;
+    public final String constructorName;
     public final List<Type> subTermTypes;
 
-    public TypedConstructor(String name, List<Type> subTermTypes) {
-        this.name = name;
+    public TypedConstructor(String constructorName, List<Type> subTermTypes) {
+        this.constructorName = constructorName;
         this.subTermTypes = subTermTypes;
     }
 
     @Override public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + name.hashCode();
+        result = prime * result + constructorName.hashCode();
         result = prime * result + subTermTypes.hashCode();
         return result;
     }
@@ -27,7 +27,7 @@ public class TypedConstructor {
         if(getClass() != obj.getClass())
             return false;
         TypedConstructor other = (TypedConstructor) obj;
-        if(!name.equals(other.name))
+        if(!constructorName.equals(other.constructorName))
             return false;
         if(!subTermTypes.equals(other.subTermTypes))
             return false;

@@ -34,11 +34,6 @@ public class TypeInfo {
                 return typeIsA(currentSort.types, sort.types);
             }
         }
-        if(currentType instanceof TupleT && type instanceof TupleT) {
-            final TupleT currentTupleT = (TupleT) currentType;
-            final TupleT tupleT = (TupleT) type;
-            return typeIsA(currentTupleT.childTypes, tupleT.childTypes);
-        }
         return false;
     }
 
@@ -73,6 +68,7 @@ public class TypeInfo {
                 upperBounds.addAll(injections.get(lub));
                 upperBounds.retainAll(injections.get(next));
                 if(upperBounds.isEmpty()) {
+                    lub = DynT.INSTANCE;
                     // lub = new Alternative(lub, next); // Breaks assumptions. should be `new Alternatives(...);` constructed at the end.
                 } else {
                     lub = lowestType(upperBounds);

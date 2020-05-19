@@ -6,4 +6,9 @@ public class IllFormedTermT extends TypedConstructor implements Type {
     public IllFormedTermT(String constructorName, List<Type> subTermTypes) {
         super(constructorName, subTermTypes);
     }
+
+    @Override
+    public String toString() {
+        return constructorName + "#(" + subTermTypes + ")";
+    }
 }
