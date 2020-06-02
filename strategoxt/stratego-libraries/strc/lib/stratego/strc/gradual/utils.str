@@ -43,15 +43,15 @@ desugar-SType = otf(\FunNoArgsType(i, o) -> FunTType([], [], <desugar-Type> i, <
 desugar-SType = otf(\FunType(sargs, i, o) -> FunTType(<map(desugar-SType)> sargs, [], <desugar-Type> i, <desugar-Type> o)\)
 desugar-SType = otf(FunTType(map(desugar-SType), map(desugar-Type), desugar-Type, desugar-Type))
 
-desugar-Type = otf(\SortVar("str") -> StringT()\)
-desugar-Type = otf(\SortVar("int") -> IntT()\)
-desugar-Type = otf(\SortVar("real") -> RealT()\)
-desugar-Type = otf(\SortNoArgs(x) -> Sort(x, [])\)
-desugar-Type = otf(\SortList(xs) -> <foldr(!Sort("Nil",[]), !Sort("Cons",[<Fst>,<Snd>]))> xs\)
-desugar-Type = otf(\SortListTl(xs, y) -> <foldr(!y, !Sort("Cons",[<Fst>,<Snd>]))> xs\)
-desugar-Type = otf(\SortTuple(xs) -> TupleT(<map(desugar-Type)> xs)\)
-desugar-Type = otf(\TupleT(t1, t2) -> TupleT(<desugar-TupleType>)\)
-desugar-Type = id
+desugar-Type- = otf(\SortVar("str") -> StringT()\)
+desugar-Type- = otf(\SortVar("int") -> IntT()\)
+desugar-Type- = otf(\SortVar("real") -> RealT()\)
+desugar-Type- = otf(\SortNoArgs(x) -> Sort(x, [])\)
+desugar-Type- = otf(\SortList(xs) -> <foldr(!Sort("Nil",[]), !Sort("Cons",[<Fst>,<Snd>]))> xs\)
+desugar-Type- = otf(\SortListTl(xs, y) -> <foldr(!y, !Sort("Cons",[<Fst>,<Snd>]))> xs\)
+desugar-Type- = otf(\SortTuple(xs) -> TupleT(<map(desugar-Type)> xs)\)
+desugar-Type- = otf(\TupleT(t1, t2) -> TupleT(<desugar-TupleType>)\)
+desugar-Type = desugar-Type- <+ id
 
 desugar-TupleType =
   otf(\TupleT(t1, t2) -> [<desugar-Type> t1 | <desugar-TupleType> t2]\)

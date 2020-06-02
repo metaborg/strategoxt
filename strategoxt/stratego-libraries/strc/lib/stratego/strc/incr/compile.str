@@ -23,7 +23,7 @@ strategies
     ; (imps, defs2) := <partition(?Imports(<id>))> defs
     ; (cons1, defs3) := <partition(?Signature(<id>); retain-all(?Constructors(<id>)); concat)> defs2
     ; cons2 := <concat> cons1
-    ; cons3 := <filter(split(m-constr-signature, !Signature([Constructors([<id>])])))> cons2
+    ; cons3 := <filter(split(m-constr-signature, alltd(desugar-Type-)))> cons2
     ; (olays1, defs4) := <partition(?Overlays(<id>))> defs3
     ; olays2 := <concat> olays1
     ; olays3 := <map(split(m-overlay-signature, !Overlays([<id>])))> olays2

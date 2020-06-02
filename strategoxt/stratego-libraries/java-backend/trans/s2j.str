@@ -483,6 +483,7 @@ rules
             x_name.init(compiledContext);
             bstm1*
             bstm3*
+            compiledContext.typeInfo.finishRegistration();
           }
         ]|
         
