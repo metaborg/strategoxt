@@ -31,6 +31,7 @@ imports
 	strategy/general/option
         term/string
 	term/common
+	term/opt
 	term/annotation
 	term/placeholder
 	term/share
