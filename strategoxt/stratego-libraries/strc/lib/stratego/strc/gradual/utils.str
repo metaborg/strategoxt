@@ -40,8 +40,8 @@ otf22-sugar(desugar, s, resugar): t1st -> t4st
 strategies
 
 desugar-SType = otf(\FunNoArgsType(i, o) -> FunTType([], [], <desugar-Type> i, <desugar-Type> o)\)
-desugar-SType = otf(\FunType(sargs, i, o) -> FunTType(<map(desugar-SType)> sargs, [], <desugar-Type> i, <desugar-Type> o)\)
-desugar-SType = otf(FunTType(map(desugar-SType), map(desugar-Type), desugar-Type, desugar-Type))
+desugar-SType = otf(\FunType(sargs, i, o) -> FunTType(<map(try(desugar-SType))> sargs, [], <desugar-Type> i, <desugar-Type> o)\)
+desugar-SType = otf(\a -> <FunTType(map(try(desugar-SType)), map(desugar-Type), desugar-Type, desugar-Type);not(?a)> a\)
 
 desugar-Type- = otf(\SortVar("str") -> StringT()\)
 desugar-Type- = otf(\SortVar("int") -> IntT()\)
@@ -71,7 +71,7 @@ nameOf-StrategyDef-RuleDef: RDefT(name, s*, t*, _) -> (name{}, <length> s*, <len
 nameOf-StrategyDef-RuleDef: RDef(name, s*, _) -> (name{}, <length> s*, 0)
 nameOf-StrategyDef-RuleDef: RDefNoArgs(name, _) -> (name{}, 0, 0)
 
-nameOf-DefHasType: DefHasType(name, <desugar-SType>) -> (name{}, <length> s*, <length> t*)
+nameOf-DefHasType: DefHasType(name, <try(desugar-SType)>) -> (name{}, <length> s*, <length> t*)
   with ?FunTType(s*, t*, _, _)
 
 strategies
@@ -152,7 +152,7 @@ rm-redundant-cast: App(Cast(Id()), term) -> term
 
 toBinding-DefHasType: DefHasType(name, stype) -> ((name{}, snum, tnum), stype')
   with
-    stype' := <desugar-SType> stype
+    stype' := <try(desugar-SType)> stype
   ; (snum, tnum) := <arityOf-SType> stype'
 
 toBinding-ExtSDef: d@ExtSDef(name, sargs, targs) ->
@@ -248,10 +248,10 @@ map-pair-right(|r) = map(split(id, !r))
 
 strategies
 
-def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ((name, 0, 0), <desugar-SType> t)
-def-type-pair: DefHasType(name, t@FunType(sarg*, _, _)) -> ((name, <length> sarg*, 0), <desugar-SType> t)
+def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ((name, 0, 0), <try(desugar-SType)> t)
+def-type-pair: DefHasType(name, t@FunType(sarg*, _, _)) -> ((name, <length> sarg*, 0), <try(desugar-SType)> t)
 def-type-pair: DefHasType(name, t@FunTType(sarg*, targ*, _, _)) ->
-  ((name, <length> sarg*, <length> targ*), <desugar-SType> t)
+  ((name, <length> sarg*, <length> targ*), <try(desugar-SType)> t)
 
 strategies
 
