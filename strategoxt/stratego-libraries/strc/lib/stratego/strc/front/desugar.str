@@ -328,6 +328,10 @@ rules
   Desugar:
     DefHasType(f, sfuntype) -> DefHasType(f, <desugar-SType> sfuntype)
 
+  Desugar:
+    Let(sdef*, body) -> Let(sdef'*, body)
+  where ([_ | _], sdef'*) := <partition(?DefHasType(_, _))> sdef*
+
 // dynamic rules
 
   Desugar :
