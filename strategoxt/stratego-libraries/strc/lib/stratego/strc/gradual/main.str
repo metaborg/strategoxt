@@ -41,7 +41,7 @@ fix-Rule = bottomup(try(
   + \Rule(t1, t2, s) -> Rule(t1, t2, [WhereClause(s)]) where <not(is-list)> s\
 ))
 
-// insertCasts :: (|Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type)) Def -> Def
+// insertCasts :: Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type) * MessageType * Module -> Module
 insertCasts(|strats, constrs, injection-closure, lub-map): ast -> ast'
   with
     rules(CanCoerce: (from, to) -> <id>

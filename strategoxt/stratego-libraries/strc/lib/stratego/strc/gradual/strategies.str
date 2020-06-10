@@ -15,7 +15,7 @@ strategies // Strategy (core)
 
 insertCasts-Strategy(|e1, st1) = otf12(insertCasts-Strategy-(|e1, st1))
 
-// insertCasts-Strategy- :: (|Environment, Store) Strategy -> (Strategy, Store)
+// insertCasts-Strategy-(|Environment, Store) :: Strategy -> (Strategy, Store)
 insertCasts-Strategy-(|e1, st1):
   Let(d1*, s1) -> (Let(d2*, s2), st3)
   with
@@ -36,7 +36,7 @@ insertCasts-Strategy(|e1, st1):
 
 insertCasts-CallT(|e1, st1) = otf22(insertCasts-CallT-(|e1, st1))
 
-insertCasts-CallT-(|e1, st1):
+insertCasts-CallT(|e1, st1):
   (c1@CallT(v, s1*, t1*), FunTType(st*, tt*, t1, t2)) -> (c2, st4)
   with
     s2* := <zip> (s1*, st*)
@@ -66,7 +66,7 @@ insertCasts-Strategy-(|e1, st1):
   ; s2* := <map-pair-right(|SDyn())> s1*
   ; t2* := <map-pair-right(|DynT())> t1*
   ; (s3*, st4) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st3)
-  ; (t3*, st5) := <thread-map(insertCasts-Targ(|e1))> (t1*, st4)
+  ; (t3*, st5) := <thread-map(insertCasts-Targ(|e1))> (t2*, st4)
   ; st6 := <current-type(|DynT())> st5
   ; <report-Err> (c1, CallDynamicNotSupported())
 
@@ -179,7 +179,7 @@ insertCasts-Sarg-Type(|e1, t):
   (trm, st1) -> <insertCasts-Sarg(|e1, st1)> (trm, t)
 
 insertCasts-Sarg(|e1, st1):
-  (c@CallT(v@SVar(x), [], []), t1@FunTType(st*, tt*, _, _)) -> (s, st1)
+  (c@CallT(v@SVar(x), [], []), t1@FunTType(st*, tt*, _, _)) -> (s, st2)
   with
     if t2 := <strat-lookup(|x{}, 0, 0)> e1
       then
@@ -471,17 +471,20 @@ insertCasts-Strategy-(|e1, st1):
   c@CallNoArgs(SVar(x)) -> result
   with
     if t1 := <strat-lookup(|x{}, 0, 0)> e1
-      then
-        if SDyn() := t1
-          then result := (c, <current-type(|DynT())> st1)
-          else
-            FunTType([], [], t2, t3) := t1
-          ; result := (<insertCastBefore(|<current-type> st1, t2)> c, <current-type(|t3)> st1)
-        end
+      then result := <insertCasts-CallNoArgs(|e1, st1)> (c, t1)
       else
         <report-Err> (x, UnresolvedStrategy(0, 0))
       ; result := (c, <current-type(|ErrT())> st1)
     end
+
+insertCasts-CallNoArgs(|e1, st1):
+  (c@CallNoArgs(_), SDyn()) -> (c, <current-type(|DynT())> st1)
+
+insertCasts-CallNoArgs(|e1, st1):
+  (c@CallNoArgs(_), FunTType(t1, t2)) -> (call, st2)
+  with
+    st2 := <current-type(|t2)> st1
+  ; call := <insertCastBefore(|<current-type> st1, t1)> c
 
 insertCasts-Rule(|e1, st1) = otf12(insertCasts-Rule-(|e1, st1))
 
@@ -524,18 +527,27 @@ insertCasts-Strategy-(|e1, st1):
 insertCasts-Strategy-(|e1, st1):
   p@Proceed(s1*) -> (call, st3)
   with
-    if FunTType(st*, [], t1, t2) := <strat-lookup(|ProceedNoArgs(), <length> s1*, 0)> e1
+    if FunTType(st*, tt*, t1, t2) := <strat-lookup(|ProceedNoArgs(), <length> s1*, 0)> e1
     then
-      s2* := <zip> (s1*, st*)
-    ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
-    ; st3 := <current-type(|t2)> st2
-    ; call := <insertCastBefore(|<current-type> st1, t1)> <otf(!Proceed(s3*))> p
+      if 0 := <length> tt*; <eq> (<length> s1*, <length> st*)
+      then
+        s2* := <zip> (s1*, st*)
+      ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
+      ; st3 := <current-type(|t2)> st2
+      ; call := <insertCastBefore(|<current-type> st1, t1)> <otf(!Proceed(s3*))> p
+      else
+        <report-Err> (p, ProceedWrongNumberOfArguments(<length> st*, 0))
+      ; s2* := <map-pair-right(|SDyn())> s1*
+      ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
+      ; st3 := <current-type(|ErrT())> st2
+      ; call := Proceed(s3*)
+      end
     else
-      <report-Err> (p, ProceedInNonExtendStrategy())
-    ; s2* := <map-pair-right(|SDyn())> s1*
-    ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
-    ; st3 := <current-type(|ErrT())> st2
-    ; call := Proceed(s3*)
+        <report-Err> (p, ProceedInNonExtendStrategy())
+      ; s2* := <map-pair-right(|SDyn())> s1*
+      ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
+      ; st3 := <current-type(|ErrT())> st2
+      ; call := Proceed(s3*)
     end
 
 insertCasts-Strategy-(|e1, st1):

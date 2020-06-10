@@ -17,7 +17,7 @@ insertCasts-Def(|e1):
 
 insertCasts-Def(|e1, st1) = otf12(insertCasts-Def-(|e1, st1))
 
-// insertCasts-Def :: (|Environment, Store) Def -> Def
+// insertCasts-Def(|Environment, Store) :: Def -> Def
 insertCasts-Def-(|e1, st1):
   AnnoDef(annos, sr) -> (AnnoDef(annos, s'), st2)
   with
@@ -29,20 +29,20 @@ insertCasts-Def-(|e1, st1):
     end
   ; (s', st2) := <insertCasts-Def(|e2, st1)> sr
 
-insertCasts-Def-(|e1, st1):
+insertCasts-Def(|e1, st1):
   d@AnnoDef(_, ExtSDef(_, _, _)) -> (d, st1)
 
-insertCasts-Def-(|e1, st1) = insertCasts-StrategyDef(|e1, st1)
+insertCasts-Def(|e1, st1) = insertCasts-StrategyDef(|e1, st1)
 
-insertCasts-Def-(|e1, st1) = insertCasts-RuleDef(|e1, st1)
+insertCasts-Def(|e1, st1) = insertCasts-RuleDef(|e1, st1)
 insertCasts-Def-(|e1, st1):
-  d@DefHasType(_, _) -> (d, st1)
+  d -> (<desugar-DefHasType> d, st1)
 
 strategies // StrategyDef
 
 insertCasts-StrategyDef(|e1, st1) = otf12(insertCasts-StrategyDef-(|e1, st1))
 
-// insertCasts-StrategyDef :: (|Environment, Store) Decl -> (Decl, Store)
+// insertCasts-StrategyDef(|Environment, Store) :: Decl -> (Decl, Store)
 insertCasts-StrategyDef-(|e1, st1):
   SDefT(x, s1*, t1*, s1) -> (SDefT(x, s1*, t1*, s3), st3)
   with
@@ -52,7 +52,9 @@ insertCasts-StrategyDef-(|e1, st1):
   ; e2 := <strat-merge-env(keep-right)> (e1, <strat-zip-new-env> (s2*, st*))
   ; st2 := <term-merge-env(keep-right);current-type(|t1)> (st1, <term-zip-new-env> (t2*, tt*))
   ; (s2, st3) := <insertCasts-Strategy(|e2, st2)> s1
-  ; s3 := <insertCastAfter(|<current-type> st3, t2)> s2
+  ; s3 := <last-seq(insertCastAfter(|<current-type> st3, t2))> s2
+
+last-seq(s) = Seq(id, last-seq(s)) <+ s
 
 insertCasts-StrategyDef-(|e1, st1):
   SDef(x, s1*, s1) -> (SDef(x, s1*, s3), st3)
@@ -62,7 +64,7 @@ insertCasts-StrategyDef-(|e1, st1):
   ; e2 := <strat-merge-env(keep-right)> (e1, <strat-zip-new-env> (s2*, st*))
   ; st2 := <current-type(|t1)> st1
   ; (s2, st3) := <insertCasts-Strategy(|e2, st2)> s1
-  ; s3 := <insertCastAfter(|<current-type> st3, t2)> s2
+  ; s3 := <last-seq(insertCastAfter(|<current-type> st3, t2))> s2
 
 insertCasts-StrategyDef-(|e1, st1):
   SDefNoArgs(x, s1) -> (SDefNoArgs(x, s3), st3)
@@ -70,12 +72,12 @@ insertCasts-StrategyDef-(|e1, st1):
     FunTType([], [], t1, t2) := <strat-lookup(|x{}, 0, 0)> e1
   ; st2 := <current-type(|t1)> st1
   ; (s2, st3) := <insertCasts-Strategy(|e1, st2)> s1
-  ; s3 := <insertCastAfter(|<current-type> st3, t2)> s2
+  ; s3 := <last-seq(insertCastAfter(|<current-type> st3, t2))> s2
 
 insertCasts-StrategyDef-(|e1, st1) =
     \ExtSDefInl(name, sargs, targs, body) -> SDefT(name, sargs, targs, body)\
   ; insertCasts-StrategyDef(|e1, st1)
-  ; (\SDefT(name, sargs, targs, body) -> ExtSDefInl(name, sargs, targs, body)\, id, id)
+  ; (\SDefT(name, sargs, targs, body) -> ExtSDefInl(name, sargs, targs, body)\, id)
 
 insertCasts-StrategyDef-(|e1, st1):
   d@ExtSDef(_, _, _) -> (d, st1)

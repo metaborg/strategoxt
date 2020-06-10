@@ -46,11 +46,13 @@ strat-env(s) = Env(s, id)
 // Note that this also tries to find a congruence if it fails to find a strategy
 strat-lookup(|name, snum, tnum) =
   strat-env; immap-get(|(name, snum, tnum))
-  <+ where(0 := tnum); constr-lookup(|name, snum); not(imset-empty); !FunTType(<range;map(!SDyn())> snum, [], DynT(), DynT())
-  <+ strat-env; immap-get(|(name, 0, 0)); ?SDyn()
+strat-lookup(|name, snum, tnum) =
+  where(0 := tnum); constr-env; imrel-get(|(name, snum)); not(imset-empty); !FunTType(<range;map(!SDyn())> snum, [], DynT(Dyn()), DynT(Dyn()))
+strat-lookup(|name, snum, tnum) =
+  strat-env; immap-get(|(name, 0, 0)); ?SDyn()
 strat-put(|name, snum, tnum, value) = strat-env(immap-put(|(name, snum, tnum), value))
 strat-merge-env(s): (e, se) -> <strat-env(immap-union(s|se))> e
-strat-copy-type(|name, snum, tnum, as) = strat-env(env-copy-type(|(name, snum, tnum), as))
+strat-copy-type(|name, snum, tnum, as) = strat-env(env-copy-type(|(name, snum, tnum), (as, snum, tnum)))
 strat-zip-new-env: (names, types) -> <zip-new-env> (names-arities, types)
 where if <map(not(is-tuple))> names
   then names-arities := <zip(\(n, FunTType(st*, tt*, _, _)) -> (n, <length> st*, <length> tt*)\ <+ \(n, SDyn()) -> (n, 0, 0)\)> (names, types)
@@ -60,8 +62,7 @@ end
 constr-env = ?Env(_, <id>)
 constr-env(s) = Env(id, s)
 
-// N.B. Use constr-lookup-to/3 & constr-lookup-from/3 from main.str to filter on sort of the
-//  constructor.
+// N.B. Use constr-lookup/3 from main.str to filter on sort of the constructor.
 constr-lookup(|name, arity) = constr-env; imrel-get(|(name, arity)); imset-to-list
 constr-put(|name, arity, value) = constr-env(imrel-insert(|(name, arity), value))
 constr-merge-env: (e, ce) -> <constr-env(imrel-union(|ce))> e

@@ -86,7 +86,14 @@ computeCoercion: (from, to) -> <computeCoercion(|from)> (MTError(), from, to)
 // computeCoercion :: MessageType * Type * Type -> Coercion
 computeCoercion(|subj): (_, from, DynT(to)) -> Id(){t}
   where
-    if not(DynT(f) := from; (Dyn() := f <+ <CanCoerce> (f, to)) <+ Dyn() := to <+ not(DynT() := from); <CanCoerce> (from, to))
+    if not(
+         // N.B. We're preventing cascading warnings here on ill-formed terms.
+         //      If used in a typed position it will still raise an error, and the first place an
+         //      ill-formed term is constructed does get a warning. 
+         IllFormedTermT(_, _) := from
+      <+ Dyn() := to
+      <+ DynT(f) := from; (Dyn() := f <+ <CanCoerce> (f, to))
+      <+ not(DynT() := from); <CanCoerce> (from, to))
       then <report-Warn> (subj, NoInjectionBetween(from, DynT(to)))
     end
   ; if not(DynT() := from)
@@ -113,7 +120,7 @@ computeCoercion(|subj): (lvl, from, to) -> coercion
          end
   end
 
-// computeSCoercion :: (|SType, SType) ? -> SCoercion
+// computeSCoercion(|SType, SType) :: ? -> SCoercion
 computeSCoercion: (_, SDyn()) -> SId()
 computeSCoercion: (SDyn(), sft@FunTType(_, _, _, _)) -> SRuntimeCheck(sft)
 
@@ -123,8 +130,8 @@ insertCastAfter(|from, to) = insertCastAfter(|MTError(), from, to)
 insertCastAfter(|lvl, from, to): strat -> strat'
   with
     c{t} := <computeCoercion(|lvl, from, to)> strat
-  ; cast := Cast(c)
-  ; strat' := <try(rm-redundant-cast)> Seq(strat, cast)
+  ; 'cast := Cast(c{})
+  ; strat' := <try(rm-redundant-cast)> Seq(strat, 'cast)
 
 // Add a cast before the current strategy (in sequence) if necessary to go from `from` to `to`
 // Doesn't insert Cast(Id()). Adds error message when inserting Cast(Fail()). 
@@ -132,8 +139,8 @@ insertCastBefore(|from, to) = insertCastBefore(|MTError(), from, to)
 insertCastBefore(|lvl, from, to): strat -> strat'
   with
     c{t} := <computeCoercion(|lvl, from, to)> strat
-  ; cast := Cast(c)
-  ; strat' := <try(rm-redundant-cast)> Seq(cast, strat)
+  ; 'cast := Cast(c{})
+  ; strat' := <try(rm-redundant-cast)> Seq('cast, strat)
 
 // Add a cast on the current term (the App or `<cast(to)> term`) if necessary to go from `from` to `to`
 // Doesn't insert Cast(Id()). Adds error message when inserting Cast(Fail()). 
@@ -141,8 +148,8 @@ insertCastApp(|from, to) = insertCastApp(|MTError(), from, to)
 insertCastApp(|lvl, from, to): (term1, st1) -> (term2, st2)
   with
     c{t} := <computeCoercion(|lvl, from, to)> term1
-  ; cast := Cast(c)
-  ; term2 := <try(rm-redundant-cast)> App(cast, term1)
+  ; 'cast := Cast(c{})
+  ; term2 := <try(rm-redundant-cast)> App('cast, term1)
   ; st2 := <current-type(|t)> st1
 
 // Used to remove Id() casts
@@ -181,7 +188,8 @@ report: (None(), subj, msg) -> <id> (subj, msg)
 strategies // Helpers
 
 getDefTypes =
-  with(
+  map(try(desugar-DefHasType))
+  ; with(
       map(try(extToNormal))
     ; (haveTypes, defs) := <partition(nameOf-DefHasType)>
     ; defNames := <filter(nameOf-StrategyDef-RuleDef);imset-from-list> defs
@@ -201,8 +209,10 @@ getDefTypes-detect-duplicates: (name-arity, set) -> <imset-insert(|name-arity)> 
     then <report-Err> (<Fst> name-arity, DuplicateTypeDefinition())
   end
 
+extToNormal = ?AnnoDef(_, <extToNormal>)
 extToNormal: ExtSDefInl(n, s, t, b) -> SDefT(n, s, t, b)
 
+simpleDef = ?AnnoDef(_, <simpleDef>)
 simpleDef: ExtSDefInl(n, s, t, _) -> ExtSDef(n, s, t)
 simpleDef: SDefT(n, s, t, _) -> ExtSDef(n, s, t)
 simpleDef: SDef(n, s, _) -> ExtSDef(n, s, [])
@@ -211,6 +221,13 @@ simpleDef: RDefT(n, s, t, _) -> ExtSDef(n, s, t)
 simpleDef: RDef(n, s, _) -> ExtSDef(n, s, [])
 simpleDef: RDefNoArgs(n, _) -> ExtSDef(n, [], [])
 
+desugar-DefHasType: DefHasTypeNoArgs(n, f, t) -> DefHasType(n, FunTType(<desugar-Type> f, <desugar-Type> t))
+desugar-DefHasType:
+  DefHasType(n, s*, f, t) ->
+    DefHasType(n, FunTType(<map(try(desugar-SType))> s*, [], <desugar-Type> f, <desugar-Type> t))
+desugar-DefHasType:
+  DefHasTType(n, s*, t*, f, t) ->
+    DefHasType(n, FunTType(<map(try(desugar-SType))> s*, <map(desugar-Type)> t*, <desugar-Type> f, <desugar-Type> t))
 strategies
 
 thread-map-reduce(s, reduce): ([], st) -> ([], st)
