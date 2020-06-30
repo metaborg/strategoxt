@@ -1,22 +1,8 @@
 package org.strategoxt.lang;
 
-import static org.spoofax.interpreter.terms.IStrategoTerm.APPL;
-import static org.spoofax.interpreter.terms.IStrategoTerm.BLOB;
-import static org.spoofax.interpreter.terms.IStrategoTerm.INT;
-import static org.spoofax.interpreter.terms.IStrategoTerm.LIST;
-import static org.spoofax.interpreter.terms.IStrategoTerm.REAL;
-import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
-import static org.spoofax.interpreter.terms.IStrategoTerm.TUPLE;
 import static org.strategoxt.lang.Term.NO_TERMS;
 
-import org.spoofax.interpreter.terms.IStrategoAppl;
-import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoInt;
-import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoReal;
-import org.spoofax.interpreter.terms.IStrategoString;
-import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.interpreter.terms.*;
 
 public class TermEqualityUtil {
 
@@ -30,8 +16,8 @@ public class TermEqualityUtil {
     public static boolean equalsIgnoreAnnos(IStrategoTerm t1, IStrategoTerm t2, ITermFactory factory) {
         if(t1 == t2)
             return true;
-        int termType = t1.getTermType();
-        int type2 = t2.getTermType();
+        TermType termType = t1.getType();
+        TermType type2 = t2.getType();
         if(termType != type2)
             return false;
 

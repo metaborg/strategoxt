@@ -2,10 +2,7 @@ package org.strategoxt.lang;
 
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 
-import org.spoofax.interpreter.terms.IStrategoAppl;
-import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
+import org.spoofax.interpreter.terms.*;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -15,9 +12,9 @@ public class SRTS_some extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
-		int termType = current.getTermType();
+		TermType termType = current.getType();
 		
-		if (termType == LIST) {
+		if (termType == TermType.LIST) {
 			final IStrategoList list = (IStrategoList) current;
 			return map1MaintainAnnos(context, list, s, false, SRTS_all.noAnnosTail(list));
 		}
