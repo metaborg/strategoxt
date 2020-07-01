@@ -2,7 +2,15 @@ package org.strategoxt.lang;
 
 import static org.strategoxt.lang.Term.NO_TERMS;
 
-import org.spoofax.interpreter.terms.*;
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
+import org.spoofax.interpreter.terms.IStrategoInt;
+import org.spoofax.interpreter.terms.IStrategoList;
+import org.spoofax.interpreter.terms.IStrategoReal;
+import org.spoofax.interpreter.terms.IStrategoString;
+import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.interpreter.terms.TermType;
 
 public class TermEqualityUtil {
 

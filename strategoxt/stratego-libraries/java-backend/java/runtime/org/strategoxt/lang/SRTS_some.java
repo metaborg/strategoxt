@@ -1,8 +1,10 @@
 package org.strategoxt.lang;
 
-import static org.spoofax.interpreter.terms.IStrategoTerm.*;
-
-import org.spoofax.interpreter.terms.*;
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoList;
+import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.IStrategoTuple;
+import org.spoofax.interpreter.terms.TermType;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>

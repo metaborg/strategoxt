@@ -1,7 +1,5 @@
 package org.strategoxt.lang;
 
-import static org.spoofax.interpreter.terms.IStrategoTerm.*;
-
 import java.util.LinkedList;
 
 import org.spoofax.interpreter.terms.IStrategoList;

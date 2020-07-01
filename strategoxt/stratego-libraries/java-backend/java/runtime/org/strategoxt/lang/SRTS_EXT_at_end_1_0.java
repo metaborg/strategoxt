@@ -1,6 +1,5 @@
 package org.strategoxt.lang;
 
-import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 import static org.strategoxt.lang.Term.*;
 
 import org.spoofax.interpreter.terms.IStrategoList;

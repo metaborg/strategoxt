@@ -1,6 +1,5 @@
 package org.strategoxt.lang.parallel.stratego_parallel;
 
-import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.*;
 
 import java.util.WeakHashMap;

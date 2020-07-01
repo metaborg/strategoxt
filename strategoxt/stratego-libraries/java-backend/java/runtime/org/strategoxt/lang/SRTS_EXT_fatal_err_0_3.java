@@ -1,7 +1,6 @@
 package org.strategoxt.lang;
 
 import static org.spoofax.interpreter.core.Tools.*;
-import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
