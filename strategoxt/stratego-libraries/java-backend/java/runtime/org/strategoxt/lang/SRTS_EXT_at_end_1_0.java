@@ -1,11 +1,11 @@
 package org.strategoxt.lang;
 
+import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 import static org.strategoxt.lang.Term.*;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.interpreter.terms.TermType;
 
 /**
  * A stack-efficient version of the at-end strategy,
@@ -25,7 +25,7 @@ public class SRTS_EXT_at_end_1_0 extends Strategy {
 		//if (StackSaver.isNeededFor(context))
 		//	new StackSaver(this).invokeStackFriendly(context, current, new Strategy[] { s }, NO_TERMS);
 		
-		if (current.getType() != TermType.LIST)
+		if (current.getTermType() != LIST)
 			return null;
 		
 		IStrategoList list = (IStrategoList) current;

@@ -1,10 +1,10 @@
 package org.strategoxt.lang;
 
 import static org.spoofax.interpreter.core.Tools.*;
+import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.TermType;
 import org.strategoxt.stratego_lib.concat_strings_0_0;
 
 /**
@@ -15,16 +15,16 @@ public class SRTS_EXT_fatal_err_0_3 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm message, IStrategoTerm term, IStrategoTerm trace) {
-		if (message.getType() == TermType.LIST)
+		if (message.getTermType() == LIST)
 			message = concat_strings_0_0.instance.invoke(context, message);
-		if (message == null || message.getType() != TermType.STRING)
+		if (message == null || message.getTermType() != STRING)
 			return null;
 		
 		context.popOnExit(false);
-		if (term.getType() == TermType.TUPLE && term.getSubtermCount() == 0) {
+		if (term.getTermType() == TUPLE && term.getSubtermCount() == 0) {
 			throw new StrategoErrorExit(asJavaString(message));
 		} else {
-			if(trace.getType() == TermType.LIST){
+			if(trace.getTermType() == LIST){
 				throw new StrategoErrorExit(asJavaString(message), term, (IStrategoList) trace);
 			}else{
 				throw new StrategoErrorExit(asJavaString(message), term);

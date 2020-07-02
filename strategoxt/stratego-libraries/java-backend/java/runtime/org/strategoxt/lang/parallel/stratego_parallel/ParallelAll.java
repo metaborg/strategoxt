@@ -1,5 +1,6 @@
 package org.strategoxt.lang.parallel.stratego_parallel;
 
+import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.*;
 
 import java.util.WeakHashMap;
@@ -9,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.TermType;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.SRTS_all;
 import org.strategoxt.lang.StrategoException;
@@ -161,7 +161,7 @@ public class ParallelAll extends SRTS_all {
 			return null;
 		}
 		
-		assert current.getType() == TermType.LIST;
+		assert current.getTermType() == LIST;
 		// TODO: return context.getFactory().replaceList(outputs, (IStrategoList) current);
 		return context.getFactory().makeList(outputs);
 	}
@@ -171,7 +171,7 @@ public class ParallelAll extends SRTS_all {
 	}
 	
 	protected boolean isCandidateTerm(Context context, IStrategoTerm term) {
-		if (term.getType() == TermType.LIST
+		if (term.getTermType() == LIST
 				&& term.getSubtermCount() >= subtermCountThreshold
 				&& getTermSize(term, 1) >= termSizeThreshold) {
 
@@ -206,7 +206,7 @@ public class ParallelAll extends SRTS_all {
 
 		int size = initialSize + subtermCount;
 		
-		if (term.getType() == TermType.LIST) {
+		if (term.getTermType() == LIST) {
 			for (IStrategoList cons = (IStrategoList) term; !cons.isEmpty(); cons = cons.tail()) {
 				IStrategoTerm subterm = cons.head();
 				size = getTermSize(subterm, size);
