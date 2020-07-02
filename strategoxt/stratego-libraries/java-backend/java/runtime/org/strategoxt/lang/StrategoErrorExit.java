@@ -3,6 +3,7 @@ package org.strategoxt.lang;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.TermType;
 
 /**
  * Exception thrown when the application exits with an fatal error message.
@@ -54,7 +55,7 @@ public class StrategoErrorExit extends StrategoExit {
             for(int i = 0; i < depth; i++) {
                 final IStrategoTerm t = trace.getSubterm(depth - i - 1);
                 sb.append("\n\t");
-                sb.append(t.getTermType() == IStrategoTerm.STRING ? Tools.asJavaString(t) : t);
+                sb.append(t.getType() == TermType.STRING ? Tools.asJavaString(t) : t);
             }
         }
         return sb.toString();
