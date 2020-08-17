@@ -332,8 +332,8 @@
                 <argument>-p</argument>
                 <argument>${javaIntegPackage}</argument>
                 <argument>--library</argument>
-                <argument>-I</argument>
-                <argument>${project.build.outputDirectory}</argument>
+                <argument>-la</argument>
+                <argument>stratego-lib</argument>
                 <argument>--cache-dir</argument>
                 <argument>${project.build.directory}/stratego-cache</argument>
                 <argument>--verbose</argument>
@@ -369,8 +369,8 @@
                 <argument>-p</argument>
                 <argument>${nativeCallPackage}</argument>
                 <argument>--library</argument>
-                <argument>-I</argument>
-                <argument>${project.build.outputDirectory}</argument>
+                <argument>-la</argument>
+                <argument>stratego-lib</argument>
                 <argument>--cache-dir</argument>
                 <argument>${project.build.directory}/stratego-cache</argument>
                 <argument>--verbose</argument>
@@ -406,8 +406,8 @@
                 <argument>-p</argument>
                 <argument>${perfTweakPackage}</argument>
                 <argument>--library</argument>
-                <argument>-I</argument>
-                <argument>${project.build.outputDirectory}</argument>
+                <argument>-la</argument>
+                <argument>stratego-lib</argument>
                 <argument>--cache-dir</argument>
                 <argument>${project.build.directory}/stratego-cache</argument>
                 <argument>--verbose</argument>
