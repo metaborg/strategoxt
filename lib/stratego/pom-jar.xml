@@ -124,7 +124,7 @@
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>package name to dir (stratego-lib)</id>
+            <id>package name to dir - stratego-lib</id>
             <goals>
               <goal>regex-property</goal>
             </goals>
@@ -136,7 +136,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>package name to dir (java-integration)</id>
+            <id>package name to dir - java-integration</id>
             <goals>
               <goal>regex-property</goal>
             </goals>
@@ -148,7 +148,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>package name to dir (native-calls-compat)</id>
+            <id>package name to dir - native-calls-compat</id>
             <goals>
               <goal>regex-property</goal>
             </goals>
@@ -160,7 +160,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>package name to dir (performance-tweaks)</id>
+            <id>package name to dir - performance-tweaks</id>
             <goals>
               <goal>regex-property</goal>
             </goals>
@@ -201,7 +201,7 @@
         </dependencies>
         <executions>
           <execution>
-            <id>mkdir (stratego-lib)</id>
+            <id>mkdir - stratego-lib</id>
             <phase>initialize</phase>
             <goals>
               <goal>exec</goal>
@@ -218,7 +218,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>mkdir (java-integration)</id>
+            <id>mkdir - java-integration</id>
             <phase>initialize</phase>
             <goals>
               <goal>exec</goal>
@@ -235,7 +235,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>mkdir (native-calls-compat)</id>
+            <id>mkdir - native-calls-compat</id>
             <phase>initialize</phase>
             <goals>
               <goal>exec</goal>
@@ -252,7 +252,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>mkdir (performance-tweaks)</id>
+            <id>mkdir - performance-tweaks</id>
             <phase>initialize</phase>
             <goals>
               <goal>exec</goal>
@@ -269,7 +269,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>strj back (stratego-lib)</id>
+            <id>strj back - stratego-lib</id>
             <phase>process-sources</phase>
             <goals>
               <goal>exec</goal>
@@ -283,9 +283,9 @@
               <longModulepath>false</longModulepath>
               <executable>java</executable>
               <arguments>
-                <arguments>-Xms512m</arguments>
-                <arguments>-Xmx1024m</arguments>
-                <arguments>-Xss16m</arguments>
+                <argument>-Xms512m</argument>
+                <argument>-Xmx1024m</argument>
+                <argument>-Xss16m</argument>
                 <argument>-jar</argument>
                 <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
                 <argument>-p</argument>
@@ -310,7 +310,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>strj back (java-integration)</id>
+            <id>strj back - java-integration</id>
             <phase>process-sources</phase>
             <goals>
               <goal>exec</goal>
@@ -324,9 +324,9 @@
               <longModulepath>false</longModulepath>
               <executable>java</executable>
               <arguments>
-                <arguments>-Xms512m</arguments>
-                <arguments>-Xmx1024m</arguments>
-                <arguments>-Xss16m</arguments>
+                <argument>-Xms512m</argument>
+                <argument>-Xmx1024m</argument>
+                <argument>-Xss16m</argument>
                 <argument>-jar</argument>
                 <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
                 <argument>-p</argument>
@@ -347,7 +347,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>strj back (native-calls-compat)</id>
+            <id>strj back - native-calls-compat</id>
             <phase>process-sources</phase>
             <goals>
               <goal>exec</goal>
@@ -361,9 +361,9 @@
               <longModulepath>false</longModulepath>
               <executable>java</executable>
               <arguments>
-                <arguments>-Xms512m</arguments>
-                <arguments>-Xmx1024m</arguments>
-                <arguments>-Xss16m</arguments>
+                <argument>-Xms512m</argument>
+                <argument>-Xmx1024m</argument>
+                <argument>-Xss16m</argument>
                 <argument>-jar</argument>
                 <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
                 <argument>-p</argument>
@@ -384,7 +384,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>strj back (performance-tweaks)</id>
+            <id>strj back - performance-tweaks</id>
             <phase>process-sources</phase>
             <goals>
               <goal>exec</goal>
@@ -398,9 +398,9 @@
               <longModulepath>false</longModulepath>
               <executable>java</executable>
               <arguments>
-                <arguments>-Xms512m</arguments>
-                <arguments>-Xmx1024m</arguments>
-                <arguments>-Xss16m</arguments>
+                <argument>-Xms512m</argument>
+                <argument>-Xmx1024m</argument>
+                <argument>-Xss16m</argument>
                 <argument>-jar</argument>
                 <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
                 <argument>-p</argument>

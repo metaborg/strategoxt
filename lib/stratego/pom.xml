@@ -107,9 +107,9 @@
               <longModulepath>false</longModulepath>
               <executable>java</executable>
               <arguments>
-                <arguments>-Xms512m</arguments>
-                <arguments>-Xmx1024m</arguments>
-                <arguments>-Xss16m</arguments>
+                <argument>-Xms512m</argument>
+                <argument>-Xmx1024m</argument>
+                <argument>-Xss16m</argument>
                 <argument>-jar</argument>
                 <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
                 <argument>--library</argument>
