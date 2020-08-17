@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1596977418581
+Build-Jdk: 1.8.0_252
+Built-By: jeff
+Bundle-Description: Stratego runtime
+Bundle-License: https://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: stratego-java-runtime
+Bundle-SymbolicName: stratego-java-runtime
+Bundle-Vendor: org.metaborg
+Bundle-Version: 2.5.11
+Created-By: Apache Maven Bundle Plugin
+Eclipse-BuddyPolicy: registered
+Embed-Transitive: true
+Export-Package: org.strategoxt,org.strategoxt.lang,org.strategoxt.lang.c
+ ompat,org.strategoxt.lang.compat.stratego_rtg_compat,org.strategoxt.lan
+ g.compat.strc_compat,org.strategoxt.lang.parallel.collections,org.strat
+ egoxt.lang.parallel.stratego_parallel
+Import-Package: org.spoofax.interpreter.core,org.spoofax.interpreter.lib
+ rary,org.spoofax.interpreter.library.java,org.spoofax.interpreter.libra
+ ry.jsglr,org.spoofax.interpreter.library.jsglr.origin,org.spoofax.inter
+ preter.library.ssl,org.spoofax.interpreter.library.xml,org.spoofax.inte
+ rpreter.stratego,org.spoofax.interpreter.terms,org.spoofax.interpreter.
+ util,org.spoofax.terms,org.spoofax.terms.attachments,org.spoofax.terms.
+ io.binary,org.spoofax.terms.util,org.strategoxt.java_front,org.stratego
+ xt.lang.compat.override.strc_compat,org.strategoxt.stratego_aterm,org.s
+ trategoxt.stratego_gpp,org.strategoxt.stratego_lib,org.strategoxt.strat
+ ego_rtg,org.strategoxt.stratego_sdf,org.strategoxt.stratego_sglr,org.st
+ rategoxt.stratego_tool_doc,org.strategoxt.stratego_xtc,org.strategoxt.s
+ trc,org.strategoxt.tools,javax.inject
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-2.4.1.201501161923

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>stratego-java-runtime</artifactId>
+  <packaging>jar</packaging>
+  <description>Stratego runtime</description>
+
+  <parent>
+    <groupId>org.metaborg</groupId>
+    <artifactId>parent.java</artifactId>
+    <version>2.6.0-SNAPSHOT</version>
+    <relativePath>../../releng/parent/java</relativePath>
+  </parent>
+
+  <properties>
+    <!-- Can be adapted to do bootstrap build hopefully -->
+    <strjVersion>2.5.11</strjVersion>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.core</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.library.java</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.library.jsglr</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.spoofax.interpreter.library.xml</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+    <!-- To be replaced with a smaller dep of just the compiled strj Stratego code: -->
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>org.strategoxt.strj</artifactId>
+      <version>${strjVersion}</version>
+    </dependency>
+  </dependencies>
+</project>
