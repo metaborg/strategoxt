@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>stratego-lib</artifactId>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>org.metaborg</groupId>
+    <artifactId>parent.java</artifactId>
+    <version>2.6.0-SNAPSHOT</version>
+    <relativePath>../../releng/parent/java</relativePath>
+  </parent>
+
+  <properties>
+    <strjOutputDir>${project.build.directory}/generated-sources/strj</strjOutputDir>
+    <strjLibsPath>${project.build.directory}/stratego-libs</strjLibsPath>
+    <!-- Can be adapted to do bootstrap build hopefully -->
+    <strjVersion>2.5.11</strjVersion>
+
+    <stratLibBaseName>stratego-lib</stratLibBaseName>
+    <stratLibPackage>org.strategoxt.stratego_lib</stratLibPackage>
+    <stratLibCTreeFile>${project.build.outputDirectory}/${stratLibBaseName}.ctree</stratLibCTreeFile>
+
+    <perfTweakBaseName>performance-tweaks</perfTweakBaseName>
+    <perfTweakPackage>org.strategoxt.lang.compat.override.performance_tweaks</perfTweakPackage>
+    <perfTweakCTreeFile>${project.build.outputDirectory}/${perfTweakBaseName}.ctree</perfTweakCTreeFile>
+
+    <javaIntegBaseName>java-integration</javaIntegBaseName>
+    <javaIntegPackage>org.strategoxt.lang.compat.override.java_integration</javaIntegPackage>
+    <javaIntegCTreeFile>${project.build.outputDirectory}/${javaIntegBaseName}.ctree</javaIntegCTreeFile>
+
+    <nativeCallBaseName>native-calls-compat</nativeCallBaseName>
+    <nativeCallPackage>org.strategoxt.lang.compat.override.native_calls_compat</nativeCallPackage>
+    <nativeCallCTreeFile>${project.build.outputDirectory}/${nativeCallBaseName}.ctree</nativeCallCTreeFile>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>stratego-java-runtime</artifactId>
+      <version>${strjVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>stratego-junit-bridge</artifactId>
+      <scope>test</scope>
+      <version>${metaborg-version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>load ctree/rtree dependencies</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>stratego-lib-front</artifactId>
+                  <version>${metaborg-version}</version>
+                  <type>ctree</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                  <destFileName>${stratLibBaseName}.ctree</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>stratego-lib-front</artifactId>
+                  <version>${metaborg-version}</version>
+                  <type>rtree</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                  <destFileName>stratego-lib.rtree</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>java-integration-front</artifactId>
+                  <version>${metaborg-version}</version>
+                  <type>ctree</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                  <destFileName>java-integration.ctree</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>native-calls-compat-front</artifactId>
+                  <version>${metaborg-version}</version>
+                  <type>ctree</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                  <destFileName>native-calls-compat.ctree</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.metaborg</groupId>
+                  <artifactId>performance-tweaks-front</artifactId>
+                  <version>${metaborg-version}</version>
+                  <type>ctree</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                  <destFileName>performance-tweaks.ctree</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package name to dir (stratego-lib)</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>stratLibPackageDir</name>
+              <value>${stratLibPackage}</value>
+              <regex>\.</regex>
+              <replacement>/</replacement>
+            </configuration>
+          </execution>
+          <execution>
+            <id>package name to dir (java-integration)</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>javaIntegPackageDir</name>
+              <value>${javaIntegPackage}</value>
+              <regex>\.</regex>
+              <replacement>/</replacement>
+            </configuration>
+          </execution>
+          <execution>
+            <id>package name to dir (native-calls-compat)</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>nativeCallPackageDir</name>
+              <value>${nativeCallPackage}</value>
+              <regex>\.</regex>
+              <replacement>/</replacement>
+            </configuration>
+          </execution>
+          <execution>
+            <id>package name to dir (performance-tweaks)</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>perfTweakPackageDir</name>
+              <value>${perfTweakPackage}</value>
+              <regex>\.</regex>
+              <replacement>/</replacement>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.metaborg</groupId>-->
+<!--        <artifactId>spoofax-maven-plugin</artifactId>-->
+<!--        <version>${metaborg-version}</version>-->
+<!--        <extensions>true</extensions>-->
+<!--      </plugin>-->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <!-- Using version 3 here to avoid double execution of all maven goals -->
+        <version>3.0.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.metaborg</groupId>
+            <artifactId>strategoxt-jar</artifactId>
+            <version>${strjVersion}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>mkdir (stratego-lib)</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>mkdir</executable>
+              <arguments>
+                <argument>-p</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${stratLibPackageDir}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>mkdir (java-integration)</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>mkdir</executable>
+              <arguments>
+                <argument>-p</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${javaIntegPackageDir}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>mkdir (native-calls-compat)</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>mkdir</executable>
+              <arguments>
+                <argument>-p</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${nativeCallPackageDir}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>mkdir (performance-tweaks)</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>mkdir</executable>
+              <arguments>
+                <argument>-p</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${perfTweakPackageDir}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>strj back (stratego-lib)</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <addOutputToClasspath>false</addOutputToClasspath>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <sourceRoot>${strjOutputDir}</sourceRoot>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>java</executable>
+              <arguments>
+                <arguments>-Xms512m</arguments>
+                <arguments>-Xmx1024m</arguments>
+                <arguments>-Xss16m</arguments>
+                <argument>-jar</argument>
+                <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
+                <argument>-p</argument>
+                <argument>${stratLibPackage}</argument>
+                <argument>--library</argument>
+                <argument>-la</argument>
+                <argument>org.strategoxt.lang.compat.override.java_integration</argument>
+                <argument>-la</argument>
+                <argument>org.strategoxt.lang.compat.override.performance_tweaks</argument>
+                <argument>-la</argument>
+                <argument>org.strategoxt.lang.compat.override.native_calls_compat</argument>
+                <argument>--cache-dir</argument>
+                <argument>${project.build.directory}/stratego-cache</argument>
+                <argument>--verbose</argument>
+                <argument>error</argument>
+                <argument>-i</argument>
+                <argument>${stratLibCTreeFile}</argument>
+                <argument>-o</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${stratLibPackageDir}/Main.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>strj back (java-integration)</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <addOutputToClasspath>false</addOutputToClasspath>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <sourceRoot>${strjOutputDir}</sourceRoot>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>java</executable>
+              <arguments>
+                <arguments>-Xms512m</arguments>
+                <arguments>-Xmx1024m</arguments>
+                <arguments>-Xss16m</arguments>
+                <argument>-jar</argument>
+                <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
+                <argument>-p</argument>
+                <argument>${javaIntegPackage}</argument>
+                <argument>--library</argument>
+                <argument>-I</argument>
+                <argument>${project.build.outputDirectory}</argument>
+                <argument>--cache-dir</argument>
+                <argument>${project.build.directory}/stratego-cache</argument>
+                <argument>--verbose</argument>
+                <argument>error</argument>
+                <argument>-i</argument>
+                <argument>${javaIntegCTreeFile}</argument>
+                <argument>-o</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${javaIntegPackageDir}/Main.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>strj back (native-calls-compat)</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <addOutputToClasspath>false</addOutputToClasspath>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <sourceRoot>${strjOutputDir}</sourceRoot>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>java</executable>
+              <arguments>
+                <arguments>-Xms512m</arguments>
+                <arguments>-Xmx1024m</arguments>
+                <arguments>-Xss16m</arguments>
+                <argument>-jar</argument>
+                <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
+                <argument>-p</argument>
+                <argument>${nativeCallPackage}</argument>
+                <argument>--library</argument>
+                <argument>-I</argument>
+                <argument>${project.build.outputDirectory}</argument>
+                <argument>--cache-dir</argument>
+                <argument>${project.build.directory}/stratego-cache</argument>
+                <argument>--verbose</argument>
+                <argument>error</argument>
+                <argument>-i</argument>
+                <argument>${nativeCallCTreeFile}</argument>
+                <argument>-o</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${nativeCallPackageDir}/Main.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>strj back (performance-tweaks)</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <addOutputToClasspath>false</addOutputToClasspath>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <sourceRoot>${strjOutputDir}</sourceRoot>
+              <!-- workaround for bug in 1.6.0 of this plugin -->
+              <longModulepath>false</longModulepath>
+              <executable>java</executable>
+              <arguments>
+                <arguments>-Xms512m</arguments>
+                <arguments>-Xmx1024m</arguments>
+                <arguments>-Xss16m</arguments>
+                <argument>-jar</argument>
+                <argument>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</argument>
+                <argument>-p</argument>
+                <argument>${perfTweakPackage}</argument>
+                <argument>--library</argument>
+                <argument>-I</argument>
+                <argument>${project.build.outputDirectory}</argument>
+                <argument>--cache-dir</argument>
+                <argument>${project.build.directory}/stratego-cache</argument>
+                <argument>--verbose</argument>
+                <argument>error</argument>
+                <argument>-i</argument>
+                <argument>${perfTweakCTreeFile}</argument>
+                <argument>-o</argument>
+                <!--suppress UnresolvedMavenProperty -->
+                <argument>${strjOutputDir}/${perfTweakPackageDir}/Main.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <strj-sut>${settings.localRepository}/org/metaborg/strategoxt-jar/${strjVersion}/strategoxt-jar-${strjVersion}.jar</strj-sut>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
