@@ -181,7 +181,7 @@ insertCasts-Strategy-(|e1, st1):
 //  DynRuleIntersect         : Strategy * RuleNames * Strategy -> Strategy
 
 insertCasts-Strategy-(|e1, st1):
-  DynRuleIntersectUnionFix(s1, n1, s2) -> (DynRuleIntersectUnionFix(s3, n2, s4), st4)
+  DynRuleIntersect(s1, n1, s2) -> (DynRuleIntersect(s3, n2, s4), st4)
   with
     (s3, st2) := <insertCasts-Strategy(|e1, st1)> s1
   ; (n2, st3) := <insertCasts-RuleNames(|e1, st2)> n1

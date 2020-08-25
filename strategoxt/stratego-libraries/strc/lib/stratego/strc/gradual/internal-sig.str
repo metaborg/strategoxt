@@ -2,6 +2,7 @@ module internal-sig
 
 // For bootstrapping purposes, should come from the grammar later
 
+
 signature
   sorts
     Type ConstrType ErrorDesc MessageType
@@ -10,8 +11,12 @@ signature
     MTError                              : MessageType
     MTWarning                            : MessageType
     MTNote                               : MessageType
+    DefHasType                           : Id * SFunType -> Def
     IllFormedTermT                       : Id * List(Type) -> Type
     ErrT                                 : Type
+    LocalDef                             : Type -> Type
+    SErrT                                : SType
+                                         : Type -> Dyn
     ConstrType                           : List(Type) * Type -> ConstrType
     CallDynamicNotSupported              : ErrorDesc
     TermVariableTypedWithStrategyType    : ErrorDesc
@@ -38,3 +43,4 @@ signature
     NonListInAnno                        : Type -> ErrorDesc
     MultipleAppsInMatch                  : ErrorDesc
     BuildUnboundTerm                     : ErrorDesc
+    MatchNotSpecificEnoughForTP          : Type -> ErrorDesc
