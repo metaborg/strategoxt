@@ -5,4 +5,6 @@ exports
   sorts Def
 
   context-free syntax
-    Id "::" SFunType -> Def {cons("DefHasType")}
+    Id "::" SSimpleFunType                                      -> Def {cons("DefHasTypeNoArgs")}
+    Id "(" {SType ","}* ")" "::" SSimpleFunType                 -> Def {cons("DefHasType")}
+    Id "(" {SType ","}* "|" {Type ","}* ")" "::" SSimpleFunType -> Def {cons("DefHasTType")}

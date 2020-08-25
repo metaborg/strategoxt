@@ -6,18 +6,18 @@ exports
 
   context-free syntax
     "cast" "(" Coercion ")"                                                                   -> Strategy  {cons("Cast")}
+    "is" "(" Type ")"                                                                         -> Strategy  {cons("TypeTest")}
     "fail"                                                                                    -> Coercion  {cons("Fail")}
     "id"                                                                                      -> Coercion  {cons("Id")}
     Type                                                                                      -> Coercion  {cons("RuntimeCheck")}
+    "fail"                                                                                    -> SCoercion {cons("SFail")}
     "id"                                                                                      -> SCoercion {cons("SId")}
-    Type                                                                                      -> SCoercion {cons("SRuntimeCheck")}
+    SType                                                                                     -> SCoercion {cons("SRuntimeCheck")}
     SortT "." Id                                                                              -> TypedId   {cons("TypedId")}
     Proxy                                                                                     -> Strategy  
     "proxy" "(" Coercion "," Coercion ")(" SVar ")"                                           -> Proxy     {cons("Proxy")}
     "proxy" "(" {SCoercion ","}* "|" {Coercion ","}* ")(" Coercion "," Coercion ")(" SVar ")" -> Proxy     {cons("ProxyT")}
-
-  lexical syntax
-    "cast"  -> SVar {reject}
+    "cast"                                                                                    -> SVar      {reject}
 
   lexical restrictions
-    "cast" "fail" "id" "proxy" -/- [a-zA-Z0-9\'\-\_]
+    "cast" "is" "fail" "id" "proxy" -/- [a-zA-Z0-9\'\-\_]
