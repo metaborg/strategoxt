@@ -49,6 +49,7 @@ exports
     "id"
     "if" %% not reserved kw
     "in"
+    "is"
     "imports" %% not reserved kw
     "let"
     "module"
@@ -98,3 +99,4 @@ exports
     "test" 		-> Keyword
     "where" 		-> Keyword
     "import-term"	-> Keyword
+    "is"                -> Keyword
