@@ -299,7 +299,7 @@ map-st-LUB(s): (trm1*@[_ | _], st1) -> (trm2*, t*, st2)
 map-pair-left(|l) = map(split(!l, id))
 map-pair-right(|r) = map(split(id, !r))
 
-internal seqs(|) = foldr1(Hd, \(s1, s2) -> <otf(!Seq(s1, s2))> s1\)
+internal seqs(|) = foldr1(Hd, \(s1, s2) -> <otf(!Seq(s1, s2))> s1\) <+ !Id()
 
 strategies
 
