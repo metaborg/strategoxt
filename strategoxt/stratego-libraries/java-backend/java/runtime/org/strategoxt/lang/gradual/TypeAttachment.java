@@ -63,7 +63,7 @@ public class TypeAttachment extends AbstractTermAttachment {
                 return typeInfo.typeOf(appl.getName(), subTermTypes);
             case LIST:
                 if(subTermTypes.isEmpty()) {
-                    return new Sort("List", Collections.singletonList(DynT.INSTANCE));
+                    return new Sort("List", Collections.singletonList(IllFormedTerms.INSTANCE));
                 }
                 final Type leastUpperBound = typeInfo.leastUpperBound(subTermTypes);
                 return new Sort("List", Collections.singletonList(leastUpperBound));

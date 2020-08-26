@@ -3,23 +3,22 @@ package org.strategoxt.lang.gradual;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import io.usethesource.capsule.BinaryRelation;
 import io.usethesource.capsule.BinaryRelation.Immutable;
+import io.usethesource.capsule.Set;
 
 public class TypeInfo {
     private BinaryRelation.Transient<Type, Type> injections = BinaryRelation.Transient.of();
-    private final Map<TypedConstructor, Type> consSorts = new HashMap<>();
+    private BinaryRelation.Transient<ConstructorArity, TypedConstructor> consSorts = BinaryRelation.Transient.of();
 
     public boolean typeIsA(Type currentType, Type type) {
-        // TODO: Handle `type instanceof SortVar`, pass an bindings state object
+        // TODO: Handle `type instanceof SortVar`, pass a bindings state object
         if(type == DynT.INSTANCE) {
             // TODO: what relation is this? Is currentType == DynT.INSTANCE also ok?
             return true;
@@ -64,12 +63,11 @@ public class TypeInfo {
             } else if(typeIsA(next, lub)) {
                 // next <: lub is fine
             } else {
-                final Set<Type> upperBounds = new HashSet<>();
+                final java.util.Set<Type> upperBounds = new HashSet<>();
                 upperBounds.addAll(injections.get(lub));
                 upperBounds.retainAll(injections.get(next));
                 if(upperBounds.isEmpty()) {
-                    lub = DynT.INSTANCE;
-                    // lub = new Alternative(lub, next); // Breaks assumptions. should be `new Alternatives(...);` constructed at the end.
+                    lub = IllFormedTerms.INSTANCE;
                 } else {
                     lub = lowestType(upperBounds);
                 }
@@ -93,8 +91,17 @@ public class TypeInfo {
     }
 
     public Type typeOf(String constructorName, List<Type> subTermTypes) {
-        final /* @Nullable */ Type type =
-            consSorts.get(new TypedConstructor(constructorName, subTermTypes));
+        final Set.Immutable<TypedConstructor> typedConstructors =
+            consSorts.get(new ConstructorArity(constructorName, subTermTypes.size()));
+        Type type = null;
+        for(TypedConstructor tc : typedConstructors) {
+            if(typeIsA(subTermTypes, tc.subTermTypes)) {
+                if(type != null) {
+                    // TODO: what to do when multiple matches? Statically disallow ideally
+                }
+                type = tc.sort;
+            }
+        }
         if(type != null) {
             return type;
         }
@@ -102,7 +109,8 @@ public class TypeInfo {
     }
 
     public void registerConstructor(Type sort, String name, List<Type> subTermTypes) {
-        consSorts.put(new TypedConstructor(name, subTermTypes), sort);
+        consSorts.__insert(new ConstructorArity(name, subTermTypes.size()),
+            new TypedConstructor(name, subTermTypes, sort));
     }
 
     public void registerInjection(Type from, Type to) {
@@ -137,6 +145,6 @@ public class TypeInfo {
 
     public void clear() {
         injections = BinaryRelation.Transient.of();
-        consSorts.clear();
+        consSorts = BinaryRelation.Transient.of();
     }
 }
