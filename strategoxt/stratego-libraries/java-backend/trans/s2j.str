@@ -1133,7 +1133,7 @@ strategies
   translate-TypeTest:
     TypeTest(type) ->
     bstm* |[
-      Cast.test(context, term, e_type);
+      if(!Cast.test(context, term, e_type)) break Fail;
     ]|
     with
       e_type := <translate-Type> type
