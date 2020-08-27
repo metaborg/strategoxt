@@ -1114,7 +1114,7 @@ strategies
     <translate-SType> funttype
 
   translate-SType:
-    FunTType(s*, t*, i, o) ->
+    FunTType(s*, t*, FunNoArgsType(i, o)) ->
     |[ new FunTCoercion(Arrays.asList(e_s*), Arrays.asList(e_t*), e_i, e_o) ]|
   with
     e_s* := <map(translate-SType)> s*
