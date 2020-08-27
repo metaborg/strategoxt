@@ -11,4 +11,9 @@ public class Cast {
         }
         throw new StrategoCastException(currentType, type);
     }
+
+    public static boolean test(Context context, IStrategoTerm current, Type type) {
+        final Type currentType = TypeAttachment.getOrComputeType(context.typeInfo, current);
+        return context.typeInfo.typeIsA(currentType, type);
+    }
 }

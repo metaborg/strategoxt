@@ -958,6 +958,7 @@ strategies
        ( 
        translate-Platform
     <+ translate-Cast
+    <+ translate-TypeTest
     <+ translate-CallT-dynamic
     <+ translate-CallT
     <+ translate-ProxyT
@@ -1125,6 +1126,14 @@ strategies
     Cast(RuntimeCheck(type)) ->
     bstm* |[
       Cast.check(context, term, e_type);
+    ]|
+    with
+      e_type := <translate-Type> type
+
+  translate-TypeTest:
+    TypeTest(type) ->
+    bstm* |[
+      Cast.test(context, term, e_type);
     ]|
     with
       e_type := <translate-Type> type
