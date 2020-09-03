@@ -14,7 +14,7 @@ Env : Map/*(str * int * int, SType)*/ * Rel/*(str * int, OpType)*/ -> Environmen
 //   local variables     currentTermType type variables
 St : Map/*(str, Type)*/ * Type         * Map/*(str, Type)*/ -> Store
 //                    outputTermType strategiesAfterMatch
-StMatchTerm : Store * Option(Type) * List/*(Strategy)*/ -> Store
+StMatchTerm : Store * Option(Type) * List(Strategy) -> Store
 //                    inputTermType // currentTermType in Store is the _expected_ current term type
 StBuildTerm : Store * Type -> Store
 
@@ -67,8 +67,8 @@ where if <map(is-string)> names
   else names-arities := names
 end
 
-name-type-to-arity: (n, LocalDef(FunTType(st*, tt*, _))) -> (n, <length> st*, <length> tt*)
-name-type-to-arity: (n, LocalDef(SDyn())) -> (n, 0, 0)
+name-type-to-arity: (n, FunTType(st*, tt*, _){LocalDef()}) -> (n, <length> st*, <length> tt*)
+name-type-to-arity: (n, SDyn(){LocalDef()}) -> (n, 0, 0)
 
 constr-env = ?Env(_, <id>)
 constr-env(s) = Env(id, s)

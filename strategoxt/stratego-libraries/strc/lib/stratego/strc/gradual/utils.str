@@ -80,7 +80,7 @@ listType: t1 -> t3
 tupleTypes(|n): t1 -> t2*
   where if TupleT(t1*) := <pushDyn> t1; n := <length> t1*
     then t2* := t1*
-    else t2* := <copy> (n, ErrT())
+    else t2* := <copy> (n, DynT())
   end
 
 strategies
@@ -208,7 +208,7 @@ toBinding-ExtSDef: d@ExtSDef(name, sargs, targs) ->
     , FunNoArgsType(<otf(!DynT())> d
                    , <otf(!DynT())> d)))> d)
 toBinding-ExtSDef-Typedid = ?VarDec(_, <toBinding-ExtSDef-ConstType + toBinding-ExtSDef-FunType>)
-toBinding-ExtSDef-Typedid: DefaultVarDec(_) -> FunTType([], [], FunNoArgsType(DynT(), DynT()))
+toBinding-ExtSDef-Typedid: DefaultVarDec(_) -> SDyn()
 toBinding-ExtSDef-ConstType: ConstType(s) -> DynT()
 toBinding-ExtSDef-FunType: FunType(a*, r) -> SDyn()
 

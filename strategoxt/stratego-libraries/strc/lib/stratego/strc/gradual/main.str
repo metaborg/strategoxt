@@ -20,12 +20,12 @@ strategies // entry-points from Java
  * constrs: map of constructor definition names to type description
  * injection-closure: map of injections from one type to another (the transitive closure)
  * lub-map: map representing the least-upper-bound of the type lattice
- * ast: the stratego strategy/rule ast
+ * asts: the stratego strategy/rule definitions
  */
-// insert-casts :: Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type) * MessageType * Decl -> (Decl, List(Message))
-insert-casts: (strats, constrs, injection-closure, lub-map, aliases, ast) -> (ast', errs, warns, notes)
+// insert-casts :: Map(String * Int * Int, SType) * Rel(String * Int, ConstrType) * Rel(String, String) * Map(Type * Type, Type) * Rel(String * Int, ConstrType) * List(Decl) -> (List(Decl), List(Message))
+insert-casts: (strats, constrs, injection-closure, lub-map, aliases, asts) -> (asts', errs, warns, notes)
   with {| CanCoerce, CanCoerceSType, LUB:
-    ast' := <insertCasts(|strats, constrs, injection-closure, aliases, lub-map)> ast
+    asts' := <map(insertCasts(|strats, constrs, injection-closure, aliases, lub-map))> asts
     ; msg* := <bagof-Message>
     ; errs := <filter(?(MTError(), <id>))> msg*
     ; warns := <filter(?(MTWarning(), <id>))> msg*
@@ -47,7 +47,7 @@ insertCasts(|strats, constrs, injection-closure, aliases, lub-map): ast -> ast'
     rules(CanCoerce: p -> <can-coerce(|injection-closure, aliases)> p)
   ; rules(CanCoerceSType: p -> <can-coerce-stype(|injection-closure)> p)
   ; rules(LUB: pair -> <lub(|lub-map)> pair)
-  ; (ast', _) := <insertCasts-Def(|<new-env> (strats, constrs), <new-st>)> ast
+  ; (ast', _) := <fix-Rule;insertCasts-Def(|<new-env> (strats, constrs), <new-st>)> ast
 
 strategies
 
@@ -162,7 +162,7 @@ itv(|st1) = instantiate-type-vars(id|st1)
 instantiate-type-vars(s|st1): t1 -> t2
   with t2 := <bottomup({x,t: ?t@SortVar(x) < <type-var-lookup(|x)> st1 <+ <s> t + id})> t1
 
-fresh-type-vars(newvars): LocalDef(t1) -> t1 with <newvars> []
+fresh-type-vars(newvars): t1{LocalDef()} -> t1 with <newvars> []
 
 fresh-type-vars(newvars): t1 -> <alltd(SortVar(\x -> <lookup> (x, tvmap)\))> t1
   with
@@ -183,7 +183,7 @@ lub(|lub-map): pair -> <immap-get(|pair) <+ immap-get(|<Swap> pair)> lub-map
 constr-lookup-from(st|name, arity, t1, st1) =
     constr-env
   ; imrel-get(|(name, arity))
-  ; if not(DynT(_) := t1)
+  ; if not(DynT() := t1 <+ ErrT() := t1)
       then imset-filter(constr-lookup-filter(|t1, st1))
     end
   ; imset-to-list

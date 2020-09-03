@@ -85,13 +85,15 @@ insertCasts-StMatchTerm-(|e1, st1):
     then
       (c, st3) := <computeCoercion(|cnstr, st2)> (t2, t1)
     ; if not(Fail() := c)
-        then if DynT() := t1
+        then if DynT() := t1 <+ ErrT() := t1
                then t2* := <map(!DynT(<id>))> t1*
+                  ; t3 := DynT(t2) // workaround for backtracking issue in strj
                else t2* := t1*
+                  ; t3 := t2 // workaround for backtracking issue in strj
              end
         else t2* := <map(!ErrT())> trm1*
+           ; t3 := ErrT() // workaround for backtracking issue in strj
       end
-    ; t3 := t2 // workaround for backtracking issue in strj
     else if [] := t*
         then <report-Err> (cnstr, UnresolvedConstructor(<length> trm1*, t1))
         else id //<report-Warn> (cnstr, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
@@ -209,13 +211,14 @@ insertCasts-StBuildTerm-(|e1, st1):
   with
     t1 := <current-type> st1
   // In a top-level term e.g. in Build(Op(..., ...)) the current term type in DynT().
-  ; t1* := <constr-lookup-to(|cnstr, <length> trm1*, <unDyn> t1, st1)> e1
-  ; if [(ConstrType(t2*, t2), st2)] := t1*
-    then
-      t3* := t2*
-    ; t3 := t2  // workaround for backtracking issue in strj
-    ; st4 := st2
-    else
+;
+//  ; t1* := <constr-lookup-to(|cnstr, <length> trm1*, <unDyn> t1, st1)> e1
+//  ; if [(ConstrType(t2*, t2), st2)] := t1*
+//    then
+//      t3* := t2*
+//    ; t3 := t2  // workaround for backtracking issue in strj
+//    ; st4 := st2
+//    else
       t* := <constr-lookup-to(|cnstr, <length> trm1*, t1, st1)> e1
     ; if [(ConstrType(t6*, t6), st3)] := t*
       then
@@ -231,9 +234,9 @@ insertCasts-StBuildTerm-(|e1, st1):
       ; st4 := st1
       ; t3* := <map(!ErrT())> trm1*
       end
-    end
+//    end
   ; b* := <zip> (trm1*, t3*)
-  ; if DynT() := t1
+  ; if DynT() := t1 <+ ErrT() := t1
     then
       let
         set-type(|t) = current-type(|DynT(t))
@@ -343,10 +346,11 @@ insertCasts-StMatchTerm-(|e1, st1):
   trm@Tuple(trm1*) -> (Tuple(trm2*), st4)
   with
     t1 := <current-type> st1
-  ; if t2* := <tupleTypes(|<length> trm1*)> t1
-      then id
-      else t2* := <map(!DynT())> trm1*
-      ; (_, st2) := <computeCoercion(|trm, st1)> (t1, TupleT(t2*))
+  ; if TupleT(t1*) := <pushDyn> t1; n := <length> t1*
+      then t2* := t1*
+         ; st2 := st1
+      else t2* := <map(!ErrT())> trm1*
+         ; (_, st2) := <computeCoercion(|trm, st1)> (t1, TupleT(t2*))
     end
   ; (trm2*, st3) := <thread-map(insertCasts-StMatchTerm-Type(|e1))> (<zip> (trm1*, t2*), st2)
   ; st4 := <current-type(|TupleT(t2*))> st3
@@ -364,8 +368,10 @@ insertCasts-StMatchTerm-(|e1, st1):
   trm@ListTail(trm1*, trm1) -> (ListTail(trm2*, trm2), st5)
   with
     t1 := <current-type> st1
-  ; if t2@ListT(t) := <pushDyn> t1
+  ; if ListT(t) := <pushDyn> t1
       then t1* := <map(!t)> trm1*
+         ; t2 := ListT(t)
+         ; st2 := st1
       else t1* := <map(!DynT())> trm1*
          ; t2 := ListT()
          ; (_, st2) := <computeCoercion(|trm, st1)> (t1, t2)

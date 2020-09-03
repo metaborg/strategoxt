@@ -16,6 +16,11 @@ strategies
 strat-lookup-call(register-fresh|x, sn, tn) =
   strat-lookup(|x, sn, tn);fresh-type-vars(register-fresh)
 
+strat-lookup-call(|x) =
+    strat-env
+  ; immap-filter-keys(?(x, _, _))
+  ; immap-values
+
 strategies // Strategy (core)
 
 insertCasts-Strategy(|e1, st1) = otf12(insertCasts-Strategy-(|e1, st1))
@@ -24,7 +29,7 @@ insertCasts-Strategy(|e1, st1) = otf12(insertCasts-Strategy-(|e1, st1))
 insertCasts-Strategy-(|e1, st1):
   Let(d1*, s1) -> (Let(d2*, s2), st3)
   with
-    e2 := <strat-merge-env(keep-right)> (e1, <getDefTypes> d1*)
+    e2 := <strat-merge-env(keep-right)> (e1, <getDefTypes;immap-map-values(\st -> st{LocalDef()}\)> d1*)
   ; (d2*, st2) := <thread-map(insertCasts-Def(|e2))> (d1*, st1)
   ; (s2, st3) := <insertCasts-Strategy(|e2, <current-type-of(| st1)> st2)> s1
 
@@ -185,13 +190,13 @@ insertCasts-Strategy-(|e1, st1):
   PrimT(x, s1*, t1*) -> (PrimT(x, s2*, t2*), st4)
   with
     (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, SDyn()))> (s1*, st1)
-  ; (t2*, st3) := <thread-map(insertCasts-Targ(|e1))> (t1*, st2)
+  ; (t2*, st3) := <thread-map(insertCasts-Targ(|e1))> (<map-pair-right(|DynT())> t1*, st2)
   ; st4 := <current-type(|DynT())> st3
 
 insertCasts-Strategy-(|e1, st1):
   Some(s1) -> (Some(s2), <current-type-of(| st1)> st2)
   where
-    not(DynT() := <current-type> st1)
+    not(<current-type;oncetd(?DynT())> st1)
   ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType([], [], TP()))
 
 insertCasts-Strategy-(|e1, st1):
@@ -202,7 +207,7 @@ insertCasts-Strategy-(|e1, st1):
 insertCasts-Strategy-(|e1, st1):
   One(s1) -> (One(s2), <current-type-of(| st1)> st2)
   where
-    not(DynT() := <current-type> st1)
+    not(<current-type;oncetd(?DynT())> st1)
   ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType([], [], TP()))
 
 insertCasts-Strategy-(|e1, st1):
@@ -213,7 +218,7 @@ insertCasts-Strategy-(|e1, st1):
 insertCasts-Strategy-(|e1, st1):
   All(s1) -> (All(s2), <current-type-of(| st1)> st2)
   where
-    not(DynT() := <current-type> st1)
+    not(<current-type;oncetd(?DynT())> st1)
   ; (s2, st2) := <insertCasts-Sarg(|e1, st1)> (s1, FunTType([], [], TP()))
 
 insertCasts-Strategy-(|e1, st1):
@@ -293,8 +298,51 @@ insertCasts-Sarg(|e1, st1):
   ; if <eq> (t2, t4)
       <+ <eq> (t4, <type-var-lookup(|tv)> st2)
          ; <not(oncetd(?DynT()))> t4
+      <+ <?ErrT()> t4
       then id
       else <report-Err> (s1, MatchNotSpecificEnoughForTP(t4{t2}))
+    end
+
+insertCasts-Sarg(|e1, st1):
+  (c@CallT(v@SVar(x), [], []), SDyn()) -> (c, st2)
+  with
+    switch <strat-lookup-call(|x{})> e1
+      case ?[]:
+        <report-Err> (x, UnresolvedStrategy("0", "0"))
+      ; st2 := <current-type(|ErrT())> st1
+      case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
+        <report-Err> (x, AmbiguousStrategyResolution(st*))
+      ; st2 := <current-type(|ErrT())> st1
+      otherwise:
+        st2 := st1
+    end
+
+insertCasts-Sarg(|e1, st1):
+  (c@Call(v@SVar(x), []), SDyn()) -> (c, st2)
+  with
+    switch <strat-lookup-call(|x{})> e1
+      case ?[]:
+        <report-Err> (x, UnresolvedStrategy("0", "0"))
+      ; st2 := <current-type(|ErrT())> st1
+      case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
+        <report-Err> (x, AmbiguousStrategyResolution(st*))
+      ; st2 := <current-type(|ErrT())> st1
+      otherwise:
+        st2 := st1
+    end
+
+insertCasts-Sarg(|e1, st1):
+  (c@CallNoArgs(v@SVar(x)), SDyn()) -> (c, st2)
+  with
+    switch <strat-lookup-call(|x{})> e1
+      case ?[]:
+        <report-Err> (x, UnresolvedStrategy("0", "0"))
+      ; st2 := <current-type(|ErrT())> st1
+      case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
+        <report-Err> (x, AmbiguousStrategyResolution(st*))
+      ; st2 := <current-type(|ErrT())> st1
+      otherwise:
+        st2 := st1
     end
 
 insertCasts-Sarg(|e1, st1):
