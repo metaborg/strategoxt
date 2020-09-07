@@ -172,7 +172,6 @@ public class ParallelAll extends SRTS_all {
 	
 	protected boolean isCandidateTerm(Context context, IStrategoTerm term) {
 		if (term.getTermType() == LIST
-				&& term.getStorageType() != MUTABLE
 				&& term.getSubtermCount() >= subtermCountThreshold
 				&& getTermSize(term, 1) >= termSizeThreshold) {
 

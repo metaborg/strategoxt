@@ -41,6 +41,12 @@ signature
     ThrowCS     : String * String -> ThrowCS
     ExceptionCS : String * String -> ExceptionCS
 
+signature
+  constructors
+    DR_DUMMY : DUMMY
+    DR_UNDEFINE : String -> DUMMY
+
+
 /**
  * Currently active rule set
  */

@@ -17,6 +17,7 @@ imports
   collection/tuple/common
   collection/tuple/cons
 
+  lang/cong
   lang/dynamic-rules
   lang/stacktrace
   lang/with
@@ -52,6 +53,7 @@ imports
   term/annotation
   term/common
   term/integer
+  term/opt
   term/placeholder
   term/properties
   term/share

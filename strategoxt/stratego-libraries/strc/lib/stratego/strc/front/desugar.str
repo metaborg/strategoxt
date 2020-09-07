@@ -659,7 +659,7 @@ strategies
     + Op(RemoveLeadingPrime,id)
 
   RemoveLeadingPrime :
-    x -> x'
+    x -> <origin-set-relation> (x,x')
     where <explode-string> x => [39 | cs]
         ; <implode-string> cs => x'
 

@@ -111,7 +111,10 @@ rules
         ; <strategy-sig-to-string>(x, n, m) => y
 
   RenameSDef2 :
-    ExtSDef(_, _, _) -> <id>
+    ExtSDef(x, args1, args2) -> ExtSDef(y, args1, args2)
+    where <length> args1 => n
+        ; <length> args2 => m
+        ; <strategy-sig-to-string>(x, n, m) => y
 
   RenameSDef2 : 
     ExtSDefInl(x, args1, args2, s) -> ExtSDefInl(y, args1, args2, s')

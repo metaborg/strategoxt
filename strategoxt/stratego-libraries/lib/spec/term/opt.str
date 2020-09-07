@@ -1,0 +1,16 @@
+/**
+ * Some primitives for the manipulation of Some(_) and None() terms.
+ */
+module term/opt
+
+strategies
+
+ /**
+  * Maps a strategy over an optional term.
+  */
+ map-opt(s) = ?Some(x) < Some(<s> x) + ?None()
+
+ /**
+  * Filters a strategy over an optional term.
+  */
+ filter-opt(s) = Some(s) <+ !None()

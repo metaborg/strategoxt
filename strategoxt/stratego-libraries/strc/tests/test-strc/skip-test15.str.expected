@@ -1,0 +1,4 @@
+Internal error: 'with' clause failed unexpectedly in 'main'
+	"test15"
+	main_0_0
+	with_1_1 <==

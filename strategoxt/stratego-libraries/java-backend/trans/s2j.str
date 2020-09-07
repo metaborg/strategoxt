@@ -954,6 +954,13 @@ strategies
       if ?def @ SDefT(x, _, _, _) then
         x' := x{}
       ; rules(InnerDefinition: x' -> def)
+      /* This forces LiftedTVars and LiftedSVars to be populated before translating the bodies
+       * of the definitions. `lifted-call-to-instance-with-args` is sometimes used in the bodies.
+       * These can be executed before seeing the definitions if they are in the wrong order order
+       * mutually dependent.
+       */
+      ; <collect-lifted-tvars> def
+      ; <collect-lifted-svars> def
       end
     })
   

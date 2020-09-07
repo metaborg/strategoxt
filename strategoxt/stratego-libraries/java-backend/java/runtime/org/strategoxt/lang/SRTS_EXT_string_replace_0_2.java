@@ -32,7 +32,7 @@ public class SRTS_EXT_string_replace_0_2 extends Strategy {
 		
 		String input = asJavaString(current);
 		String result = input.replace(before, after);
-		if (input == result) {
+		if (input.equals(result)) {
 			return current;
 		} else {
 			return factory.makeString(result);
