@@ -1189,6 +1189,8 @@ strategies
     end
   
   lifted-call-to-instance =
+    lifted-call-to-instance-proxy
+  <+
     lifted-call-to-instance-self-call
   <+
     lifted-call-to-instance-from-frame
@@ -1198,6 +1200,23 @@ strategies
     lifted-call-to-instance-direct
   <+
     lifted-call-to-instance-instance
+
+  lifted-call-to-instance-proxy :
+    ProxyT(s*, t*, i, o, SVar(x)) ->
+    expr |[ x_proxy ]|
+    with
+      x_proxy := <concat-strings;newname> ["proxy_", x]
+    ; rules(
+        CallTDecl: x_proxy -> x_proxy
+      )
+    ; e_coercion := <translate-FunTCoercion> (s*, t*, i, o)
+    ; e_instance := <lifted-call-to-instance> CallT(SVar(x), [], [])
+    ; init := bstm |[
+        Proxy x_proxy = new Proxy(context, e_coercion, e_instance);
+      ]|
+    ; rules(
+        CallTDecls :+= init
+      )
   
   lifted-call-to-instance-self-call :
     CallT(SVar(x), _, _) -> expr |[ this ]|
