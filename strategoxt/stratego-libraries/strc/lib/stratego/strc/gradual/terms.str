@@ -83,23 +83,29 @@ insertCasts-StMatchTerm-(|e1, st1):
   ; t* := <constr-lookup-to(|cnstr, <length> trm1*, t1, st1)> e1
   ; if [(ConstrType(t1*, t2), st2)] := t*
     then
-      (c, st3) := <computeCoercion(|cnstr, st2)> (t2, t1)
-    ; if not(Fail() := c)
-        then if DynT() := t1 <+ ErrT() := t1
-               then t2* := <map(!DynT(<id>))> t1*
-                  ; t3 := DynT(t2) // workaround for backtracking issue in strj
-               else t2* := t1*
-                  ; t3 := t2 // workaround for backtracking issue in strj
-             end
-        else t2* := <map(!ErrT())> trm1*
-           ; t3 := ErrT() // workaround for backtracking issue in strj
-      end
+        (c, st3) := <computeCoercion(|cnstr, st2)> (t2, t1)
+      ; if not(Fail() := c)
+          then if DynT() := t1
+                 then t2* := <map(!DynT(<id>))> t1*
+                    ; t3 := DynT(t2) // workaround for backtracking issue in strj
+                 else if ErrT() := t1
+                   then t2* := <map(!ErrT())> t1*
+                      ; t3 := ErrT() // workaround for backtracking issue in strj
+                   else t2* := t1*
+                      ; t3 := t2 // workaround for backtracking issue in strj
+                 end
+               end
+          else t2* := <map(!ErrT())> trm1*
+             ; t3 := ErrT() // workaround for backtracking issue in strj
+        end
     else if [] := t*
         then <report-Err> (cnstr, UnresolvedConstructor(<length> trm1*, t1))
+           ; t3 := ErrT() // workaround for backtracking issue in strj
+           ; t2* := <map(!ErrT())> trm1*
         else id //<report-Warn> (cnstr, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
+           ; t3 := DynT() // workaround for backtracking issue in strj
+           ; t2* := <map(!DynT())> trm1*
       end
-    ; t3 := ErrT() // workaround for backtracking issue in strj
-    ; t2* := <map(!ErrT())> trm1*
     ; st3 := st1
     end
   ; (trm2*, st4) := <thread-map(insertCasts-StMatchTerm-Type(|e1))> (<zip> (trm1*, t2*), st3)
@@ -153,7 +159,7 @@ insertCasts-StBuildTerm-(|e1, st1):
       ; t2 := t1
     end
   ; (trm2, st3) := <insertCastApp(|t2, t1)> (trm1, st2)
-  ; if DynT() := t2; not(DynT() := t1)
+  ; if DynT() := t2; not(DynT() := t1) <+ ErrT() := t2; not(ErrT() := t1)
       then
         // Strengthen the type of a variable that was previously dynamic
         st4 := <term-put(|v{}, t1)> st3
@@ -211,7 +217,7 @@ insertCasts-StBuildTerm-(|e1, st1):
   with
     t1 := <current-type> st1
   // In a top-level term e.g. in Build(Op(..., ...)) the current term type in DynT().
-;
+  ; 
 //  ; t1* := <constr-lookup-to(|cnstr, <length> trm1*, <unDyn> t1, st1)> e1
 //  ; if [(ConstrType(t2*, t2), st2)] := t1*
 //    then
@@ -228,11 +234,13 @@ insertCasts-StBuildTerm-(|e1, st1):
       else
         if [] := t*
           then <report-Err> (cnstr, UnresolvedConstructor(<length> trm1*, t1))
+             ; t3 := ErrT() // workaround for backtracking issue in strj
+             ; t3* := <map(!ErrT())> trm1*
           else id //<report-Warn> (cnstr, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
+             ; t3 := DynT() // workaround for backtracking issue in strj
+             ; t3* := <map(!DynT())> trm1*
         end
-      ; t3 := ErrT() // workaround for backtracking issue in strj
       ; st4 := st1
-      ; t3* := <map(!ErrT())> trm1*
       end
 //    end
   ; b* := <zip> (trm1*, t3*)

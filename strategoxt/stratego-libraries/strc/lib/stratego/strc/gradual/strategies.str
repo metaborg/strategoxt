@@ -99,11 +99,11 @@ insertCasts-Strategy-(|e1, st1):
     (trm2, st2) := <insertCasts-BuildTerm(|e1, st1)> trm1
   ; t1 := <current-type> st2
   ; (trm3, st3) := <insertCastApp(|t1, StringT())> (trm2, st2)
-  ; s2* := <map-pair-right(|SDyn())> s1*
-  ; t2* := <map-pair-right(|DynT())> t1*
+  ; s2* := <map-pair-right(|SErrT())> s1*
+  ; t2* := <map-pair-right(|ErrT())> t1*
   ; (s3*, st4) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st3)
   ; (t3*, st5) := <thread-map(insertCasts-Targ(|e1))> (t2*, st4)
-  ; st6 := <current-type(|DynT())> st5
+  ; st6 := <current-type(|ErrT())> st5
   ; <report-Err> (c1, CallDynamicNotSupported())
 
 insertCasts-Strategy(|e1, st1):
@@ -113,7 +113,7 @@ insertCasts-Strategy(|e1, st1):
   s@Id() -> (s, st1)
 
 insertCasts-Strategy-(|e1, st1):
-  p@ProceedT(s1*, t1*) -> (call, st6)
+  p@ProceedT(s1*, t1*) -> ('call, st6)
   with
     if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), <length> s1*, <length> t1*)> e1
     then
@@ -122,7 +122,7 @@ insertCasts-Strategy-(|e1, st1):
     ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
     ; (t3*, st3) := <thread-map(insertCasts-Targ(|e1))> (t2*, st2)
     ; st4 := <current-type(|t2)> st3
-    ; (call, st5) := <insertCastBefore(|<current-type> st1, t1)> (<otf(!ProceedT(s3*, t3*))> p, st4)
+    ; ('call, st5) := <insertCastBefore(|<current-type> st1, t1)> (<otf(!ProceedT(s3*, t3*))> p, st4)
     ; st6 := <type-var-clear(|freshvars)> st5
     else
       <report-Err> (p, ProceedInNonExtendStrategy())
@@ -130,12 +130,12 @@ insertCasts-Strategy-(|e1, st1):
     ; t2* := <map-pair-right(|ErrT())> t1*
     ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
     ; (t3*, st3) := <thread-map(insertCasts-Targ(|e1))> (t2*, st2)
-    ; call := ProceedT(s3*, t3*)
+    ; 'call := ProceedT(s3*, t3*)
     ; st6 := <current-type(|ErrT())> st3
     end
 
 insertCasts-Strategy-(|e1, st1):
-  p@ProceedNoArgs() -> (call, st4)
+  p@ProceedNoArgs() -> ('call, st4)
   with
     if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), 0, 0)> e1
     then
@@ -143,19 +143,19 @@ insertCasts-Strategy-(|e1, st1):
         then <report-Err> (p, ProceedWrongNumberOfArguments(<length> st*, <length> tt*))
       end
     ; st2 := <current-type(|t2)> st1
-    ; (call, st3) := <insertCastBefore(|<current-type> st1, t1)> (p, st2)
+    ; ('call, st3) := <insertCastBefore(|<current-type> st1, t1)> (p, st2)
     ; st4 := <type-var-clear(|freshvars)> st3
     else
       <report-Err> (p, ProceedInNonExtendStrategy())
     ; st4 := <current-type(|ErrT())> st1
-    ; call := p
+    ; 'call := p
     end
 
 insertCasts-Strategy-(|e1, st1):
   Match(trm1) -> (<seqs> [Match(trm2) | s2*], st2)
   with
     (trm2, (st2, s*)) := <insertCasts-MatchTerm(|e1, st1)> trm1
-  ; s2* := <?[] <+ ![Where(s*)]> s*
+  ; s2* := <?[] <+ ![Where(<seqs> s*)]> s*
 
 insertCasts-Strategy-(|e1, st1):
   Build(trm1) -> (Build(trm2), st2)
@@ -534,10 +534,12 @@ insertCasts-Strategy-(|e1, st1):
     ; (s2, st5) := <insertCastBefore(|t1, t2)> (<otf(!CongQ(x, s2*))> s1, st4)
     else if [] := t*
         then <report-Err> (x, UnresolvedConstructor(<length> s1*, t1))
+           ; (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, ErrT()))> (s1*, st1)
+           ; st5 := <current-type(|ErrT())> st1
         else <report-Warn> (x, AmbiguousConstructorUse(<map(?ConstrType(_, <id>))> t*))
+           ; (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, DynT()))> (s1*, st1)
+           ; st5 := <current-type(|DynT())> st1
       end
-    ; (s2*, st2) := <thread-map(insertCasts-Sarg-Type(|e1, ErrT()))> (s1*, st1)
-    ; st5 := <current-type(|ErrT())> st1
     ; s2 := CongQ(x, s1*)
     end
 
@@ -653,7 +655,7 @@ insertCasts-Strategy-(|e1, st1):
   ; st4 := <st-merge(LUB <+ !DynT())> (st2, st3)
 
 insertCasts-Strategy-(|e1, st1):
-  p@Proceed(s1*) -> (call, st4)
+  p@Proceed(s1*) -> ('call, st4)
   with
     if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), <length> s1*, 0)> e1
     then
@@ -662,20 +664,20 @@ insertCasts-Strategy-(|e1, st1):
         s2* := <zip> (s1*, st*)
       ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
       ; st3 := <current-type(|t2)> st2
-      ; (call, st4) := <insertCastBefore(|<current-type> st1, t1)> (<otf(!Proceed(s3*))> p, st3)
+      ; ('call, st4) := <insertCastBefore(|<current-type> st1, t1)> (<otf(!Proceed(s3*))> p, st3)
       else
-        <report-Err> (p, ProceedWrongNumberOfArguments(<length> st*, 0))
-      ; s2* := <map-pair-right(|SDyn())> s1*
+        <report-Err> (p, ProceedWrongNumberOfArguments(<length> st*, "0"))
+      ; s2* := <map-pair-right(|SErrT())> s1*
       ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
       ; st4 := <current-type(|ErrT())> st2
-      ; call := Proceed(s3*)
+      ; 'call := Proceed(s3*)
       end
     else
         <report-Err> (p, ProceedInNonExtendStrategy())
       ; s2* := <map-pair-right(|SErrT())> s1*
       ; (s3*, st2) := <thread-map(insertCasts-Sarg(|e1))> (s2*, st1)
       ; st4 := <current-type(|ErrT())> st2
-      ; call := Proceed(s3*)
+      ; 'call := Proceed(s3*)
     end
 
 insertCasts-Strategy-(|e1, st1):

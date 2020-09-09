@@ -79,6 +79,7 @@ insertCasts-StrategyDef-(|e1, st1):
   ; if <eq> (t1, t2)
       <+ <eq> (t2, <type-var-lookup(|tv)> st4)
          ; <not(oncetd(?DynT()))> t2
+      <+ <?ErrT()> t2
       then id
       else <report-Err> (x, MatchNotSpecificEnoughForTP(t2))
     end
