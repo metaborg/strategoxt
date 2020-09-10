@@ -44,19 +44,23 @@ strat-env = ?Env(<id>, _)
 strat-env(s) = Env(s, id)
 
 // Note that this also tries to find a congruence if it fails to find a strategy
-strat-lookup(|name, snum, tnum) =
+strat-lookup(|name, snum, tnum, type) =
   strat-env; immap-get(|(name, snum, tnum))
-strat-lookup(|name, snum, tnum) =
+strat-lookup(|name, snum, tnum, type) =
     where(0 := tnum)
   ; constr-env
   ; imrel-get(|(name, snum))
   ; imset-to-list
   ; not(?[])
-  ; (
-    \[ConstrType(args, sort)] -> FunTType(<map(!FunTType(<id>, <id>))> args, [], sort, sort)\
-    <+ !FunTType(<range;map(!SDyn())> snum, [], DynT(Dyn()), DynT(Dyn()))
-    )
-strat-lookup(|name, snum, tnum) =
+  ; if DynT() := type <+ ErrT() := type
+    then
+      \[ConstrType(args, sort)] -> FunTType(<map(!FunTType(DynT(<id>), DynT(<id>)))> args, [], DynT(sort), DynT(sort))\
+      <+ !FunTType(<range;map(!SDyn())> snum, [], DynT(Dyn()), DynT(Dyn()))
+    else
+      \[ConstrType(args, sort)] -> FunTType(<map(!FunTType(<id>, <id>))> args, [], sort, sort)\
+      <+ !FunTType(<range;map(!SDyn())> snum, [], DynT(Dyn()), DynT(Dyn()))
+    end
+strat-lookup(|name, snum, tnum, type) =
   strat-env; immap-get(|(name, 0, 0)); ?SDyn()
 strat-put(|name, snum, tnum, value) = strat-env(immap-put(|(name, snum, tnum), value))
 strat-merge-env(s): (e, se) -> <strat-env(immap-union(s|se))> e

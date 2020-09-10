@@ -378,11 +378,9 @@ insertCasts-StMatchTerm-(|e1, st1):
     t1 := <current-type> st1
   ; if ListT(t) := <pushDyn> t1
       then t1* := <map(!t)> trm1*
-         ; t2 := ListT(t)
          ; st2 := st1
       else t1* := <map(!DynT())> trm1*
-         ; t2 := ListT()
-         ; (_, st2) := <computeCoercion(|trm, st1)> (t1, t2)
+         ; (_, st2) := <computeCoercion(|trm, st1)> (t1, ListT())
     end
   ; (trm2*, t2*, st3) := <thread-map-Type(insertCasts-StMatchTerm-Type(|e1))> (<zip> (trm1*, t1*), st2)
   ; (trm2, st4) := <insertCasts-StMatchTerm(|e1, <current-type(|t1)> st3)> trm1
@@ -469,7 +467,7 @@ insertCasts-StBuildTerm-ListVar(|e1, t1):
 insertCasts-StBuildTerm-ListVar(|e1, t) = insertCasts-StBuildTerm-Type(|e1, t)
 
 insertCasts-StBuildTerm-(|e1, st1):
-  ListTail(trm1*, trm1) -> (ListTail(trm2*, trm3), st4)
+  ListTail(trm1*, trm1) -> (ListTail(trm2*, trm2), st4)
   with
     t1 := <current-type> st1
   ; t2 := <listType> t1
@@ -480,9 +478,8 @@ insertCasts-StBuildTerm-(|e1, st1):
       then
         t5 := <foldr1(?[<id>], LUB <+ !DynT())> [t*, t4]
       ; st4 := <current-type(|ListT(t5))> st3
-      ; trm3 := trm2
       else
-        (trm3, st4) := <insertCastApp(|t3, ListT())> (trm2, st3)
+        (_, st4) := <computeCoercion(|trm2, st3)> (t3, ListT())
     end
 
 insertCasts-StBuildTerm-(|e1, st1):
@@ -531,7 +528,7 @@ insertCasts-Match-StringQuotedPart(|e1):
 insertCasts-Match-StringQuotedPart-(|e1):
   (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm2), st2)
   with
-    (trm2, st2) := <insertCasts-StMatchTerm(|e1, <current-type(|StringT())> st1)> trm1
+    (trm2, st2) := <insertCasts-StMatchTerm(|e1, <current-type(|DynT(StringT()))> st1)> trm1
 
 insertCasts-Match-StringQuotedPart(|e1) =
   otf22-sugar(
@@ -559,7 +556,7 @@ insertCasts-StBuildTerm-(|e1, st1):
     t1 := StringT()
   ; t2 := <current-type> st1
   ; (_, st2) := <computeCoercion(|trm, st1)> (t1, t2)
-  ; (sqp2*, st3) := <thread-map(insertCasts-Build-StringQuotedPart(|e1))> (sqp1*, <current-type(|StringT())> st2)
+  ; (sqp2*, st3) := <thread-map(insertCasts-Build-StringQuotedPart(|e1))> (sqp1*, <current-type(|DynT(StringT()))> st2)
 
 insertCasts-StBuildTerm(|e1, st1) =
   otf12-sugar(
@@ -593,7 +590,7 @@ insertCasts-Build-StringQuotedPart(|e1):
 insertCasts-Build-StringQuotedPart-(|e1):
   (StringEscape1(p, trm1), st1) -> (StringEscape1(p, trm2), st2)
   with
-    (trm2, st2) := <insertCasts-StBuildTerm(|e1, <current-type(|StringT())> st1)> trm1
+    (trm2, st2) := <insertCasts-StBuildTerm(|e1, <current-type(|DynT(StringT()))> st1)> trm1
 
 insertCasts-Build-StringQuotedPart(|e1) =
   otf22-sugar(

@@ -56,7 +56,7 @@ prepare-strategy-def(|st1):
   ; tvs := <collect(\SortVar(x) -> x where not(<type-var-lookup(|x)> st1)\)> t1
   ; st2 := <foldl(\(tv, st) -> <type-var-put(|tv, SortVar(tv))> st\)> (tvs, st1)
 
-strat-lookup-def(|x, sn, tn, st1) = strat-lookup(|x, sn, tn); prepare-strategy-def(|st1)
+strat-lookup-def(|x, sn, tn, st1) = strat-lookup(|x, sn, tn, ErrT()); prepare-strategy-def(|st1)
 
 strategies // StrategyDef
 

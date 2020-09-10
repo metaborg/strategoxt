@@ -13,8 +13,8 @@ stratego/strc/immutable/set
 
 strategies
 
-strat-lookup-call(register-fresh|x, sn, tn) =
-  strat-lookup(|x, sn, tn);fresh-type-vars(register-fresh)
+strat-lookup-call(register-fresh|x, sn, tn, t) =
+  strat-lookup(|x, sn, tn, t);fresh-type-vars(register-fresh)
 
 strat-lookup-call(|x) =
     strat-env
@@ -36,7 +36,7 @@ insertCasts-Strategy-(|e1, st1):
 insertCasts-Strategy(|e1, st1):
   c1@CallT(SVar(x), s*, t*) -> result
   with
-    if t1 := <strat-lookup-call(?freshvars|x{}, <length> s*, <length> t*)> e1
+    if t1 := <strat-lookup-call(?freshvars|x{}, <length> s*, <length> t*, <current-type> st1)> e1
       then
         (c2, st2) := <insertCasts-CallT(|e1, st1)> (c1, t1)
       ; result := (c2, <type-var-clear(|freshvars)> st2)
@@ -115,7 +115,7 @@ insertCasts-Strategy(|e1, st1):
 insertCasts-Strategy-(|e1, st1):
   p@ProceedT(s1*, t1*) -> ('call, st6)
   with
-    if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), <length> s1*, <length> t1*)> e1
+    if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), <length> s1*, <length> t1*, <current-type> st1)> e1
     then
       s2* := <zip> (s1*, st*)
     ; t2* := <zip> (t1*, tt*)
@@ -137,7 +137,7 @@ insertCasts-Strategy-(|e1, st1):
 insertCasts-Strategy-(|e1, st1):
   p@ProceedNoArgs() -> ('call, st4)
   with
-    if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), 0, 0)> e1
+    if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), 0, 0, <current-type> st1)> e1
     then
       if not([] := st*; [] := tt*)
         then <report-Err> (p, ProceedWrongNumberOfArguments(<length> st*, <length> tt*))
@@ -238,7 +238,7 @@ insertCasts-Sarg-Type(|e1, t):
 insertCasts-Sarg(|e1, st1):
   (c@CallT(v@SVar(x), [], []), t1@FunTType(st*, tt*, _)) -> (s, st3)
   with
-    if t2 := <strat-lookup-call(?freshvars|x{}, 0, 0)> e1
+    if t2 := <strat-lookup-call(?freshvars|x{}, 0, 0, <current-type> st1)> e1
       then
         (s, st2) := <insertCasts-Sarg-CallNoArgs(|st1)> (v, t1, t2)
       ; st3 := <type-var-clear(|freshvars)> st2
@@ -251,7 +251,7 @@ insertCasts-Sarg(|e1, st1):
 insertCasts-Sarg(|e1, st1):
   (c@Call(v@SVar(x), []), t1@FunTType(st*, tt*, _)) -> (s, st3)
   with
-    if t2 := <strat-lookup-call(?freshvars|x{}, 0, 0)> e1
+    if t2 := <strat-lookup-call(?freshvars|x{}, 0, 0, <current-type> st1)> e1
       then
         (s, st2) := <insertCasts-Sarg-CallNoArgs(|st1)> (v, t1, t2)
       ; st3 := <type-var-clear(|freshvars)> st2
@@ -264,7 +264,7 @@ insertCasts-Sarg(|e1, st1):
 insertCasts-Sarg(|e1, st1):
   (c@CallNoArgs(v@SVar(x)), t1@FunTType(st*, tt*, _)) -> (s, st3)
   with
-    if t2 := <strat-lookup-call(?freshvars|x{}, 0, 0)> e1
+    if t2 := <strat-lookup-call(?freshvars|x{}, 0, 0, <current-type> st1)> e1
       then
         (s, st2) := <insertCasts-Sarg-CallNoArgs(|st1)> (v, t1, t2)
       ; st3 := <type-var-clear(|freshvars)> st2
@@ -657,7 +657,7 @@ insertCasts-Strategy-(|e1, st1):
 insertCasts-Strategy-(|e1, st1):
   p@Proceed(s1*) -> ('call, st4)
   with
-    if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), <length> s1*, 0)> e1
+    if FunTType(st*, tt*, t1, t2) := <strat-lookup-call(?freshvars|ProceedNoArgs(), <length> s1*, 0, <current-type> st1)> e1
     then
       if 0 := <length> tt*; <eq> (<length> s1*, <length> st*)
       then
@@ -760,5 +760,5 @@ insertCasts-Strategy(|e1, st1):
 insertCasts-Strategy(|e1, st1):
   s1@ProxyT(sc1*, tc1*, c1, c2, SVar(x)) -> (s1, st1)
   with
-    t1 := <strat-lookup-call(?freshvars|x{}, 0, 0)> e1
+    t1 := <strat-lookup-call(?freshvars|x{}, 0, 0, <current-type> st1)> e1
     // TODO: check that t1 corresponds to the coercions in the ProxyT
