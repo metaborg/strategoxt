@@ -24,7 +24,7 @@ strategies
      : init-current-frame
      ; alltd(declare-frame-of)
      ; where(runtime-defs; alltd(declare-frame-of))
-     ; alltd({?|[ f( a1* | a2* ) = s ]|}; ev)
+     ; alltd({ ?|[ f( a1* | a2* ) = s ]| }; ev)
      |}
 
   runtime-defs = !|[
@@ -96,6 +96,8 @@ strategies
     ; rules( 
         CallIsClosure : 
           |[ f~{t1*}(s*|t2*) ]| -> |[ f~{ApplyClosure(),t1*}(s*|t2*) ]| 
+        CallIsClosure : 
+          ProxyT(s*,t*,i,o,SVar(f{t1*})) -> ProxyT(s*,t*,i,o,SVar(f{ApplyClosure(),t1*}))
       )
 
   escaping-arg :
@@ -134,18 +136,21 @@ strategies
   args-should-be-closures = 
     CallDynamic(id, map(arg-should-be-closure <+ arg-should-be-closure-undeclared), id)
 
-  arg-should-be-closure :
-    |[ f~{Frames(frames)}(|) ]| -> |[ f~{Closure(x),Frames(frames)}(|) ]|
+  arg-should-be-closure = CallT(SVar(arg-should-be-closure-name), ?[], ?[])
+  arg-should-be-closure = ProxyT(id, id, id, id, SVar(arg-should-be-closure-name))
+
+  arg-should-be-closure-name:
+    f{Frames(frames)} -> f{Closure(x),Frames(frames)}
     where x := <conc-strings> (f, "_cl")
-	; rules( 
+  ; rules( 
             Closure.f{} : f{t3*} -> f{Closure(x),t3*} 
-	    // tricky: label should not have annotations, 
+            // tricky: label should not have annotations, 
             // otherwise there is no match
           )
 
-  arg-should-be-closure :
-    |[ f~{Frames(frames),ApplyClosure()}(|) ]| -> 
-    |[ f~{Closure(f{}),Frames(frames)}(|) ]|
+  arg-should-be-closure-name:
+    f{Frames(frames),ApplyClosure()} -> 
+    f{Closure(f{}),Frames(frames)}
 
   arg-should-be-closure-undeclared =
     debug(!"* warning (arg-should-be-closure): not a local function")

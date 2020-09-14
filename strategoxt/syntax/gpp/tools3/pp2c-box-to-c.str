@@ -18,20 +18,20 @@ strategies
   box-to-c(|path): FBOX(_ ,b) -> <box-to-c(|path)> b
   box-to-c(|path): HV(s, b) -> <box-to-c(|path)> V(s, b)
   box-to-c(|path): V(s, b) -> c:stm*|[
-                                push_box(V, ~exp: is, ~exp: vs, ~exp: hs);
+                                push_box(V, ~exp: 'is, ~exp: vs, ~exp: hs);
                                 { ~stm*: stm }
                                 pop_box(); ]|
   where
     <boxes-to-c(|path)> b => stm
-  ; <parse-s-opts> s => (is, vs, hs)
+  ; <parse-s-opts> s => ('is, vs, hs)
 
   box-to-c(|path): H(s, b) -> c:stm*|[
-                                push_box(H, ~exp: is, ~exp: vs, ~exp: hs);
+                                push_box(H, ~exp: 'is, ~exp: vs, ~exp: hs);
                                 { ~stm*: stm }
                                 pop_box(); ]|
   where
     <boxes-to-c(|path)> b => stm
-  ; <parse-s-opts> s => (is, vs, hs)
+  ; <parse-s-opts> s => ('is, vs, hs)
 
   box-to-c(|path): Arg(n) -> c:stm*|[
     {

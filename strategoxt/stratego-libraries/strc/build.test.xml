@@ -89,7 +89,7 @@
 								<arg value="${dep.libsslcompat-lib}" />
 							</strjargs>
 						</strj-workingdir>
-						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
+						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.8" target="1.8" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />
@@ -142,7 +142,7 @@
 								<arg value="${dep.stratego-front}" />
 							</strjargs>
 						</strj-workingdir>
-						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
+						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.8" target="1.8" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
 							<jvmarg value="-Xmx1024m" />

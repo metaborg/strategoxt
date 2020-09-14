@@ -62,11 +62,13 @@
 										<exclude>org/qos/**/*</exclude>
 										<exclude>org/strategoxt/*.class</exclude>
 										<exclude>org/strategoxt/lang/*.class</exclude>
+										<exclude>org/strategoxt/lang/gradual/*.class</exclude>
 										<exclude>org/strategoxt/lang/compat/*.class</exclude>
 										<exclude>org/strategoxt/lang/compat/override/*.class</exclude>
 										<exclude>org/strategoxt/lang/compat/stratego_rtg_compat/**/*</exclude>
 										<exclude>org/strategoxt/lang/compat/strc_compat/**/*</exclude>
 										<exclude>org/strategoxt/lang/parallel/**/*</exclude>
+										<exclude>io/usethesource/capsule/**/*</exclude>
 										<exclude>rx/**/*</exclude>
 									</excludes>
 								</filter>

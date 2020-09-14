@@ -17,6 +17,7 @@ strategies
     <+ afo-scope
     <+ afo-var
     <+ afo-call; all(afo)
+    <+ afo-proxy
     <+ all(afo)
   //); debug(!"afo out: ")
 
@@ -76,6 +77,10 @@ strategies
 
   afo-call :
     |[ f1(s* | t*) ]| -> |[ f2(s* | t*) ]|
+    where f2 := <OffSet> f1
+
+  afo-proxy :
+    ProxyT(s*, t*, i, o, SVar(f1)) -> ProxyT(s*, t*, i, o, SVar(f2))
     where f2 := <OffSet> f1
 
   afo-var :

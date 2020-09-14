@@ -1,0 +1,6 @@
+module Stratego-Gradual-Terms
+imports Stratego-Core-Terms Stratego-Gradual-Signatures
+
+exports
+  context-free syntax
+    Term "::" Type -> Term {cons("TypeAscription")}

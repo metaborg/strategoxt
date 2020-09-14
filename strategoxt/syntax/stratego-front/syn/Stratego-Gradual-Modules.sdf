@@ -1,0 +1,10 @@
+module Stratego-Gradual-Modules
+imports Stratego-Core-Identifiers Stratego-Gradual-Signatures
+
+exports
+  sorts Def
+
+  context-free syntax
+    Id "::" SSimpleFunType                                      -> Def {cons("DefHasTypeNoArgs")}
+    Id "(" {SType ","}* ")" "::" SSimpleFunType                 -> Def {cons("DefHasType")}
+    Id "(" {SType ","}* "|" {Type ","}* ")" "::" SSimpleFunType -> Def {cons("DefHasTType")}

@@ -1,0 +1,376 @@
+module utils
+
+imports
+
+stratego/strc/gradual/signatures
+stratego/strc/gradual/main
+stratego/strc/gradual/environment
+stratego/strc/immutable/map
+stratego/strc/immutable/set
+
+strategies // origin-track-forced
+
+otf(s) = ![<id>]; all(s); ?[<id>]
+
+otf12(s): t1 -> (<otf(!t2)> t1, etc)
+  where (t2, etc) := <s> t1
+
+otf22(s): t@(t1, _) -> (<otf(!t2)> t1, etc)
+  where (t2, etc) := <s> t
+
+otf21(s): t@(t1, _) -> <otf(!t2)> t1
+  where t2 := <s> t
+
+otf31(s): t@(t1, _, _) -> <otf(!t2)> t1
+  where t2 := <s> t
+
+otf32(s): t@(t1, _, _) -> (<otf(!t2)> t1, etc)
+  where (t2, etc) := <s> t
+
+otf12-sugar(desugar, s, resugar): t1 -> t4st
+  where
+    t2 := <otf(desugar)> t1
+  ; t3st := <s> t2
+  ; t4st := <otf12(resugar)> t3st
+
+otf22-sugar(desugar, s, resugar): t1st -> t4st
+  where
+    t2st := <(otf(desugar), id)> t1st
+  ; t3st := <s> t2st
+  ; t4st := <(otf(resugar), id)> t3st
+
+strategies
+
+desugar-SType = otf(\TP() -> FunTType([], [], TP())\)
+desugar-SType = otf(\FunNoArgsType(i, o) -> FunTType([], [], FunNoArgsType(<desugar-Type> i, <desugar-Type> o))\)
+desugar-SType = otf(\FunType(sargs, t) -> FunTType(<map(try(desugar-SType))> sargs, [], <desugar-Type> t)\)
+desugar-SType = otf(?a;FunTType(map(try(desugar-SType)), map(desugar-Type), FunNoArgsType(desugar-Type, desugar-Type));not(?a))
+
+desugar-Type- = otf(\SortVar("string") -> StringT()\)
+desugar-Type- = otf(\SortVar("int") -> IntT()\)
+desugar-Type- = otf(\SortVar("real") -> RealT()\)
+desugar-Type- = otf(\SortNoArgs(x) -> Sort(x, [])\)
+desugar-Type- = otf(?a;Sort(id, map(desugar-Type-));not(?a))
+desugar-Type- = otf(\SortList(xs) -> <foldr(!Sort("Nil",[]), !Sort("Cons",[<Fst>,<Snd>]))> xs\)
+desugar-Type- = otf(\SortListTl(xs, y) -> <foldr(!y, !Sort("Cons",[<Fst>,<Snd>]))> xs\)
+desugar-Type- = otf(\SortTuple(xs) -> TupleT(<map(desugar-Type)> xs)\)
+desugar-Type- = otf(\TupleT(t1, t2) -> TupleT([<desugar-Type> t1 | <map(desugar-Type)> t2])\)
+
+desugar-Type = desugar-Type- <+ id
+
+arityOf-SType: FunTType(st*, tt*, _) -> (<length> st*, <length> tt*)
+
+strategies
+
+TP2tv: Sort(TP(), []){tv} -> SortVar(tv){TP()}
+TP2tv = id
+
+tv2TP: SortVar(tv){TP()} -> Sort(TP(), []){tv}
+tv2TP = id
+
+strategies
+
+unDyn = try(?DynT(<not(?Dyn())>))
+pushDyn = try(\DynT(Sort(x, t*@[_| _])) -> Sort(x, <map(otf(!DynT(<id>)))> t*)\)
+listType: t1 -> t3
+  where if ListT(t2) := <pushDyn> t1
+    then t3 := t2
+    else t3 := DynT()
+  end
+tupleTypes(|n): t1 -> t2*
+  where if TupleT(t1*) := <pushDyn> t1; n := <length> t1*
+    then t2* := t1*
+    else t2* := <copy> (n, DynT())
+  end
+
+strategies
+
+nameOf-StrategyDef-RuleDef: SDefT(name, s*, t*, _) -> (name{}, <length> s*, <length> t*)
+nameOf-StrategyDef-RuleDef: SDef(name, s*, _) -> (name{}, <length> s*, 0)
+nameOf-StrategyDef-RuleDef: SDefNoArgs(name, _) -> (name{}, 0, 0)
+nameOf-StrategyDef-RuleDef: ExtSDefInl(name, s*, t*, _) -> (name{}, <length> s*, <length> t*)
+nameOf-StrategyDef-RuleDef: ExtSDef(name, s*, t*) -> (name{}, <length> s*, <length> t*)
+
+nameOf-StrategyDef-RuleDef: RDefT(name, s*, t*, _) -> (name{}, <length> s*, <length> t*)
+nameOf-StrategyDef-RuleDef: RDef(name, s*, _) -> (name{}, <length> s*, 0)
+nameOf-StrategyDef-RuleDef: RDefNoArgs(name, _) -> (name{}, 0, 0)
+
+nameOf-DefHasType: DefHasType(name, <try(desugar-SType)>) -> (name{}, <length> s*, <length> t*)
+  with ?FunTType(s*, t*, _)
+
+strategies
+
+computeCoercion(|subj, st1): (from1 ,to1) -> <computeCoercion-(|subj, st2)> (from2, to2)
+  with ((from2, to2), st2) :=  <try(CanCoerce)> ((from1, to1), st1)
+
+// This is the mapping from the directed consistency rule (t ~> t) to coercions (t ~> t : c)
+// computeCoercion(|?, St) :: Type * Type -> Coercion
+computeCoercion-(|subj, st1): (from@IllFormedTermT(_, _), DynT(to)) -> (<otf(!Id(){from})> subj, st1)
+  // N.B. We're preventing cascading warnings here on ill-formed terms by not reporting a warning
+  //      If used in a typed position it will still raise an error, and the first place an
+  //      ill-formed term is constructed does get a warning. 
+computeCoercion-(|subj, st1): (from, DynT(Dyn())) -> (<otf(!Id(){from})> subj, st1)
+
+computeCoercion-(|subj, st1): (from, DynT(to)) -> (<otf(!Id(){t})> subj, st2)
+  where
+    ((_, to2), st2) := <CanCoerce> ((<unDyn> from, to), st1)
+    ; t := DynT(to2)
+    <+
+      <report-Warn> (subj, NoInjectionBetween(<itv(|st1)> from, DynT(<itv(|st1)> to)))
+    ; t := from
+    ; st2 := st1
+
+computeCoercion-(|subj, st1): (DynT(Dyn()), to) -> (<otf(!RuntimeCheck(to){to})> subj, st1)
+
+computeCoercion-(|subj, st1): (DynT(from), to1) -> (<otf(!RuntimeCheck(to2){to2})> subj, st2)
+  where
+    ((_, to2), st2) := <CanCoerce> ((from, to1), st1)
+    <+
+      <report-Warn> (subj, NoInjectionBetween(<itv(|st1)> from, <itv(|st1)> to1))
+    ; to2 := to1
+    ; st2 := st1
+
+computeCoercion-(|subj, st1):
+  (from@Sort(x, c1*@[_ | _]), to@Sort(x, c2*@[_ | _])) ->
+    (<otf(!coercion)> subj, st2)
+  where
+    <eq> (<length> c1*, <length> c2*)
+  ; zipped := <zip> (c1*, c2*)
+  ; not(<map(eq)> zipped)
+  ; (coercions, st2) := <thread-map(\(pair, st) -> <computeCoercion(|subj, st)> pair\)> (zipped, st1)
+  ; to2 := <otf(!Sort(x, <map(?_{<id>})> coercions))> to
+  ; if <fetch(?RuntimeCheck(_))> coercions
+      then coercion := RuntimeCheck(to2){to2}
+      else coercion := Id(){to2}
+    end
+
+computeCoercion-(|subj, st1): (from, to) -> (<otf(!coercion)> subj, st2)
+  where if (_, st2) := <CanCoerce> ((from, to), st1)
+    then coercion := Id(){from}
+    else <report-Err> (subj, NoInjectionBetween(<itv(|st1)> from, <itv(|st1)> to))
+       ; coercion := Fail(){ErrT()}
+       ; st2 := st1
+  end
+
+computeSCoercion(|subj): ((from1, to1), st1) -> (scoercion, st2)
+  where
+    ((from2, to2), st2) := <CanCoerceSType> ((from1, to1), st1)
+  ; scoercion := <computeSCoercion-(|subj) <+ !SId()> (from2, to2)
+
+computeSCoercion(|subj): ((from1, to1), st1) -> (SFail(), st1)
+
+// computeSCoercion-(|?) :: (SType, SType) -> SCoercion
+computeSCoercion-(|subj): (from, SErrT()) -> <otf(!SId())> subj
+computeSCoercion-(|subj): (SErrT(), to) -> <otf(!SId())> subj
+computeSCoercion-(|subj): (from, SDyn()) -> <otf(!SId())> subj
+computeSCoercion-(|subj): (from@SDyn(), sft@FunTType(_, _, _)) -> <otf(!SRuntimeCheck(sft))> subj
+
+// Add a cast after the current strategy (in sequence) if necessary to go from `from` to `to`
+// Doesn't insert Cast(Id()). Adds error message when inserting Cast(Fail()).
+insertCastAfter(|from, to): (strat, st1) -> (strat', st2)
+  with
+    (c{t}, st2) := <computeCoercion(|strat, st1)> (from, to)
+  ; 'cast := <otf(!Cast(c{}))> strat
+  ; strat' := <try(rm-redundant-cast)> <otf(!Seq(strat, 'cast))> strat
+
+// Add a cast before the current strategy (in sequence) if necessary to go from `from` to `to`
+// Doesn't insert Cast(Id()). Adds error message when inserting Cast(Fail()). 
+insertCastBefore(|from, to): (strat, st1) -> (strat', st2)
+  with
+    (c{t}, st2) := <computeCoercion(|strat, st1)> (from, to)
+  ; 'cast := <otf(!Cast(c{}))> strat
+  ; strat' := <try(rm-redundant-cast)> <otf(!Seq('cast, strat))> strat
+
+// Add a cast on the current term (the App or `<cast(to)> term`) if necessary to go from `from` to `to`
+// Doesn't insert Cast(Id()). Adds error message when inserting Cast(Fail()). 
+insertCastApp(|from, to): (term1, st1) -> (term2, st3)
+  with
+    (c{t}, st2) := <computeCoercion(|term1, st1)> (from, to)
+  ; 'cast := <otf(!Cast(c{}))> term1
+  ; term2 := <try(rm-redundant-cast)> <otf(!App('cast, term1))> term1
+  ; st3 := <current-type(|t)> st2
+
+// Used to remove Id() casts
+rm-redundant-cast: Seq(Cast(Id()), strat) -> strat
+rm-redundant-cast: Seq(strat, Cast(Id())) -> strat
+rm-redundant-cast: App(Cast(Id()), term) -> term
+
+toBinding-DefHasType: DefHasType(name, stype) -> ((name{}, snum, tnum), stype')
+  with
+    stype' := <try(desugar-SType)> stype
+  ; (snum, tnum) := <arityOf-SType> stype'
+
+toBinding-ExtSDef: d@ExtSDef(name, sargs, targs) ->
+  ( (name{}, <length> sargs, <length> targs)
+  , <otf(!FunTType(
+      <map(otf(toBinding-ExtSDef-Typedid))> sargs
+    , <map(otf(!DynT()))> targs
+    , FunNoArgsType(<otf(!DynT())> d
+                   , <otf(!DynT())> d)))> d)
+toBinding-ExtSDef-Typedid = ?VarDec(_, <toBinding-ExtSDef-ConstType + toBinding-ExtSDef-FunType>)
+toBinding-ExtSDef-Typedid: DefaultVarDec(_) -> SDyn()
+toBinding-ExtSDef-ConstType: ConstType(s) -> DynT()
+toBinding-ExtSDef-FunType: FunType(a*, r) -> SDyn()
+
+strategies // Messages
+
+report-Err: (subj, msg) -> <rules(Message :+= (MTError(), (subj, msg)))>
+report-Warn: (subj, msg) -> <rules(Message :+= (MTWarning(), (subj, msg)))>
+report-Note: (subj, msg) -> <rules(Message :+= (MTNote(), (subj, msg)))>
+
+strategies // Helpers
+
+getDefTypes =
+  map(try(desugar-DefHasType))
+  ; with(
+      map(try(extToNormal))
+    ; (haveTypes, defs) := <partition(nameOf-DefHasType)>
+    ; defNames := <filter(nameOf-StrategyDef-RuleDef);imset-from-list> defs
+      // detect duplicates in haveTypes => errors
+    ; <foldl(getDefTypes-detect-duplicates)> (haveTypes, <imset-new>)
+      // detect missing definitions for haveTypes => errors
+    ; imset-subtract(|defNames)
+    ; imset-map(where({?(name, _, _); <report-Err> (name, MissingDefinitionForTypeDefinition())}))
+  )
+  ; map(try(simpleDef))
+  ; partition(toBinding-DefHasType, toBinding-ExtSDef)
+  ; (immap-from-list, immap-from-list)
+  ; immap-union(keep-left)
+
+getDefTypes-detect-duplicates: (name-arity, set) -> <imset-insert(|name-arity)> set
+  with if <imset-contains(|name-arity)> set
+    then <report-Err> (<Fst> name-arity, DuplicateTypeDefinition())
+  end
+
+extToNormal = ?AnnoDef(_, <extToNormal>)
+extToNormal: ExtSDefInl(n, s, t, b) -> SDefT(n, s, t, b)
+
+simpleDef = ?AnnoDef(_, <simpleDef>)
+simpleDef: ExtSDefInl(n, s, t, _) -> ExtSDef(n, s, t)
+simpleDef: SDefT(n, s, t, _) -> ExtSDef(n, s, t)
+simpleDef: SDef(n, s, _) -> ExtSDef(n, s, [])
+simpleDef: SDefNoArgs(n, _) -> ExtSDef(n, [], [])
+simpleDef: RDefT(n, s, t, _) -> ExtSDef(n, s, t)
+simpleDef: RDef(n, s, _) -> ExtSDef(n, s, [])
+simpleDef: RDefNoArgs(n, _) -> ExtSDef(n, [], [])
+
+desugar-DefHasType:
+  d1@DefHasTypeNoArgs(n, t) -> d2
+  where
+    t1 := <otf(!<desugar-Type> t)> d1
+  ; d2 := <otf(!DefHasType(n, t1))> d1
+desugar-DefHasType:
+  d1@DefHasType(n, s*, t) -> d2
+  where
+    t1 := <otf(!FunTType(<map(try(desugar-SType))> s*, [], <desugar-Type> t))> d1
+  ; d2 := <otf(!DefHasType(n, t1))> d1
+desugar-DefHasType:
+  d1@DefHasTType(n, s*, t*, t) -> d2
+  where
+    t1 := <otf(!FunTType(<map(try(desugar-SType))> s*, <map(desugar-Type)> t*, <desugar-Type> t))> d1
+  ; d2 := <otf(!DefHasType(n, t1))> d1
+
+strategies
+
+thread-map-Type(s): ([], st) -> ([], [], st)
+thread-map-Type(s): (trm1*@[_ | _], st1) -> (trm2*, <reverse> t*, st2)
+  where
+    (trm2*, (st2, t*)) := <thread-map(thread-map-Type-threader(s))> (trm1*, (st1, []))
+
+thread-map-Type-threader(s): (trm1, (st1, t1*)) -> (trm2, (st2, t2*))
+  where
+    (trm2, st2) := <s> (trm1, st1)
+  ; t2* := [<current-type> st2 | t1*]
+
+map-LUB(s): ([], st) -> ([], DynT(), st)
+map-LUB(s): (trm1*@[_ | _], st1) -> (trm2*, t, st2)
+  where
+    (trm2*, [st | st*]) := <unzip(\trm -> <s> (trm, st1)\)> trm1*
+  ; st2 := <foldl(st-merge(LUB <+ !DynT()))> (st*, st)
+  ; t := <foldl(LUB <+ !DynT())> (st*, st)
+
+map-st-LUB(s): ([], st) -> ([], [], st)
+map-st-LUB(s): (trm1*@[_ | _], st1) -> (trm2*, t*, st2)
+  where
+    (trm2*, [st | st*]) := <unzip(\trm -> <s> (trm, st1)\)> trm1*
+  ; st2 := <foldl(st-merge(LUB <+ !DynT()))> (st*, st)
+  ; t* := <map(current-type)> [st | st*]
+
+map-pair-left(|l) = map(split(!l, id))
+map-pair-right(|r) = map(split(id, !r))
+
+internal seqs(|) = foldr1(Hd, \(s1, s2) -> <otf(!Seq(s1, s2))> s1\) <+ !Id()
+
+strategies
+
+def-type-pair: DefHasType(name, t@FunNoArgsType(_, _)) -> ((name, 0, 0), <try(desugar-SType)> t)
+def-type-pair: DefHasType(name, t@FunType(sarg*, _)) -> ((name, <length> sarg*, 0), <try(desugar-SType)> t)
+def-type-pair: DefHasType(name, t@FunTType(sarg*, targ*, _)) ->
+  ((name, <length> sarg*, <length> targ*), <try(desugar-SType)> t)
+
+strategies
+
+extract-constr:
+  OpDecl(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  OpDeclQ(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  OpDecl(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>) <+ ?DynT())> t1*
+
+extract-constr:
+  OpDeclQ(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>) <+ ?DynT())> t1*
+
+// TODO: allow type definition?
+extract-constr:
+  OverlayNoArgs(c, _) -> ((c,0), ConstrType([], DynT()))
+
+extract-constr:
+  Overlay(c, t*, _) -> ((c, <length> t*), ConstrType(<map(!DynT())> t*, DynT()))
+
+extract-constr:
+  ExtOpDecl(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  ExtOpDeclQ(c, ConstType(t1)) -> ((c,0), ConstrType([], t2))
+  with t2 := <desugar-Type> t1
+
+extract-constr:
+  ExtOpDecl(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>) <+ ?DynT())> t1*
+
+extract-constr:
+  ExtOpDeclQ(c, FunType(t1*, ConstType(t1))) -> ((c, <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>) <+ ?DynT())> t1*
+
+extract-constr:
+  ExtOpDeclInj(FunType(t1*@[_, _ | _], ConstType(t1))) -> (("", <length> t1*), ConstrType(t2*, t2))
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>) <+ ?DynT())> t1*
+
+extract-inj:
+  OpDeclInj(FunType([ConstType(from)], ConstType(to))) -> (<desugar-Type> from, <desugar-Type> to)
+
+extract-inj:
+  ExtOpDeclInj(FunType([ConstType(from)], ConstType(to))) -> (<desugar-Type> from, <desugar-Type> to)
+
+extract-inj:
+  OpDeclInj(FunType(t1*@[_, _ | _], ConstType(t1))) -> (TupleT(t2*), t2)
+  with
+    t2 := <desugar-Type> t1
+  ; t2* := <map(?ConstType(<desugar-Type>) <+ ?DynT())> t1*

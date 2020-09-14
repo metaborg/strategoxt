@@ -43,9 +43,9 @@ rules
     appl(p, ts){a*} -> term{c*}
     where
       <get-ast-pattern> p => pattern 
-    ; <map(impl)>ts => is
+    ; <map(impl)>ts => 'is
     ; {| ReplacePlaceholder: 
-        <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })>is
+        <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })> 'is
       ; !pattern
       ; rec rec(
            alltd({ ph, t1, t2, a*, b*, c*:

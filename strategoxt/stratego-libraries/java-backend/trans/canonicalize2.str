@@ -60,9 +60,7 @@ strategies
 
   canonicalize-call-arg2(|prefix) =
     try(id-to-Id <+ fail-to-Fail)
-    //; debug(!"canonicalize-call-arg2(|prefix): ")
     ; (IsClosure; !([],<id>) <+ lift-call-arg2(|prefix))
-    //; debug(!"canonicalized: ")
 
   lift-call-arg2(|prefix) :
     |[ s1 ]| -> ([|[ g~{t*}(|) = s2 ]|], |[ g(|) ]|)

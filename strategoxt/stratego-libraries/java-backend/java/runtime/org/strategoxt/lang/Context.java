@@ -25,6 +25,7 @@ import org.spoofax.interpreter.util.IAsyncCancellable;
 import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
+import org.strategoxt.lang.gradual.TypeInfo;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -52,6 +53,8 @@ public class Context extends StackTracer implements IAsyncCancellable {
 	private ITermFactory factory;
 
 	private transient volatile boolean asyncCancelled;
+
+    public final TypeInfo typeInfo = new TypeInfo();
 
     public Context() {
     	this(new TermFactory());

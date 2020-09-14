@@ -280,9 +280,9 @@
 
 	<target name="build-java" depends="build-stratego">
 		<mkdir dir="${bin.java}" />
-		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
-		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
-		<javac srcdir="java/commandline" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
+		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.8" target="1.8" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
+		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.8" target="1.8" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
+		<javac srcdir="java/commandline" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.8" target="1.8" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 	</target>
 
 	<target name="jar" depends="build-java">

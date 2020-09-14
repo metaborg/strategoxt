@@ -372,7 +372,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	 * (If not invoked, load() ensures lazy initialization.)
 	 */
 	public void init() {
-		if (!registeredLibraries && !loadedJars) {
+		if (!registeredLibraries) {
 			registeredLibraries = true;
 			registerLibraries();
 		}

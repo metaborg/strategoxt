@@ -4,38 +4,41 @@ imports
   Stratego-Core-Constants
 exports
   sorts Sdecl
+
   context-free syntax
-    "sorts" Sort* 		-> Sdecl {cons("Sorts")}
-    "constructors" Opdecl* 	-> Sdecl {cons("Constructors")}
+    "sorts" Sort*          -> Sdecl {cons("Sorts")}
+    "constructors" Opdecl* -> Sdecl {cons("Constructors")}
 
   sorts Sort
+
   context-free syntax
-    LCID 			 -> Sort {cons("SortVar")}
-    UCID 			 -> Sort {cons("SortNoArgs")}
-    Id "(" {Sort ","}* ")" 	 -> Sort {cons("Sort")}
+    LCID                   -> Sort {cons("SortVar")}
+    UCID                   -> Sort {cons("SortNoArgs")}
+    Id "(" {Sort ","}* ")" -> Sort {cons("Sort")}
 
   sorts Opdecl
-  context-free syntax
-    Id     ":" Type 		-> Opdecl {cons("OpDecl")}
-    String ":" Type 		-> Opdecl {cons("OpDeclQ")}
-           ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
   context-free syntax
-    "external" Id     ":" Type 	-> Opdecl {cons("ExtOpDecl")}
-    "external" String ":" Type 	-> Opdecl {cons("ExtOpDeclQ")}
-    "external"        ":" Type 	-> Opdecl {cons("ExtOpDeclInj")}
+    Id ":" OpType                -> Opdecl {cons("OpDecl")}
+    String ":" OpType            -> Opdecl {cons("OpDeclQ")}
+    ":" OpType                   -> Opdecl {cons("OpDeclInj")}
+    "external" Id ":" OpType     -> Opdecl {cons("ExtOpDecl")}
+    "external" String ":" OpType -> Opdecl {cons("ExtOpDeclQ")}
+    "external" ":" OpType        -> Opdecl {cons("ExtOpDeclInj")}
 
-  sorts Type ArgType ConstType FunType RetType
+  sorts OldType OldArgType ConstType FunType RetType OpType
+
   context-free syntax
-    Sort	                -> ConstType {cons("ConstType")}
-    {ArgType "*"}+ "->" RetType -> FunType {cons("FunType")}
-    "(" Type ")"                -> ArgType {bracket}
-    ConstType			-> ArgType
-    Type	                -> RetType
-    FunType			-> RetType {reject}
-
-    FunType			-> Type
-    ConstType			-> Type
+    Sort                            -> ConstType  {cons("ConstType")}
+    {OldArgType "*"}+ "->" RetType  -> FunType    {cons("FunType")}
+    "(" OldType ")"                 -> OldArgType {bracket}
+    ConstType                       -> OldArgType 
+    OldType                         -> RetType    
+    FunType                         -> RetType    {reject}
+    FunType                         -> OldType    
+    ConstType                       -> OldType    
+    ConstType                       -> OpType     
+    {ConstType "*"}+ "->" ConstType -> OpType     {cons("FunType")}
 
   %%%
    %% Restriction is required for the Sort* in Sdecl: List(a) is

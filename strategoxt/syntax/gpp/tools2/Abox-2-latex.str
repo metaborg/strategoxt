@@ -110,18 +110,18 @@ strategies
           ; <toh> b => b'
 
 Abox2latex:
-   V(so, b ) -> VBOX( vs,  is, b' )
+   V(so, b ) -> VBOX( vs,  'is, b' )
    where
       <Vspace>so => vs;
-      <Ispace>so => is;
+      <Ispace>so => 'is;
       <filter(not([]));separate-by(!"\n\n")>b => b'
 
 Abox2latex:
-   HV(so, b ) -> HVBOX( hs, vs, is, b' )
+   HV(so, b ) -> HVBOX( hs, vs, 'is, b' )
    where
       <Hspace>so => hs;
       <Vspace>so => vs;
-      <Ispace>so => is;
+      <Ispace>so => 'is;
       <filter(not([]));separate-by(!"\\ ")>b => b'
 
 Abox2latex:
