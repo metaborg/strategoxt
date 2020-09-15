@@ -1,0 +1,31 @@
+module signatures-sig
+
+// For bootstrapping purposes, should come from the grammar later
+
+
+signature
+  sorts
+    Type SortT Dyn ConstrType
+
+  sorts
+    SType SFunType
+
+  constructors
+    DynT                 : Dyn -> ConstType
+    Dyn                  : Dyn
+    TupleT               : Type * List(Type) -> Type
+    DynT                 : Dyn -> Type
+    StringT              : Type
+    IntT                 : Type
+    RealT                : Type
+                         : SortT -> Type
+    Sort                 : Id * List(Type) -> SortT
+    SortNoArgs           : UCID -> SortT
+    SortVar              : SortVar -> SortT
+    SDyn                 : SType
+                         : SFunType -> SType
+    TP                   : SSimpleFunType
+    FunNoArgsType        : Type * Type -> SSimpleFunType
+                         : SSimpleFunType -> SFunType
+    FunType              : List(SType) * SSimpleFunType -> SFunType
+    FunTType             : List(SType) * List(Type) * SSimpleFunType -> SFunType

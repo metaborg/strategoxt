@@ -69,7 +69,7 @@ exports
 
   sorts Typedid
   context-free syntax
-    ID ":" Type 			  -> Typedid {cons("VarDec")}
+    ID ":" OldType 			  -> Typedid {cons("VarDec")}
 
 
   sorts Strategy SVar StrategyParen StrategyMid 

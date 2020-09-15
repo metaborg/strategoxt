@@ -1,0 +1,43 @@
+module Stratego-Gradual-Signatures
+imports Stratego-Core-Identifiers
+
+exports
+  sorts Type SortT Dyn ConstrType
+
+  context-free syntax
+    Dyn                    -> ConstType {cons("DynT")}
+    "?"                    -> Dyn       {cons("Dyn")}
+    Type "*" {Type "*"}+   -> Type      {cons("TupleT")}
+    Dyn                    -> Type      {cons("DynT")}
+    "string"               -> Type      {cons("StringT")}
+    "int"                  -> Type      {cons("IntT")}
+    "real"                 -> Type      {cons("RealT")}
+    "(" Type ")"           -> Type      {bracket}
+    SortT                  -> Type      
+    Id "(" {Type ","}* ")" -> SortT     {cons("Sort")}
+    UCID                   -> SortT     {cons("SortNoArgs")}
+    SortVar                -> SortT     {cons("SortVar")}
+
+  context-free priorities
+    Type "*" {Type "*"}+ -> Type
+    <0> . >
+    Type "*" {Type "*"}+ -> Type
+    ,
+    Type -> {Type "*"}+
+    <0> . >
+    Type "*" {Type "*"}+ -> Type
+    ,
+    {Type "*"}+ "*" Type -> {Type "*"}+
+    <2> . >
+    Type "*" {Type "*"}+ -> Type
+
+  sorts SType SFunType
+
+  context-free syntax
+    "?"                                                 -> SType          {cons("SDyn")}
+    SFunType                                            -> SType          
+    "TP"                                                -> SSimpleFunType {cons("TP")}
+    Type "->" Type                                      -> SSimpleFunType {cons("FunNoArgsType")}
+    SSimpleFunType                                      -> SFunType       
+    "(" {SType ","}* ")" SSimpleFunType                 -> SFunType       {cons("FunType")}
+    "(" {SType ","}* "|" {Type ","}* ")" SSimpleFunType -> SFunType       {cons("FunTType")}

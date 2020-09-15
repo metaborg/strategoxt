@@ -12,11 +12,11 @@ imports libstratego-lib Stratego-Sugar
 
 strategies
 
-  seqs = 
-    foldr(!Id(), \ (s1, s2) -> Seq(s1, s2) \ )
+  seqs =
+    \[] -> Id()\ <+ foldr1(Hd, \(s1, s2) -> Seq(s1, s2)\)
 
   lchoices = 
-    foldr(!Fail(), \ (s1, s2) -> LChoice(s1, s2) \ )
+    \[] -> Fail()\ <+ foldr1(Hd, \(s1, s2) -> LChoice(s1, s2)\)
 
 strategies
 
@@ -31,6 +31,7 @@ rules
   IsVar  : Var(x) -> x
   IsSVar : Call(SVar(x), []) -> x
   IsSVar : CallT(SVar(x), [], []) -> x
+  IsSVar : ProxyT(_, _, _, _, SVar(x)) -> x
   MkCall : x -> CallT(SVar(x), [], [])
 
 strategies
@@ -216,14 +217,14 @@ strategies
 // This should be in libstratego-lib, strategy/general/rename; but it's too much effort to bootstrap
 rules
 
-  RnBinding(bndvrs, paste : (term -> vars) * term -> term, newvar : term -> term) :
+  internal RnBinding(bndvrs, paste : (term -> vars) * term -> term, newvar : term -> term) :
     (t, env1) -> (<paste(!ys)> t, env1, env2)
     where <bndvrs> t => xs; map(newvar) => ys;
           <conc>(<zip(id)>(xs,ys), env1) => env2
 
 strategies
 
-  rename(isvar : (name -> env) * name -> term
+  internal rename(isvar : (name -> env) * name -> term
         , bndvars
         , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term
         , paste : (term -> vars) * term -> term

@@ -3,6 +3,9 @@ imports
   collection/hash-table/common
   collection/hash-table/nested
   collection/hash-table/scoped-finite-map
+  collection/immutable/map
+  collection/immutable/rel
+  collection/immutable/set
   collection/list/bag
   collection/list/common
   collection/list/cons

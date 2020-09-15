@@ -1,0 +1,22 @@
+module strategies-sig
+
+// For bootstrapping purposes, should come from the grammar later
+
+
+signature
+  sorts
+    Strategy Coercion Proxy
+
+  constructors
+    Cast                : Coercion -> Strategy
+    TypeTest            : Type -> Strategy
+    Fail                : Coercion
+    Id                  : Coercion
+    RuntimeCheck        : Type -> Coercion
+    SFail               : SCoercion
+    SId                 : SCoercion
+    SRuntimeCheck       : SType -> SCoercion
+    TypedId             : SortT * Id -> TypedId
+                        : Proxy -> Strategy
+    Proxy               : Coercion * Coercion * SVar -> Proxy
+    ProxyT              : List(SCoercion) * List(Coercion) * Coercion * Coercion * SVar -> Proxy

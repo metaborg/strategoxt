@@ -94,12 +94,12 @@ rules
     SuperDec(c) -> <java-to-string-all> [" extends ", c]
 
   java-to-string:
-    ImplementsDec(is) -> <java-to-string-all> [" implements " | interfaces]
-    with  <sep-by-comma> is; ?interfaces
+    ImplementsDec('is) -> <java-to-string-all> [" implements " | interfaces]
+    with  <sep-by-comma> 'is; ?interfaces
 
   java-to-string:
-    ExtendsInterfaces(is) -> <java-to-string-all> [" extends " | interfaces]
-    with  <sep-by-comma> is; ?interfaces
+    ExtendsInterfaces('is) -> <java-to-string-all> [" extends " | interfaces]
+    with  <sep-by-comma> 'is; ?interfaces
 
 rules
 

@@ -1,0 +1,7 @@
+module Stratego-Gradual
+
+imports
+  Stratego-Gradual-Modules
+  Stratego-Gradual-Signatures
+  Stratego-Gradual-Strategies
+  Stratego-Gradual-Terms

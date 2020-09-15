@@ -1,0 +1,307 @@
+/**
+ * This module contains strategies for operating on immutable binary relations.
+ *
+ * Note that these relations do not support generic traversal. These are "blob" terms without children
+ * and need to be operated on through the strategies in this module. 
+ *
+ * @author Jeff Smits <mail@jeffsmits.net>
+ *
+ */
+module rel
+imports
+  stratego/strc/immutable/set
+
+signature
+  constructors
+    /**
+     * Represents a reference to a Set
+     */
+    ImmutableRelation : ImplDep -> ImmutableRelation
+
+/**
+ * Immutable relation construction and deconstruction
+ */
+strategies
+
+/**
+ * Create an empty immutable relation.
+ *
+ * @type _ -> ImmutableRelation
+ */
+internal imrel-new = prim("SSL_immutable_relation"); !ImmutableRelation(<id>)
+
+/**
+ * Create an immutable relation from a list of pairs.
+ *
+ * @type List -> ImmutableRelation
+ */
+internal imrel-from-list = prim("SSL_immutable_relation_from_list"); !ImmutableRelation(<id>)
+
+/**
+ * Turn the immutable relation into a list of pairs.
+ *
+ * @type ImmutableRelation -> List
+ */
+internal imrel-to-list = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_list")
+
+/**
+ * Turn the immutable relation into a map.
+ * For pairs with the same key, the values are merged with the second parameter. 
+ *
+ * @type ImmutableRelation -> ImmutableMap
+ */
+internal imrel-to-map(merge) = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_map", merge|)
+
+/**
+ * Turn the immutable relation into a list of pairs.
+ *
+ * @type ImmutableRelation -> List
+ */
+internal imrel-pairs = imrel-to-list
+
+/**
+ * Turn the immutable relation into a set of pairs.
+ *
+ * @type ImmutableRelation -> ImmutableSet
+ */
+internal imrel-pairs-imset = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_set"); !ImmutableSet(<id>)
+
+/**
+ * Get all keys of the immutable relation.
+ *
+ * @type ImmutableRelation -> List
+ */
+internal imrel-keys = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_keys")
+
+/**
+ * Get all keys of the immutable relation as an immutable set.
+ *
+ * @type ImmutableRelation -> List
+ */
+internal imrel-keys-imset = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_keys_set"); !ImmutableSet(<id>)
+
+/**
+ * Get all values of the immutable relation.
+ *
+ * @type ImmutableRelation -> List
+ */
+internal imrel-values = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_values")
+
+/**
+ * Get all values of the immutable relation.
+ *
+ * @type ImmutableRelation -> ImmutableSet
+ */
+internal imrel-values-imset = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_values_set"); !ImmutableSet(<id>)
+
+/**
+ * Take the transitive closure of the relation.
+ *
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-transitive-closure = ImmutableRelation(prim("SSL_immutable_relation_transitive_closure"))
+
+/**
+ * Take the reflexive transitive closure of the relation.
+ *
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-reflexive-transitive-closure =
+  ImmutableRelation(prim("SSL_immutable_relation_reflexive_transitive_closure"))
+
+/**
+ * Invert the relation (swap all the pairs).
+ *
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-invert =
+  ImmutableRelation(prim("SSL_immutable_relation_inverse"))
+
+/**
+ * Elemental operations
+ */
+strategies
+
+/**
+ * Succeeds if the given immutable relation is empty.
+ *
+ * @type ImmutableRelation -?> ImmutableRelation
+ */
+internal imrel-empty = equal(|<imrel-new>)
+
+/**
+ * Succeeds if the key is in the immutable relation.
+ *
+ * @param k - the key
+ * @type ImmutableRelation -?> ImmutableRelation
+ */
+internal imrel-contains-key(|k) = where(imrel-get(|k))
+
+/**
+ * Succeeds if the key is in the immutable relation.
+ *
+ * @param k - the key
+ * @type ImmutableRelation -?> ImmutableRelation
+ */
+internal imrel-contains(|k, v) = ImmutableRelation(prim("SSL_immutable_relation_contains", k, v))
+
+/**
+ * Returns the associated value of the key in the immutable relation,
+ * or fails if the key is not in the immutable relation. 
+ *
+ * @param e - the key used to look up the value
+ * @type ImmutableRelation -?> ImmutableSet
+ */
+internal imrel-get(|k) = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_get", k); !ImmutableSet(<id>)
+
+/**
+ * Inserts an element in the immutable relation. Returns a new relation with the added element.
+ *
+ * @param e - the element that is inserted
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-insert(|k, v) = ImmutableRelation(prim("SSL_immutable_relation_insert", k, v))
+
+/**
+ * Removes an element in the immutable relation. Returns a new relation without the removed element.
+ *
+ * @param e - the element that is removed
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-remove(|k) = ImmutableRelation(prim("SSL_immutable_relation_remove", k))
+
+/**
+ * Higher-order operations
+ */
+strategies
+
+/**
+ * Remove all pairs from the immutable relation for which the filter strategy fails.
+ * Returns a new immutable relation without the removed pairs.
+ *
+ * @param s: Term * Term -?> Term * Term
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-filter(s) = ImmutableRelation(prim("SSL_immutable_relation_filter", s|))
+
+/**
+ * Remove all pairs from the immutable relation for which the filter strategy fails on the key.
+ * Returns a new immutable relation without the removed pairs.
+ *
+ * @param s: Term -?> Term
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-filter-keys(s) = imrel-filter((s, id))
+
+/**
+ * Remove all pairs from the immutable relation for which the filter strategy fails on the value.
+ * Returns a new immutable relation without the removed pairs.
+ *
+ * @param s: Term -?> Term
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-filter-values(s) = imrel-filter((id, s))
+
+/**
+ * Map all pairs from the immutable relation.
+ * Returns a new immutable relation with the mapped pairs.
+ *
+ * @param s: Term * Term -?> Term * Term
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-map(s) = ImmutableRelation(prim("SSL_immutable_relation_map", s|))
+
+/**
+ * Map all keys from the immutable relation.
+ * Returns a new immutable relation with the mapped keys.
+ *
+ * @param s: Term -> Term
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-map-keys(s) = imrel-map((s, id))
+
+/**
+ * Map all values from the immutable relation.
+ * Returns a new immutable relation with the mapped values.
+ *
+ * @param s: Term -> Term
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-map-values(s) = imrel-map((id, s))
+
+/**
+ * Combining operations
+ */
+strategies
+
+/**
+ * Compose with another immutable relation.
+ * Returns a new immutable relation with all pairs (x,z) where there is a y such that (x,y) in this
+ * and (y,z) in other.
+ *
+ * @param other: ImmutableRelation
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-compose(|r) =  where(ImmutableRelation(other) := r);
+  ImmutableRelation(prim("SSL_immutable_relation_compose", other))
+
+/**
+ * Intersect with another immutable relation.
+ * Returns a new immutable relation with the pairs that are in both relations.
+ *
+ * @param other: ImmutableRelation
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-intersect(|r) = where(ImmutableRelation(other) := r);
+  ImmutableRelation(prim("SSL_immutable_relation_intersect", other))
+
+/**
+ * Intersect two immutable relations.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new immutable relation with the intersection.
+ *
+ * @param m: Term * Term -> Term
+ * @type ImmutableRelation * ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-intersect =
+  ?(l, r); <imrel-intersect(|r)> l
+
+/**
+ * Subtract another immutable relation from the given one.
+ * Returns a new immutable relation without the pairs in the other immutable relation.
+ *
+ * @param other: ImmutableRelation - the relation to remove from the current term immutable relation
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-subtract(|r) = where(ImmutableRelation(other) := r);
+  ImmutableRelation(prim("SSL_immutable_relation_subtract", other))
+
+/**
+ * Subtract the right immutable relation from the left.
+ * Returns a new immutable relation without the pairs in the other immutable relation.
+ *
+ * @type ImmutableRelation * ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-subtract =
+  ?(l, r); <imrel-subtract(|r)> l
+
+/**
+ * Union with another immutable relation.
+ * Returns a new relation with the union of the pairs in the two relation.
+ *
+ * @param other: ImmutableRelation - the relation to remove from the current term immutable relation
+ * @type ImmutableRelation -> ImmutableRelation
+ */
+internal imrel-union(|r) = where(ImmutableRelation(other) := r);
+  ImmutableRelation(prim("SSL_immutable_relation_union", other))
+
+/**
+ * Union two immutable relations.
+ * The given strategy merges the values of the intersecting keys.
+ * Returns a new relation with the union.
+ *
+ * @param m: Term * Term -> Term
+ * @type ImmutableRelation * ImmutableSet -> ImmutableRelation
+ */
+internal imrel-union =
+  ?(l, r); <imrel-union(|r)> l

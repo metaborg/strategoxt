@@ -16,8 +16,8 @@ exports
               "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
     "Constr"  "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
 
-              "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
-    "Type"    "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" OldType   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Type"    "|[" OldType   "]|" -> StrategoTerm {cons("ToTerm")}
 
     "Decl"    "|[" Decl  "]|" -> StrategoTerm {cons("ToTerm")}
     "Decl*"   "|[" Decl* "]|" -> StrategoTerm {cons("ToTerm")}
@@ -80,7 +80,7 @@ exports
     "~*"  StrategoTerm -> Def*      {cons("FromTerm")}
 
     "~*"  StrategoTerm -> Opdecl*      {cons("FromTerm")}
-    "~*"  StrategoTerm -> {Type "*"}+  {cons("FromTerm")}
+    "~*"  StrategoTerm -> {OldType "*"}+  {cons("FromTerm")}
 
     "~*"          StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}
     "~typed-id*:" StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}
@@ -132,8 +132,8 @@ exports
     "a" "_" [A-Za-z0-9\'\-\_]+     -> Typedid {prefer}
     "a" "_" [A-Za-z0-9\'\-\_]+ "*" -> {Typedid ","}+ {prefer}
 
-    "tp"[0-9\']*          -> Type 
-    "tp"[0-9\']*  "*"     -> {Type "*"}+  
+    "tp"[0-9\']*          -> OldType 
+    "tp"[0-9\']*  "*"     -> {OldType "*"}+  
 
     "srt" [0-9\']*        -> Sort         {prefer}
     "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}

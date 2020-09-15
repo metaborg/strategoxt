@@ -8,9 +8,9 @@ strategies
  /**
   * Maps a strategy over an optional term.
   */
- map-opt(s) = ?Some(x) < Some(<s> x) + ?None()
+ map-opt(s) = ?None() <+ Some(s)
 
  /**
   * Filters a strategy over an optional term.
   */
- filter-opt(s) = Some(s) <+ !None()
+ filter-opt(s) = ?None() <+ ?Some(<id>); (s; !Some(<id>) <+ !None())

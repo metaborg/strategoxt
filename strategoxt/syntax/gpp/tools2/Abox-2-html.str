@@ -81,9 +81,9 @@ Abox2html:
    V(so, b ) -> [TDTD(), TABLE([],s)]
    where
       <Vspace>so => vs;
-      <Ispace>so => is;
+      <Ispace>so => 'is;
       <filter(not([]))>b;
-      [tov(!"")|map(tov(!is))];
+      [tov(!"")|map(tov(!'is))];
       separate-by(!vs) => s
 
 // Box HV operator
@@ -158,14 +158,14 @@ strategies
    ; Hspace
    ; (?[] <+ !TD([], <id>))
 
-  tov(is) =
+  tov('is) =
    (
    L(id,id)
    <+
    LNAT(id,id)
    <+
    ?b;
-   !TABLE([],[TR(["valign=\"top\""],[<is>(), TD([],[b])])])
+   !TABLE([],[TR(["valign=\"top\""],[<'is>(), TD([],[b])])])
    ) => s;
    !TR(["valign=\"top\""],[TD([],[s])])
 

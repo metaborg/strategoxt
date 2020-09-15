@@ -11,6 +11,7 @@ imports
   stratego/strc/lib/stratlib
   stratego/strc/front/DefaultStrat
   stratego/strc/front/desugar-string-quotations
+  stratego/strc/gradual/utils
 
 signature
 	constructors
@@ -96,7 +97,7 @@ rules // Lift non-variable arguments to primitives.
   LiftPrimArg :
     t -> ([x], (Where(Seq(Build(t), Match(Var(x)))), Var(x)))
     where <not(Var(id))> t
-        ; x := <tnewvar> "prim_arg_m"
+        ; x := <tnewvar> "arg_m"
 
 
 /*
@@ -324,9 +325,12 @@ rules
   match-term-r: (t, n) -> WhereClause(Assign(t, Var(n))) where <not(?Var(_))>t
   seqs(|s) = foldr(!s, MkSeq)
 
-  
-  
-  
+  Desugar:
+    DefHasType(f, sfuntype) -> DefHasType(f, <desugar-SType> sfuntype)
+
+  Desugar:
+    Let(sdef*, body) -> Let(sdef'*, body)
+  where ([_ | _], sdef'*) := <partition(?DefHasType(_, _))> sdef*
 
 // dynamic rules
 
@@ -680,7 +684,8 @@ rules // varyadic operators
 
   MkSeq : (s1, s2) -> Seq(s1, s2)
 
-  seqs = foldr(!Id(), MkSeq)
+  // defined in stratlib (slightly smarter with foldr1)
+  // seqs = foldr(!Id(), MkSeq)
 
 
 rules // variable declarations

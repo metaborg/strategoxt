@@ -10,6 +10,7 @@ imports
   Stratego-Sugar-Rules
   Stratego-Sugar-DynamicRules
   Stratego-Sugar-Overlays
+  Stratego-Gradual
 
 hiddens
   context-free start-symbols Module
