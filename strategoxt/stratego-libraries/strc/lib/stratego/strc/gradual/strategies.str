@@ -463,25 +463,19 @@ insertCasts-Strategy-(|e1, st1):
   Where(s1) -> (Where(s2), st3)
   with
     (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
-  ; st3 := <current-type(|st1)> st2
+  ; st3 := <current-type-of(|st1)> st2
 
 insertCasts-Strategy-(|e1, st1):
   With(s1) -> (With(s2), st3)
   with
     (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
-  ; st3 := <current-type(|st1)> st2
+  ; st3 := <current-type-of(|st1)> st2
 
 insertCasts-Strategy-(|e1, st1):
   Test(s1) -> (Test(s2), st3)
   with
     (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
-  ; st3 := <current-type(|st1)> st2
-
-insertCasts-Strategy-(|e1, st1):
-  Test(s1) -> (Test(s2), st3)
-  with
-    (s2, st2) := <insertCasts-Strategy(|e1, st1)> s1
-  ; st3 := <current-type(|st1)> st2
+  ; st3 := <current-type-of(|st1)> st2
 
 insertCasts-Strategy(|e1, st1):
   s@PrimNoArgs(_) -> (s, <current-type(|DynT())> st1)
