@@ -135,7 +135,7 @@ internal imrel-empty = equal(|<imrel-new>)
  * @param k - the key
  * @type ImmutableRelation -?> ImmutableRelation
  */
-internal imrel-contains-key(|k) = where(imrel-get(|k))
+internal imrel-contains-key(|k) = where(imrel-get(|k);not(imset-empty))
 
 /**
  * Succeeds if the key is in the immutable relation.
