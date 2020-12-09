@@ -55,16 +55,6 @@ strategies
          )
     end
   ; Specification(map(try(Strategies(![<joindefs>]))))
-    // We need to rename strategy calls that were given arity _0_0, if the strategy was
-    //  not overloaded in arity and had a different arity. If so the packing tool added
-    //  the renaming information in the annotations as pairs.
-  ; where(amb-strat-map := <get-annos>)
-  ; if not(<?[]> amb-strat-map)
-    then bottomup(try(
-      CallT(id, map(try(
-        CallT(SVar(\n -> <lookup> (n, amb-strat-map)\), ?[], ?[])
-      )), id)))
-    end
   ; strc-optimize
   ; s2j
   ; with(clean-output-dir)
@@ -113,35 +103,9 @@ strategies
       )
     end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
-  ; if <get-config> "--single-strategy" + <get-config> "--boilerplate"
-      then
-        where(amb-strat-map := <get-annos>)
-      ; dr-scope-all-verbose(
-          m-transform-no-overlays(id
-            ; m-transform-overlays(id
-              ; DeclareExpandOverlay
-            )
-
-            ; m-transform-local-defs(id
-              ; joindefs
-              ; expand-overlays-in-def
-              // We need to rename strategy calls that were given arity _0_0, if the strategy was
-              //  not overloaded in arity and had a different arity. If so the packing tool added
-              //  the renaming information in the annotations as pairs. 
-              ; bottomup(try(
-                  CallT(id, map(try(
-                    CallT(SVar(\n -> <lookup> (n, amb-strat-map)\), ?[], ?[])
-                  )), id)))
-              ; ![<id>]
-            )
-          )
-        )
-    end
   ; strc-optimize
-  ; if not(<get-config> "--single-strategy")
-      then strc-export-external-defs
-         ; strc-output-frontend
-    end
+  ; strc-export-external-defs
+  ; strc-output-frontend
   ; s2j
   ; with(clean-output-dir)
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
