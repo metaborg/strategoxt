@@ -304,45 +304,66 @@ insertCasts-Sarg(|e1, st1):
     end
 
 insertCasts-Sarg(|e1, st1):
-  (c@CallT(v@SVar(x), [], []), SDyn()) -> (c, st2)
+  (c1@CallT(SVar(x), [], []), SDyn()) -> (c2, st2)
   with
     switch <strat-lookup-call(|x{})> e1
       case ?[]:
         <report-Err> (x, UnresolvedStrategy("0", "0"))
       ; st2 := <current-type(|ErrT())> st1
+      ; c2 := c1
       case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
         <report-Err> (x, AmbiguousStrategyResolution(st*))
       ; st2 := <current-type(|ErrT())> st1
+      ; c2 := c1
+      case ?[FunTType(st*, tt*, _)]:
+        st2 := st1
+      ; a := AmbiguousStrategyResolution(<length> st*, <length> tt*)
+      ; c2 := <CallT(add-annotation(|a), id, id)> c1
       otherwise:
         st2 := st1
+      ; c2 := c1
     end
 
 insertCasts-Sarg(|e1, st1):
-  (c@Call(v@SVar(x), []), SDyn()) -> (c, st2)
+  (c1@Call(v@SVar(x), []), SDyn()) -> (c2, st2)
   with
     switch <strat-lookup-call(|x{})> e1
       case ?[]:
         <report-Err> (x, UnresolvedStrategy("0", "0"))
       ; st2 := <current-type(|ErrT())> st1
+      ; c2 := c1
       case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
         <report-Err> (x, AmbiguousStrategyResolution(st*))
       ; st2 := <current-type(|ErrT())> st1
+      ; c2 := c1
+      case ?[FunTType(st*, tt*, _)]:
+        st2 := st1
+      ; a := AmbiguousStrategyResolution(<length> st*, <length> tt*)
+      ; c2 := <Call(add-annotation(|a), id)> c1
       otherwise:
         st2 := st1
+      ; c2 := c1
     end
 
 insertCasts-Sarg(|e1, st1):
-  (c@CallNoArgs(v@SVar(x)), SDyn()) -> (c, st2)
+  (c1@CallNoArgs(v@SVar(x)), SDyn()) -> (c2, st2)
   with
     switch <strat-lookup-call(|x{})> e1
       case ?[]:
         <report-Err> (x, UnresolvedStrategy("0", "0"))
       ; st2 := <current-type(|ErrT())> st1
+      ; c2 := c1
       case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
         <report-Err> (x, AmbiguousStrategyResolution(st*))
       ; st2 := <current-type(|ErrT())> st1
+      ; c2 := c1
+      case ?[FunTType(st*, tt*, _)]:
+        st2 := st1
+      ; a := AmbiguousStrategyResolution(<length> st*, <length> tt*)
+      ; c2 := <CallNoArgs(add-annotation(|a))> c1
       otherwise:
         st2 := st1
+      ; c2 := c1
     end
 
 insertCasts-Sarg(|e1, st1):
@@ -361,11 +382,12 @@ insertCasts-Sarg-CallNoArgs(|st1) = otf32(insertCasts-Sarg-CallNoArgs-(|st1))
  */
 insertCasts-Sarg-CallNoArgs-(|st1):
   (v, t1@FunTType(st1*, tt1*, t2, t3), t4@FunTType(st2*, tt2*, t5, t6)) ->
-    (<rm-redundant-proxy> ProxyT(sc*, tc*, c1, c2, v), st5)
+    (<rm-redundant-proxy> ProxyT(sc*, tc*, c1, c2, <add-annotation(|a)> v), st5)
   with
     if not(<eq> (<length> st1*, <length> st2*); <eq> (<length> tt1*, <length> tt2*))
       then <report-Err> (v, TypeMismatch(t1, t4))
     end
+  ; a := AmbiguousStrategyResolution(<length> st1*, <length> tt1*)
   ; (sc*, st2) := <thread-map(computeSCoercion(|v))> (<zip> (st1*, st2*), st1)
   ; (tc*, st3) := <thread-map(\(tp, st) -> <computeCoercion(|v, st)> tp\)> (<zip> (tt1*, tt2*), st2)
   ; (c1, st4) := <computeCoercion(|v, st3)> (t2, t5)
@@ -373,11 +395,12 @@ insertCasts-Sarg-CallNoArgs-(|st1):
 
 insertCasts-Sarg-CallNoArgs-(|st1):
   (v, t1@FunTType(st1*, tt1*, TP()), t4@FunTType(st2*, tt2*, TP())) ->
-    (<rm-redundant-proxy> ProxyT(sc*, tc*, Id(), Id(), v), st3)
+    (<rm-redundant-proxy> ProxyT(sc*, tc*, Id(), Id(), <add-annotation(|a)> v), st3)
   with
     if not(<eq> (<length> st1*, <length> st2*); <eq> (<length> tt1*, <length> tt2*))
       then <report-Err> (v, TypeMismatch(t1, t4))
     end
+  ; a := AmbiguousStrategyResolution(<length> st1*, <length> tt1*)
   ; (sc*, st2) := <thread-map(computeSCoercion(|v))> (<zip> (st1*, st2*), st1)
   ; (tc*, st3) := <thread-map(\(tp, st) -> <computeCoercion(|v, st)> tp\)> (<zip> (tt1*, tt2*), st2)
 
