@@ -94,6 +94,7 @@ nameOf-StrategyDef-RuleDef: ExtSDef(name, s*, t*) -> (name{}, <length> s*, <leng
 nameOf-StrategyDef-RuleDef: RDefT(name, s*, t*, _) -> (name{}, <length> s*, <length> t*)
 nameOf-StrategyDef-RuleDef: RDef(name, s*, _) -> (name{}, <length> s*, 0)
 nameOf-StrategyDef-RuleDef: RDefNoArgs(name, _) -> (name{}, 0, 0)
+nameOf-StrategyDef-RuleDef: RDefP(name, s*, t*, _) -> (name{}, <length> s*, <length> t*)
 
 nameOf-DefHasType: DefHasType(name, <try(desugar-SType)>) -> (name{}, <length> s*, <length> t*)
   with ?FunTType(s*, t*, _)
@@ -220,15 +221,37 @@ report-Note: (subj, msg) -> <rules(Message :+= (MTNote(), (subj, msg)))>
 
 strategies // Helpers
 
-getDefTypes =
+getDefTypes(|internals, externals) =
   map(try(desugar-DefHasType))
   ; with(
-      map(try(extToNormal))
-    ; (haveTypes, defs) := <partition(nameOf-DefHasType)>
-    ; defNames := <filter(nameOf-StrategyDef-RuleDef);imset-from-list> defs
-      // detect duplicates in haveTypes => errors
-    ; <foldl(getDefTypes-detect-duplicates)> (haveTypes, <imset-new>)
-      // detect missing definitions for haveTypes => errors
+      (defHasTypes, defs) := <partition(try(?AnnoDef(_, <id>)); ?DefHasType(_, _))>
+    ; defNames := <filter(try(extToNormal); nameOf-StrategyDef-RuleDef);imset-from-list> defs
+    ; <list-loop(/* \ExtSDef(n, s, t) -> // external def
+                     <id>\
+                <+ AnnoDef(getfirst(?Internal()), simpleDef;\ExtSDef(n, s, t) -> // internal def
+                     <id>\)
+                <+ */
+                AnnoDef(getfirst(?Override()), simpleDef;\ExtSDef(n, s, t) -> // override def
+                     <if <not(imset-contains(|(n,s,t)))> externals
+                        then <report-Err> (n, OverrideDefinitionWithoutExternal())
+                      end>\)
+                <+ AnnoDef(getfirst(?Extend()), simpleDef;\ExtSDef(n, s, t) -> // extend def
+                     <if <not(imset-contains(|(n,s,t)))> externals
+                        then <report-Err> (n, ExtendDefinitionWithoutExternal())
+                      end>\)
+                <+ ?ExtSDefInl(_, _, _, _)
+                <+ simpleDef;\ExtSDef(n, s, t) -> // normal def
+                     <if <imset-contains(|(n,s,t))> externals
+                        then <report-Err> (n, NormalDefinitionOverlapsWithExternal())
+                        else if <imset-contains(|(n,s,t))> internals
+                          then <report-Err> (n, NormalDefinitionOverlapsWithInternal())
+                        end
+                     end>\
+                <+ id)> defs
+      // detect duplicates in defHasTypes => errors
+    ; <imset-from-list> defHasTypes // TODO: add defHasTypes from imported files
+    ; imset-map(nameOf-DefHasType, where(\(name, _, _) -> <report-Err> (name, DuplicateTypeDefinition())\))
+      // detect missing definitions for defHasTypes => errors
     ; imset-subtract(|defNames)
     ; imset-map(where({?(name, _, _); <report-Err> (name, MissingDefinitionForTypeDefinition())}))
   )
@@ -236,11 +259,6 @@ getDefTypes =
   ; partition(toBinding-DefHasType, toBinding-ExtSDef)
   ; (immap-from-list, immap-from-list)
   ; immap-union(keep-left)
-
-getDefTypes-detect-duplicates: (name-arity, set) -> <imset-insert(|name-arity)> set
-  with if <imset-contains(|name-arity)> set
-    then <report-Err> (<Fst> name-arity, DuplicateTypeDefinition())
-  end
 
 extToNormal = ?AnnoDef(_, <extToNormal>)
 extToNormal: ExtSDefInl(n, s, t, b) -> SDefT(n, s, t, b)
@@ -253,7 +271,9 @@ simpleDef: SDefNoArgs(n, _) -> ExtSDef(n, [], [])
 simpleDef: RDefT(n, s, t, _) -> ExtSDef(n, s, t)
 simpleDef: RDef(n, s, _) -> ExtSDef(n, s, [])
 simpleDef: RDefNoArgs(n, _) -> ExtSDef(n, [], [])
+simpleDef: RDefP(n, s, t, _) -> ExtSDef(n, s, t)
 
+desugar-DefHasType = ?AnnoDef(_, <desugar-DefHasType>)
 desugar-DefHasType:
   d1@DefHasTypeNoArgs(n, t) -> d2
   where
