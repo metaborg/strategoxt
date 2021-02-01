@@ -130,13 +130,13 @@ insertCasts(|strats, constrs, injection-closure, aliases, internals, externals, 
   ; st := <new-st>
   ; let
       process-defs = map(fix-Rule;insertCasts-Def(|e, st); Fst)
-      process = preserve-annotations-attachments(Module(id, map(
+      process = Module(id, map(
            Imports(id)
         <+ Signature(id)
         <+ Overlays(id)
         <+ Strategies(process-defs)
         <+ Rules(process-defs)
-        )))
+        ))
     in
       ast' := <process> ast
     end
