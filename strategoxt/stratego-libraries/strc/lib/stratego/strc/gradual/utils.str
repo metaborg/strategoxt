@@ -221,35 +221,13 @@ report-Note: (subj, msg) -> <rules(Message :+= (MTNote(), (subj, msg)))>
 
 strategies // Helpers
 
-getDefTypes(|internals, externals) =
+get-def-types =
   map(try(desugar-DefHasType))
   ; with(
       (defHasTypes, defs) := <partition(try(?AnnoDef(_, <id>)); ?DefHasType(_, _))>
     ; defNames := <filter(try(extToNormal); nameOf-StrategyDef-RuleDef);imset-from-list> defs
-    ; <list-loop(/* \ExtSDef(n, s, t) -> // external def
-                     <id>\
-                <+ AnnoDef(getfirst(?Internal()), simpleDef;\ExtSDef(n, s, t) -> // internal def
-                     <id>\)
-                <+ */
-                AnnoDef(getfirst(?Override()), simpleDef;\ExtSDef(n, s, t) -> // override def
-                     <if <not(imset-contains(|(n,s,t)))> externals
-                        then <report-Err> (n, OverrideDefinitionWithoutExternal())
-                      end>\)
-                <+ AnnoDef(getfirst(?Extend()), simpleDef;\ExtSDef(n, s, t) -> // extend def
-                     <if <not(imset-contains(|(n,s,t)))> externals
-                        then <report-Err> (n, ExtendDefinitionWithoutExternal())
-                      end>\)
-                <+ ?ExtSDefInl(_, _, _, _)
-                <+ simpleDef;\ExtSDef(n, s, t) -> // normal def
-                     <if <imset-contains(|(n,s,t))> externals
-                        then <report-Err> (n, NormalDefinitionOverlapsWithExternal())
-                        else if <imset-contains(|(n,s,t))> internals
-                          then <report-Err> (n, NormalDefinitionOverlapsWithInternal())
-                        end
-                     end>\
-                <+ id)> defs
       // detect duplicates in defHasTypes => errors
-    ; <imset-from-list> defHasTypes // TODO: add defHasTypes from imported files
+    ; <imset-from-list> defHasTypes
     ; imset-map(nameOf-DefHasType, where(\(name, _, _) -> <report-Err> (name, DuplicateTypeDefinition())\))
       // detect missing definitions for defHasTypes => errors
     ; imset-subtract(|defNames)

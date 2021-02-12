@@ -29,7 +29,7 @@ insertCasts-Strategy(|e1, st1) = otf12(insertCasts-Strategy-(|e1, st1))
 insertCasts-Strategy-(|e1, st1):
   Let(d1*, s1) -> (Let(d2*, s2), st3)
   with
-    e2 := <strat-merge-env(keep-right)> (e1, <getDefTypes;immap-map-values(\st -> st{LocalDef()}\)> d1*)
+    e2 := <strat-merge-env(keep-right)> (e1, <get-def-types;immap-map-values(\st -> st{LocalDef()}\)> d1*)
   ; (d2*, st2) := <thread-map(insertCasts-Def(|e2))> (d1*, st1)
   ; (s2, st3) := <insertCasts-Strategy(|e2, <current-type-of(| st1)> st2)> s1
 
@@ -308,7 +308,7 @@ insertCasts-Sarg(|e1, st1):
   with
     switch <strat-lookup-call(|x{})> e1
       case ?[]:
-        <report-Err> (x, UnresolvedStrategy("0", "0"))
+        <report-Err> (x, UnresolvedStrategy(0, 0))
       ; st2 := <current-type(|ErrT())> st1
       ; c2 := c1
       case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
@@ -329,7 +329,7 @@ insertCasts-Sarg(|e1, st1):
   with
     switch <strat-lookup-call(|x{})> e1
       case ?[]:
-        <report-Err> (x, UnresolvedStrategy("0", "0"))
+        <report-Err> (x, UnresolvedStrategy(0, 0))
       ; st2 := <current-type(|ErrT())> st1
       ; c2 := c1
       case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):
@@ -350,7 +350,7 @@ insertCasts-Sarg(|e1, st1):
   with
     switch <strat-lookup-call(|x{})> e1
       case ?[]:
-        <report-Err> (x, UnresolvedStrategy("0", "0"))
+        <report-Err> (x, UnresolvedStrategy(0, 0))
       ; st2 := <current-type(|ErrT())> st1
       ; c2 := c1
       case ?st*@[_, _ | _]; not(getfirst(?FunTType([], [], _) <+ ?SDyn(){LocalDef()})):

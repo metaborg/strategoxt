@@ -8,39 +8,11 @@ stratego/strc/gradual/signatures
 stratego/strc/gradual/defs
 stratego/strc/gradual/internal-sig
 stratego/strc/gradual/dynamic-rules
-stratego/strc/gradual/modules
 stratego/strc/immutable/map
 stratego/strc/immutable/set
 stratego/strc/immutable/rel
 
 strategies // entry-points from Java
-
-/**
- * insert-casts/0 inserts casts into a Stratego strategy/rule definition based on a gradual type system.
- * strats: map of top-level-definition names to the type description of the strategy
- * constrs: map of constructor definition names to type description
- * injection-closure: map of injections from one type to another (the transitive closure)
- * lub-map: map representing the least-upper-bound of the type lattice
- * aliases: map of sorts that are aliases by virtue of having only one injection rule and no constructors
- * asts: the stratego strategy/rule definitions
- */
-// insert-casts ::
-//    Map(String * Int * Int, SType) *
-//    Rel(String * Int, ConstrType) *
-//    Rel(String, String) *
-//    Map(Type * Type, Type) *
-//    Rel(String * Int, ConstrType) *
-//    List(Decl) ->
-//    List(Decl) * List(Message)
-insert-casts:
-  (strats, constrs, injection-closure, lub-map, aliases, asts) -> (asts', errs, warns, notes)
-  with {| CanCoerce, CanCoerceSType, LUB:
-    asts' := <map(insertCasts(|strats, constrs, injection-closure, aliases, lub-map))> asts
-    ; msg* := <bagof-Message>
-    ; errs := <filter(?(MTError(), <id>))> msg*
-    ; warns := <filter(?(MTWarning(), <id>))> msg*
-    ; notes := <filter(?(MTNote(), <id>))> msg*
-  |}
 
 /**
  * insert-casts/0 inserts casts into a Stratego strategy/rule definition based on a gradual type system.
@@ -59,15 +31,13 @@ insert-casts:
 //    Rel(Type, Type) *
 //    Map(Type * Type, Type) *
 //    Rel(Type, Type) *
-//    Set(String * Int * Int) *
-//    Set(String * Int * Int) *
 //    Module ->
 //    Module * List(Message)
 insert-casts:
-  (strats, constrs, injection-closure, lub-map, aliases, internals, externals, ast) ->
+  (strats, constrs, injection-closure, lub-map, aliases, ast) ->
     (asts', errs, warns, notes)
   with {| CanCoerce, CanCoerceSType, LUB:
-    asts' := <insertCasts(|strats, constrs, injection-closure, aliases, internals, externals, lub-map)> ast
+    asts' := <insertCasts(|strats, constrs, injection-closure, aliases, lub-map)> ast
     ; msg* := <bagof-Message>
     ; errs := <filter(?(MTError(), <id>))> msg*
     ; warns := <filter(?(MTWarning(), <id>))> msg*
@@ -86,47 +56,18 @@ fix-Rule = bottomup(try(
 // insertCasts(|
 //    Map(String * Int * Int, SType) *
 //    Rel(String * Int, ConstrType) *
-//    Rel(String, String) *
-//    Map(Type * Type, Type) *
-//    Rel(String * Int, ConstrType) )
-//    Def ->
-//    Def
-insertCasts(|strats, constrs, injection-closure, aliases, lub-map): ast -> ast'
-  with
-    rules(CanCoerce: p -> <can-coerce(|injection-closure, aliases)> p)
-  ; rules(CanCoerceSType: p -> <can-coerce-stype(|injection-closure)> p)
-  ; rules(LUB: pair -> <lub(|lub-map)> pair)
-  ; (ast', _) := <fix-Rule;insertCasts-Def(|<new-env> (strats, constrs), <new-st>)> ast
-
-// insertCasts(|
-//    Map(String * Int * Int, SType) *
-//    Rel(String * Int, ConstrType) *
 //    Rel(Type, Type) *
 //    Rel(Type, Type) *
-//    Set(String * Int * Int) *
-//    Set(String * Int * Int) *
 //    Map(Type * Type, Type) )
 //    Module ->
 //    Module
-insertCasts(|strats, constrs, injection-closure, aliases, internals, externals, lub-map): ast -> ast'
+insertCasts(|strats, constrs, injection-closure, aliases, lub-map): ast -> ast'
   with id
-  ; (Lconstrs, Linjs) := <extract-constrs-inj> ast
-  ; Laliases := <extract-aliases> (Lconstrs, Linjs)
-  ; Linjection-closure := <imrel-transitive-closure> Linjs
-  ; Llub-map := <lub-map> Linjection-closure
-  ; Lstrats := <extract-strategy-types(|internals, externals)> ast
+  ; rules(CanCoerce: p -> <can-coerce(|injection-closure, aliases)> p)
+  ; rules(CanCoerceSType: p -> <can-coerce-stype(|injection-closure)> p)
+  ; rules(LUB: pair -> <lub(|lub-map)> pair)
 
-  ; strats' := <immap-union(keep-left|Lstrats)> strats
-  ; constrs' := <immap-union(keep-left|Lconstrs)> constrs
-  ; injection-closure' := <imrel-union(|Linjection-closure)> injection-closure
-  ; aliases' := <imrel-union(|Linjection-closure)> injection-closure
-  ; lub-map' := <immap-union(keep-left|Llub-map)> lub-map
-
-  ; rules(CanCoerce: p -> <can-coerce(|injection-closure', aliases')> p)
-  ; rules(CanCoerceSType: p -> <can-coerce-stype(|injection-closure')> p)
-  ; rules(LUB: pair -> <lub(|lub-map')> pair)
-
-  ; e := <new-env> (strats', constrs')
+  ; e := <new-env> (strats, constrs)
   ; st := <new-st>
   ; let
       process-defs = map(fix-Rule;insertCasts-Def(|e, st); Fst)

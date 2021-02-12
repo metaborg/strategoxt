@@ -10,6 +10,7 @@
 module rel
 imports
   stratego/strc/immutable/set
+  stratego/strc/immutable/map
 
 signature
   constructors
@@ -50,7 +51,7 @@ internal imrel-to-list = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_
  *
  * @type ImmutableRelation -> ImmutableMap
  */
-internal imrel-to-map(merge) = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_map", merge|)
+internal imrel-to-map(merge) = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_map", merge|); !ImmutableMap(<id>)
 
 /**
  * Turn the immutable relation into a list of pairs.
