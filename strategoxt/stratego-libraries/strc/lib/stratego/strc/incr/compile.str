@@ -92,6 +92,9 @@ strategies
 //      ; check-calls
 
       ; m-transform-local-defs(scope-def-local-newname(
+          if Hd;m-def-signature;?("DYNAMIC_CALLS", 0, 0)
+            then ![]
+            else
           map(id
             ; stratego-desugar
             ; raise-annotations
@@ -113,6 +116,7 @@ strategies
           ; joindefs
           ; rename-sdef2
           ; ![<id>]
+            end
         | <?[<m-def-signature;strategy-sig-to-string>|_]>))
 
 // commented: [DONE IN TYPESYSTEM]
