@@ -137,6 +137,9 @@ rules
     ConstType(sort) -> sort
 
   stratego-to-abox : 
+    DynT(d) ->  |[ KW["?"] ]|
+
+  stratego-to-abox : 
     FunType(lhs,rhs) -> H [ "(" ~lhs' KW["->"] ~rhs ")" ]
     where
       <separate-by-star>lhs => lhs'
