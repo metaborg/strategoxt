@@ -29,7 +29,7 @@ strategies
       xtc-input(strj-or-die2(|ctree))
     | "Compilation succeeded", 1
     )
-  ; <exit> 0
+  ; bagof-JavaResultFile
   
   strj-or-die2(|ctree) =
     <strj2> ctree
@@ -136,7 +136,7 @@ strategies
     ast -> name
     with
       name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
-    ; log(|Info(), ["Writing file: ", name])
+    ; rules(JavaResultFile :+= name)
     ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
     ; if PrettyPrintJava then
          box  := <pp-java5-to-abox> ast
