@@ -154,7 +154,7 @@ strategies
   joinannodefs(s) =
     if filter(?AnnoDef(<id>, _)); concat; not([]); make-set => annos then
       where(try( filter(?SDefT(<id>, _, _, _)); not(?[])
-               ; warn(|"Both annotated and unannotated definitions found, ignoring unannotated: ")))
+               ; \n* -> <warn(|$[Both annotated and unannotated definitions found, ignoring unannotated: [<separate-by(|", ");concat-strings> n*]])>\))
     ; filter(
         not(?ExtSDef(_,_,_) + ?ExtSDefInl(_,_,_,_))
       ; ?AnnoDef(_, <id>)
