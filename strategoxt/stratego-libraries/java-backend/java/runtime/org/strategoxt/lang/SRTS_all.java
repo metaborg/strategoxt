@@ -6,6 +6,7 @@ import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
+import org.spoofax.interpreter.terms.IStrategoPlaceholder;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
