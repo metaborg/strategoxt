@@ -17,13 +17,13 @@ import org.spoofax.terms.io.binary.TermReader;
  */
 public class ImportTerm extends LazyTerm {
 	
-	private final ITermFactory factory;
+	private final transient ITermFactory factory;
 	
-	private final String path, name;
+	private final transient String path, name;
 	
-	private final Class<?> container;
+	private final transient Class<?> container;
 	
-	private ZipFile lastZipFile;
+	private transient ZipFile lastZipFile;
 	
 	public ImportTerm(ITermFactory factory, Class<?> container, String path, String name) {
 		assert path.endsWith("/");
@@ -98,4 +98,11 @@ public class ImportTerm extends LazyTerm {
 	private static String removePrecedingSlash(String path) {
 		return path.startsWith("/") ? path.substring(1) : path;
 	}
+  
+  private void writeObject(java.io.ObjectOutputStream out)
+      throws IOException {
+    // force the lazy term before serialization so we don't need the fields in this class any more
+    getWrapped();
+    out.defaultWriteObject();
+  }
 }
