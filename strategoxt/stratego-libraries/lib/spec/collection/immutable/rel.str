@@ -10,6 +10,7 @@
 module collection/immutable/rel
 imports
   collection/immutable/set
+  collection/immutable/map
 
 signature
   constructors
@@ -50,7 +51,7 @@ imrel-to-list = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_list")
  *
  * @type ImmutableRelation -> ImmutableMap
  */
-imrel-to-map(merge) = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_map", merge|)
+imrel-to-map(merge) = ?ImmutableRelation(<id>); prim("SSL_immutable_relation_to_map", merge|); !ImmutableMap(<id>)
 
 /**
  * Turn the immutable relation into a list of pairs.
@@ -135,7 +136,7 @@ imrel-empty = equal(|<imrel-new>)
  * @param k - the key
  * @type ImmutableRelation -?> ImmutableRelation
  */
-imrel-contains-key(|k) = where(imrel-get(|k))
+imrel-contains-key(|k) = where(imrel-get(|k); not(imset-empty))
 
 /**
  * Succeeds if the key is in the immutable relation.

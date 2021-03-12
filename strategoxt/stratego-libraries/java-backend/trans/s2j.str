@@ -531,19 +531,22 @@ rules
     OpDeclInj(FunType([from], to)) ->
     bstm |[ compiledContext.typeInfo.registerInjection(e_from, e_to); ]|
   with
-    e_from := <?ConstType(<translate-Type>)> from
-  ; e_to := <?ConstType(<translate-Type>)> to
+    e_from := <translate-ConstType> from
+  ; e_to := <translate-ConstType> to
 
   // TODO: write java-register-signature for other OpDeclInj which are injections from TupleType to a Sort? 
 
-  java-reg-optype:
-    ConstType(sort) -> (<translate-Type> sort, [])
+  java-reg-optype =
+    translate-ConstType; !(<id>, [])
 
   java-reg-optype:
     FunType(ty*, sort) -> (e_sort, e_ty*)
   with
-    e_sort := <?ConstType(<translate-Type>)> sort
-  ; e_ty* := <map(?ConstType(<translate-Type>))> ty*
+    e_sort := <translate-ConstType> sort
+  ; e_ty* := <map(translate-ConstType)> ty*
+
+  translate-ConstType = ?ConstType(<translate-Type>)
+  translate-ConstType = ?DynT(_); translate-Type
 
 rules
 
@@ -825,10 +828,10 @@ rules
   ; (id, concat)
 
   translate-param :
-    VarDec(x{}, ConstType(_)) -> (param |[ IStrategoTerm x ]|, [])
+    VarDec(x{}, <?ConstType(_) <+ ?DynT(_)>) -> (param |[ IStrategoTerm x ]|, [])
 
   translate-param :
-    VarDec(x{Offset(_), Escapes()}, ConstType(_)) ->
+    VarDec(x{Offset(_), Escapes()}, <?ConstType(_) <+ ?DynT(_)>) ->
     ( param |[ IStrategoTerm x' ]|
     , bstm* |[ TermReference x = new TermReference(x'); ]|)
     with
@@ -848,10 +851,10 @@ rules
     map(translate-arg)
 
   translate-arg :
-    VarDec(x{}, ConstType(_)) -> expr |[ x ]|
+    VarDec(x{}, <?ConstType(_) <+ ?DynT(_)>) -> expr |[ x ]|
 
   translate-arg :
-    VarDec(x{Offset(_), Escapes()}, ConstType(_)) -> expr |[ x.value ]|
+    VarDec(x{Offset(_), Escapes()}, <?ConstType(_) <+ ?DynT(_)>) -> expr |[ x.value ]|
   
   translate-arg : 
     VarDec(x, FunType(_, _)) -> expr |[ x ]|

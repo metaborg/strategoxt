@@ -136,12 +136,30 @@ rules
       ; <get-annotation(?LocalArg())> x
       ; y := <remove-annotations(?LocalArg())> x
 
+  RenameCall2 :
+    CallT(SVar(x), [], []) -> CallT(SVar(y), [], [])
+    where id
+      ; <get-annotation(?AmbiguousStrategyResolution(n, m))> x
+      ; <strategy-sig-to-string>(x, n, m) => y
+
   RenameCall2 : 
     CallT(SVar(x), ss, ts) -> CallT(SVar(y), ss, ts)
     where id
       ; not(<get-annotation(?LocalArg())> x)
       ; <length> ss => n
       ; <length> ts => m
+      ; <strategy-sig-to-string>(x, n, m) => y
+
+  RenameCall2 :
+    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
+    where id
+      ; <get-annotation(?LocalArg())> x
+      ; y := <remove-annotations(?LocalArg())> x
+
+  RenameCall2 :
+    ProxyT([], [], i, o, SVar(x)) -> ProxyT([], [], i, o, SVar(y))
+    where id
+      ; <get-annotation(?AmbiguousStrategyResolution(n, m))> x
       ; <strategy-sig-to-string>(x, n, m) => y
 
   RenameCall2 : 

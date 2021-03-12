@@ -29,7 +29,7 @@ strategies
       xtc-input(strj-or-die2(|ctree))
     | "Compilation succeeded", 1
     )
-  ; <exit> 0
+  ; bagof-JavaResultFile
   
   strj-or-die2(|ctree) =
     <strj2> ctree
@@ -46,25 +46,7 @@ strategies
   
   strj2 =
     try(mark-always-needed(|<get-config> "-m", 0, 0))
-  ; if Specification(mapconcat(?Overlays(<id>) <+ ![]);not(?[]))
-    then dr-scope-all-verbose(
-           Specification(
-             remove-all(Overlays(map(DeclareExpandOverlay <+ debug(!"overlay map fail");fail)))
-           ; map(try(Strategies(map(SDefT(id, id, id, expand-overlays-in-def) <+ debug(!"sdeft map fail");fail))))
-           )
-         )
-    end
   ; Specification(map(try(Strategies(![<joindefs>]))))
-    // We need to rename strategy calls that were given arity _0_0, if the strategy was
-    //  not overloaded in arity and had a different arity. If so the packing tool added
-    //  the renaming information in the annotations as pairs.
-  ; where(amb-strat-map := <get-annos>)
-  ; if not(<?[]> amb-strat-map)
-    then bottomup(try(
-      CallT(id, map(try(
-        CallT(SVar(\n -> <lookup> (n, amb-strat-map)\), ?[], ?[])
-      )), id)))
-    end
   ; strc-optimize
   ; s2j
   ; with(clean-output-dir)
@@ -113,35 +95,9 @@ strategies
       )
     end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
-  ; if <get-config> "--single-strategy" + <get-config> "--boilerplate"
-      then
-        where(amb-strat-map := <get-annos>)
-      ; dr-scope-all-verbose(
-          m-transform-no-overlays(id
-            ; m-transform-overlays(id
-              ; DeclareExpandOverlay
-            )
-
-            ; m-transform-local-defs(id
-              ; joindefs
-              ; expand-overlays-in-def
-              // We need to rename strategy calls that were given arity _0_0, if the strategy was
-              //  not overloaded in arity and had a different arity. If so the packing tool added
-              //  the renaming information in the annotations as pairs. 
-              ; bottomup(try(
-                  CallT(id, map(try(
-                    CallT(SVar(\n -> <lookup> (n, amb-strat-map)\), ?[], ?[])
-                  )), id)))
-              ; ![<id>]
-            )
-          )
-        )
-    end
   ; strc-optimize
-  ; if not(<get-config> "--single-strategy")
-      then strc-export-external-defs
-         ; strc-output-frontend
-    end
+  ; strc-export-external-defs
+  ; strc-output-frontend
   ; s2j
   ; with(clean-output-dir)
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
@@ -180,7 +136,7 @@ strategies
     ast -> name
     with
       name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
-    ; log(|Info(), ["Writing file: ", name])
+    ; rules(JavaResultFile :+= name)
     ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
     ; if PrettyPrintJava then
          box  := <pp-java5-to-abox> ast
