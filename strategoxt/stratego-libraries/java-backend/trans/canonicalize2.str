@@ -65,6 +65,6 @@ strategies
   lift-call-arg2(|prefix) :
     |[ s1 ]| -> ([|[ g~{t*}(|) = s2 ]|], |[ g(|) ]|)
     where //debug(!"lift-call-arg2: ");
-      g  := <newname> $[[prefix]$lifted]
+      g  := <newname> $[[prefix]_lifted]
     ; s2 := <canonicalize2(|prefix)> s1
     ; t* := <is-just-closure-allocation <+ ![]> s2
