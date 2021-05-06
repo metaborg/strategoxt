@@ -40,6 +40,9 @@ public class Proxy extends Strategy {
             proxies[i] = new Proxy(context, coercion, s[i]);
         }
         final IStrategoTerm result = wrappedStrategy.invokeDynamic(context, current, proxies, t);
+        if(result == null) {
+            return null;
+        }
         final Type resultType = TypeAttachment.getOrComputeType(context.typeInfo, result);
         if(!coercion.outputCoercion.test(context.typeInfo, resultType)) {
             assert coercion.outputCoercion instanceof TypeCoercion;
