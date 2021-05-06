@@ -45,7 +45,7 @@ public class Proxy extends Strategy {
             assert coercion.outputCoercion instanceof TypeCoercion;
             throw new StrategoCastException(resultType, ((TypeCoercion) coercion.outputCoercion).type);
         }
-        return current;
+        return result;
     }
 
     public IStrategoTerm invoke(Context context, IStrategoTerm current) {
