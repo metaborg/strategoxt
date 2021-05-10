@@ -6,6 +6,7 @@ import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
+import org.spoofax.interpreter.terms.IStrategoPlaceholder;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -16,7 +17,7 @@ public class SRTS_all extends Strategy {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		int termType = current.getTermType();
-		
+
 		if (termType == LIST) {
 			IStrategoList list = (IStrategoList) current;
 			return mapMaintainAnnos(context, list, s, noAnnosTail(list));
@@ -47,6 +48,11 @@ public class SRTS_all extends Strategy {
 				case TUPLE:
 					return context.getFactory().replaceTuple(results,
 							(IStrategoTuple) current);
+				case PLACEHOLDER:
+					return context.getFactory().replacePlaceholder(
+							results[0],
+							(IStrategoPlaceholder)current
+					);
 				default:
 					throw new IllegalStateException();
 			}
@@ -125,12 +131,12 @@ public class SRTS_all extends Strategy {
 		if(list.isEmpty()) {
 			return list;
 		}
-		/* If Nil didn't have annos, and the input list is not Nil, result points to latest Cons 
+		/* If Nil didn't have annos, and the input list is not Nil, result points to latest Cons
 		 * with annos. Take its tail.
 		 */
 		return result.tail();
 	}
-	
+
 	private static boolean hasAnnos(final IStrategoList list) {
 		IStrategoList annos = list.getAnnotations();
 		return !(annos == null || annos.isEmpty());

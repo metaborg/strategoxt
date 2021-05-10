@@ -29,7 +29,7 @@ strategies
       xtc-input(strj-or-die2(|ctree))
     | "Compilation succeeded", 1
     )
-  ; <exit> 0
+  ; bagof-JavaResultFile
   
   strj-or-die2(|ctree) =
     <strj2> ctree
@@ -46,14 +46,6 @@ strategies
   
   strj2 =
     try(mark-always-needed(|<get-config> "-m", 0, 0))
-  ; if Specification(mapconcat(?Overlays(<id>) <+ ![]);not(?[]))
-    then dr-scope-all-verbose(
-           Specification(
-             remove-all(Overlays(map(DeclareExpandOverlay <+ debug(!"overlay map fail");fail)))
-           ; map(try(Strategies(map(SDefT(id, id, id, expand-overlays-in-def) <+ debug(!"sdeft map fail");fail))))
-           )
-         )
-    end
   ; Specification(map(try(Strategies(![<joindefs>]))))
   ; strc-optimize
   ; s2j
@@ -144,7 +136,7 @@ strategies
     ast -> name
     with
       name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
-    ; log(|Info(), ["Writing file: ", name])
+    ; rules(JavaResultFile :+= name)
     ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
     ; if PrettyPrintJava then
          box  := <pp-java5-to-abox> ast

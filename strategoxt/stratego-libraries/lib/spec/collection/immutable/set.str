@@ -136,7 +136,20 @@ imset-filter(s) = ImmutableSet(prim("SSL_immutable_set_filter", s|))
  * @param s: Term -> Term
  * @type ImmutableSet -> ImmutableSet
  */
-imset-map(s) = ImmutableSet(prim("SSL_immutable_set_map", s|))
+imset-map(s) = ImmutableSet(prim("SSL_immutable_set_map", s, id|))
+
+/**
+ * Map all elements from the immutable set.
+ * Extra parameter m is called on a mapped element that was previously mapped to.
+ * This can be used to observe duplicate mapped elements or to change them into
+ * something unique so they still end up in the result set.
+ * Returns a new set with the mapped elements.
+ *
+ * @param s: Term -> Term
+ * @param m: Term -> Term
+ * @type ImmutableSet -> ImmutableSet
+ */
+imset-map(s, m) = ImmutableSet(prim("SSL_immutable_set_map", s, m|))
 
 /**
  * Combining operations

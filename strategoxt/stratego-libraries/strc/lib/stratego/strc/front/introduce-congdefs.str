@@ -90,6 +90,11 @@ rules
         ; rules(CongDefined : (f, 0) -> ())
 
   MkCongDef : 
+    OpDecl(f, DynT(t)) -> SDefT(f, [], [], Cong(f, []))
+    where <not(CongDefined)> (f, 0)
+        ; rules(CongDefined : (f, 0) -> ())
+
+  MkCongDef : 
     OpDecl(f, FunType(ts, t)) -> 
     SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
     where <length> ts => n
@@ -104,6 +109,10 @@ strategies
 
   m-MkCongDef : 
     OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, []))
+    where <not(ModDefinition)> (f, 0, 0)
+
+  m-MkCongDef : 
+    OpDecl(f, DynT(t)) -> SDefT(f, [], [], Cong(f, []))
     where <not(ModDefinition)> (f, 0, 0)
 
   m-MkCongDef : 

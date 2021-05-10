@@ -28,6 +28,10 @@ signature
     ProceedInNonExtendStrategy           : ErrorDesc
     CallStrategyArgumentTakesParameters  : SFunType -> ErrorDesc
     AmbiguousStrategyResolution          : List(SFunType) -> ErrorDesc
+    NormalDefinitionOverlapsWithExternal : ErrorDesc
+    NormalDefinitionOverlapsWithInternal : ErrorDesc
+    OverrideDefinitionWithoutExternal    : ErrorDesc
+    ExtendDefinitionWithoutExternal      : ErrorDesc
     NoInjectionBetween                   : Type * Type -> ErrorDesc
     VariableBoundToIncompatibleType      : Type * Type -> ErrorDesc
     TypeMismatch                         : Type * Type -> ErrorDesc
