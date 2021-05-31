@@ -27,9 +27,9 @@ public class InteropSDefT extends SDefT {
 
 	private final ClassLoader classLoader;
 
-	private Strategy strategy;
+	private org.strategoxt.lang.Strategy strategy;
 
-	public InteropSDefT(Strategy strategy, IContext context) {
+	public InteropSDefT(org.strategoxt.lang.Strategy strategy, IContext context) {
 		super(context.getVarScope());
 		this.strategyClassName = null;
 		this.classLoader = null;
@@ -37,7 +37,7 @@ public class InteropSDefT extends SDefT {
 	}
 
 	@Deprecated
-	public InteropSDefT(Strategy strategy, IContext context, Context compiledContext) {
+	public InteropSDefT(org.strategoxt.lang.Strategy strategy, IContext context, Context compiledContext) {
 		this(strategy, context);
 	}
 
@@ -55,12 +55,12 @@ public class InteropSDefT extends SDefT {
 		this(classLoader, strategyClassName, context);
 	}
 
-	public static SDefT[] toInteropSDefTs(Strategy[] strategies, IContext context) {
+	public static SDefT[] toInteropSDefTs(org.strategoxt.lang.Strategy[] strategies, IContext context) {
 		SDefT[] results = new SDefT[strategies.length];
 		for (int i = 0; i < strategies.length; i++) {
-			Strategy strategy = strategies[i];
-			if (strategy instanceof InteropStrategy) {
-				results[i] = ((InteropStrategy) strategy).getDefinition();
+			org.strategoxt.lang.Strategy strategy = strategies[i];
+			if (strategy instanceof org.strategoxt.lang.InteropStrategy) {
+				results[i] = ((org.strategoxt.lang.InteropStrategy) strategy).getDefinition();
 			} else {
 				results[i] = new InteropSDefT(strategy, context);
 			}
@@ -91,7 +91,7 @@ public class InteropSDefT extends SDefT {
 		String name = getName();
 		int countEnd = name.lastIndexOf('_');
 		int countStart = name.lastIndexOf('_', countEnd - 1);
-		if (countStart == -1 || countEnd == -1 || name.contains("$lifted")) {
+		if (countStart == -1 || countEnd == -1 || name.lastIndexOf("_lifted") == countEnd) {
 			return NO_SVARS; // FIXME: properly handle "lifted" InteropSDefT strategies
 		}
 		int count = Integer.parseInt(name.substring(countStart + 1, countEnd));
@@ -153,7 +153,7 @@ public class InteropSDefT extends SDefT {
 				for (int i = 0; i < sargs.length; i++) {
 					sargDefs[i] = new SDefT("s" + i, NO_SVARS, NO_STRINGS, sargs[i], env.getVarScope());
 				}
-				return InteropSDefT.this.evaluate(env, InteropStrategy.toInteropStrategies(sargDefs), targs);
+				return InteropSDefT.this.evaluate(env, org.strategoxt.lang.InteropStrategy.toInteropStrategies(sargDefs), targs);
 			}
 		};
 	}
@@ -180,21 +180,21 @@ public class InteropSDefT extends SDefT {
 			targs[i] = targ;
 		}
 
-		return evaluate(env, InteropStrategy.toInteropStrategies(sargs), targs);
+		return evaluate(env, org.strategoxt.lang.InteropStrategy.toInteropStrategies(sargs), targs);
 	}
 
-	private boolean evaluate(IContext env, Strategy[] sargs, IStrategoTerm[] targs)
+	private boolean evaluate(IContext env, org.strategoxt.lang.Strategy[] sargs, IStrategoTerm[] targs)
 			throws InterpreterErrorExit, InterpreterExit, InterpreterException {
 
 		IStrategoTerm result;
 		try {
-			Context context = HybridInterpreter.getCompiledContext(env);
+			org.strategoxt.lang.Context context = HybridInterpreter.getCompiledContext(env);
 			result = getStrategy().invokeDynamic(context, env.current(), sargs, targs);
-		} catch (StrategoErrorExit e) {
+		} catch (org.strategoxt.lang.StrategoErrorExit e) {
 			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e.getTrace(), e.getCause());
-		} catch (StrategoExit e) {
+		} catch (org.strategoxt.lang.StrategoExit e) {
 			throw new InterpreterExit(e.getValue(), e);
-		} catch (MissingStrategyException e) {
+		} catch (org.strategoxt.lang.MissingStrategyException e) {
 			// Programmer error: not the same as a UndefinedStrategyException
 			throw new InterpreterException(e);
 		}
@@ -207,21 +207,21 @@ public class InteropSDefT extends SDefT {
 		}
 	}
 
-	public Strategy getStrategy() {
+	public org.strategoxt.lang.Strategy getStrategy() {
 		if (strategy == null) {
 			try {
 				Class<?> strategyClass = classLoader.loadClass(strategyClassName);
-				strategy = (Strategy) strategyClass.getField("instance").get(null);
+				strategy = (org.strategoxt.lang.Strategy) strategyClass.getField("instance").get(null);
 			} catch (ClassNotFoundException e) {
-				throw new StrategoException("Unable to instantiate compiled strategy", e);
+				throw new org.strategoxt.lang.StrategoException("Unable to instantiate compiled strategy", e);
 			} catch (IllegalAccessException e) {
-				throw new StrategoException("Unable to instantiate compiled strategy", e);
+				throw new org.strategoxt.lang.StrategoException("Unable to instantiate compiled strategy", e);
 			} catch (IllegalArgumentException e) {
-				throw new StrategoException("Unable to instantiate compiled strategy", e);
+				throw new org.strategoxt.lang.StrategoException("Unable to instantiate compiled strategy", e);
 			} catch (SecurityException e) {
-				throw new StrategoException("Unable to instantiate compiled strategy", e);
+				throw new org.strategoxt.lang.StrategoException("Unable to instantiate compiled strategy", e);
 			} catch (NoSuchFieldException e) {
-				throw new StrategoException("Unable to instantiate compiled strategy", e);
+				throw new org.strategoxt.lang.StrategoException("Unable to instantiate compiled strategy", e);
 			}
 		}
 

@@ -33,6 +33,9 @@ public class TypeInfo {
                 return typeIsA(currentSort.types, sort.types);
             }
         }
+        if(((currentType instanceof IntT) || (currentType instanceof RealT) || (currentType instanceof StringT)) && currentType.equals(type)) {
+          return true;
+        }
         return false;
     }
 

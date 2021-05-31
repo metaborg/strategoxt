@@ -406,19 +406,21 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		IContext context = getContext();
 		Context compiledContext = getCompiledContext();
 
-		// FIXME: HybridInterpreter loads all libs into the same namespace
-		//        Which may affect interpreted code and invoke()
-		org.strategoxt.tools.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_gpp.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_aterm.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_rtg.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_sdf.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_sglr.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_tool_doc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_xtc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.java_front.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_lib.Main.registerInterop(context, compiledContext);
-		org.strategoxt.strc.Main.registerInterop(context, compiledContext);
+        synchronized(HybridInterpreter.class) {
+            // FIXME: HybridInterpreter loads all libs into the same namespace
+            //        Which may affect interpreted code and invoke()
+            org.strategoxt.tools.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_gpp.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_aterm.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_rtg.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_sdf.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_sglr.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_tool_doc.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_xtc.Main.registerInterop(context, compiledContext);
+            org.strategoxt.java_front.Main.registerInterop(context, compiledContext);
+            org.strategoxt.stratego_lib.Main.registerInterop(context, compiledContext);
+            org.strategoxt.strc.Main.registerInterop(context, compiledContext);
+        }
 	}
 
 	public final Context getCompiledContext() {

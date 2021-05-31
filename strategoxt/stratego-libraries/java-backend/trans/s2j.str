@@ -1185,7 +1185,7 @@ strategies
     else
       // Lift definition and produce call
       with(
-        !SDefT(<concat-strings;newname => x> [<ConstantContainerClass>, "$lifted"], [], [], <id>)
+        !SDefT(<concat-strings;newname => x> [<ConstantContainerClass>, "_lifted"], [], [], <id>)
       ; rules(LiftedDef :+= <translate-inner-definition>)
       )
     ; <lifted-call-to-instance> CallT(SVar(x), [], [])

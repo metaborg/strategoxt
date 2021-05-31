@@ -14,13 +14,15 @@ module stratego/asfix/implode/constructor
 strategies
 
   ReplCons(impl) =
-       ReplNamedCons(impl)
-    <+ ReplAstPattern(impl)
-    <+ ReplConsNil(impl)
+       ReplConsNil(impl)
     <+ ReplConsNone(impl)
     <+ ReplConsIns(impl)
     <+ ReplConsSome(impl)
+    <+ ReplConsCons(impl)
+    <+ ReplConsSnoc(impl)
     <+ ReplConsConc(impl)
+    <+ ReplNamedCons(impl)
+    <+ ReplAstPattern(impl)
 
 rules
 
@@ -153,6 +155,24 @@ rules
     where
       <is-some> p
 
+  ReplConsCons(impl) : 
+    appl(p, [t1,t2]) -> t
+    where
+      <is-cons> p
+      ; <impl>t1 => ts1
+      ; <impl>t2 => ts2
+      ; (<[] + [id|id]> ts2; ![ts1 | ts2]
+          <+ !"Conc"#([ts1, ts2])) => t
+
+  ReplConsSnoc(impl) : 
+    appl(p, [t1,t2]) -> t
+    where
+      <is-snoc> p
+      ; <impl>t1 => ts1
+      ; <impl>t2 => ts2
+      ; (<[] + [id|id]> ts1; <conc> (ts1, [ts2])
+          <+ !"Conc"#([ts1, ts2])) => t
+
   ReplConsConc(impl) : 
     appl(p, [t1,t2]) -> t
     where
@@ -182,6 +202,24 @@ strategies
   is-ins  = ?prod([cf(x)], cf(iter(x)), _)
   is-ins  = ?prod([x], iter-sep(x,_), _)
   is-ins  = ?prod([x], iter(x), _)
+
+  is-cons = ?prod([cf(s), _, x], x@cf(iter(s)), _)
+  is-cons = ?prod([   s,     x],    x@iter(s), _)
+  is-cons = ?prod([cf(s), _, x], x@cf(iter-star(s)), _)
+  is-cons = ?prod([   s,  _, x],    x@iter-star(s), _)
+  is-cons = ?prod([cf(s), _, _, _, x], x@cf(iter-sep(s, _)), _)
+  is-cons = ?prod([   s,     _,    x], x@iter-sep(s, _), _)
+  is-cons = ?prod([cf(s), _, _, _, x], x@cf(iter-star-sep(s, _)), _)
+  is-cons = ?prod([   s,     _,    x], x@cf(iter-star-sep(s, _)), _)
+
+  is-snoc = ?prod([x, _, cf(s)], x@cf(iter(s)), _)
+  is-snoc = ?prod([x,       s ],    x@iter(s), _)
+  is-snoc = ?prod([x, _, cf(s)], x@cf(iter-star(s)), _)
+  is-snoc = ?prod([x, _,    s ],    x@iter-star(s), _)
+  is-snoc = ?prod([x, _, _, _, cf(s)], x@cf(iter-sep(s, _)), _)
+  is-snoc = ?prod([x,       _,    s ], x@iter-sep(s, _), _)
+  is-snoc = ?prod([x, _, _, _, cf(s)], x@cf(iter-star-sep(s, _)), _)
+  is-snoc = ?prod([x,       _,    s ], x@cf(iter-star-sep(s, _)), _)
 
   is-conc = ?prod([_, _, _], cf(iter(_)), _)
   is-conc = ?prod([_,    _],    iter(_), _)
