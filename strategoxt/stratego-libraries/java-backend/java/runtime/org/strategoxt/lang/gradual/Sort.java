@@ -37,6 +37,9 @@ public class Sort implements Type {
 
     @Override
     public String toString() {
+        if(types.isEmpty()) {
+            return sort;
+        }
         final StringBuilder typesStringBuilder = new StringBuilder();
         for(Iterator<Type> iterator = types.iterator();;) {
             typesStringBuilder.append(iterator.next().toString());
