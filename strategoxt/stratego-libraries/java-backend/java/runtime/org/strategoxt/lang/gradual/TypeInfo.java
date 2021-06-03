@@ -17,6 +17,15 @@ public class TypeInfo {
     private BinaryRelation.Transient<Type, Type> injections = BinaryRelation.Transient.of();
     private BinaryRelation.Transient<ConstructorArity, TypedConstructor> consSorts = BinaryRelation.Transient.of();
 
+    public void internalCopyFrom(TypeInfo toCopy) {
+        for(Map.Entry<Type, Type> e : toCopy.injections.entrySet()) {
+            this.injections.__insert(e.getKey(), e.getValue());
+        }
+        for(Map.Entry<ConstructorArity, TypedConstructor> e : toCopy.consSorts.entrySet()) {
+            this.consSorts.__insert(e.getKey(), e.getValue());
+        }
+    }
+
     public boolean typeIsA(Type currentType, Type type) {
         // TODO: Handle `type instanceof SortVar`, pass a bindings state object
         if(type == DynT.INSTANCE) {

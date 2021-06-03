@@ -45,6 +45,7 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
+import org.strategoxt.lang.gradual.TypeInfo;
 import org.strategoxt.strc.desugar_0_0;
 import org.strategoxt.strc.desugar_list_matching_0_0;
 import org.strategoxt.strc.pre_desugar_0_0;
@@ -133,6 +134,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	 */
 	public HybridInterpreter(HybridInterpreter interpreter, String... reuseRegistries) {
 		this(interpreter.getFactory(), ((org.spoofax.interpreter.core.Context) interpreter.getContext()).getProgramFactory());
+		compiledContext.typeInfo.internalCopyFrom(interpreter.getCompiledContext().typeInfo);
 		Set<String> reusable = asSet(reuseRegistries);
 
 		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));
