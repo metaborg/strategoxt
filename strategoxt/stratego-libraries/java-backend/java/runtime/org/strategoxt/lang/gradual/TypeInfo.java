@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,22 @@ public class TypeInfo {
         }
         if(injections.containsEntry(currentType, type)) {
             return true;
+        }
+        if(currentType instanceof OneOf) {
+            for(Type ct : ((OneOf) currentType).types) {
+                if(typeIsA(ct, type)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if(type instanceof OneOf) {
+            for(Type t : ((OneOf) type).types) {
+                if(typeIsA(currentType, t)) {
+                    return true;
+                }
+            }
+            return false;
         }
         if(currentType instanceof Sort && type instanceof Sort) {
             final Sort currentSort = (Sort) currentType;
@@ -103,21 +120,22 @@ public class TypeInfo {
     }
 
     public Type typeOf(String constructorName, List<Type> subTermTypes) {
+        final List<Type> types = new ArrayList<>();
         final Set.Immutable<TypedConstructor> typedConstructors =
             consSorts.get(new ConstructorArity(constructorName, subTermTypes.size()));
-        Type type = null;
         for(TypedConstructor tc : typedConstructors) {
             if(typeIsA(subTermTypes, tc.subTermTypes)) {
-                if(type != null) {
-                    // TODO: what to do when multiple matches? Statically disallow ideally
-                }
-                type = tc.sort;
+                types.add(tc.type);
             }
         }
-        if(type != null) {
-            return type;
+        switch(types.size()) {
+            case 0:
+                return new IllFormedTermT(constructorName, subTermTypes);
+            case 1:
+                return types.get(0);
+            default:
+                return new OneOf(types);
         }
-        return new IllFormedTermT(constructorName, subTermTypes);
     }
 
     public void registerConstructor(Type sort, String name, List<Type> subTermTypes) {

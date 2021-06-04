@@ -5,12 +5,12 @@ import java.util.List;
 public class TypedConstructor {
     public final String constructorName;
     public final List<Type> subTermTypes;
-    public final Type sort;
+    public final Type type;
 
-    public TypedConstructor(String constructorName, List<Type> subTermTypes, Type sort) {
+    public TypedConstructor(String constructorName, List<Type> subTermTypes, Type type) {
         this.constructorName = constructorName;
         this.subTermTypes = subTermTypes;
-        this.sort = sort;
+        this.type = type;
     }
 
     @Override public int hashCode() {
@@ -18,7 +18,7 @@ public class TypedConstructor {
         int result = 1;
         result = prime * result + constructorName.hashCode();
         result = prime * result + subTermTypes.hashCode();
-        result = prime * result + sort.hashCode();
+        result = prime * result + type.hashCode();
         return result;
     }
 
@@ -34,7 +34,7 @@ public class TypedConstructor {
             return false;
         if(!subTermTypes.equals(other.subTermTypes))
             return false;
-        if(!sort.equals(other.sort))
+        if(!type.equals(other.type))
             return false;
         return true;
     }
