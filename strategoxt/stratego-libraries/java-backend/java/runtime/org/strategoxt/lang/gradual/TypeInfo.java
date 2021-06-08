@@ -1,12 +1,14 @@
 package org.strategoxt.lang.gradual;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +29,21 @@ public class TypeInfo {
         }
     }
 
-    public boolean typeIsA(Type currentType, Type type) {
-        // TODO: Handle `type instanceof SortVar`, pass a bindings state object
+    public boolean typeIsA(Type currentType, Type type, Map<SortVar, Type> env) {
+        if(type instanceof SortVar) {
+            final SortVar sortvar = (SortVar) type;
+            final Type typeOfVar = env.get(sortvar);
+            if(typeOfVar != null) {
+                final Type lub = leastUpperBound(Arrays.asList(currentType, typeOfVar), env);
+                if(lub == IllFormedTerms.INSTANCE) {
+                    return false;
+                }
+                env.put(sortvar, lub);
+            } else {
+                env.put(sortvar, currentType);
+            }
+            return true;
+        }
         if(type == DynT.INSTANCE) {
             // TODO: what relation is this? Is currentType == DynT.INSTANCE also ok?
             return true;
@@ -38,7 +53,9 @@ public class TypeInfo {
         }
         if(currentType instanceof OneOf) {
             for(Type ct : ((OneOf) currentType).types) {
-                if(typeIsA(ct, type)) {
+                final Map<SortVar, Type> speculativeEnv = new HashMap<>(env);
+                if(typeIsA(ct, type, speculativeEnv)) {
+                    env.putAll(speculativeEnv);
                     return true;
                 }
             }
@@ -46,7 +63,9 @@ public class TypeInfo {
         }
         if(type instanceof OneOf) {
             for(Type t : ((OneOf) type).types) {
-                if(typeIsA(currentType, t)) {
+                final Map<SortVar, Type> speculativeEnv = new HashMap<>(env);
+                if(typeIsA(currentType, t, speculativeEnv)) {
+                    env.putAll(speculativeEnv);
                     return true;
                 }
             }
@@ -56,7 +75,7 @@ public class TypeInfo {
             final Sort currentSort = (Sort) currentType;
             final Sort sort = (Sort) type;
             if(currentSort.sort.equals(sort.sort)) {
-                return typeIsA(currentSort.types, sort.types);
+                return typeIsA(currentSort.types, sort.types, env);
             }
         }
         if(((currentType instanceof IntT) || (currentType instanceof RealT) || (currentType instanceof StringT)) && currentType.equals(type)) {
@@ -65,10 +84,10 @@ public class TypeInfo {
         return false;
     }
 
-    public boolean typeIsA(Collection<Type> currentTypes, Collection<Type> types) {
+    public boolean typeIsA(Collection<Type> currentTypes, Collection<Type> types, Map<SortVar, Type> env) {
         if(currentTypes.size() == types.size()) {
             for(Iterator<Type> ctIter = currentTypes.iterator(), tIter = types.iterator(); ctIter.hasNext();) {
-                if(!typeIsA(ctIter.next(), tIter.next())) {
+                if(!typeIsA(ctIter.next(), tIter.next(), env)) {
                     return false;
                 }
             }
@@ -77,7 +96,7 @@ public class TypeInfo {
         return false;
     }
 
-    public Type leastUpperBound(List<Type> subTermTypes) {
+    public Type leastUpperBound(List<Type> subTermTypes, Map<SortVar, Type> env) {
         // TODO: how does this interact with IllFormedTermT?
         // TODO: And SortVar? Pass around the environment everywhere? Need bounds instead of binding
         if(subTermTypes.isEmpty()) {
@@ -87,9 +106,9 @@ public class TypeInfo {
         Type lub = it.next();
         while(it.hasNext()) {
             final Type next = it.next();
-            if(typeIsA(lub, next)) {
+            if(typeIsA(lub, next, new HashMap<>(env))) {
                 lub = next;
-            } else if(typeIsA(next, lub)) {
+            } else if(typeIsA(next, lub, new HashMap<>(env))) {
                 // next <: lub is fine
             } else {
                 final java.util.Set<Type> upperBounds = new HashSet<>();
@@ -98,7 +117,7 @@ public class TypeInfo {
                 if(upperBounds.isEmpty()) {
                     lub = IllFormedTerms.INSTANCE;
                 } else {
-                    lub = lowestType(upperBounds);
+                    lub = lowestType(upperBounds, env);
                 }
                 // TODO: cache found LUB?
             }
@@ -106,13 +125,13 @@ public class TypeInfo {
        return lub;
     }
 
-    private Type lowestType(Collection<Type> relatedTypes) {
+    private Type lowestType(Collection<Type> relatedTypes, Map<SortVar, Type> env) {
         assert relatedTypes.size() > 1;
         final Iterator<Type> it = relatedTypes.iterator();
         Type lowestType = it.next();
         while(it.hasNext()) {
             final Type next = it.next();
-            if(!typeIsA(lowestType, next)) {
+            if(!typeIsA(lowestType, next, new HashMap<>(env))) {
                 lowestType = next;
             }
         }
@@ -124,8 +143,29 @@ public class TypeInfo {
         final Set.Immutable<TypedConstructor> typedConstructors =
             consSorts.get(new ConstructorArity(constructorName, subTermTypes.size()));
         for(TypedConstructor tc : typedConstructors) {
-            if(typeIsA(subTermTypes, tc.subTermTypes)) {
-                types.add(tc.type);
+            final Map<SortVar, Type> env = new HashMap<>();
+            if(tc.type instanceof Sort) {
+                for(Type ta : ((Sort) tc.type).types) {
+                    if(ta instanceof SortVar) {
+                        env.put((SortVar) ta, null);
+                    }
+                }
+            }
+            if(typeIsA(subTermTypes, tc.subTermTypes, env)) {
+                if(tc.type instanceof Sort) {
+                    final Sort sort = (Sort) tc.type;
+                    final List<Type> typeArgs = new ArrayList<>(sort.types.size());
+                    for(Type ta : sort.types) {
+                        if(ta instanceof SortVar) {
+                            typeArgs.add(env.get((SortVar) ta));
+                        } else {
+                            typeArgs.add(ta);
+                        }
+                    }
+                    types.add(new Sort(sort.sort, typeArgs));
+                } else {
+                    types.add(tc.type);
+                }
             }
         }
         switch(types.size()) {

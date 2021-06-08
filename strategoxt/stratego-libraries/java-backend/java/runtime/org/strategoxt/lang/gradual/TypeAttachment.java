@@ -10,6 +10,7 @@ import static org.spoofax.interpreter.terms.IStrategoTerm.TUPLE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashMap;
 
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -65,7 +66,7 @@ public class TypeAttachment extends AbstractTermAttachment {
                 if(subTermTypes.isEmpty()) {
                     return new Sort("List", Collections.singletonList(IllFormedTerms.INSTANCE));
                 }
-                final Type leastUpperBound = typeInfo.leastUpperBound(subTermTypes);
+                final Type leastUpperBound = typeInfo.leastUpperBound(subTermTypes, new HashMap<>());
                 return new Sort("List", Collections.singletonList(leastUpperBound));
             case TUPLE:
                 return new Sort("Tuple", subTermTypes);
