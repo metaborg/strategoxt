@@ -96,8 +96,6 @@ strategies
     ; rules( 
         CallIsClosure : 
           |[ f~{t1*}(s*|t2*) ]| -> |[ f~{ApplyClosure(),t1*}(s*|t2*) ]| 
-        CallIsClosure : 
-          ProxyT(s*,t*,i,o,SVar(f{t1*})) -> ProxyT(s*,t*,i,o,SVar(f{ApplyClosure(),t1*}))
       )
 
   escaping-arg :
@@ -137,7 +135,6 @@ strategies
     CallDynamic(id, map(arg-should-be-closure <+ arg-should-be-closure-undeclared), id)
 
   arg-should-be-closure = CallT(SVar(arg-should-be-closure-name), ?[], ?[])
-  arg-should-be-closure = ProxyT(id, id, id, id, SVar(arg-should-be-closure-name))
 
   arg-should-be-closure-name:
     f{Frames(frames)} -> f{Closure(x),Frames(frames)}
@@ -161,9 +158,6 @@ strategies
 
   Arity :
     ConstType(t) -> 0
-
-  Arity :
-    DynT(t) -> 0
 
   Arity :
     FunType(ts, t) -> <length> ts

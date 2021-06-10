@@ -24,8 +24,6 @@ imports
   backend-simplify
   s2j-options
   lib/dr-scoping
-  signatures-sig
-  strategies-sig
 
 signature
   constructors 
@@ -482,8 +480,6 @@ rules
             compiledContext.registerComponent("~x_name");
             x_name.init(compiledContext);
             bstm1*
-            bstm3*
-            compiledContext.typeInfo.finishRegistration();
           }
         ]|
         
@@ -492,7 +488,6 @@ rules
             compiledContext.registerComponent("~x_name");
             x_name.init(compiledContext);
             bstm2*
-            bstm3*
           }
         ]|
       }
@@ -501,7 +496,6 @@ rules
       // HACK: non-lazy defs are used only to trick javac to compile everything atm
       bstm1* := <filter(java-register-strategy)> defs
     ; bstm2* := <filter(java-register-strategy-lazy)> defs
-    ; bstm3* := <filter(java-register-signature)> sigs
     ; x_name := <ApplicationName>
 
   java-register-strategy :
@@ -519,34 +513,6 @@ rules
       y := <conc-strings> (<get-config> "-p", ".", x)
     <+
       y := <conc-strings> (<ApplicationName>, "$", x)
-
-  java-register-signature:
-    OpDecl(str, optype) ->
-    bstm |[ compiledContext.typeInfo.registerConstructor(e_sort, e_str, Arrays.asList(e_ty*)); ]|
-  with
-    (e_sort, e_ty*) := <java-reg-optype> optype
-  ; e_str := Lit(String([Chars(str)]))
-
-  java-register-signature:
-    OpDeclInj(FunType([from], to)) ->
-    bstm |[ compiledContext.typeInfo.registerInjection(e_from, e_to); ]|
-  with
-    e_from := <translate-ConstType> from
-  ; e_to := <translate-ConstType> to
-
-  // TODO: write java-register-signature for other OpDeclInj which are injections from TupleType to a Sort? 
-
-  java-reg-optype =
-    translate-ConstType; !(<id>, [])
-
-  java-reg-optype:
-    FunType(ty*, sort) -> (e_sort, e_ty*)
-  with
-    e_sort := <translate-ConstType> sort
-  ; e_ty* := <map(translate-ConstType)> ty*
-
-  translate-ConstType = ?ConstType(<translate-Type>)
-  translate-ConstType = ?DynT(_); translate-Type
 
 rules
 
@@ -828,10 +794,10 @@ rules
   ; (id, concat)
 
   translate-param :
-    VarDec(x{}, <?ConstType(_) <+ ?DynT(_)>) -> (param |[ IStrategoTerm x ]|, [])
+    VarDec(x{}, <?ConstType(_)>) -> (param |[ IStrategoTerm x ]|, [])
 
   translate-param :
-    VarDec(x{Offset(_), Escapes()}, <?ConstType(_) <+ ?DynT(_)>) ->
+    VarDec(x{Offset(_), Escapes()}, <?ConstType(_)>) ->
     ( param |[ IStrategoTerm x' ]|
     , bstm* |[ TermReference x = new TermReference(x'); ]|)
     with
@@ -851,10 +817,10 @@ rules
     map(translate-arg)
 
   translate-arg :
-    VarDec(x{}, <?ConstType(_) <+ ?DynT(_)>) -> expr |[ x ]|
+    VarDec(x{}, <?ConstType(_)>) -> expr |[ x ]|
 
   translate-arg :
-    VarDec(x{Offset(_), Escapes()}, <?ConstType(_) <+ ?DynT(_)>) -> expr |[ x.value ]|
+    VarDec(x{Offset(_), Escapes()}, <?ConstType(_)>) -> expr |[ x.value ]|
   
   translate-arg : 
     VarDec(x, FunType(_, _)) -> expr |[ x ]|
@@ -960,11 +926,8 @@ strategies
   translate-strategy = 
        ( 
        translate-Platform
-    <+ translate-Cast
-    <+ translate-TypeTest
     <+ translate-CallT-dynamic
     <+ translate-CallT
-    <+ translate-ProxyT
     <+ translate-Build
     <+ translate-Seq
     <+ translate-PrimT-constant
@@ -1051,96 +1014,6 @@ strategies
         ?bstm_init*
       )
 
-  translate-ProxyT:
-    ProxyT(s*, t*, i, o, SVar(x)) ->
-    bstm* |[
-      bstm_init*
-      Proxy x_proxy = new Proxy(context, e_coercion, e_instance);
-      term = x_proxy.invoke(context, term);
-      if (term == null) 
-        break Fail;
-    ]|
-    with
-      x_proxy := <concat-strings;newname> ["proxy_", x]
-    ; e_coercion := <translate-FunTCoercion> (s*, t*, i, o)
-    ; lifted-decls-wrap(
-        e_instance := <lifted-call-to-instance> CallT(SVar(x), [], [])
-      ,
-        ?bstm_init*
-      )
-
-  translate-FunTCoercion:
-    (s*, t*, i, o) ->
-    |[ new FunTCoercion(Arrays.asList(e_s*), Arrays.asList(e_t*), e_i, e_o) ]|
-  with
-    e_s* := <map(translate-SCoercion)> s*
-  ; e_t* := <map(translate-Coercion)> t*
-  ; e_i := <translate-Coercion> i
-  ; e_o := <translate-Coercion> o
-
-  translate-Coercion:
-    Id() -> |[ IdCoercion.INSTANCE ]|
-
-  translate-Coercion:
-    RuntimeCheck(type) -> |[ new TypeCoercion(e_type) ]|
-  with
-    e_type := <translate-Type> type
-
-  translate-Type:
-    StringT() -> |[ StringT.INSTANCE ]|
-
-  translate-Type:
-    IntT() -> |[ IntT.INSTANCE ]|
-
-  translate-Type:
-    RealT() -> |[ RealT.INSTANCE ]|
-
-  translate-Type:
-    Sort(str, args) -> |[ new Sort(e_str, Arrays.asList(e_ty*)) ]|
-  with
-    e_ty* := <map(translate-Type)> args
-  ; e_str := Lit(String([Chars(str)]))
-
-  translate-Type:
-    SortVar(str) -> |[ new SortVar(e_str) ]|
-  with
-    e_str := Lit(String([Chars(str)]))
-
-  translate-Type:
-    DynT(_) -> |[ DynT.INSTANCE ]|
-
-  translate-SCoercion:
-    SId() -> |[ FunTCoercion.ID ]|
-
-  translate-SCoercion:
-    SRuntimeCheck(funttype) ->
-    <translate-SType> funttype
-
-  translate-SType:
-    FunTType(s*, t*, FunNoArgsType(i, o)) ->
-    |[ new FunTCoercion(Arrays.asList(e_s*), Arrays.asList(e_t*), e_i, e_o) ]|
-  with
-    e_s* := <map(translate-SType)> s*
-  ; e_t* := <map(!RuntimeCheck(<id>);translate-Coercion)> t*
-  ; e_i := <translate-Coercion> RuntimeCheck(i)
-  ; e_o := <translate-Coercion> RuntimeCheck(o)
-
-  translate-Cast:
-    Cast(RuntimeCheck(type)) ->
-    bstm* |[
-      Cast.check(context, term, e_type);
-    ]|
-    with
-      e_type := <translate-Type> type
-
-  translate-TypeTest:
-    TypeTest(type) ->
-    bstm* |[
-      if(!Cast.test(context, term, e_type)) break Fail;
-    ]|
-    with
-      e_type := <translate-Type> type
-
   translate-PrimT :
     CallDynamic(f, s*, t*) -> <fail>
     with
@@ -1179,7 +1052,7 @@ strategies
     )
   
   lifted-strategy-to-instance =
-    if ?CallT(_, _, _) + ?ProxyT(_, _, _, _, _) then
+    if ?CallT(_, _, _) then
       // Pass (potentially parameterizable) svar calls as-is
       lifted-call-to-instance
     else
@@ -1192,8 +1065,6 @@ strategies
     end
   
   lifted-call-to-instance =
-    lifted-call-to-instance-proxy
-  <+
     lifted-call-to-instance-self-call
   <+
     lifted-call-to-instance-from-frame
@@ -1203,23 +1074,6 @@ strategies
     lifted-call-to-instance-direct
   <+
     lifted-call-to-instance-instance
-
-  lifted-call-to-instance-proxy :
-    ProxyT(s*, t*, i, o, SVar(x)) ->
-    expr |[ x_proxy ]|
-    with
-      x_proxy := <concat-strings;newname> ["proxy_", x]
-    ; rules(
-        CallTDecl: x_proxy -> x_proxy
-      )
-    ; e_coercion := <translate-FunTCoercion> (s*, t*, i, o)
-    ; e_instance := <lifted-call-to-instance> CallT(SVar(x), [], [])
-    ; init := bstm |[
-        Proxy x_proxy = new Proxy(context, e_coercion, e_instance);
-      ]|
-    ; rules(
-        CallTDecls :+= init
-      )
   
   lifted-call-to-instance-self-call :
     CallT(SVar(x), _, _) -> expr |[ this ]|

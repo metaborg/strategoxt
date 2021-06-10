@@ -1,6 +1,5 @@
 module Stratego
 imports Stratego-Sugar
-imports Stratego-Gradual
 hiddens
   context-free start-symbols Module
 
