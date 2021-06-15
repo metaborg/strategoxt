@@ -30,6 +30,12 @@ public class TypeInfo {
     }
 
     public boolean typeIsA(Type currentType, Type type, Map<SortVar, Type> env) {
+        if(currentType == type) {
+            return true;
+        }
+        if(currentType == BottomT.INSTANCE) {
+            return true;
+        }
         if(type instanceof SortVar) {
             final SortVar sortvar = (SortVar) type;
             final Type typeOfVar = env.get(sortvar);
@@ -157,7 +163,12 @@ public class TypeInfo {
                     final List<Type> typeArgs = new ArrayList<>(sort.types.size());
                     for(Type ta : sort.types) {
                         if(ta instanceof SortVar) {
-                            typeArgs.add(env.get((SortVar) ta));
+                            Type lookupResult = env.get((SortVar) ta);
+                            if(lookupResult != null) {
+                                typeArgs.add(lookupResult);
+                            } else {
+                                typeArgs.add(BottomT.INSTANCE);
+                            }
                         } else {
                             typeArgs.add(ta);
                         }
