@@ -31,7 +31,7 @@ public class Proxy extends Strategy {
         final Type currentType = TypeAttachment.getOrComputeType(context.typeInfo, current);
         if(!coercion.inputCoercion.test(context.typeInfo, currentType)) {
             assert coercion.inputCoercion instanceof TypeCoercion;
-            throw new StrategoCastException(currentType, ((TypeCoercion) coercion.inputCoercion).type);
+            throw new StrategoCastException(currentType, ((TypeCoercion) coercion.inputCoercion).type, current);
         }
         final Strategy[] proxies = new Strategy[s.length];
         final List<FunTCoercion> sargCoercions = coercion.sargCoercions;
@@ -46,7 +46,7 @@ public class Proxy extends Strategy {
         final Type resultType = TypeAttachment.getOrComputeType(context.typeInfo, result);
         if(!coercion.outputCoercion.test(context.typeInfo, resultType)) {
             assert coercion.outputCoercion instanceof TypeCoercion;
-            throw new StrategoCastException(resultType, ((TypeCoercion) coercion.outputCoercion).type);
+            throw new StrategoCastException(resultType, ((TypeCoercion) coercion.outputCoercion).type, result);
         }
         return result;
     }

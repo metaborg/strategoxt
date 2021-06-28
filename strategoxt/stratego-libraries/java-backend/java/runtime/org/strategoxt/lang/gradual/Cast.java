@@ -10,7 +10,7 @@ public class Cast {
         if(context.typeInfo.typeIsA(currentType, type, new HashMap<>())) {
             return;
         }
-        throw new StrategoCastException(currentType, type);
+        throw new StrategoCastException(currentType, type, current);
     }
 
     public static boolean test(Context context, IStrategoTerm current, Type type) {

@@ -22,7 +22,7 @@ public class FunTCoercion {
         this.outputCoercion = outputCoercion;
     }
 
-    public FunTCoercion wrapWith(Context context, FunTCoercion coercion) throws StrategoCastException {
+    public FunTCoercion wrapWith(Context context, FunTCoercion coercion) throws StrategoSCastException {
         if(sargCoercions.size() != coercion.sargCoercions.size() || targCoercions.size() != coercion.targCoercions.size()) {
             throw new StrategoSCastException(this, coercion);
         }
