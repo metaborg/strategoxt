@@ -70,6 +70,8 @@
 										<exclude>org/strategoxt/lang/parallel/**/*</exclude>
 										<exclude>io/usethesource/capsule/**/*</exclude>
 										<exclude>rx/**/*</exclude>
+										<exclude>io/reactivex/**/*</exclude>
+										<exclude>org/reactivestreams/**/*</exclude>
 									</excludes>
 								</filter>
 							</filters>
