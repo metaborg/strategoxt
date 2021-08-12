@@ -19,4 +19,8 @@ public class StringT implements Type {
     public String toString() {
         return "string";
     }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

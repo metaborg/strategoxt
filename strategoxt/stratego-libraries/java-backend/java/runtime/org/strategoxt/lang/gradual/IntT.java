@@ -19,4 +19,8 @@ public class IntT implements Type {
     public String toString() {
         return "int";
     }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

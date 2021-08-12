@@ -20,4 +20,8 @@ public class IllFormedTerms implements Type {
     public int hashCode() {
         return System.identityHashCode(this);
     }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

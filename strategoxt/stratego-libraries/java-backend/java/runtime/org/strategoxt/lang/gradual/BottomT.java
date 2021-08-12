@@ -19,4 +19,8 @@ public class BottomT implements Type {
     public String toString() {
         return "_|_";
     }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }
