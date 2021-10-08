@@ -6,6 +6,10 @@ import static org.spoofax.interpreter.terms.IStrategoTerm.LIST;
 import static org.spoofax.interpreter.terms.IStrategoTerm.REAL;
 import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
 import static org.spoofax.interpreter.terms.IStrategoTerm.TUPLE;
+import static org.spoofax.interpreter.terms.IStrategoTerm.BLOB;
+import static org.spoofax.interpreter.terms.IStrategoTerm.PLACEHOLDER;
+import static org.spoofax.interpreter.terms.IStrategoTerm.REF;
+import static org.spoofax.interpreter.terms.IStrategoTerm.CTOR;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,6 +74,12 @@ public class TypeAttachment extends AbstractTermAttachment {
                 return new Sort("List", Collections.singletonList(leastUpperBound));
             case TUPLE:
                 return new Sort("Tuple", subTermTypes);
+            case BLOB:
+                return BlobT.INSTANCE;
+            case PLACEHOLDER:
+                return new Sort("Placeholder", subTermTypes);
+            case REF:
+            case CTOR:
             default:
                 throw new StrategoTypeException(current);
         }

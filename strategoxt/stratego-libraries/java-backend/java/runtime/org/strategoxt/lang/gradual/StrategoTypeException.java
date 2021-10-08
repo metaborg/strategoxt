@@ -7,6 +7,7 @@ public class StrategoTypeException extends StrategoException {
     public final IStrategoTerm current;
 
     public StrategoTypeException(IStrategoTerm current) {
+        super("Cannot compute type of term '" + current + "' of term type '" + current.getTermType() + "'.");
         this.current = current;
     }
 
