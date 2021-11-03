@@ -18,6 +18,7 @@
   <properties>
     <strategoxt-assembly-location>${basedir}/assembly.xml</strategoxt-assembly-location>
     <strategoxt-build-location>${basedir}/../</strategoxt-build-location>
+    <strategoxt-legacy-binary-location>${basedir}/../../../../spoofax/org.metaborg.spoofax.nativebundle/src/main/resources/org/metaborg/spoofax/nativebundle/native</strategoxt-legacy-binary-location>
 
     <strategoxt-skip-build>false</strategoxt-skip-build>
     <strategoxt-skip-assembly>false</strategoxt-skip-assembly>
@@ -39,7 +40,7 @@
         </os>
       </activation>
       <properties>
-        <strategoxt-nativepath>share/strategoxt/linux</strategoxt-nativepath>
+        <strategoxt-nativepath>${strategoxt-legacy-binary-location}/linux</strategoxt-nativepath>
       </properties>
     </profile>
     <!-- Order of profiles is important here because OSX is of both the unix and mac families, last profile that
@@ -52,7 +53,7 @@
         </os>
       </activation>
       <properties>
-        <strategoxt-nativepath>share/strategoxt/macosx</strategoxt-nativepath>
+        <strategoxt-nativepath>${strategoxt-legacy-binary-location}/macosx</strategoxt-nativepath>
       </properties>
     </profile>
     <profile>
@@ -63,7 +64,7 @@
         </os>
       </activation>
       <properties>
-        <strategoxt-nativepath>share/strategoxt/cygwin</strategoxt-nativepath>
+        <strategoxt-nativepath>${strategoxt-legacy-binary-location}/cygwin</strategoxt-nativepath>
       </properties>
     </profile>
   </profiles>
@@ -139,7 +140,7 @@
                   value="${strategoxt-baseline-location}" />
                 <property
                   name="nativepath"
-                  value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                  value="${strategoxt-nativepath}" />
                 <property
                   name="install-prefix-out"
                   value="${strategoxt-dist-location}" />
@@ -176,7 +177,7 @@
                   value="${strategoxt-baseline-location}" />
                 <property
                   name="nativepath"
-                  value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                  value="${strategoxt-nativepath}" />
                 <property
                   name="install-prefix-out"
                   value="${strategoxt-dist-location}" />

@@ -94,7 +94,7 @@
                   value="${strategoxt-baseline-location}" />
                 <property
                   name="nativepath"
-                  value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                  value="${strategoxt-nativepath}" />
                 <!-- Set install-prefix to baseline location, so that tests use that to find dependencies during compilation -->
                 <property
                   name="install-prefix-out"
