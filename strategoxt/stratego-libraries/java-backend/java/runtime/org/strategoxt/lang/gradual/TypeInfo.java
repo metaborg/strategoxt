@@ -84,7 +84,7 @@ public class TypeInfo {
                 return typeIsA(currentSort.types, sort.types, env);
             }
         }
-        if(((currentType instanceof IntT) || (currentType instanceof RealT) || (currentType instanceof StringT)) && currentType.equals(type)) {
+        if(((currentType instanceof IntT) || (currentType instanceof RealT) || (currentType instanceof StringT) || (currentType instanceof BlobT)) && currentType.equals(type)) {
           return true;
         }
         return false;
