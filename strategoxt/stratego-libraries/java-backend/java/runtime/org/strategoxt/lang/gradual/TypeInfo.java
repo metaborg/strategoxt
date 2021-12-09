@@ -82,6 +82,11 @@ public class TypeInfo {
             final Sort sort = (Sort) type;
             if(currentSort.sort.equals(sort.sort)) {
                 return typeIsA(currentSort.types, sort.types, env);
+            } else {
+                final List<Type> injectIntoType = new ArrayList<>(injections.inverse().get(type));
+                // remove the type itself and any cycles
+                injectIntoType.removeIf(t -> injections.containsEntry(type, t));
+                return typeIsA(currentType, new OneOf(injectIntoType), env);
             }
         }
         if(((currentType instanceof IntT) || (currentType instanceof RealT) || (currentType instanceof StringT) || (currentType instanceof BlobT)) && currentType.equals(type)) {
@@ -121,27 +126,36 @@ public class TypeInfo {
                 upperBounds.addAll(injections.get(lub));
                 upperBounds.retainAll(injections.get(next));
                 if(upperBounds.isEmpty()) {
-                    lub = IllFormedTerms.INSTANCE;
+                    return IllFormedTerms.INSTANCE;
                 } else {
                     lub = lowestType(upperBounds, env);
                 }
                 // TODO: cache found LUB?
             }
         }
-       return lub;
+        return lub;
     }
 
     private Type lowestType(Collection<Type> relatedTypes, Map<SortVar, Type> env) {
         assert relatedTypes.size() > 1;
-        final Iterator<Type> it = relatedTypes.iterator();
-        Type lowestType = it.next();
-        while(it.hasNext()) {
-            final Type next = it.next();
-            if(!typeIsA(lowestType, next, new HashMap<>(env))) {
-                lowestType = next;
+        final List<Type> types = new ArrayList<>();
+        lowerType:
+        for(Type candidateLowestType : relatedTypes) {
+            for(Type testType : relatedTypes) {
+                if(candidateLowestType == testType) {
+                    continue;
+                }
+                if(typeIsA(testType, candidateLowestType, new HashMap<>(env))) {
+                    continue lowerType;
+                }
             }
+            types.add(candidateLowestType);
         }
-        return lowestType;
+        if(types.size() == 1) {
+            return types.get(0);
+        } else {
+            return new OneOf(types);
+        }
     }
 
     public Type typeOf(String constructorName, List<Type> subTermTypes) {
