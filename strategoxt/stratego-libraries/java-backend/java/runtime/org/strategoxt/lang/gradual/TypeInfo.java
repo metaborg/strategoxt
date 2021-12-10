@@ -86,7 +86,14 @@ public class TypeInfo {
                 final List<Type> injectIntoType = new ArrayList<>(injections.inverse().get(type));
                 // remove the type itself and any cycles
                 injectIntoType.removeIf(t -> injections.containsEntry(type, t));
-                return typeIsA(currentType, new OneOf(injectIntoType), env);
+                switch(injectIntoType.size()) {
+                    case 0:
+                        return false;
+                    case 1:
+                        return typeIsA(currentType, injectIntoType.get(0), env);
+                    default:
+                        return typeIsA(currentType, new OneOf(injectIntoType), env);
+                }
             }
         }
         if(((currentType instanceof IntT) || (currentType instanceof RealT) || (currentType instanceof StringT) || (currentType instanceof BlobT)) && currentType.equals(type)) {
