@@ -51,21 +51,23 @@ public class TypeInfo {
             return true;
         }
         if(type == DynT.INSTANCE) {
-            // TODO: what relation is this? Is currentType == DynT.INSTANCE also ok?
             return true;
         }
         if(injections.containsEntry(currentType, type)) {
             return true;
         }
         if(currentType instanceof OneOf) {
+            boolean result = false;
             for(Type ct : ((OneOf) currentType).types) {
                 final Map<SortVar, Type> speculativeEnv = new HashMap<>(env);
                 if(typeIsA(ct, type, speculativeEnv)) {
                     env.putAll(speculativeEnv);
-                    return true;
+                    result = true;
+                } else {
+                    return false;
                 }
             }
-            return false;
+            return result;
         }
         if(type instanceof OneOf) {
             for(Type t : ((OneOf) type).types) {
@@ -115,8 +117,7 @@ public class TypeInfo {
     }
 
     public Type leastUpperBound(List<Type> subTermTypes, Map<SortVar, Type> env) {
-        // TODO: how does this interact with IllFormedTermT?
-        // TODO: And SortVar? Pass around the environment everywhere? Need bounds instead of binding
+        // TODO: how does this interact with SortVar? Pass around the environment everywhere? Need bounds instead of binding
         if(subTermTypes.isEmpty()) {
             throw new IllegalArgumentException("least upper bound of empty list is undefined");
         }
@@ -129,7 +130,7 @@ public class TypeInfo {
             } else if(typeIsA(next, lub, new HashMap<>(env))) {
                 // next <: lub is fine
             } else if(sharedPrefix(next, lub)) {
-                // List(A) v List(B) == List(A v B)
+                // e.g. List(A) v List(B) == List(A v B)
                 final Sort nextSort = (Sort) next;
                 final Sort lubSort = (Sort) lub;
                 final List<Type> argumentTypes = new ArrayList<>(nextSort.types.size());
@@ -144,6 +145,7 @@ public class TypeInfo {
                 upperBounds.addAll(injections.get(lub));
                 upperBounds.retainAll(injections.get(next));
                 if(upperBounds.isEmpty()) {
+                    // TODO: use OneOf here instead?
                     return IllFormedTerms.INSTANCE;
                 } else {
                     lub = lowestType(upperBounds, env);
