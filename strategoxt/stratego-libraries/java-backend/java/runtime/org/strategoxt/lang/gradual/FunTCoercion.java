@@ -40,4 +40,8 @@ public class FunTCoercion {
         final Coercion newOutputCoercion = coercion.outputCoercion.preCompose(typeInfo, outputCoercion);
         return new FunTCoercion(newSargCoercions, newTargCoercions, newInputCoercion, newOutputCoercion);
     }
+
+    @Override public String toString() {
+        return "([" + sargCoercions + "], [" + targCoercions + "], " + inputCoercion + ", " + outputCoercion + ")";
+    }
 }

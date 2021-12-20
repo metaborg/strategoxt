@@ -83,14 +83,14 @@ public class TypeInfo {
             if(currentSort.sort.equals(sort.sort)) {
                 return typeIsA(currentSort.types, sort.types, env);
             } else {
-                final List<Type> injectIntoType = new ArrayList<>(injections.inverse().get(type));
+                final java.util.Set<Type> injectIntoType = new HashSet<>(injections.inverse().get(type));
                 // remove the type itself and any cycles
                 injectIntoType.removeIf(t -> injections.containsEntry(type, t));
                 switch(injectIntoType.size()) {
                     case 0:
                         return false;
                     case 1:
-                        return typeIsA(currentType, injectIntoType.get(0), env);
+                        return typeIsA(currentType, injectIntoType.iterator().next(), env);
                     default:
                         return typeIsA(currentType, new OneOf(injectIntoType), env);
                 }
@@ -128,6 +128,17 @@ public class TypeInfo {
                 lub = next;
             } else if(typeIsA(next, lub, new HashMap<>(env))) {
                 // next <: lub is fine
+            } else if(sharedPrefix(next, lub)) {
+                // List(A) v List(B) == List(A v B)
+                final Sort nextSort = (Sort) next;
+                final Sort lubSort = (Sort) lub;
+                final List<Type> argumentTypes = new ArrayList<>(nextSort.types.size());
+                for(Iterator<Type> nextIter = nextSort.types.iterator(), lubIter = lubSort.types.iterator(); nextIter.hasNext();) {
+                    final Type nextArgType = nextIter.next();
+                    final Type lubArgType = lubIter.next();
+                    argumentTypes.add(leastUpperBound(Arrays.asList(nextArgType, lubArgType), env));
+                }
+                lub = new Sort(((Sort) next).sort, argumentTypes);
             } else {
                 final java.util.Set<Type> upperBounds = new HashSet<>();
                 upperBounds.addAll(injections.get(lub));
@@ -143,9 +154,18 @@ public class TypeInfo {
         return lub;
     }
 
+    private boolean sharedPrefix(Type next, Type lub) {
+        if(next instanceof Sort && lub instanceof Sort) {
+            final Sort nextSort = (Sort) next;
+            final Sort lubSort = (Sort) lub;
+            return nextSort.sort.equals(lubSort.sort) && nextSort.types.size() == lubSort.types.size();
+        }
+        return false;
+    }
+
     private Type lowestType(Collection<Type> relatedTypes, Map<SortVar, Type> env) {
         assert relatedTypes.size() > 1;
-        final List<Type> types = new ArrayList<>();
+        final java.util.Set<Type> types = new HashSet<>();
         lowerType:
         for(Type candidateLowestType : relatedTypes) {
             for(Type testType : relatedTypes) {
@@ -159,14 +179,14 @@ public class TypeInfo {
             types.add(candidateLowestType);
         }
         if(types.size() == 1) {
-            return types.get(0);
+            return types.iterator().next();
         } else {
             return new OneOf(types);
         }
     }
 
     public Type typeOf(String constructorName, List<Type> subTermTypes) {
-        final List<Type> types = new ArrayList<>();
+        final java.util.Set<Type> types = new HashSet<>();
         final Set.Immutable<TypedConstructor> typedConstructors =
             consSorts.get(new ConstructorArity(constructorName, subTermTypes.size()));
         for(TypedConstructor tc : typedConstructors) {
@@ -204,7 +224,7 @@ public class TypeInfo {
             case 0:
                 return new IllFormedTermT(constructorName, subTermTypes);
             case 1:
-                return types.get(0);
+                return types.iterator().next();
             default:
                 return new OneOf(types);
         }

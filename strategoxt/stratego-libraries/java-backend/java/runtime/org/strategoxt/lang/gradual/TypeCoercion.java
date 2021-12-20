@@ -50,4 +50,8 @@ public class TypeCoercion implements Coercion {
         }
         throw new RuntimeException("Unknown subclass of Coercion");
     }
+
+    @Override public String toString() {
+        return "(" + type.toString() + ")";
+    }
 }

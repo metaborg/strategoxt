@@ -1,7 +1,7 @@
 package org.strategoxt.lang.gradual;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 /**
  * When deriving the type of an existing term, multiple sorts might apply, especially lower in the
@@ -9,9 +9,9 @@ import java.util.List;
  * an `Int("1")` right? 
  */
 public class OneOf implements Type {
-    public final List<Type> types;
+    public final Set<Type> types;
 
-    public OneOf(List<Type> types) {
+    public OneOf(Set<Type> types) {
         this.types = types;
         assert !types.isEmpty();
     }

@@ -1,6 +1,7 @@
 package org.strategoxt.lang.gradual;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 public class TypedConstructor {
     public final String constructorName;
@@ -37,5 +38,13 @@ public class TypedConstructor {
         if(!type.equals(other.type))
             return false;
         return true;
+    }
+
+    @Override public String toString() {
+        final StringJoiner subTerms = new StringJoiner(" * ");
+        for(Type type : subTermTypes) {
+            subTerms.add(type.toString());
+        }
+        return constructorName + " : " + subTerms.toString() + " -> " + type;
     }
 }
