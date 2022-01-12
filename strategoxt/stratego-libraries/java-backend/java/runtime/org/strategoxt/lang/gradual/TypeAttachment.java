@@ -52,7 +52,9 @@ public class TypeAttachment extends AbstractTermAttachment {
 
     private static Type computeType(TypeInfo typeInfo, IStrategoTerm current) {
         final List<Type> subTermTypes = new ArrayList<>(current.getSubtermCount());
-        for(IStrategoTerm subTerm : current) {
+        // Do NOT use the Iterable<IStrategoTerm> of `current`, the mutable collections implement this as iteration
+        //   over their values (which can easily result in a cyclic structure)
+        for(IStrategoTerm subTerm : current.getAllSubterms()) {
             final Type subTermType = getOrComputeType(typeInfo, subTerm);
             subTermTypes.add(subTermType);
         }
