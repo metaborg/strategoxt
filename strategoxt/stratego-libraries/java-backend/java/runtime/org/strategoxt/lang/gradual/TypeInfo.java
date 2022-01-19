@@ -30,7 +30,7 @@ public class TypeInfo {
     }
 
     public boolean typeIsA(Type currentType, Type type, Map<SortVar, Type> env) {
-        if(currentType == type) {
+        if(currentType == type || currentType.equals(type)) {
             return true;
         }
         if(currentType == BottomT.INSTANCE) {
@@ -41,9 +41,6 @@ public class TypeInfo {
             final Type typeOfVar = env.get(sortvar);
             if(typeOfVar != null) {
                 final Type lub = leastUpperBound(Arrays.asList(currentType, typeOfVar), env);
-                if(lub == IllFormedTerms.INSTANCE) {
-                    return false;
-                }
                 env.put(sortvar, lub);
             } else {
                 env.put(sortvar, currentType);
@@ -78,6 +75,29 @@ public class TypeInfo {
                 }
             }
             return false;
+        }
+        if(currentType instanceof AllOf) {
+            for(Type ct : ((AllOf) currentType).types) {
+                final Map<SortVar, Type> speculativeEnv = new HashMap<>(env);
+                if(typeIsA(ct, type, speculativeEnv)) {
+                    env.putAll(speculativeEnv);
+                    return true;
+                }
+            }
+            return false;
+        }
+        if(type instanceof AllOf) {
+            boolean result = false;
+            for(Type t : ((AllOf) type).types) {
+                final Map<SortVar, Type> speculativeEnv = new HashMap<>(env);
+                if(typeIsA(currentType, t, speculativeEnv)) {
+                    env.putAll(speculativeEnv);
+                    result = true;
+                } else {
+                    return false;
+                }
+            }
+            return result;
         }
         if(currentType instanceof Sort && type instanceof Sort) {
             final Sort currentSort = (Sort) currentType;
@@ -145,8 +165,7 @@ public class TypeInfo {
                 upperBounds.addAll(injections.get(lub));
                 upperBounds.retainAll(injections.get(next));
                 if(upperBounds.isEmpty()) {
-                    // TODO: use OneOf here instead?
-                    return IllFormedTerms.INSTANCE;
+                    return new OneOf(new HashSet<>(subTermTypes));
                 } else {
                     lub = lowestType(upperBounds, env);
                 }
@@ -183,7 +202,7 @@ public class TypeInfo {
         if(types.size() == 1) {
             return types.iterator().next();
         } else {
-            return new OneOf(types);
+            return new AllOf(types);
         }
     }
 
@@ -228,7 +247,7 @@ public class TypeInfo {
             case 1:
                 return types.iterator().next();
             default:
-                return new OneOf(types);
+                return new AllOf(types);
         }
     }
 

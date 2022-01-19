@@ -5,19 +5,22 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Unnamed union of types. Useful inside the type calculation / checking.
+ * Unnamed intersection of types. Useful for typing terms that could have multiple types.
+ * When deriving the type of an existing term, multiple sorts might apply, especially lower in the
+ * tree, when the signatures of multiple languages are loaded. I mean, which language doesn't have
+ * an `Int("1")` right?
  */
-public class OneOf implements Type {
+public class AllOf implements Type {
     public final Set<Type> types;
 
-    public OneOf(Set<Type> types) {
+    public AllOf(Set<Type> types) {
         if(types.isEmpty()) {
-            throw new IllegalArgumentException("Types in OneOf may not be empty");
+            throw new IllegalArgumentException("Types in AllOf may not be empty");
         }
         this.types = new HashSet<>();
         for(Type type : types) {
-            if(type instanceof OneOf) {
-                this.types.addAll(((OneOf) type).types);
+            if(type instanceof AllOf) {
+                this.types.addAll(((AllOf) type).types);
             } else {
                 this.types.add(type);
             }
@@ -38,7 +41,7 @@ public class OneOf implements Type {
             return false;
         if(getClass() != obj.getClass())
             return false;
-        OneOf other = (OneOf) obj;
+        AllOf other = (AllOf) obj;
         return types.equals(other.types);
     }
 
@@ -53,6 +56,6 @@ public class OneOf implements Type {
                 break;
             }
         }
-        return "oneOf(" + typesStringBuilder + ")";
+        return "allOf(" + typesStringBuilder + ")";
     }
 }
