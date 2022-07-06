@@ -20,19 +20,17 @@ public class IllFormedTermT implements Type {
         return result;
     }
 
-    @Override public boolean equals(Object obj) {
-        if(this == obj)
+    @Override public boolean equals(Object o) {
+        if(this == o)
             return true;
-        if(obj == null)
+        if(o == null || getClass() != o.getClass())
             return false;
-        if(getClass() != obj.getClass())
+
+        IllFormedTermT that = (IllFormedTermT)o;
+
+        if(!constructorName.equals(that.constructorName))
             return false;
-        TypedConstructor other = (TypedConstructor) obj;
-        if(!constructorName.equals(other.constructorName))
-            return false;
-        if(!subTermTypes.equals(other.subTermTypes))
-            return false;
-        return true;
+        return subTermTypes.equals(that.subTermTypes);
     }
 
     @Override

@@ -19,4 +19,8 @@ public class DynT implements Type {
     public String toString() {
         return "?";
     }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

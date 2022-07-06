@@ -1,6 +1,7 @@
 package org.strategoxt.lang.gradual;
 
 import java.util.Objects;
+import java.util.HashMap;
 
 public class TypeCoercion implements Coercion {
     public final Type type;
@@ -28,7 +29,7 @@ public class TypeCoercion implements Coercion {
     }
 
     @Override public boolean test(TypeInfo typeInfo, Type toCoerce) {
-        return typeInfo.typeIsA(toCoerce, type);
+        return typeInfo.typeIsA(toCoerce, type, new HashMap<>());
     }
 
     @Override public Coercion preCompose(TypeInfo typeInfo, Coercion coercion)
@@ -41,12 +42,16 @@ public class TypeCoercion implements Coercion {
             if(type == DynT.INSTANCE) {
                 return typeCoercion;
             }
-            if(typeInfo.typeIsA(type, typeCoercion.type)) {
+            if(typeInfo.typeIsA(type, typeCoercion.type, new HashMap<>())) {
                 return this;
             } else {
                 throw new StrategoCastException(type, typeCoercion.type);
             }
         }
         throw new RuntimeException("Unknown subclass of Coercion");
+    }
+
+    @Override public String toString() {
+        return "(" + type.toString() + ")";
     }
 }

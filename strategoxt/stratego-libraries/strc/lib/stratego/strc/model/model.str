@@ -136,7 +136,6 @@ strategies
       <+ \ ExtSDef(f, xs, ys)       -> (f, <length>xs, <length>ys) \
       <+ \ ExtSDefInl(f, xs, ys, s) -> (f, <length>xs, <length>ys) \
       <+ \ RDefT(f, xs, ys, s)      -> (f, <length>xs, <length>ys) \
-      <+ \ DefHasType(f, FunTType(xs, ys, _, _)) -> (f, <length>xs, <length>ys) \
       <+ \ AnnoDef(a*, def)         -> <m-def-signature> def\)
 
   is-external =
@@ -178,22 +177,13 @@ strategies
     OpDeclInj(ConstType(_))    -> (Inj(), 0)
 
   m-constr-signature :
-    OpDeclInj(DynT(_))    -> (Inj(), 0)
-
-  m-constr-signature :
     OpDeclQ(c, ConstType(x))   -> (Q(c), 0)
-
-  m-constr-signature :
-    OpDeclQ(c, DynT(x))   -> (Q(c), 0)
 
   m-constr-signature :
     OpDeclQ(c, FunType(ts, t)) -> (Q(c), <length> ts)
 
   m-constr-signature :
     OpDecl(c,  ConstType(x))   -> (c,    0)
-
-  m-constr-signature :
-    OpDecl(c,  DynT(x))   -> (c,    0)
 
   m-constr-signature :
     OpDecl(c,  FunType(ts, t)) -> (c,    <length> ts)
@@ -207,22 +197,13 @@ strategies
     ExtOpDeclInj(ConstType(_))    -> (Inj(), 0)
 
   m-constr-signature :
-    ExtOpDeclInj(DynT(_))    -> (Inj(), 0)
-
-  m-constr-signature :
     ExtOpDeclQ(c, ConstType(x))   -> (Q(c), 0)
-
-  m-constr-signature :
-    ExtOpDeclQ(c, DynT(x))   -> (Q(c), 0)
 
   m-constr-signature :
     ExtOpDeclQ(c, FunType(ts, t)) -> (Q(c), <length> ts)
 
   m-constr-signature :
     ExtOpDecl(c,  ConstType(x))   -> (c,    0)
-
-  m-constr-signature :
-    ExtOpDecl(c,  DynT(x))   -> (c,    0)
 
   m-constr-signature :
     ExtOpDecl(c,  FunType(ts, t)) -> (c,    <length> ts)

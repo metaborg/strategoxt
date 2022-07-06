@@ -6,8 +6,6 @@ imports
 	// C 
 	stratego/strc/opt/stratego-laws 
 	stratego/strc/c/frames
-  stratego/strc/gradual/strategies-sig
-  stratego/strc/gradual/signatures-sig
 
 strategies
 
@@ -83,9 +81,6 @@ strategies
 
   is-just-closure-allocation :
     |[ f~{t*}(|) ]| -> [ClosureAlloc()]
-
-  is-just-closure-allocation :
-    ProxyT(_, _, _, _, f{t*}) -> [ClosureAlloc()]
 
   id-to-Id :
     |[ id ]| -> |[ _Id(|) ]|

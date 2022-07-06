@@ -6,10 +6,15 @@ import static org.spoofax.interpreter.terms.IStrategoTerm.LIST;
 import static org.spoofax.interpreter.terms.IStrategoTerm.REAL;
 import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
 import static org.spoofax.interpreter.terms.IStrategoTerm.TUPLE;
+import static org.spoofax.interpreter.terms.IStrategoTerm.BLOB;
+import static org.spoofax.interpreter.terms.IStrategoTerm.PLACEHOLDER;
+import static org.spoofax.interpreter.terms.IStrategoTerm.REF;
+import static org.spoofax.interpreter.terms.IStrategoTerm.CTOR;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashMap;
 
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -47,7 +52,9 @@ public class TypeAttachment extends AbstractTermAttachment {
 
     private static Type computeType(TypeInfo typeInfo, IStrategoTerm current) {
         final List<Type> subTermTypes = new ArrayList<>(current.getSubtermCount());
-        for(IStrategoTerm subTerm : current) {
+        // Do NOT use the Iterable<IStrategoTerm> of `current`, the mutable collections implement this as iteration
+        //   over their values (which can easily result in a cyclic structure)
+        for(IStrategoTerm subTerm : current.getAllSubterms()) {
             final Type subTermType = getOrComputeType(typeInfo, subTerm);
             subTermTypes.add(subTermType);
         }
@@ -63,12 +70,18 @@ public class TypeAttachment extends AbstractTermAttachment {
                 return typeInfo.typeOf(appl.getName(), subTermTypes);
             case LIST:
                 if(subTermTypes.isEmpty()) {
-                    return new Sort("List", Collections.singletonList(IllFormedTerms.INSTANCE));
+                    return new Sort("List", Collections.singletonList(BottomT.INSTANCE));
                 }
-                final Type leastUpperBound = typeInfo.leastUpperBound(subTermTypes);
+                final Type leastUpperBound = typeInfo.leastUpperBound(subTermTypes, new HashMap<>());
                 return new Sort("List", Collections.singletonList(leastUpperBound));
             case TUPLE:
                 return new Sort("Tuple", subTermTypes);
+            case BLOB:
+                return BlobT.INSTANCE;
+            case PLACEHOLDER:
+                return new Sort("Placeholder", subTermTypes);
+            case REF:
+            case CTOR:
             default:
                 throw new StrategoTypeException(current);
         }

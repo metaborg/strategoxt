@@ -69,12 +69,6 @@ rules
         ; <length> ts => m
         ; ( <RenameVar> (x,(n,m)) => y <+ <HoArg> x => y )
 
-  RenameCall : 
-    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
-    where <length> ss => n
-        ; <length> ts => m
-        ; ( <RenameVar> (x,(n,m)) => y <+ <HoArg> x => y )
-
 
 // The next version of rename is used in incremental compilation
 
@@ -136,34 +130,8 @@ rules
       ; <get-annotation(?LocalArg())> x
       ; y := <remove-annotations(?LocalArg())> x
 
-  RenameCall2 :
-    CallT(SVar(x), [], []) -> CallT(SVar(y), [], [])
-    where id
-      ; <get-annotation(?AmbiguousStrategyResolution(n, m))> x
-      ; <strategy-sig-to-string>(x, n, m) => y
-
   RenameCall2 : 
     CallT(SVar(x), ss, ts) -> CallT(SVar(y), ss, ts)
-    where id
-      ; not(<get-annotation(?LocalArg())> x)
-      ; <length> ss => n
-      ; <length> ts => m
-      ; <strategy-sig-to-string>(x, n, m) => y
-
-  RenameCall2 :
-    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
-    where id
-      ; <get-annotation(?LocalArg())> x
-      ; y := <remove-annotations(?LocalArg())> x
-
-  RenameCall2 :
-    ProxyT([], [], i, o, SVar(x)) -> ProxyT([], [], i, o, SVar(y))
-    where id
-      ; <get-annotation(?AmbiguousStrategyResolution(n, m))> x
-      ; <strategy-sig-to-string>(x, n, m) => y
-
-  RenameCall2 : 
-    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
     where id
       ; not(<get-annotation(?LocalArg())> x)
       ; <length> ss => n
@@ -200,16 +168,5 @@ rules
 
   annotate-local-arg(rename-local|larg*,letdef*):
     CallT(SVar(x), ss, ts) -> CallT(SVar(y), ss, ts)
-  where id
-    ; y := <lookup;add-annotation(|LocalArg())> (x{}, letdef*)
-
-  annotate-local-arg(rename-local|larg*,letdef*):
-    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
-  where id
-    ; <getfirst(?x)> larg*
-    ; y := <add-annotation(|LocalArg())> x
-
-  annotate-local-arg(rename-local|larg*,letdef*):
-    ProxyT(ss, ts, i, o, SVar(x)) -> ProxyT(ss, ts, i, o, SVar(y))
   where id
     ; y := <lookup;add-annotation(|LocalArg())> (x{}, letdef*)

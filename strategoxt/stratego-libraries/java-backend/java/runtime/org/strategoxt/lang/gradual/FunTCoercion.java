@@ -22,7 +22,7 @@ public class FunTCoercion {
         this.outputCoercion = outputCoercion;
     }
 
-    public FunTCoercion wrapWith(Context context, FunTCoercion coercion) throws StrategoCastException {
+    public FunTCoercion wrapWith(Context context, FunTCoercion coercion) throws StrategoSCastException {
         if(sargCoercions.size() != coercion.sargCoercions.size() || targCoercions.size() != coercion.targCoercions.size()) {
             throw new StrategoSCastException(this, coercion);
         }
@@ -39,5 +39,9 @@ public class FunTCoercion {
         final Coercion newInputCoercion = inputCoercion.preCompose(typeInfo, coercion.inputCoercion);
         final Coercion newOutputCoercion = coercion.outputCoercion.preCompose(typeInfo, outputCoercion);
         return new FunTCoercion(newSargCoercions, newTargCoercions, newInputCoercion, newOutputCoercion);
+    }
+
+    @Override public String toString() {
+        return "([" + sargCoercions + "], [" + targCoercions + "], " + inputCoercion + ", " + outputCoercion + ")";
     }
 }

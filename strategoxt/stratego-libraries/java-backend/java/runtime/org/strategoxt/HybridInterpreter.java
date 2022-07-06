@@ -133,6 +133,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	 */
 	public HybridInterpreter(HybridInterpreter interpreter, String... reuseRegistries) {
 		this(interpreter.getFactory(), ((org.spoofax.interpreter.core.Context) interpreter.getContext()).getProgramFactory());
+		compiledContext.typeInfo.internalCopyFrom(interpreter.getCompiledContext().typeInfo);
 		Set<String> reusable = asSet(reuseRegistries);
 
 		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));

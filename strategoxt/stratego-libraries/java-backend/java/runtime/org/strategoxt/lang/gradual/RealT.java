@@ -19,4 +19,8 @@ public class RealT implements Type {
     public String toString() {
         return "real";
     }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

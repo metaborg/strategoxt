@@ -31,7 +31,6 @@ rules
   IsVar  : Var(x) -> x
   IsSVar : Call(SVar(x), []) -> x
   IsSVar : CallT(SVar(x), [], []) -> x
-  IsSVar : ProxyT(_, _, _, _, SVar(x)) -> x
   MkCall : x -> CallT(SVar(x), [], [])
 
 strategies

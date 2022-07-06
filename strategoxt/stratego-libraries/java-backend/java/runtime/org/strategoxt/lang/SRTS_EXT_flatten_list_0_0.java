@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
 
 /*
  * Optimization of `flatten-list'.

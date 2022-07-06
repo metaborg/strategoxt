@@ -6,7 +6,6 @@ imports
   stratego/strc/front/rename-defs
 
   stratego/strc/incr/split-large-term-builds
-  stratego/strc/gradual/utils
 
 strategies
 

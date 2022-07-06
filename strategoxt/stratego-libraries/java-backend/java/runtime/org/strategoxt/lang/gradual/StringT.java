@@ -17,6 +17,10 @@ public class StringT implements Type {
 
     @Override
     public String toString() {
-        return "str";
+        return "string";
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
     }
 }
