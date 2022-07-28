@@ -18,7 +18,7 @@ import org.strategoxt.HybridInterpreter;
 public class JavaInteropRegisterer extends InteropRegisterer {
 	
 	private static final Pattern BINARY_STRATEGY_NAME =
-		Pattern.compile("[A-Za-z_$]+_[0-9]+_[0-9+]");
+		Pattern.compile("[A-Za-z0-9_$]+_[0-9]+_[0-9+]");
 	
 	private final Strategy[] strategies;
 	
