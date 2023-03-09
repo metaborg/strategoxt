@@ -162,7 +162,7 @@ rules
       ; <impl>t1 => ts1
       ; <impl>t2 => ts2
       ; (<[] + [id|id]> ts2; ![ts1 | ts2]
-          <+ !"Conc"#([ts1, ts2])) => t
+          <+ !"Conc"#([[ts1], ts2])) => t
 
   ReplConsSnoc(impl) : 
     appl(p, [t1,t2]) -> t
@@ -171,7 +171,7 @@ rules
       ; <impl>t1 => ts1
       ; <impl>t2 => ts2
       ; (<[] + [id|id]> ts1; <conc> (ts1, [ts2])
-          <+ !"Conc"#([ts1, ts2])) => t
+          <+ !"Conc"#([ts1, [ts2]])) => t
 
   ReplConsConc(impl) : 
     appl(p, [t1,t2]) -> t
