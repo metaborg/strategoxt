@@ -24,7 +24,7 @@ dependencies {
   api(compositeBuild("org.spoofax.interpreter.library.jsglr"))
   api("org.metaborg:strategoxt-min-jar:$spoofax2Version")
 
-  compileOnly("com.google.code.findbugs:jsr305")
+  implementation("jakarta.annotation:jakarta.annotation-api")
 }
 
 // TODO: copy the StrategoXT runnable JAR into project, which is exported as a resource? We probably do not need it in
