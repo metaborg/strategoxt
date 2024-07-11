@@ -5,8 +5,6 @@ plugins {
     id("org.metaborg.convention.maven-publish")
 }
 
-group = "org.metaborg.devenv"
-
 sourceSets {
     main {
         java {
@@ -31,11 +29,6 @@ dependencies {
 //    api(libs.spoofax2.strategoxt)
 
     implementation(libs.jakarta.annotation)
-}
-
-mavenPublishConvention {
-    repoOwner.set("metaborg")
-    repoName.set("strategoxt")
 }
 
 publishing {
