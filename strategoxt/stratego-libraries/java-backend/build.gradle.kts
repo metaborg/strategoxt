@@ -1,6 +1,11 @@
 plugins {
-    id("org.metaborg.gradle.config.java-library")
+    `java-library`
+    `maven-publish`
+    id("org.metaborg.convention.java")
+    id("org.metaborg.convention.maven-publish")
 }
+
+group = "org.metaborg.devenv"
 
 sourceSets {
     main {
@@ -10,22 +15,33 @@ sourceSets {
     }
 }
 
-fun compositeBuild(name: String) = "$group:$name:$version"
-val spoofax2Version: String by ext
 dependencies {
-    api(platform("org.metaborg:parent:$spoofax2Version"))
+    api(platform(libs.metaborg.platform))
 
-    api(compositeBuild("org.spoofax.terms"))
-    api(compositeBuild("org.spoofax.interpreter.core"))
-    api(compositeBuild("org.spoofax.interpreter.library.xml"))
-    api(compositeBuild("org.spoofax.interpreter.library.java"))
-    api(compositeBuild("org.spoofax.interpreter.library.index"))
-    api(compositeBuild("org.spoofax.jsglr"))
-    api(compositeBuild("org.spoofax.interpreter.library.jsglr"))
-    api("org.metaborg:strategoxt-min-jar:$spoofax2Version")
+    api(libs.spoofax2.terms)
+    api(libs.spoofax2.interpreter.core)
+    api(libs.spoofax2.interpreter.library.xml)
+    api(libs.spoofax2.interpreter.library.java)
+    api(libs.spoofax2.interpreter.library.index)
+    api(libs.spoofax2.interpreter.library.jsglr)
+    api(libs.spoofax2.jsglr)
 
-    implementation("jakarta.annotation:jakarta.annotation-api")
+    // For bootstrapping:
+    api(libs.strategoxt.strj)
+//    api(libs.spoofax2.strategoxt)
+
+    implementation(libs.jakarta.annotation)
 }
 
-// TODO: copy the StrategoXT runnable JAR into project, which is exported as a resource? We probably do not need it in
-// devenv/Spoofax 3, as we do not use the embedded StrategoXT JAR.
+mavenPublishConvention {
+    repoOwner.set("metaborg")
+    repoName.set("strategoxt")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+}
