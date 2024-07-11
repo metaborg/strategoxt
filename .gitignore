@@ -1,6 +1,37 @@
-.cache
+# macOS
+*.DS_Store
 test-gen
-target
+.cache
 
-.project
-.DS_Store
+# Gradle
+**/.gradle
+**/build/
+
+# IntelliJ
+**/.idea
+**/out
+
+# Eclipse
+**/.project
+**/.settings
+**/.classpath
+**/.factorypath
+**/bin
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.python-version
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*
+/site/
+build/
+*.egg-info/
