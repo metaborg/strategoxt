@@ -8,6 +8,9 @@ plugins {
 }
 
 allprojects {
+    apply(plugin = "org.metaborg.gitonium")
+
+    version = gitonium.version
     group = "org.metaborg.devenv"
 
     pluginManager.withPlugin("org.metaborg.convention.maven-publish") {
