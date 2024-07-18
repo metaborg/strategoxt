@@ -16,17 +16,16 @@ sourceSets {
 dependencies {
     api(platform(libs.metaborg.platform)) { version { require("latest.integration") } }
 
-    api(libs.spoofax2.terms)
-    api(libs.spoofax2.interpreter.core)
-    api(libs.spoofax2.interpreter.library.xml)
-    api(libs.spoofax2.interpreter.library.java)
-    api(libs.spoofax2.interpreter.library.index)
-    api(libs.spoofax2.interpreter.library.jsglr)
-    api(libs.spoofax2.jsglr)
+    api(libs.spoofax.terms)
+    api(libs.interpreter.core)
+    api(libs.interpreter.library.xml)
+    api(libs.interpreter.library.java)
+    api(libs.interpreter.library.index)
+    api(libs.interpreter.library.jsglr)
+    api(libs.jsglr)
 
     // For bootstrapping:
-    api(libs.strategoxt.strj)
-//    api(libs.spoofax2.strategoxt)
+    api(libs.strategoxt.minjar)
 
     implementation(libs.jakarta.annotation)
 }
