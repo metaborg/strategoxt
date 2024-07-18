@@ -14,7 +14,7 @@ sourceSets {
 }
 
 dependencies {
-    api(platform(libs.metaborg.platform))
+    api(platform(libs.metaborg.platform)) { version { require("latest.integration") } }
 
     api(libs.spoofax2.terms)
     api(libs.spoofax2.interpreter.core)
