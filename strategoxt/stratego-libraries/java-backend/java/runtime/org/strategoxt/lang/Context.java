@@ -218,7 +218,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
 				return null;
 			}
 		} catch (InterpreterExit e) {
-			throw new StrategoExit(e.getValue());
+			throw new StrategoExit(e.getValue(), e);
 		} catch (InterpreterException e) {
 			throw new StrategoException("Exception in execution of primitive '" + primitive.getName() + "'", e);
 		} catch (RuntimeException e) {
@@ -254,7 +254,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
 		getIOAgent().closeAllFiles();
 		throw new CancellationException("Stratego interpreter cancelled");
 	}
-	
+
     public Object contextObject() {
         return interopContext.contextObject();
     }
