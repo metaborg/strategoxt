@@ -25,7 +25,7 @@ dependencies {
     api(libs.jsglr)
 
     // For bootstrapping:
-    api(libs.strategoxt.minjar)
+    api(libs.spoofax2.strategoxt.minjar)
 
     implementation(libs.jakarta.annotation)
 }
