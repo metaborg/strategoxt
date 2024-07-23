@@ -26,7 +26,7 @@ strategies
 strategies
 
   // TODO: Proper copy propagation?
-  
+
   optimize-assignments :
     bstm* |[ x = e1; x = e2;  bstm* ]| ->
     bstm* |[         x = e2'; bstm* ]|
@@ -34,7 +34,7 @@ strategies
       <has-no-side-effects> e1
     with
       e2' := <alltd((ExprName(Id(x)) -> e1))> e2
-  
+
   optimize-assignments :
     bstm* |[ x = e1; y = e2;  bstm* ]| ->
     bstm* |[ x = e1; y = e2'; bstm* ]|
@@ -43,11 +43,11 @@ strategies
     ; <has-no-side-effects> e1
     ; e2' := <alltd((ExprName(Id(x)) -> e1))> e2
     ; not(e2' := e2)
-  
+
   optimize-assignments :
     bstm* |[ x = y; x = z; bstm* ]| ->
     bstm* |[        x = z; bstm* ]|
-  
+
   optimize-assignments :
     bstm* |[ x = x; bstm* ]| ->
     bstm* |[        bstm* ]|
@@ -120,7 +120,7 @@ strategies
     ]|
     with
       bstm_othermatch'* := <try(replace-match-test1(|x_actualcons, x_cached))> bstm_othermatch*
-  
+
   replace-match-test1(|x_actualcons, x_cached) :
     <match-decls-and-appl-test => (bstm_decl*, e_cons, bstm_body*)> ->
     bstm* |[
@@ -131,20 +131,20 @@ strategies
         break Fail;
       }
     ]|
-  
+
   match-decls-and-appl-text :
     [Block(bstm*) | _] -> <match-decls-and-appl-test> bstm*
-  
+
   match-decls-and-appl-test :
     bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], e_cons, bstm_body*)
     where
       (bstm_decl*, e_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
-  
+
   match-decls-and-appl-test :
     bstm* |[ x = term; bstm* ]| -> ([<Hd> | bstm_decl*], e_cons, bstm_body*)
     where
       (bstm_decl*, e_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
-    
+
   match-decls-and-appl-test :
     bstm* |[
       if (~e:ExprName(Id("term")).getTermType() != IStrategoTerm.APPL || e_cons != ((IStrategoAppl) term).getConstructor())
@@ -162,37 +162,37 @@ strategies
     bstm |[ { if (TRUE) break x; bstm* } ]| -> bstm |[ { if (TRUE) break x; } ]|
     where
       not(!bstm* => [])
-  
+
   optimize-conditionals :
     bstm |[ if (e) if (TRUE) stm ]| -> |[ if (e) stm ]|
-  
+
   optimize-conditionals :
     bstm |[ Success: { if (e) break Success; bstm* } ]| -> |[ if (!e) { bstm* } ]|
-  
+
   optimize-conditionals :
     bstm |[ if (!(e1 == e2)) stm ]| -> |[ if (e1 != e2) stm ]|
-  
+
   optimize-conditionals :
     bstm |[ if (e1) { if (e2) stm } ]| -> |[ if (e1 && e2) stm ]|
     where
       not(!e2 => expr |[ TRUE ]|)
-  
+
   optimize-conditionals :
     |[ Fail: { bstm* } ]| -> |[ Fail: { bstm'* } ]|
     where
       !bstm*
     ; one(?|[ if (e) break Fail; ]|)
     ; at-last([remove-if-true]) => bstm'*
-  
+
   optimize-conditionals :
     Block([Block(s)]) -> Block(s)
-  
+
   remove-if-true :
     |[ if (TRUE) break Fail; ]| -> |[ break Fail; ]|
-  
+
   remove-if-true :
     |[ if (TRUE) break Success; ]| -> |[ break Success; ]|
-  
+
   remove-if-true :
     |[ if (TRUE) return e; ]| -> |[ return e; ]|
 
@@ -204,7 +204,7 @@ strategies
       x_Fail: {
         bstm*
       }
-      context.popOnFailure();
+      context.popOnFailure(e);
       return null;
     ]| ->
     bstm* |[
@@ -212,22 +212,22 @@ strategies
         bstm'*
       }
       context.push(e);
-      context.popOnFailure();
+      context.popOnFailure(e);
       return null;
     ]|
     where
       bstm'* := <if-no-invokes-remove-stack-pop> bstm*
-  
+
   if-no-invokes-remove-stack-pop =
     if [id, id] then
       with(
-        ?bstm* |[ context.popOnSuccess(); bstm_return ]|
+        ?bstm* |[ context.popOnSuccess("~x'"); bstm_return ]|
       )
     ; !bstm* |[ bstm_return ]|
     else
       if-no-invokes-remove-stack-pop-2
     end
-  
+
   if-no-invokes-remove-stack-pop-2 :
     [s | s*] -> [s | s'*]
     where
