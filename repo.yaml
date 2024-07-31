@@ -3,6 +3,7 @@ repoOwner: "metaborg"
 repoName: "strategoxt"
 mainBranch: "master"
 mavenGroup: "org.metaborg.devenv"
+releaseTagPrefix: "devenv-release/"
 
 title: "Stratego/XT"
 description: |
