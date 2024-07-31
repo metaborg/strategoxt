@@ -1,37 +1,72 @@
-# macOS
-*.DS_Store
-test-gen
-.cache
+# Java
+*.class
+*.log
+*.jar
+*.war
+*.nar
+*.ear
+
 
 # Gradle
-**/.gradle
-**/build/
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
 
 # IntelliJ
-**/.idea
-**/out
+.idea/*
+!.idea/icon.svg
+!.idea/icon_dark.svg
+*.iws
+out/
+*.iml
+*.ipr
+!**/src/main/**/out/
+!**/src/test/**/out/
+
 
 # Eclipse
-**/.project
-**/.settings
-**/.classpath
-**/.factorypath
-**/bin
+.metadata
+.classpath
+.project
+.apt_generated
+.settings
+.springBeans
+.sts4-cache
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.factorypath
+.recommenders/
+.apt_generated/
+.apt_generated_test/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.python-version
-.env/
-.venv/
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-pythonenv*
-/site/
-build/
-*.egg-info/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+
+# VS Code
+.vscode/
+
+# Misc
+.cache
+.DS_Store
+*.lock
+jte-classes/
+

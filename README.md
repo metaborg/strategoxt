@@ -5,10 +5,11 @@
 
 Stratego is a modular language for the specification of fully automatic program transformation systems based on the paradigm of rewriting strategies.
 
-| Artifact                                  | Latest Release                                                                                           |
-|-------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| `org.metaborg.devenv:org.strategoxt.strj` | [![org.metaborg.devenv:org.strategoxt.strj][maven-badge:org.strategoxt.strj]][maven:org.strategoxt.strj] |
 
+
+| Artifact | Latest Release | Latest Snapshot |
+|----------|----------------|-----------------|
+| `org.metaborg.devenv:org.strategoxt.strj` | [![Release][mvn-rel-badge:org.metaborg.devenv:org.strategoxt.strj]][mvn:org.metaborg.devenv:org.strategoxt.strj] | [![Snapshot][mvn-snap-badge:org.metaborg.devenv:org.strategoxt.strj]][mvn:org.metaborg.devenv:org.strategoxt.strj] |
 
 
 ## License
@@ -21,9 +22,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 [github-badge:build]: https://img.shields.io/github/actions/workflow/status/metaborg/strategoxt/build.yaml
 [github:build]: https://github.com/metaborg/strategoxt/actions
 [license-badge]: https://img.shields.io/github/license/metaborg/strategoxt
-[license]: https://github.com/metaborg/strategoxt/blob/master/LICENSE
-[github-badge:release]: https://img.shields.io/github/v/release/metaborg/strategoxt
+[license]: https://github.com/metaborg/strategoxt/blob/master/LICENSE.md
+[github-badge:release]: https://img.shields.io/github/v/release/metaborg/strategoxt?display_name=release
 [github:release]: https://github.com/metaborg/strategoxt/releases
 
-[maven:org.strategoxt.strj]:                  https://artifacts.metaborg.org/#nexus-search;gav~org.metaborg.devenv~org.strategoxt.strj~~~
-[maven-badge:org.strategoxt.strj]:                  https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fartifacts.metaborg.org%2Fcontent%2Frepositories%2Freleases%2Forg%2Fmetaborg%2Fdevenv%2Forg.strategoxt.strj%2Fmaven-metadata.xml
+[mvn:org.metaborg.devenv:org.strategoxt.strj]: https://artifacts.metaborg.org/#nexus-search;gav~org.metaborg.devenv~org.strategoxt.strj~~~
+[mvn-rel-badge:org.metaborg.devenv:org.strategoxt.strj]: https://img.shields.io/nexus/r/org.metaborg.devenv/org.strategoxt.strj?server=https%3A%2F%2Fartifacts.metaborg.org&label=%20
+[mvn-snap-badge:org.metaborg.devenv:org.strategoxt.strj]: https://img.shields.io/nexus/s/org.metaborg.devenv/org.strategoxt.strj?server=https%3A%2F%2Fartifacts.metaborg.org&label=%20
