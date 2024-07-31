@@ -1,25 +1,60 @@
 ---
 repoOwner: "metaborg"
-repoName: "common"
+repoName: "strategoxt"
 mainBranch: "master"
+mavenGroup: "org.metaborg.devenv"
 
-title: "Metaborg Common"
+title: "Stratego/XT"
 description: |
-  Common and utility classes for Metaborg projects.
-inceptionYear: "2021"
+  Stratego is a modular language for the specification of fully automatic program transformation systems based on the paradigm of rewriting strategies.
+inceptionYear: "1998"
 
 libraries:
-  - group: "org.metaborg"
-    name: "common"
-    description: "Metaborg Common library"
+  - group: "org.metaborg.devenv"
+    name: "org.strategoxt.strj"
+    description: "Stratego Compiler"
 
-developers:
+contributors:
+  - id: "mbravenboer"
+    name: "Martin Bravenboer"
+  - id: "eelcovisser"
+    name: "Eelco Visser"
+  - id: "merijndejonge"
+    name: "Merijn de Jonge"
+  - id: "lennartcl"
+    name: "Lennart Kats"
+  - id: "rbvermaa"
+    name: "Rob Vermaas"
+  - id: "vvergu"
+    name: "Vlad Vergu"
+  - id: "Apanatshka"
+    name: "Jeff Smits"
+  - id: "karltk"
+    name: "Karl Trygve Kalleberg"
   - id: "Gohla"
     name: "Gabriel Konat"
+  - id: "arthurvd"
+    name: "Arthur van Dam"
+  - id: "edolstra"
+    name: "Eelco Dolstra"
+  - id: "jstvssr"
+    name: "Joost Visser"
   - id: "Virtlink"
     name: "Daniel A. A. Pelsmaeker"
 
+developers:
+  - id: "Apanatshka"
+    name: "Jeff Smits"
+
 files:
+  changelog:
+    generate: false
   githubWorkflows:
     publishRelease: true
     publishSnapshot: true
+  gradleRootProject:
+    createPublishTasks: true
+    rootProjectName: "strategoxt-project"
+    includedProjects:
+      - name: ":strj"
+        path: "strategoxt/stratego-libraries/java-backend/"
