@@ -1,3 +1,4 @@
+import org.metaborg.convention.Person
 import org.metaborg.convention.MavenPublishConventionExtension
 
 // Workaround for issue: https://youtrack.jetbrains.com/issue/KTIJ-19369
@@ -7,14 +8,17 @@ plugins {
     alias(libs.plugins.gitonium)
 }
 
+rootProjectConvention {
+    // Add `publishAll` and `publish` tasks that delegate to the subprojects and included builds.
+    registerPublishTasks.set(true)
+}
 allprojects {
     apply(plugin = "org.metaborg.gitonium")
 
-    // Configure Gitonium before setting the version
-    gitonium {
-        mainBranch.set("master")
-    }
-
+// Configure Gitonium before setting the version
+gitonium {
+mainBranch.set("master")
+}
     version = gitonium.version
     group = "org.metaborg.devenv"
 
@@ -24,22 +28,25 @@ allprojects {
             repoName.set("strategoxt")
 
             metadata {
-                inceptionYear.set("2000")
-                developers.set(listOf(
-                    Person("mbravenboer", "Martin Bravenboer", "martin.bravenboer@gmail.com"),
-                    Person("eelcovisser", "Eelco Visser", "eelcovis@gmail.com"),
-                    Person("merijndejonge", "Merijn de Jonge", "mdejonge@cwi.nl"),
-                    Person("lennartcl", "Lennart Kats", "lclkats@gmail.com"),
-                    Person("rbvermaa", "Rob Vermaas", "rob.vermaas@gmail.com"),
-                    Person("vvergu", "Vlad Vergu", "v.vergu@gmail.com"),
-                    Person("Apanatshka", "Jeff Smits", "mail@jeffsmits.net"),
-                    Person("karltk", "Karl Trygve Kalleberg", "karltk@gmail.com"),
-                    Person("Gohla", "Gabriel Konat", "gabrielkonat@gmail.com"),
-                    Person("arthurvd", "Arthur van Dam", "eye@eye-home.net"),
-                    Person("edolstra", "Eelco Dolstra", "eelco.dolstra@logicblox.com"),
-                    Person("jstvssr", "Joost Visser", "j.visser@sig.eu"),
-                    Person("Virtlink", "Daniel A. A. Pelsmaeker", "developer@pelsmaeker.net"),
-                ))
+                inceptionYear.set("1998")
+developers.set(listOf(
+Person("Jeff Smits", email = null, id = "Apanatshka"),
+))
+contributors.set(listOf(
+Person("Martin Bravenboer", email = null, id = "mbravenboer"),
+Person("Eelco Visser", email = null, id = "eelcovisser"),
+Person("Merijn de Jonge", email = null, id = "merijndejonge"),
+Person("Lennart Kats", email = null, id = "lennartcl"),
+Person("Rob Vermaas", email = null, id = "rbvermaa"),
+Person("Vlad Vergu", email = null, id = "vvergu"),
+Person("Jeff Smits", email = null, id = "Apanatshka"),
+Person("Karl Trygve Kalleberg", email = null, id = "karltk"),
+Person("Gabriel Konat", email = null, id = "Gohla"),
+Person("Arthur van Dam", email = null, id = "arthurvd"),
+Person("Eelco Dolstra", email = null, id = "edolstra"),
+Person("Joost Visser", email = null, id = "jstvssr"),
+Person("Daniel A. A. Pelsmaeker", email = null, id = "Virtlink"),
+))
             }
         }
     }

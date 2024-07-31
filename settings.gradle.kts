@@ -1,5 +1,3 @@
-rootProject.name = "strategoxt-project"
-
 dependencyResolutionManagement {
     repositories {
         maven("https://artifacts.metaborg.org/content/groups/public/")
@@ -18,6 +16,6 @@ plugins {
     id("org.metaborg.convention.settings") version "latest.integration"
 }
 
-
+rootProject.name = "strategoxt-project"
 include(":strj")
 project(":strj").projectDir = file("strategoxt/stratego-libraries/java-backend/")
