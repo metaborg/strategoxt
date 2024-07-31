@@ -53,6 +53,7 @@ files:
     publishRelease: true
     publishSnapshot: true
   gradleRootProject:
+    update: true
     createPublishTasks: true
     rootProjectName: "strategoxt-project"
     includedProjects:

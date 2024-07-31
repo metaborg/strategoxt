@@ -1,3 +1,8 @@
+<!--
+!! THIS FILE WAS GENERATED USING repoman !!
+Modify `repo.yaml` instead and use `repoman` to update this file
+See: https://github.com/metaborg/metaborg-gradle/
+-->
 # Stratego/XT
 [![Build][github-badge:build]][github:build]
 [![License][license-badge]][license]

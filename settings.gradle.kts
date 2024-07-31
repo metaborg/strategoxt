@@ -1,3 +1,7 @@
+// !! THIS FILE WAS GENERATED USING repoman !!
+// Modify `repo.yaml` instead and use `repoman` to update this file
+// See: https://github.com/metaborg/metaborg-gradle/
+
 dependencyResolutionManagement {
     repositories {
         maven("https://artifacts.metaborg.org/content/groups/public/")

@@ -1,3 +1,7 @@
+// !! THIS FILE WAS GENERATED USING repoman !!
+// Modify `repo.yaml` instead and use `repoman` to update this file
+// See: https://github.com/metaborg/metaborg-gradle/
+
 import org.metaborg.convention.Person
 import org.metaborg.convention.MavenPublishConventionExtension
 
