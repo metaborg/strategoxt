@@ -3,6 +3,7 @@
 Modify `repo.yaml` instead and use `repoman` to update this file
 See: https://github.com/metaborg/metaborg-gradle/
 -->
+
 # Stratego/XT
 [![Build][github-badge:build]][github:build]
 [![License][license-badge]][license]
@@ -11,10 +12,14 @@ See: https://github.com/metaborg/metaborg-gradle/
 Stratego is a modular language for the specification of fully automatic program transformation systems based on the paradigm of rewriting strategies.
 
 
+## Spoofax 3 Artifacts
 
-| Artifact | Latest Release | Latest Snapshot |
+
+| Maven Artifact | Latest Release | Latest Snapshot |
 |----------|----------------|-----------------|
 | `org.metaborg.devenv:org.strategoxt.strj` | [![Release][mvn-rel-badge:org.metaborg.devenv:org.strategoxt.strj]][mvn:org.metaborg.devenv:org.strategoxt.strj] | [![Snapshot][mvn-snap-badge:org.metaborg.devenv:org.strategoxt.strj]][mvn:org.metaborg.devenv:org.strategoxt.strj] |
+
+
 
 
 ## License
@@ -30,7 +35,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 [license]: https://github.com/metaborg/strategoxt/blob/master/LICENSE.md
 [github-badge:release]: https://img.shields.io/github/v/release/metaborg/strategoxt?display_name=release
 [github:release]: https://github.com/metaborg/strategoxt/releases
-
 [mvn:org.metaborg.devenv:org.strategoxt.strj]: https://artifacts.metaborg.org/#nexus-search;gav~org.metaborg.devenv~org.strategoxt.strj~~~
 [mvn-rel-badge:org.metaborg.devenv:org.strategoxt.strj]: https://img.shields.io/nexus/r/org.metaborg.devenv/org.strategoxt.strj?server=https%3A%2F%2Fartifacts.metaborg.org&label=%20
 [mvn-snap-badge:org.metaborg.devenv:org.strategoxt.strj]: https://img.shields.io/nexus/s/org.metaborg.devenv/org.strategoxt.strj?server=https%3A%2F%2Fartifacts.metaborg.org&label=%20

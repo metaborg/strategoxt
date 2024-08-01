@@ -10,7 +10,7 @@ description: |
   Stratego is a modular language for the specification of fully automatic program transformation systems based on the paradigm of rewriting strategies.
 inceptionYear: "1998"
 
-libraries:
+spoofax3Libraries:
   - group: "org.metaborg.devenv"
     name: "org.strategoxt.strj"
     description: "Stratego Compiler"
@@ -48,14 +48,11 @@ developers:
     name: "Jeff Smits"
 
 files:
-  changelog:
-    generate: false
   githubWorkflows:
     publishRelease: true
     publishSnapshot: true
   gradleRootProject:
-    update: true
-    createPublishTasks: true
+    generate: true
     rootProjectName: "strategoxt-project"
     includedProjects:
       - name: ":strj"
