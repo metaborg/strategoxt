@@ -16,6 +16,10 @@ public class SRTS_EXT_repeat_1_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
+		return callStatic(context, current, s);
+	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current, Strategy s) {
 		IStrategoTerm result = current;
 		IStrategoTerm next = s.invoke(context, result);
 		
@@ -31,7 +35,7 @@ public class SRTS_EXT_repeat_1_0 extends Strategy {
 		return result;
 	}
 
-	private IStrategoTerm invokeSuspiciously(Context context, IStrategoTerm next, Strategy s) {
+	private static IStrategoTerm invokeSuspiciously(Context context, IStrategoTerm next, Strategy s) {
 		Set<IStrategoTerm> valuesSeen = new HashSet<IStrategoTerm>();
 		IStrategoTerm result;
 		do {

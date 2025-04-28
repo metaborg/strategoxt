@@ -17,6 +17,10 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
+		return callStatic(context, current, s);
+	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current, Strategy s) {
 		if (current.getTermType() != IStrategoTerm.LIST)
 			return null;
 		
@@ -37,7 +41,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 		return filterMaintainAnnos(context, (IStrategoList) current, s);
 	}
 
-	private IStrategoTerm filterMaintainTailAnnos(Context context, 
+	private static IStrategoTerm filterMaintainTailAnnos(Context context,
 			IStrategoTerm[] prefix, IStrategoList tail, int tailStart,
 			Strategy s) {
 		// Filter prefix, disregarding annotations
@@ -57,7 +61,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 		return result;
 	}
 
-	private IStrategoList filterMaintainAnnos(Context context, IStrategoList list, Strategy s) {
+	private static IStrategoList filterMaintainAnnos(Context context, IStrategoList list, Strategy s) {
 		if (list.isEmpty())
 			return list;
 		
@@ -78,7 +82,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 		}
 	}
 	
-	private IStrategoList filterIgnoreAnnos(Context context, IStrategoTerm[] list, Strategy s) {
+	private static IStrategoList filterIgnoreAnnos(Context context, IStrategoTerm[] list, Strategy s) {
 		for (int i = 0; i < list.length; i++) {
 			list[i] = s.invoke(context, list[i]);
 		}

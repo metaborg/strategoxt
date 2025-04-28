@@ -19,6 +19,10 @@ public class SRTS_EXT_at_end_1_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
+		return callStatic(context, current, s);
+	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current, Strategy s) {
 		// context.push("at_end_1_0"); // DEBUG
 		
 		// DEBUG

@@ -15,6 +15,10 @@ public class SRTS_EXT_fatal_err_0_3 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm message, IStrategoTerm term, IStrategoTerm trace) {
+		return callStatic(context, current, message, term, trace);
+	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current, IStrategoTerm message, IStrategoTerm term, IStrategoTerm trace) {
 		if (message.getTermType() == LIST)
 			message = concat_strings_0_0.instance.invoke(context, message);
 		if (message == null || message.getTermType() != STRING)

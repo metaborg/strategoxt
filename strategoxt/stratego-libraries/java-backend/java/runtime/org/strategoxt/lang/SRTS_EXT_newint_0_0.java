@@ -11,6 +11,10 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
+		return callStatic(context, current);
+	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current) {
 		return new UniqueValueTerm();
 	}
 }

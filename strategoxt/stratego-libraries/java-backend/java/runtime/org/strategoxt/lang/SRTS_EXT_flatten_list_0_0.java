@@ -26,6 +26,10 @@ public class SRTS_EXT_flatten_list_0_0 extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
+		return callStatic(context, current);
+	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current) {
 
 		if (current.getTermType() != IStrategoTerm.LIST) {
 			return null;
@@ -57,14 +61,14 @@ public class SRTS_EXT_flatten_list_0_0 extends Strategy {
 		return current;
 	}
 
-	private void reverse(ArrayList<IStrategoTerm> array, int start, int end) {
+	private static void reverse(ArrayList<IStrategoTerm> array, int start, int end) {
 		final int length = (end - start) / 2;
 		for (int i = 0; i < length; ++i) {
 			swap(array, start + i, end - 1 - i);
 		}
 	}
 
-	private void swap(ArrayList<IStrategoTerm> array, int i, int j) {
+	private static void swap(ArrayList<IStrategoTerm> array, int i, int j) {
 		final IStrategoTerm tmp = array.get(i);
 		array.set(i, array.get(j));
 		array.set(j, tmp);

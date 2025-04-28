@@ -13,6 +13,10 @@ public class SRTS_EXT_crush_3_0 extends Strategy {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current,
 			Strategy nul, Strategy sum, Strategy s) {
+		return callStatic(context, current, nul, sum, s);
+	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current, Strategy nul, Strategy sum, Strategy s) {
 		
 		// TODO: Is getAllSubterms() a good idea for crush/foldr of lists? 
 		

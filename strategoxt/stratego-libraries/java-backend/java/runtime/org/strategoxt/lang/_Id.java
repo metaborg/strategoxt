@@ -21,4 +21,8 @@ public class _Id extends DynamicStrategy {
 	public IStrategoTerm invokeDynamic(Context context, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
 		return current;
 	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current) {
+		return current;
+	}
 }

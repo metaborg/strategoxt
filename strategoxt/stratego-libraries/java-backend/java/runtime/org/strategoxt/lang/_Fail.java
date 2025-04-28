@@ -21,4 +21,8 @@ public class _Fail extends DynamicStrategy {
 	public IStrategoTerm invokeDynamic(Context context, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
 		return null;
 	}
+
+	public static IStrategoTerm callStatic(Context context, IStrategoTerm current) {
+		return null;
+	}
 }
